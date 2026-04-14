@@ -132,6 +132,7 @@
         <h1>FlexAID<span class="delta">∆S</span></h1>
         <p class="hero-subtitle">Entropy-Driven Molecular Docking Engine</p>
         <p class="hero-tagline">Genetic algorithms meet statistical mechanics for real-world drug discovery</p>
+        <p class="hero-brand-line">DRUG IS ALWAYS AN ANSWER.</p>
         <div class="hero-stat-row">
           <div class="hero-stat">
             <span class="hero-stat-value">0.93</span>
@@ -162,6 +163,28 @@
         <blockquote class="highlight-quote">
           Most docking engines optimize enthalpy alone. FlexAID∆S integrates <strong>Shannon entropy</strong> into its scoring via a full statistical mechanics framework — recovering the correct binding mode <strong>92% of the time</strong> when enthalpy-only scoring fails.
         </blockquote>
+        <p class="brand-voice">Entropy matters. Drugs matter. Unfiltered truth matters.</p>
+      </div>
+    </section>
+
+    <!-- Interactive Demo -->
+    <section class="demo-section" id="demo">
+      <div class="container">
+        <h2>See It In Action</h2>
+        <p class="section-subtitle">Toggle between traditional enthalpy-only scoring and FlexAID∆S full thermodynamics</p>
+        <div class="demo-canvas-wrap">
+          <canvas id="demo-canvas" class="demo-canvas"></canvas>
+          <div class="demo-controls">
+            <button id="mode-traditional" class="demo-btn active">Traditional (&Delta;G &asymp; &Delta;H)<br><small>Enthalpy only</small></button>
+            <button id="mode-flexaids" class="demo-btn">FlexAID&Delta;S (&Delta;G = &Delta;H &minus; T&Delta;S)<br><small>Full thermodynamics</small></button>
+          </div>
+          <div class="demo-readout">
+            Computed &Delta;S (Shannon entropy): <strong id="entropy-value">0.00</strong> bits<br>
+            Estimated &minus;T&Delta;S penalty: <strong id="tds-value">0.00</strong> kcal/mol
+          </div>
+          <p class="demo-status" id="demo-status">State: Unbound &bull; Traditional mode</p>
+          <p class="demo-caption">Click canvas to toggle bound/unbound. Vibrations represent conformational freedom. Traditional mode undervalues &Delta;S; FlexAID&Delta;S captures full Shannon-like entropy over the pose ensemble.</p>
+        </div>
       </div>
     </section>
 
@@ -353,6 +376,7 @@
             <span class="cns-stat-label">Neurological targets</span>
           </div>
         </div>
+        <a href="./vant_hoff.html" class="btn btn-secondary" target="_blank" style="margin-top:var(--space-4)">Van't Hoff Interactive Demo</a>
         <p class="benchmark-note">Example: mu-opioid + fentanyl &mdash; enthalpy-only scoring placed the ligand in the wrong pocket (&minus;14.2 kcal/mol, RMSD 8.3 &Aring;); Shannon entropic correction rescued the correct pose (&minus;10.8 kcal/mol, RMSD 1.2 &Aring;, exp: &minus;11.1)</p>
       </div>
     </section>
@@ -765,8 +789,22 @@ tENCoM wildtype.pdb conf1.pdb conf2.pdb conf3.pdb -T 300</code></pre>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
             </div>
             <h3>Citation (CFF)</h3>
-            <p>Machine-readable citation metadata for academic use and DOI references</p>
-          </a>
+             <p>Machine-readable citation metadata for academic use and DOI references</p>
+           </a>
+           <a href="./entropy-docking-architecture.html" class="doc-card">
+             <div class="doc-icon">
+               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M15 20v2M2 15h2M20 15h2M9 2v2M9 20v2M2 9h2M20 9h2"/></svg>
+             </div>
+             <h3>Entropy Docking Architecture</h3>
+             <p>Full Apple ecosystem integration: AirPods, Watch, iPhone, Mac, Vision Pro as thermodynamic sensors</p>
+           </a>
+           <a href="./entropy-docking-methodology.html" class="doc-card">
+             <div class="doc-icon">
+               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+             </div>
+             <h3>Theoretical Methodology</h3>
+             <p>Crooks fluctuation theorem, multi-scale entropy isomorphism, Van't Hoff decomposition across biological scales</p>
+           </a>
         </div>
       </div>
     </section>

@@ -215,4 +215,176 @@
     });
   });
 
+  /* --- Interactive Demo Canvas --- */
+  var demoCanvas = document.getElementById('demo-canvas');
+  if (demoCanvas) {
+    var dctx = demoCanvas.getContext('2d');
+    var demoState = {
+      isBound: false,
+      isFlexaidsMode: false,
+      atoms: [],
+      history: [],
+      animId: null,
+      visible: false
+    };
+
+    var entropyValueEl = document.getElementById('entropy-value');
+    var tdsValueEl = document.getElementById('tds-value');
+    var demoStatusEl = document.getElementById('demo-status');
+    var modeTraditionalBtn = document.getElementById('mode-traditional');
+    var modeFlexaidsBtn = document.getElementById('mode-flexaids');
+
+    function resizeDemoCanvas() {
+      var w = demoCanvas.parentElement.offsetWidth;
+      demoCanvas.width = Math.min(w * 0.95, 650);
+      demoCanvas.height = demoCanvas.width * 0.75;
+      initDemoAtoms();
+    }
+
+    function initDemoAtoms() {
+      demoState.atoms = [];
+      var cw = demoCanvas.width;
+      var ch = demoCanvas.height;
+      demoState.atoms.push({ x: cw/2, y: ch/2, r: cw/5.5, color: 'receptor', entropy: 0.25 });
+      var n = 15;
+      for (var i = 0; i < n; i++) {
+        var angle = (i / n) * Math.PI * 2;
+        var dist = cw/4 + Math.random() * cw/9;
+        demoState.atoms.push({
+          x: cw/2 + Math.cos(angle) * dist,
+          y: ch/2 + Math.sin(angle) * dist,
+          r: 10 + Math.random() * 12,
+          color: 'ligand',
+          entropy: 1.8 + Math.random() * 1.6
+        });
+      }
+    }
+
+    function computeDemoEntropy() {
+      var h = demoState.history;
+      if (h.length < 10) return 0;
+      var bins = [0,0,0,0,0];
+      for (var i = 0; i < h.length; i++) {
+        var bin = Math.min(Math.floor(h[i] / 18), 4);
+        bins[bin]++;
+      }
+      var total = h.length;
+      var ent = 0;
+      for (var j = 0; j < 5; j++) {
+        if (bins[j] > 0) {
+          var p = bins[j] / total;
+          ent -= p * Math.log2(p);
+        }
+      }
+      return ent;
+    }
+
+    function animateDemo() {
+      if (!demoState.visible) return;
+      var cw = demoCanvas.width;
+      var ch = demoCanvas.height;
+      dctx.clearRect(0, 0, cw, ch);
+
+      var cs = getComputedStyle(root);
+      var accentColor = cs.getPropertyValue('--color-accent').trim() || '#D4569E';
+      var receptorColor = cs.getPropertyValue('--color-text-faint').trim() || '#7A7294';
+      var textColor = cs.getPropertyValue('--color-text-muted').trim() || '#B5AEC8';
+
+      var entropyFactor = demoState.isFlexaidsMode ? 1.0 : 0.25;
+      var vibrationScale = demoState.isBound ? 0.08 : 1.0;
+
+      var totalAmp = 0;
+      var time = Date.now() * 0.001;
+
+      for (var i = 0; i < demoState.atoms.length; i++) {
+        var atom = demoState.atoms[i];
+        var eff = atom.entropy * entropyFactor * vibrationScale;
+        var ox = Math.sin(time * eff * 2.5) * 14 * eff;
+        var oy = Math.cos(time * eff * 2.5 + 1.05) * 14 * eff;
+        var amp = Math.sqrt(ox*ox + oy*oy);
+        totalAmp += amp;
+
+        dctx.fillStyle = atom.color === 'ligand' ? accentColor : receptorColor;
+        dctx.globalAlpha = atom.color === 'receptor' ? 0.5 : 0.85;
+        dctx.beginPath();
+        dctx.arc(atom.x + ox, atom.y + oy, atom.r, 0, Math.PI * 2);
+        dctx.fill();
+
+        if (atom.color === 'ligand') {
+          dctx.globalAlpha = demoState.isBound ? 0.06 : 0.2;
+          dctx.strokeStyle = accentColor;
+          dctx.lineWidth = 3;
+          dctx.beginPath();
+          dctx.moveTo(cw/2, ch/2);
+          dctx.lineTo(atom.x + ox, atom.y + oy);
+          dctx.stroke();
+        }
+      }
+      dctx.globalAlpha = 1;
+
+      var avgAmp = totalAmp / (demoState.atoms.length - 1);
+      demoState.history.push(avgAmp);
+      if (demoState.history.length > 50) demoState.history.shift();
+
+      var shannon = computeDemoEntropy();
+      if (entropyValueEl) entropyValueEl.textContent = shannon.toFixed(2);
+      if (tdsValueEl) tdsValueEl.textContent = (shannon * 0.6 * (demoState.isBound ? -1 : 1)).toFixed(2);
+
+      dctx.fillStyle = textColor;
+      dctx.font = '14px "JetBrains Mono", monospace';
+      dctx.textAlign = 'center';
+      dctx.fillText('Rigid pocket \u2014 low \u0394S', cw/2, 50);
+      dctx.fillText('Flexible ligand \u2014 high \u0394S chaos', cw/2, ch - 30);
+
+      demoState.animId = requestAnimationFrame(animateDemo);
+    }
+
+    function updateDemoStatus() {
+      if (!demoStatusEl) return;
+      var state = demoState.isBound ? 'Bound' : 'Unbound';
+      var mode = demoState.isFlexaidsMode ? 'FlexAID\u0394S' : 'Traditional (\u0394G \u2248 \u0394H)';
+      demoStatusEl.textContent = 'State: ' + state + ' \u2022 ' + mode;
+    }
+
+    resizeDemoCanvas();
+    updateDemoStatus();
+
+    var demoObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        demoState.visible = entry.isIntersecting;
+        if (entry.isIntersecting && !demoState.animId) {
+          animateDemo();
+        }
+      });
+    }, { threshold: 0.1 });
+    demoObserver.observe(demoCanvas);
+
+    demoCanvas.addEventListener('click', function() {
+      demoState.isBound = !demoState.isBound;
+      updateDemoStatus();
+    });
+
+    if (modeTraditionalBtn) {
+      modeTraditionalBtn.addEventListener('click', function() {
+        demoState.isFlexaidsMode = false;
+        modeTraditionalBtn.classList.add('active');
+        if (modeFlexaidsBtn) modeFlexaidsBtn.classList.remove('active');
+        updateDemoStatus();
+      });
+    }
+
+    if (modeFlexaidsBtn) {
+      modeFlexaidsBtn.addEventListener('click', function() {
+        demoState.isFlexaidsMode = true;
+        modeFlexaidsBtn.classList.add('active');
+        if (modeTraditionalBtn) modeTraditionalBtn.classList.remove('active');
+        updateDemoStatus();
+      });
+    }
+
+    window.addEventListener('resize', function() {
+      resizeDemoCanvas();
+    });
+  }
+
 })();
