@@ -228,7 +228,7 @@
     }
 
     .hero-title {
-      font-size: 3.5rem; font-weight: 700; letter-spacing: -0.02em;
+      font-size: 3.5rem; font-weight: 700; letter-spacing: 0;
       line-height: 1.05; text-align: center;
     }
     @media (min-width: 640px) { .hero-title { font-size: 4.5rem; } }
@@ -249,6 +249,57 @@
     }
     @media (min-width: 640px) { .hero-tagline { font-size: 1.1rem; } }
     .hero-tagline strong { color: var(--gold); font-weight: 600; }
+
+    .keyword {
+      --keyword-color: var(--gold);
+      --keyword-glow: rgba(212,168,67,0.24);
+      position: relative;
+      color: var(--keyword-color);
+      font-weight: 700;
+      white-space: normal;
+      text-shadow: 0 0 18px var(--keyword-glow);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .keyword::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -0.12em;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--keyword-color), transparent);
+      opacity: 0.55;
+    }
+    .kw-entropy { --keyword-color: var(--terra); --keyword-glow: rgba(168,75,47,0.28); }
+    .kw-statmech { --keyword-color: var(--teal); --keyword-glow: rgba(32,128,141,0.32); }
+    .kw-dg { --keyword-color: var(--gold); --keyword-glow: rgba(212,168,67,0.3); }
+    .kw-ga { --keyword-color: #3aa6b3; --keyword-glow: rgba(58,166,179,0.3); }
+    .kw-open { --keyword-color: #d9b85b; --keyword-glow: rgba(217,184,91,0.26); }
+    .kw-docking { --keyword-color: #c6603d; --keyword-glow: rgba(198,96,61,0.26); }
+    .kw-rescue { --keyword-color: #e2c25c; --keyword-glow: rgba(226,194,92,0.28); }
+    .hero-subtitle .keyword,
+    .hero-tagline .keyword,
+    .note-callout .keyword,
+    .feature-card .keyword,
+    .arch-step-desc .keyword,
+    .arch-sub-card .keyword,
+    .binding-desc .keyword {
+      font-weight: 700;
+    }
+    .hero-tagline-top .keyword,
+    .hero-subtitle .keyword,
+    .hero-tagline .keyword,
+    .hero-badges .keyword {
+      white-space: nowrap;
+    }
+    .badge.keyword {
+      color: var(--keyword-color);
+      border-color: color-mix(in srgb, var(--keyword-color) 46%, transparent);
+      background: color-mix(in srgb, var(--keyword-color) 10%, transparent);
+      text-shadow: 0 0 12px var(--keyword-glow);
+    }
+    .badge.keyword::after { display: none; }
 
     /* Equation breathe */
     .equation-breathe {
@@ -848,15 +899,17 @@
     <section id="hero" class="hero">
 
       <div class="hero-content">
-        <p class="hero-tagline-top">Le Bonhomme Pharma · Montréal · Open Science</p>
+        <p class="hero-tagline-top">Le Bonhomme Pharma · Montréal · <span class="keyword kw-open">Open Science</span></p>
 
         <h1 class="hero-title">
           FlexAID<span class="gold">∆S</span>
         </h1>
 
-        <p class="hero-subtitle">Entropy-Driven Molecular Docking Engine</p>
+        <p class="hero-subtitle">
+          <span class="keyword kw-entropy">Entropy-Driven</span> <span class="keyword kw-docking">Molecular Docking</span> Engine
+        </p>
         <p class="hero-tagline">
-          Genetic algorithms meet statistical mechanics for real-world drug discovery
+          <span class="keyword kw-ga">Genetic algorithms</span> meet <span class="keyword kw-statmech">statistical mechanics</span> for <span class="keyword kw-open">real-world drug discovery</span>
         </p>
 
         <div class="equation-breathe">
@@ -887,10 +940,10 @@
 
         <!-- Badges -->
         <div class="hero-badges">
-          <span class="badge">Apache 2.0</span>
-          <span class="badge">C++20</span>
-          <span class="badge">Python ≥ 3.9</span>
-          <span class="badge">Linux | macOS | Windows</span>
+          <span class="badge keyword kw-open">Apache 2.0</span>
+          <span class="badge keyword kw-ga">C++20</span>
+          <span class="badge keyword kw-statmech">Python ≥ 3.9</span>
+          <span class="badge keyword kw-docking">Linux | macOS | Windows</span>
         </div>
 
         <!-- CTAs -->
@@ -922,8 +975,7 @@
           Why <span class="gradient-teal-gold" style="-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background:linear-gradient(135deg,#20808D,#D4A843);">FlexAID∆S</span>
         </h2>
         <div class="note-callout">
-          Most docking engines optimize enthalpy alone. FlexAID∆S adds <strong>conformational entropy</strong> via a full statistical mechanics
-          framework — recovering the correct binding mode <strong>92% of the time</strong> when enthalpy-only scoring fails.
+          Most <span class="keyword kw-docking">docking engines</span> optimize <span class="keyword kw-statmech">enthalpy</span> alone. <span class="keyword kw-open">FlexAID∆S</span> adds <span class="keyword kw-entropy">conformational entropy</span> via a full <span class="keyword kw-statmech">statistical mechanics framework</span> — recovering the <span class="keyword kw-rescue">correct binding mode</span> <span class="keyword kw-dg">92% of the time</span> when enthalpy-only scoring fails.
         </div>
       </div>
     </section>
@@ -943,27 +995,27 @@
           <div class="feature-card teal-card">
             <h3>Docking Engine</h3>
             <ul>
-              <li>Genetic algorithm with configurable population, crossover, mutation</li>
-              <li>Voronoi contact function (CF) for shape complementarity</li>
-              <li>Dead-end elimination (DEE) torsion pruning</li>
-              <li>Zero-copy batch scoring via VoronoiCFBatch + OpenMP</li>
+              <li><span class="keyword kw-ga">Genetic algorithm</span> with configurable population, crossover, mutation</li>
+              <li><span class="keyword kw-docking">Voronoi contact function</span> (CF) for shape complementarity</li>
+              <li><span class="keyword kw-statmech">Dead-end elimination</span> (DEE) torsion pruning</li>
+              <li><span class="keyword kw-open">Zero-copy batch scoring</span> via VoronoiCFBatch + OpenMP</li>
             </ul>
           </div>
           <!-- 2. Thermodynamics -->
           <div class="feature-card terra-card">
             <h3>Thermodynamics</h3>
             <ul>
-              <li>Statistical mechanics: partition function, free energy, entropy</li>
-              <li>Shannon entropy scoring + torsional vibrational entropy</li>
-              <li>Torsional ENCoM (tENCoM) backbone flexibility</li>
-              <li>Van't Hoff decomposition with ΔCp correction</li>
+              <li><span class="keyword kw-statmech">Statistical mechanics</span>: partition function, free energy, entropy</li>
+              <li><span class="keyword kw-entropy">Shannon entropy scoring</span> + torsional vibrational entropy</li>
+              <li><span class="keyword kw-docking">Torsional ENCoM</span> (tENCoM) backbone flexibility</li>
+              <li><span class="keyword kw-dg">Van't Hoff decomposition</span> with ΔCp correction</li>
             </ul>
           </div>
           <!-- 3. Molecular Flexibility -->
           <div class="feature-card gold-card">
             <h3>Molecular Flexibility</h3>
             <ul>
-              <li>Full flexibility: ligand torsions, ring conformers, chirality</li>
+              <li><span class="keyword kw-docking">Full flexibility</span>: ligand torsions, ring conformers, chirality</li>
               <li>Non-aromatic ring conformer sampling + sugar pucker</li>
               <li>Explicit R/S stereocenter discrimination</li>
               <li>MOL2, SDF/MOL V2000, legacy INP formats</li>
@@ -973,10 +1025,10 @@
           <div class="feature-card teal-card">
             <h3>Hardware Acceleration</h3>
             <ul>
-              <li>Unified dispatch: CUDA > Metal > AVX-512 > AVX2 > OpenMP</li>
+              <li><span class="keyword kw-open">Unified dispatch</span>: CUDA > Metal > AVX-512 > AVX2 > OpenMP</li>
               <li>SIMD primitives for geometric computations</li>
               <li>Ultra-fast HPC binaries with LTO + -march=native</li>
-              <li>Automatic cavity detection (SURFNET + Metal GPU)</li>
+              <li><span class="keyword kw-docking">Automatic cavity detection</span> (SURFNET + Metal GPU)</li>
             </ul>
           </div>
           <!-- 5. RE-DOCK -->
@@ -984,18 +1036,18 @@
             <h3>RE-DOCK</h3>
             <ul>
               <li>Replica Exchange Distributed Orchestrated Docking Kit</li>
-              <li>Crooks forward/reverse cycle for ΔG estimation</li>
-              <li>BAR (Bennett Acceptance Ratio) minimum-variance estimator</li>
-              <li>Automated Van't Hoff analysis across temperature sweeps</li>
+              <li><span class="keyword kw-dg">Crooks forward/reverse cycle</span> for ΔG estimation</li>
+              <li><span class="keyword kw-statmech">BAR</span> (Bennett Acceptance Ratio) minimum-variance estimator</li>
+              <li><span class="keyword kw-dg">Automated Van't Hoff analysis</span> across temperature sweeps</li>
             </ul>
           </div>
           <!-- 6. Analysis & Integration -->
           <div class="feature-card gold-card">
             <h3>Analysis & Integration</h3>
             <ul>
-              <li>Python package flexaidds — API, CLI, PyMOL plugin</li>
+              <li><span class="keyword kw-statmech">Python package flexaidds</span> — API, CLI, PyMOL plugin</li>
               <li>NATURaL co-translational & co-transcriptional assembly</li>
-              <li>FastOPTICS + Density Peak clustering</li>
+              <li><span class="keyword kw-rescue">FastOPTICS + Density Peak clustering</span></li>
               <li>Single JSON config for all parameters</li>
             </ul>
           </div>
@@ -1018,25 +1070,25 @@
           <div class="arch-step">
             <div class="arch-step-num">Step 1</div>
             <div class="arch-step-title" style="color:var(--teal);">Input</div>
-            <div class="arch-step-desc">PDB receptor + MOL2 ligand. Automatic cavity detection via SURFNET.</div>
+            <div class="arch-step-desc">PDB receptor + MOL2 ligand. <span class="keyword kw-docking">Automatic cavity detection</span> via SURFNET.</div>
             <span class="step-arrow">→</span>
           </div>
           <div class="arch-step">
             <div class="arch-step-num">Step 2</div>
             <div class="arch-step-title" style="color:var(--terra);">Genetic Algorithm</div>
-            <div class="arch-step-desc">gaboom engine — population, crossover, mutation, elitism.</div>
+            <div class="arch-step-desc"><span class="keyword kw-ga">gaboom engine</span> — population, crossover, mutation, elitism.</div>
             <span class="step-arrow">→</span>
           </div>
           <div class="arch-step">
             <div class="arch-step-num">Step 3</div>
             <div class="arch-step-title" style="color:var(--teal);">Scoring</div>
-            <div class="arch-step-desc">Voronoi CF shape complementarity + DEE pruning.</div>
+            <div class="arch-step-desc"><span class="keyword kw-docking">Voronoi CF</span> shape complementarity + <span class="keyword kw-statmech">DEE pruning</span>.</div>
             <span class="step-arrow">→</span>
           </div>
           <div class="arch-step">
             <div class="arch-step-num">Step 4</div>
             <div class="arch-step-title" style="color:var(--gold);">Thermodynamics</div>
-            <div class="arch-step-desc">StatMech framework + Shannon entropy scoring.</div>
+            <div class="arch-step-desc"><span class="keyword kw-statmech">StatMech framework</span> + <span class="keyword kw-entropy">Shannon entropy scoring</span>.</div>
           </div>
         </div>
 
@@ -1044,11 +1096,11 @@
         <div class="arch-sub-grid">
           <div class="arch-sub-card">
             <h4>Flexibility</h4>
-            <p>Torsions · Ring conformers · Chirality · tENCoM backbone</p>
+            <p><span class="keyword kw-docking">Torsions</span> · Ring conformers · Chirality · <span class="keyword kw-statmech">tENCoM backbone</span></p>
           </div>
           <div class="arch-sub-card">
             <h4>Binding Modes</h4>
-            <p>Clustering + ΔG, ΔH, −TΔS, Cv, Boltzmann weights</p>
+            <p><span class="keyword kw-rescue">Clustering</span> + <span class="keyword kw-dg">ΔG, ΔH, −TΔS</span>, Cv, Boltzmann weights</p>
           </div>
         </div>
       </div>
@@ -1064,7 +1116,7 @@
           Drug-Receptor <span class="gradient-terra-gold" style="-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background:linear-gradient(135deg,#A84B2F,#D4A843);">Binding</span>
         </h2>
         <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1.5rem; max-width:640px;">
-          Watch entropy collapse in real-time as a drug molecule navigates from chaotic diffusion through electrostatic encounter to the bound state.
+          Watch <span class="keyword kw-entropy">entropy collapse</span> in real-time as a drug molecule navigates from <span class="keyword kw-docking">chaotic diffusion</span> through <span class="keyword kw-statmech">electrostatic encounter</span> to the <span class="keyword kw-rescue">bound state</span>.
         </p>
 
         <div class="binding-canvas-wrap">
@@ -1081,7 +1133,7 @@
         </div>
 
         <div class="binding-desc" id="binding-desc" style="border-color:rgba(168,75,47,0.3); background:rgba(168,75,47,0.05);">
-          <p id="binding-desc-text">Drug molecules explore conformational space freely. High Shannon entropy reflects many accessible microstates.</p>
+          <p id="binding-desc-text">Drug molecules explore <span class="keyword kw-docking">conformational space</span> freely. High <span class="keyword kw-entropy">Shannon entropy</span> reflects many accessible microstates.</p>
           <div class="thermo-row">
             <div><span style="color:var(--muted);">ΔS = </span><span style="color:#A84B2F;" id="binding-ds">+8.5</span></div>
             <div><span style="color:var(--muted);">ΔH = </span><span style="color:#20808D;" id="binding-dh">0.0</span></div>
@@ -1146,7 +1198,7 @@
           Benchmark <span class="text-gold">Results</span>
         </h2>
         <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1.5rem; max-width:640px;">
-          Every number generated by automated benchmark on each commit. Same commit, same container, same seed → bit-for-bit identical results.
+          Every number generated by <span class="keyword kw-open">automated benchmark</span> on each commit. Same commit, same container, same seed → <span class="keyword kw-rescue">bit-for-bit identical results</span>.
         </p>
 
         <div class="bench-table-wrap">
@@ -1208,7 +1260,7 @@
         <div class="modules-grid">
           <div class="module-chip">
             <div class="module-name">tENCoM</div>
-            <div class="module-desc">Torsional ENCoM — backbone normal mode flexibility model</div>
+            <div class="module-desc"><span class="keyword kw-statmech">Torsional ENCoM</span> — backbone normal mode flexibility model</div>
           </div>
           <div class="module-chip">
             <div class="module-name">NATURaL</div>
@@ -1216,11 +1268,11 @@
           </div>
           <div class="module-chip">
             <div class="module-name">ShannonThermoStack</div>
-            <div class="module-desc">Shannon entropy thermodynamic scoring stack</div>
+            <div class="module-desc"><span class="keyword kw-entropy">Shannon entropy</span> thermodynamic scoring stack</div>
           </div>
           <div class="module-chip">
             <div class="module-name">LigandRingFlex</div>
-            <div class="module-desc">Non-aromatic ring conformer sampling + sugar pucker</div>
+            <div class="module-desc"><span class="keyword kw-docking">Non-aromatic ring conformer sampling</span> + sugar pucker</div>
           </div>
           <div class="module-chip">
             <div class="module-name">ChiralCenter</div>
@@ -1228,7 +1280,7 @@
           </div>
           <div class="module-chip">
             <div class="module-name">CavityDetect</div>
-            <div class="module-desc">SURFNET-based automatic binding site detection</div>
+            <div class="module-desc"><span class="keyword kw-docking">SURFNET-based automatic binding site detection</span></div>
           </div>
         </div>
       </div>
@@ -1539,9 +1591,9 @@
     var phaseTimer = null;
 
     var PHASES = [
-      { label: 'Diffusion', subtitle: 'High ΔS', desc: 'Drug molecules explore conformational space freely. High Shannon entropy reflects many accessible microstates.', ds: '+8.5', dh: '0.0', dg: '+8.5', color: '#A84B2F', borderColor: 'rgba(168,75,47,0.3)', bgColor: 'rgba(168,75,47,0.05)' },
-      { label: 'Encounter', subtitle: 'ΔS decreasing', desc: 'Long-range electrostatic and hydrophobic forces guide the ligand toward the binding pocket. Entropy begins to collapse.', ds: '+3.2', dh: '-5.8', dg: '-2.6', color: '#20808D', borderColor: 'rgba(32,128,141,0.3)', bgColor: 'rgba(32,128,141,0.05)' },
-      { label: 'Binding', subtitle: 'ΔS collapsed', desc: 'Shannon entropy collapses as the ligand locks into a single dominant pose. Enthalpy dominates, but entropy was the guide.', ds: '-1.4', dh: '-12.2', dg: '-10.8', color: '#D4A843', borderColor: 'rgba(212,168,67,0.3)', bgColor: 'rgba(212,168,67,0.05)' }
+      { label: 'Diffusion', subtitle: 'High ΔS', desc: 'Drug molecules explore <span class="keyword kw-docking">conformational space</span> freely. High <span class="keyword kw-entropy">Shannon entropy</span> reflects many accessible microstates.', ds: '+8.5', dh: '0.0', dg: '+8.5', color: '#A84B2F', borderColor: 'rgba(168,75,47,0.3)', bgColor: 'rgba(168,75,47,0.05)' },
+      { label: 'Encounter', subtitle: 'ΔS decreasing', desc: '<span class="keyword kw-statmech">Long-range electrostatic</span> and hydrophobic forces guide the ligand toward the <span class="keyword kw-docking">binding pocket</span>. <span class="keyword kw-entropy">Entropy</span> begins to collapse.', ds: '+3.2', dh: '-5.8', dg: '-2.6', color: '#20808D', borderColor: 'rgba(32,128,141,0.3)', bgColor: 'rgba(32,128,141,0.05)' },
+      { label: 'Binding', subtitle: 'ΔS collapsed', desc: '<span class="keyword kw-entropy">Shannon entropy collapses</span> as the ligand locks into a <span class="keyword kw-rescue">single dominant pose</span>. <span class="keyword kw-statmech">Enthalpy</span> dominates, but entropy was the guide.', ds: '-1.4', dh: '-12.2', dg: '-10.8', color: '#D4A843', borderColor: 'rgba(212,168,67,0.3)', bgColor: 'rgba(212,168,67,0.05)' }
     ];
 
     function resizeBindingCanvas() {
@@ -1577,7 +1629,7 @@
       var descEl = document.getElementById('binding-desc');
       descEl.style.borderColor = pd.borderColor;
       descEl.style.background = pd.bgColor;
-      document.getElementById('binding-desc-text').textContent = pd.desc;
+      document.getElementById('binding-desc-text').innerHTML = pd.desc;
       document.getElementById('binding-ds').textContent = pd.ds;
       document.getElementById('binding-dh').textContent = pd.dh;
       document.getElementById('binding-dg').textContent = pd.dg;
