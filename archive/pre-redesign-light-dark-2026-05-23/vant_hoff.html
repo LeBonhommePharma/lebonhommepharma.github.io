@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Van't Hoff Analysis — FlexAID∆S RE-DOCK</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root, [data-theme="dark"] {
+    --color-bg: #09080E;
+    --color-surface: #13111D;
+    --color-border-subtle: rgba(160, 130, 220, 0.15);
+    --color-text: #F0ECF8;
+    --color-text-muted: #B5AEC8;
+    --color-text-faint: #7A7294;
+    --color-accent: #D4569E;
+    --color-accent-blue: #7E94ED;
+    --spectrum-burgundy: #8B1A4A;
+    --spectrum-blue: #3B6DC9;
+  }
+
+  [data-theme="light"] {
+    --color-bg: #FAF8FD;
+    --color-surface: #F3F0F8;
+    --color-border-subtle: rgba(100, 60, 140, 0.1);
+    --color-text: #1A1228;
+    --color-text-muted: #5E5476;
+    --color-text-faint: #9B92AE;
+    --color-accent: #8B1A4A;
+    --color-accent-blue: #4A5AB5;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      --color-bg: #FAF8FD;
+      --color-surface: #F3F0F8;
+      --color-border-subtle: rgba(100, 60, 140, 0.1);
+      --color-text: #1A1228;
+      --color-text-muted: #5E5476;
+      --color-text-faint: #9B92AE;
+      --color-accent: #8B1A4A;
+      --color-accent-blue: #4A5AB5;
+    }
+  }
+
+  body {
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--color-text-faint);
+    text-decoration: none;
+    margin-bottom: 30px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border-subtle);
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+
+  .back-link:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent);
+  }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+  }
+
+  h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--spectrum-burgundy), var(--spectrum-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--color-text-faint);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  .theme-toggle {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+
+  .thermo-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .thermo-item { text-align: center; }
+
+  .thermo-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2em;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(135deg, var(--spectrum-burgundy), var(--spectrum-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .thermo-label {
+    font-size: 0.85em;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+  }
+
+  .thermo-unit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7em;
+    color: var(--color-text-faint);
+  }
+
+  .signature-row {
+    text-align: center;
+    margin: 16px 0;
+  }
+
+  .signature {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .sig-enthalpic {
+    background: rgba(139, 26, 74, 0.12);
+    color: var(--color-accent);
+    border: 1px solid rgba(139, 26, 74, 0.25);
+  }
+
+  .sig-entropic {
+    background: rgba(126, 148, 237, 0.12);
+    color: var(--color-accent-blue);
+    border: 1px solid rgba(126, 148, 237, 0.25);
+  }
+
+  .sig-hydrophobic {
+    background: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.2);
+  }
+
+  .r-squared {
+    color: var(--color-text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8em;
+    display: block;
+    margin-top: 12px;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 500px;
+    margin: 24px 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .page-footer {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--color-text-faint);
+    letter-spacing: 0.5px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  @media (max-width: 600px) {
+    .thermo-box { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 16px; }
+    .thermo-value { font-size: 1.5em; }
+    h1 { font-size: 22px; }
+    .chart-container { height: 350px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a href="./" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    FlexAID∆S
+  </a>
+
+  <div class="header-row">
+    <div>
+      <h1>Van't Hoff Decomposition</h1>
+      <h2>HIV-1 protease + indinavir — RE-DOCK Analysis</h2>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme"></button>
+  </div>
+
+  <div class="thermo-box">
+    <div class="thermo-item">
+      <div class="thermo-value">&minus;11.4</div>
+      <div class="thermo-label">&Delta;H</div>
+      <div class="thermo-unit">kcal/mol</div>
+    </div>
+    <div class="thermo-item">
+      <div class="thermo-value">&minus;1.4</div>
+      <div class="thermo-label">T&Delta;S (298K)</div>
+      <div class="thermo-unit">kcal/mol</div>
+    </div>
+    <div class="thermo-item">
+      <div class="thermo-value">&minus;9.9</div>
+      <div class="thermo-label">&Delta;G (298K)</div>
+      <div class="thermo-unit">kcal/mol</div>
+    </div>
+    <div class="thermo-item">
+      <div class="thermo-value">46</div>
+      <div class="thermo-label">&Delta;C<sub>p</sub></div>
+      <div class="thermo-unit">cal/(mol&middot;K)</div>
+    </div>
+  </div>
+
+  <div class="signature-row">
+    <span class="signature sig-enthalpic">ENTHALPY-DRIVEN</span>
+    <span class="r-squared">R&sup2; (linear) = 0.9416 &nbsp;|&nbsp; R&sup2; (&Delta;C<sub>p</sub> model) = 0.9738</span>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="vantHoffChart"></canvas>
+  </div>
+
+  <div class="page-footer">
+    Generated by RE-DOCK (Replica Exchange Distributed Orchestrated Docking Kit)<br>
+    FlexAID∆S &mdash; Shannon's Energy Collapse Optimization<br>
+    Le Bonhomme Pharma &middot; Najmanovich Research Group
+  </div>
+
+</div>
+
+<script>
+(function() {
+  var root = document.documentElement;
+  var btn = document.getElementById('theme-toggle');
+  var stored = localStorage.getItem('flexaids-theme');
+  var theme = stored || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  root.setAttribute('data-theme', theme);
+  updateIcon();
+  btn.addEventListener('click', function() {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem('flexaids-theme', theme);
+    updateIcon();
+  });
+  function updateIcon() {
+    btn.textContent = theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+  }
+
+  var chartColors = {
+    data: theme === 'dark' ? '#D4569E' : '#8B1A4A',
+    fit: theme === 'dark' ? '#7E94ED' : '#4A5AB5',
+    grid: theme === 'dark' ? 'rgba(160,130,220,0.08)' : 'rgba(100,60,140,0.06)',
+    tick: theme === 'dark' ? '#7A7294' : '#9B92AE',
+    title: theme === 'dark' ? '#B5AEC8' : '#5E5476',
+    legend: theme === 'dark' ? '#B5AEC8' : '#5E5476'
+  };
+
+  var ctx = document.getElementById('vantHoffChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: 'Docking data',
+          data: [{"x": 3.354, "y": 17.3649}, {"x": 3.0351, "y": 15.0255}, {"x": 2.7466, "y": 13.7676}, {"x": 2.4854, "y": 10.567}, {"x": 2.2491, "y": 9.7705}, {"x": 2.0353, "y": 8.2684}, {"x": 1.8418, "y": 8.7626}, {"x": 1.6667, "y": 8.1503}],
+          backgroundColor: chartColors.data,
+          borderColor: chartColors.data,
+          pointRadius: 8,
+          pointHoverRadius: 10,
+          order: 1,
+        },
+        {
+          label: 'Linear fit (\u0394H = -11.38 kcal/mol)',
+          data: [{"x": 1.5833, "y": 6.6304}, {"x": 1.6029, "y": 6.7425}, {"x": 1.6225, "y": 6.8546}, {"x": 1.6421, "y": 6.9667}, {"x": 1.6617, "y": 7.0788}, {"x": 1.6812, "y": 7.1909}, {"x": 1.7008, "y": 7.303}, {"x": 1.7204, "y": 7.4151}, {"x": 1.74, "y": 7.5272}, {"x": 1.7596, "y": 7.6393}, {"x": 1.7791, "y": 7.7515}, {"x": 1.7987, "y": 7.8636}, {"x": 1.8183, "y": 7.9757}, {"x": 1.8379, "y": 8.0878}, {"x": 1.8574, "y": 8.1999}, {"x": 1.877, "y": 8.312}, {"x": 1.8966, "y": 8.4241}, {"x": 1.9162, "y": 8.5362}, {"x": 1.9358, "y": 8.6483}, {"x": 1.9553, "y": 8.7604}, {"x": 1.9749, "y": 8.8726}, {"x": 1.9945, "y": 8.9847}, {"x": 2.0141, "y": 9.0968}, {"x": 2.0337, "y": 9.2089}, {"x": 2.0532, "y": 9.321}, {"x": 2.0728, "y": 9.4331}, {"x": 2.0924, "y": 9.5452}, {"x": 2.112, "y": 9.6573}, {"x": 2.1316, "y": 9.7694}, {"x": 2.1511, "y": 9.8815}, {"x": 2.1707, "y": 9.9937}, {"x": 2.1903, "y": 10.1058}, {"x": 2.2099, "y": 10.2179}, {"x": 2.2295, "y": 10.33}, {"x": 2.249, "y": 10.4421}, {"x": 2.2686, "y": 10.5542}, {"x": 2.2882, "y": 10.6663}, {"x": 2.3078, "y": 10.7784}, {"x": 2.3274, "y": 10.8905}, {"x": 2.3469, "y": 11.0026}, {"x": 2.3665, "y": 11.1147}, {"x": 2.3861, "y": 11.2269}, {"x": 2.4057, "y": 11.339}, {"x": 2.4253, "y": 11.4511}, {"x": 2.4448, "y": 11.5632}, {"x": 2.4644, "y": 11.6753}, {"x": 2.484, "y": 11.7874}, {"x": 2.5036, "y": 11.8995}, {"x": 2.5232, "y": 12.0116}, {"x": 2.5427, "y": 12.1237}, {"x": 2.5623, "y": 12.2358}, {"x": 2.5819, "y": 12.348}, {"x": 2.6015, "y": 12.4601}, {"x": 2.6211, "y": 12.5722}, {"x": 2.6406, "y": 12.6843}, {"x": 2.6602, "y": 12.7964}, {"x": 2.6798, "y": 12.9085}, {"x": 2.6994, "y": 13.0206}, {"x": 2.719, "y": 13.1327}, {"x": 2.7385, "y": 13.2448}, {"x": 2.7581, "y": 13.3569}, {"x": 2.7777, "y": 13.4691}, {"x": 2.7973, "y": 13.5812}, {"x": 2.8169, "y": 13.6933}, {"x": 2.8364, "y": 13.8054}, {"x": 2.856, "y": 13.9175}, {"x": 2.8756, "y": 14.0296}, {"x": 2.8952, "y": 14.1417}, {"x": 2.9147, "y": 14.2538}, {"x": 2.9343, "y": 14.3659}, {"x": 2.9539, "y": 14.478}, {"x": 2.9735, "y": 14.5902}, {"x": 2.9931, "y": 14.7023}, {"x": 3.0126, "y": 14.8144}, {"x": 3.0322, "y": 14.9265}, {"x": 3.0518, "y": 15.0386}, {"x": 3.0714, "y": 15.1507}, {"x": 3.091, "y": 15.2628}, {"x": 3.1105, "y": 15.3749}, {"x": 3.1301, "y": 15.487}, {"x": 3.1497, "y": 15.5991}, {"x": 3.1693, "y": 15.7113}, {"x": 3.1889, "y": 15.8234}, {"x": 3.2084, "y": 15.9355}, {"x": 3.228, "y": 16.0476}, {"x": 3.2476, "y": 16.1597}, {"x": 3.2672, "y": 16.2718}, {"x": 3.2868, "y": 16.3839}, {"x": 3.3063, "y": 16.496}, {"x": 3.3259, "y": 16.6081}, {"x": 3.3455, "y": 16.7202}, {"x": 3.3651, "y": 16.8324}, {"x": 3.3847, "y": 16.9445}, {"x": 3.4042, "y": 17.0566}, {"x": 3.4238, "y": 17.1687}, {"x": 3.4434, "y": 17.2808}, {"x": 3.463, "y": 17.3929}, {"x": 3.4826, "y": 17.505}, {"x": 3.5021, "y": 17.6171}, {"x": 3.5217, "y": 17.7292}],
+          borderColor: chartColors.fit,
+          borderWidth: 2,
+          pointRadius: 0,
+          showLine: true,
+          borderDash: [],
+          order: 2,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: { color: chartColors.legend, font: { family: "'JetBrains Mono', monospace", size: 12 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              var T = 1000 / context.parsed.x;
+              return 'T = ' + T.toFixed(1) + 'K | ln(K) = ' + context.parsed.y.toFixed(3);
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: '1000/T (K\u207B\u00B9)', color: chartColors.title, font: { family: "'JetBrains Mono', monospace", size: 13 } },
+          ticks: { color: chartColors.tick, font: { family: "'JetBrains Mono', monospace" } },
+          grid: { color: chartColors.grid }
+        },
+        y: {
+          title: { display: true, text: 'ln(K)', color: chartColors.title, font: { family: "'JetBrains Mono', monospace", size: 13 } },
+          ticks: { color: chartColors.tick, font: { family: "'JetBrains Mono', monospace" } },
+          grid: { color: chartColors.grid }
+        }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
