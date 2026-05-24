@@ -254,22 +254,14 @@
       --keyword-color: var(--gold);
       --keyword-glow: rgba(212,168,67,0.24);
       --keyword-spectrum: linear-gradient(90deg, var(--keyword-color), #D4A843, #20808D, #A84B2F, var(--keyword-color));
-      --keyword-speed: 5.5s;
+      --keyword-speed: 8.5s;
       position: relative;
       color: var(--keyword-color);
       font-weight: 700;
       white-space: normal;
-      background-image: var(--keyword-spectrum);
-      background-size: 260% 100%;
-      background-position: 0% 50%;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 9px var(--keyword-glow));
-      animation: keyword-spectrum-flow var(--keyword-speed) linear infinite, keyword-glow-shift 4.8s ease-in-out infinite;
       box-decoration-break: clone;
       -webkit-box-decoration-break: clone;
-      will-change: background-position, filter;
+      text-shadow: 0 0 6px color-mix(in srgb, var(--keyword-color) 16%, transparent);
     }
     .keyword::after {
       content: "";
@@ -278,10 +270,26 @@
       right: 0;
       bottom: -0.12em;
       height: 1px;
+      background: var(--keyword-color);
+      opacity: 0.38;
+    }
+    .keyword.keyword-shift {
       background-image: var(--keyword-spectrum);
       background-size: 260% 100%;
       background-position: 0% 50%;
-      opacity: 0.72;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: none;
+      filter: drop-shadow(0 0 5px var(--keyword-glow));
+      animation: keyword-spectrum-flow var(--keyword-speed) linear infinite, keyword-shift-glow 6.5s ease-in-out infinite;
+      will-change: background-position, filter;
+    }
+    .keyword.keyword-shift::after {
+      background-image: var(--keyword-spectrum);
+      background-size: 260% 100%;
+      background-position: 0% 50%;
+      opacity: 0.58;
       animation: keyword-spectrum-flow var(--keyword-speed) linear infinite;
     }
     .kw-entropy { --keyword-color: var(--terra); --keyword-glow: rgba(168,75,47,0.32); --keyword-spectrum: linear-gradient(90deg,#A84B2F,#D4A843,#20808D,#A84B2F); }
@@ -317,9 +325,10 @@
       background-clip: border-box;
       -webkit-background-clip: border-box;
       border-color: color-mix(in srgb, var(--keyword-color) 46%, transparent);
-      filter: drop-shadow(0 0 7px var(--keyword-glow));
-      animation: keyword-badge-glow 4.8s ease-in-out infinite;
-      will-change: filter;
+      filter: none;
+      animation: none;
+      text-shadow: none;
+      will-change: auto;
     }
     .badge.keyword::after { display: none; }
 
@@ -328,14 +337,14 @@
       100% { background-position: 260% 50%; }
     }
 
-    @keyframes keyword-glow-shift {
-      0%, 100% { filter: drop-shadow(0 0 7px var(--keyword-glow)) hue-rotate(0deg); }
-      50% { filter: drop-shadow(0 0 15px var(--keyword-glow)) hue-rotate(28deg); }
+    @keyframes keyword-shift-glow {
+      0%, 100% { filter: drop-shadow(0 0 4px var(--keyword-glow)); }
+      50% { filter: drop-shadow(0 0 9px var(--keyword-glow)); }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .keyword,
-      .keyword::after {
+      .keyword-shift,
+      .keyword-shift::after {
         animation: none;
         background-position: 50% 50%;
       }
@@ -946,10 +955,10 @@
         </h1>
 
         <p class="hero-subtitle">
-          <span class="keyword kw-entropy">Entropy-Driven</span> <span class="keyword kw-docking">Molecular Docking</span> Engine
+          <span class="keyword keyword-shift kw-entropy">Entropy-Driven</span> <span class="keyword keyword-shift kw-docking">Molecular Docking</span> Engine
         </p>
         <p class="hero-tagline">
-          <span class="keyword kw-ga">Genetic algorithms</span> meet <span class="keyword kw-statmech">statistical mechanics</span> for <span class="keyword kw-open">real-world drug discovery</span>
+          <span class="keyword kw-ga">Genetic algorithms</span> meet <span class="keyword keyword-shift kw-statmech">statistical mechanics</span> for <span class="keyword kw-open">real-world drug discovery</span>
         </p>
 
         <div class="equation-breathe">
@@ -1015,7 +1024,7 @@
           Why <span class="gradient-teal-gold" style="-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background:linear-gradient(135deg,#20808D,#D4A843);">FlexAID∆S</span>
         </h2>
         <div class="note-callout">
-          Most <span class="keyword kw-docking">docking engines</span> optimize <span class="keyword kw-statmech">enthalpy</span> alone. <span class="keyword kw-open">FlexAID∆S</span> adds <span class="keyword kw-entropy">conformational entropy</span> via a full <span class="keyword kw-statmech">statistical mechanics framework</span> — recovering the <span class="keyword kw-rescue">correct binding mode</span> <span class="keyword kw-dg">92% of the time</span> when enthalpy-only scoring fails.
+          Most <span class="keyword kw-docking">docking engines</span> optimize <span class="keyword kw-statmech">enthalpy</span> alone. <span class="keyword kw-open">FlexAID∆S</span> adds <span class="keyword keyword-shift kw-entropy">conformational entropy</span> via a full <span class="keyword kw-statmech">statistical mechanics framework</span> — recovering the <span class="keyword keyword-shift kw-rescue">correct binding mode</span> <span class="keyword kw-dg">92% of the time</span> when enthalpy-only scoring fails.
         </div>
       </div>
     </section>
@@ -1156,7 +1165,7 @@
           Drug-Receptor <span class="gradient-terra-gold" style="-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background:linear-gradient(135deg,#A84B2F,#D4A843);">Binding</span>
         </h2>
         <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1.5rem; max-width:640px;">
-          Watch <span class="keyword kw-entropy">entropy collapse</span> in real-time as a drug molecule navigates from <span class="keyword kw-docking">chaotic diffusion</span> through <span class="keyword kw-statmech">electrostatic encounter</span> to the <span class="keyword kw-rescue">bound state</span>.
+          Watch <span class="keyword keyword-shift kw-entropy">entropy collapse</span> in real-time as a drug molecule navigates from <span class="keyword kw-docking">chaotic diffusion</span> through <span class="keyword kw-statmech">electrostatic encounter</span> to the <span class="keyword kw-rescue">bound state</span>.
         </p>
 
         <div class="binding-canvas-wrap">
@@ -1640,7 +1649,7 @@
     var PHASES = [
       { label: 'Diffusion', subtitle: 'High ΔS', desc: 'Drug molecules explore <span class="keyword kw-docking">conformational space</span> freely. High <span class="keyword kw-entropy">Shannon entropy</span> reflects many accessible microstates.', ds: '+8.5', dh: '0.0', dg: '+8.5', color: '#A84B2F', borderColor: 'rgba(168,75,47,0.3)', bgColor: 'rgba(168,75,47,0.05)' },
       { label: 'Encounter', subtitle: 'ΔS decreasing', desc: '<span class="keyword kw-statmech">Long-range electrostatic</span> and hydrophobic forces guide the ligand toward the <span class="keyword kw-docking">binding pocket</span>. <span class="keyword kw-entropy">Entropy</span> begins to collapse.', ds: '+3.2', dh: '-5.8', dg: '-2.6', color: '#20808D', borderColor: 'rgba(32,128,141,0.3)', bgColor: 'rgba(32,128,141,0.05)' },
-      { label: 'Binding', subtitle: 'ΔS collapsed', desc: '<span class="keyword kw-entropy">Shannon entropy collapses</span> as the ligand locks into a <span class="keyword kw-rescue">single dominant pose</span>. <span class="keyword kw-statmech">Enthalpy</span> dominates, but entropy was the guide.', ds: '-1.4', dh: '-12.2', dg: '-10.8', color: '#D4A843', borderColor: 'rgba(212,168,67,0.3)', bgColor: 'rgba(212,168,67,0.05)' }
+      { label: 'Binding', subtitle: 'ΔS collapsed', desc: '<span class="keyword keyword-shift kw-entropy">Shannon entropy collapses</span> as the ligand locks into a <span class="keyword kw-rescue">single dominant pose</span>. <span class="keyword kw-statmech">Enthalpy</span> dominates, but entropy was the guide.', ds: '-1.4', dh: '-12.2', dg: '-10.8', color: '#D4A843', borderColor: 'rgba(212,168,67,0.3)', bgColor: 'rgba(212,168,67,0.05)' }
     ];
 
     function resizeBindingCanvas() {
