@@ -307,10 +307,19 @@
       white-space: nowrap;
     }
     .badge.keyword {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       color: var(--keyword-color);
+      -webkit-text-fill-color: var(--keyword-color);
+      background-image: none;
+      background-color: color-mix(in srgb, var(--keyword-color) 10%, transparent);
+      background-clip: border-box;
+      -webkit-background-clip: border-box;
       border-color: color-mix(in srgb, var(--keyword-color) 46%, transparent);
-      background: color-mix(in srgb, var(--keyword-color) 10%, transparent);
       filter: drop-shadow(0 0 7px var(--keyword-glow));
+      animation: keyword-badge-glow 4.8s ease-in-out infinite;
+      will-change: filter;
     }
     .badge.keyword::after { display: none; }
 
