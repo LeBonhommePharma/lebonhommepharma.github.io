@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENTROPY DOCKING — Shannon × Music × Molecular AR/VR</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --teal: #20808D;
+    --terra: #A84B2F;
+    --gold: #D4A843;
+    --deep: #0a0e14;
+    --panel: rgba(10, 14, 20, 0.85);
+    --glow-teal: rgba(32, 128, 141, 0.4);
+    --glow-terra: rgba(168, 75, 47, 0.4);
+    --glow-gold: rgba(212, 168, 67, 0.4);
+  }
+
+  body {
+    background: var(--deep);
+    color: #e0e0e0;
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #canvas3d {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+  }
+
+  /* HUD overlay */
+  #hud {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  #hud > * { pointer-events: auto; }
+
+  /* Top bar — track info + BPM */
+  .top-bar {
+    position: absolute;
+    top: 16px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: var(--panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(32, 128, 141, 0.3);
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    min-width: 500px;
+    justify-content: center;
+  }
+
+  .track-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-width: 280px;
+  }
+
+  .track-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .track-artist {
+    font-size: 11px;
+    color: rgba(224, 224, 224, 0.5);
+  }
+
+  .bpm-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .bpm-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+
+  .bpm-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(224, 224, 224, 0.4);
+  }
+
+  .delta-tempo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .delta-value {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+    transition: color 0.3s;
+  }
+
+  .delta-label {
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(224, 224, 224, 0.4);
+    margin-top: 2px;
+  }
+
+  /* Left panel — thermodynamic state */
+  .thermo-panel {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(32, 128, 141, 0.2);
+    border-radius: 12px;
+    padding: 20px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    width: 220px;
+  }
+
+  .thermo-panel h3 {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    font-size: 11px;
+  }
+
+  .metric-label {
+    color: rgba(224, 224, 224, 0.5);
+  }
+
+  .metric-val {
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .metric-val.teal { color: var(--teal); }
+  .metric-val.terra { color: var(--terra); }
+  .metric-val.gold { color: var(--gold); }
+
+  .sigma-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+
+  .sigma-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease, background 0.5s ease;
+  }
+
+  /* Right panel — Shannon metrics */
+  .shannon-panel {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(168, 75, 47, 0.2);
+    border-radius: 12px;
+    padding: 20px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    width: 220px;
+  }
+
+  .shannon-panel h3 {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Bottom — waveform + controls */
+  .bottom-bar {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #waveform {
+    width: 600px;
+    height: 60px;
+    border-radius: 8px;
+    background: rgba(10, 14, 20, 0.6);
+    border: 1px solid rgba(32, 128, 141, 0.15);
+  }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .ctrl-btn {
+    background: rgba(32, 128, 141, 0.15);
+    border: 1px solid rgba(32, 128, 141, 0.3);
+    color: var(--teal);
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .ctrl-btn:hover {
+    background: rgba(32, 128, 141, 0.3);
+    border-color: var(--teal);
+  }
+
+  .ctrl-btn.active {
+    background: var(--teal);
+    color: var(--deep);
+    font-weight: 600;
+  }
+
+  .ctrl-btn.terra {
+    background: rgba(168, 75, 47, 0.15);
+    border-color: rgba(168, 75, 47, 0.3);
+    color: var(--terra);
+  }
+
+  .ctrl-btn.terra:hover {
+    background: rgba(168, 75, 47, 0.3);
+    border-color: var(--terra);
+  }
+
+  .ctrl-btn.terra.active {
+    background: var(--terra);
+    color: var(--deep);
+  }
+
+  /* State indicator */
+  .state-badge {
+    position: absolute;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 6px 24px;
+    border-radius: 20px;
+    transition: all 0.5s;
+  }
+
+  /* Crooks cycle indicator */
+  .cycle-indicator {
+    position: absolute;
+    bottom: 110px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(224, 224, 224, 0.4);
+    letter-spacing: 2px;
+  }
+
+  .cycle-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transition: all 0.3s;
+  }
+
+  /* Instructions overlay */
+  #instructions {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(10, 14, 20, 0.95);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 30px;
+    cursor: pointer;
+  }
+
+  #instructions h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--teal), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
+  }
+
+  #instructions h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(224, 224, 224, 0.5);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .instruction-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+    max-width: 700px;
+    margin-top: 20px;
+  }
+
+  .instr-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .instr-icon {
+    font-size: 20px;
+    min-width: 30px;
+    text-align: center;
+  }
+
+  .instr-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(224, 224, 224, 0.7);
+  }
+
+  .instr-text strong {
+    color: var(--teal);
+    font-weight: 600;
+  }
+
+  .instr-text em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  #instructions .start-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(224, 224, 224, 0.3);
+    letter-spacing: 2px;
+    margin-top: 20px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
+
+  .le-bonhomme {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(224, 224, 224, 0.15);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    position: absolute;
+    bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas3d"></canvas>
+
+<!-- Instructions Overlay -->
+<div id="instructions">
+  <h2>Le Bonhomme Pharma presents</h2>
+  <h1>ENTROPY DOCKING</h1>
+  <h2>Shannon × Music × Molecular × You</h2>
+
+  <div class="instruction-grid">
+    <div class="instr-item">
+      <div class="instr-icon">🎵</div>
+      <div class="instr-text"><strong>BPM = Temperature</strong><br>Music tempo drives the simulation temperature. Faster = hotter = more exploration.</div>
+    </div>
+    <div class="instr-item">
+      <div class="instr-icon">📉</div>
+      <div class="instr-text"><strong>∆tempo = dI/dT</strong><br>Tempo changes trigger <em>Shannon Energy Collapse</em>. Beat drops = binding events.</div>
+    </div>
+    <div class="instr-item">
+      <div class="instr-icon">🔄</div>
+      <div class="instr-text"><strong>Crooks Round-Trip</strong><br>Forward cycle (heat → unbind) and reverse (cool → bind). σ_irr → 0 = perfect closure.</div>
+    </div>
+    <div class="instr-item">
+      <div class="instr-icon">💊</div>
+      <div class="instr-text"><strong>Dock the Drug</strong><br>Guide the ligand into the pocket by controlling tempo. Lower entropy = tighter binding.</div>
+    </div>
+    <div class="instr-item">
+      <div class="instr-icon">❤️</div>
+      <div class="instr-text"><strong>HRV Coupling</strong><br>Your heartbeat modulates physiological coupling. Music entrains biology.</div>
+    </div>
+    <div class="instr-item">
+      <div class="instr-icon">🎯</div>
+      <div class="instr-text"><strong>Goal: σ_irr → 0</strong><br>Achieve thermodynamic closure across all scales simultaneously. No information lost.</div>
+    </div>
+  </div>
+
+  <div class="start-hint">CLICK ANYWHERE TO BEGIN — PLAY MUSIC IN APPLE MUSIC</div>
+  <div class="le-bonhomme">Le Bonhomme Pharma — Make Crack Great Again</div>
+</div>
+
+<!-- HUD -->
+<div id="hud" style="display:none;">
+
+  <!-- Top: Track + BPM -->
+  <div class="top-bar">
+    <div class="track-info">
+      <div class="track-name" id="trackName">No track detected</div>
+      <div class="track-artist" id="trackArtist">Play music in Apple Music</div>
+    </div>
+    <div class="bpm-display">
+      <div class="bpm-value" id="bpmValue">---</div>
+      <div class="bpm-label">BPM ≡ k<sub>B</sub>T</div>
+    </div>
+    <div class="delta-tempo">
+      <div class="delta-value" id="deltaValue" style="color: rgba(224,224,224,0.3);">±0.0</div>
+      <div class="delta-label">∆BPM/∆t ≡ dI/dT</div>
+    </div>
+  </div>
+
+  <!-- State badge -->
+  <div class="state-badge" id="stateBadge" style="background: rgba(32,128,141,0.15); border: 1px solid rgba(32,128,141,0.3); color: var(--teal);">
+    EXPLORING
+  </div>
+
+  <!-- Left: Thermodynamic State -->
+  <div class="thermo-panel">
+    <h3>Thermodynamic State</h3>
+    <div class="metric-row">
+      <span class="metric-label">T (BPM→K)</span>
+      <span class="metric-val teal" id="tempK">300.0 K</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">ΔG_bind</span>
+      <span class="metric-val teal" id="deltaG">-8.2 kcal/mol</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">ΔH</span>
+      <span class="metric-val gold" id="deltaH">-12.4 kcal/mol</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">-TΔS</span>
+      <span class="metric-val terra" id="minusTdS">+4.2 kcal/mol</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">K_D</span>
+      <span class="metric-val teal" id="kdVal">0.9 nM</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">σ_irr</span>
+      <span class="metric-val terra" id="sigmaIrr">0.142 k_B</span>
+    </div>
+    <div class="sigma-bar">
+      <div class="sigma-fill" id="sigmaFill" style="width:14.2%; background: var(--terra);"></div>
+    </div>
+    <div class="metric-row" style="margin-top:10px;">
+      <span class="metric-label">Landauer bits</span>
+      <span class="metric-val gold" id="landauerBits">0.205</span>
+    </div>
+  </div>
+
+  <!-- Right: Shannon Metrics -->
+  <div class="shannon-panel">
+    <h3>Shannon Metrics</h3>
+    <div class="metric-row">
+      <span class="metric-label">S_audio</span>
+      <span class="metric-val terra" id="sAudio">3.21 bits</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">S_config</span>
+      <span class="metric-val teal" id="sConfig">4.87 bits</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">I(music;mol)</span>
+      <span class="metric-val gold" id="mutualInfo">1.42 bits</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">dI/dT</span>
+      <span class="metric-val terra" id="diDt">-0.023 bits/K</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">SCI</span>
+      <span class="metric-val gold" id="sciVal">0.44</span>
+    </div>
+    <div class="sigma-bar">
+      <div class="sigma-fill" id="sciFill" style="width:44%; background: var(--gold);"></div>
+    </div>
+    <div class="metric-row" style="margin-top:10px;">
+      <span class="metric-label">Binding %</span>
+      <span class="metric-val teal" id="bindPct">62%</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">Crooks cycle</span>
+      <span class="metric-val" id="crooksCycle" style="color: rgba(224,224,224,0.5);">FWD →</span>
+    </div>
+  </div>
+
+  <!-- Bottom: Waveform + Controls -->
+  <div class="bottom-bar">
+    <canvas id="waveform" width="600" height="60"></canvas>
+    <div class="controls">
+      <button class="ctrl-btn active" id="btnAuto">AUTO BPM</button>
+      <button class="ctrl-btn" id="btnManual">MANUAL</button>
+      <input type="range" min="40" max="200" value="120" id="bpmSlider" style="width:160px; accent-color: var(--teal); display:none;">
+      <button class="ctrl-btn terra" id="btnCrooks">CROOKS FLIP</button>
+      <button class="ctrl-btn" id="btnReset">RESET σ</button>
+    </div>
+  </div>
+
+  <!-- Crooks cycle indicator -->
+  <div class="cycle-indicator">
+    <span>FWD</span>
+    <div class="cycle-dot" id="dot1" style="background: var(--teal);"></div>
+    <div class="cycle-dot" id="dot2" style="background: rgba(224,224,224,0.1);"></div>
+    <div class="cycle-dot" id="dot3" style="background: rgba(224,224,224,0.1);"></div>
+    <div class="cycle-dot" id="dot4" style="background: rgba(224,224,224,0.1);"></div>
+    <div class="cycle-dot" id="dot5" style="background: rgba(224,224,224,0.1);"></div>
+    <div class="cycle-dot" id="dot6" style="background: rgba(224,224,224,0.1);"></div>
+    <span>REV</span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ============================================================================
+// ENTROPY DOCKING — Le Bonhomme Pharma
+// Shannon × Music × Molecular × AR/VR
+// ============================================================================
+
+// --- STATE ---
+const STATE = {
+  bpm: 120,
+  prevBpm: 120,
+  deltaBpm: 0,
+  temperature: 300, // K — mapped from BPM
+  deltaG: -8.2,
+  deltaH: -12.4,
+  minusTdS: 4.2,
+  kd: 0.9e-9,
+  sigmaIrr: 0.142,
+  landauerBits: 0.205,
+  sAudio: 3.21,
+  sConfig: 4.87,
+  mutualInfo: 1.42,
+  diDt: -0.023,
+  sci: 0.44,
+  bindingPct: 0.62,
+  crooksDirection: 1, // 1 = forward, -1 = reverse
+  crooksPhase: 0, // 0-1 cycle progress
+  isManual: false,
+  audioAnalyser: null,
+  audioData: null,
+  time: 0,
+  ligandDocked: false,
+  ligandProgress: 0.5, // 0 = free, 1 = docked
+  particleEntropy: 1.0,
+  totalWorkFwd: 0,
+  totalWorkRev: 0,
+};
+
+// --- BPM → Temperature mapping ---
+// 60 BPM → 250K (cold), 120 BPM → 310K (physiological), 180 BPM → 400K (hot)
+function bpmToTemp(bpm) {
+  return 250 + (bpm - 60) * (150 / 120);
+}
+
+// Temperature → thermodynamic quantities
+function updateThermo() {
+  const T = STATE.temperature;
+  const R = 1.987e-3; // kcal/(mol·K)
+  const beta = 1 / (R * T);
+
+  // Van't Hoff: ΔG = ΔH - TΔS
+  // Reference: ΔH = -12.4, ΔS = -14.1 cal/(mol·K) at 300K
+  const dH = -12.4;
+  const dS = -0.0141; // kcal/(mol·K)
+  const dCp = -0.15; // kcal/(mol·K) — heat capacity correction
+
+  // Nonlinear Van't Hoff with ΔCp
+  const T0 = 300;
+  const dH_T = dH + dCp * (T - T0);
+  const dS_T = dS + dCp * Math.log(T / T0);
+  const dG = dH_T - T * dS_T;
+
+  STATE.deltaG = dG;
+  STATE.deltaH = dH_T;
+  STATE.minusTdS = -T * dS_T;
+  STATE.kd = Math.exp(dG / (R * T)) * 1e-9; // nM base
+
+  // Binding probability from Boltzmann
+  STATE.bindingPct = 1 / (1 + Math.exp(dG / (R * T) + 5)); // sigmoidal
+
+  // Configurational entropy
+  STATE.sConfig = Math.max(0, 6.5 - 0.005 * (T - 300) + Math.sin(STATE.time * 0.3) * 0.2);
+
+  // Audio entropy from analyser
+  if (STATE.audioData) {
+    let sum = 0, hist = new Float32Array(16);
+    for (let i = 0; i < STATE.audioData.length; i++) {
+      const bin = Math.floor(STATE.audioData[i] / 16);
+      hist[Math.min(bin, 15)]++;
+    }
+    const total = STATE.audioData.length;
+    for (let i = 0; i < 16; i++) {
+      const p = hist[i] / total;
+      if (p > 0) sum -= p * Math.log2(p);
+    }
+    STATE.sAudio = sum;
+  } else {
+    STATE.sAudio = 3.0 + Math.sin(STATE.time * 0.7) * 0.5 + (STATE.bpm - 120) / 60;
+  }
+
+  // Mutual information I(music; mol) — higher when audio entropy matches config entropy
+  STATE.mutualInfo = Math.max(0, Math.min(STATE.sAudio, STATE.sConfig) -
+    Math.abs(STATE.sAudio - STATE.sConfig) * 0.3);
+
+  // dI/dT — rate of mutual info change with temperature
+  STATE.diDt = -STATE.deltaBpm * 0.01; // direct mapping: ∆BPM → dI/dT
+
+  // Shannon Collapse Index
+  STATE.sci = Math.max(0, Math.min(1, 1 - STATE.sAudio / 4.5));
+
+  // Crooks forward/reverse work
+  const workIncrement = Math.abs(STATE.deltaBpm) * 0.001 * STATE.crooksDirection;
+  if (STATE.crooksDirection > 0) {
+    STATE.totalWorkFwd += Math.abs(workIncrement);
+  } else {
+    STATE.totalWorkRev += Math.abs(workIncrement);
+  }
+
+  // Irreversible entropy production: σ_irr = ⟨W_fwd⟩ + ⟨W_rev⟩ - 2ΔG
+  const sigma = Math.abs(STATE.totalWorkFwd + STATE.totalWorkRev - 2 * Math.abs(dG) * 0.01);
+  STATE.sigmaIrr = sigma;
+  STATE.landauerBits = sigma / (1.38e-23 * Math.log(2)) * 1e20; // scaled for display
+  STATE.landauerBits = Math.min(sigma / 0.693, 2.0); // practical: σ / ln2
+
+  // Crooks phase advancement
+  STATE.crooksPhase += 0.002 * (1 + Math.abs(STATE.deltaBpm) * 0.1);
+  if (STATE.crooksPhase > 1) {
+    STATE.crooksPhase = 0;
+    STATE.crooksDirection *= -1;
+  }
+}
+
+// --- THREE.JS SCENE ---
+let scene, camera, renderer, clock;
+let receptorMesh, ligandGroup, particleSystem;
+let bindingSiteSphere, energyField;
+let receptorAtoms = [], ligandAtoms = [];
+
+function initThreeJS() {
+  const canvas = document.getElementById('canvas3d');
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
+
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x0a0e14, 0.015);
+
+  camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 2, 12);
+  camera.lookAt(0, 0, 0);
+
+  clock = new THREE.Clock();
+
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0x20808D, 0.3);
+  scene.add(ambientLight);
+
+  const mainLight = new THREE.PointLight(0x20808D, 2, 50);
+  mainLight.position.set(5, 8, 5);
+  scene.add(mainLight);
+
+  const accentLight = new THREE.PointLight(0xA84B2F, 1.5, 40);
+  accentLight.position.set(-5, -3, 5);
+  scene.add(accentLight);
+
+  const goldLight = new THREE.PointLight(0xD4A843, 1, 30);
+  goldLight.position.set(0, 5, -5);
+  scene.add(goldLight);
+
+  // --- RECEPTOR (binding pocket) ---
+  buildReceptor();
+
+  // --- LIGAND ---
+  buildLigand();
+
+  // --- PARTICLE FIELD ---
+  buildParticles();
+
+  // --- ENERGY FIELD (grid) ---
+  buildEnergyGrid();
+
+  // Resize handler
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+
+function buildReceptor() {
+  // Receptor as a cluster of translucent spheres forming a pocket
+  const receptorGroup = new THREE.Group();
+
+  const pocketPositions = [
+    [-2, -1, 0], [-1.5, 0.5, -1], [-2.5, 0, 1], [-1, -1.5, -0.5],
+    [-2, 1, 0.5], [-3, -0.5, 0], [-1.5, -0.5, 1.5], [-2.5, 1, -0.5],
+    [-1, 0, -1.5], [-3, 0.5, -1], [-2, -1.5, 1], [-1.5, 1.5, 0],
+    [-3, -1, -0.5], [-2.5, -1, 1.5], [-1, 1, 1], [-2, 0, -2],
+    [-3.5, 0, 0], [-1, -0.5, 2], [-2.5, 1.5, 1], [-1.5, -2, 0],
+  ];
+
+  const atomColors = [0x20808D, 0x2a9aa8, 0x186a75, 0x15707c, 0x1d8f9c];
+
+  pocketPositions.forEach((pos, i) => {
+    const radius = 0.3 + Math.random() * 0.4;
+    const geo = new THREE.SphereGeometry(radius, 16, 16);
+    const mat = new THREE.MeshPhysicalMaterial({
+      color: atomColors[i % atomColors.length],
+      transparent: true,
+      opacity: 0.35,
+      roughness: 0.3,
+      metalness: 0.1,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.3,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(pos[0], pos[1], pos[2]);
+    mesh.userData = { basePos: [...pos], baseOpacity: 0.35, baseRadius: radius };
+    receptorGroup.add(mesh);
+    receptorAtoms.push(mesh);
+  });
+
+  // Binding site glow
+  const bsGeo = new THREE.SphereGeometry(1.2, 32, 32);
+  const bsMat = new THREE.MeshPhysicalMaterial({
+    color: 0xD4A843,
+    transparent: true,
+    opacity: 0.08,
+    roughness: 1,
+    metalness: 0,
+    emissive: 0xD4A843,
+    emissiveIntensity: 0.3,
+  });
+  bindingSiteSphere = new THREE.Mesh(bsGeo, bsMat);
+  bindingSiteSphere.position.set(-2, 0, 0);
+  receptorGroup.add(bindingSiteSphere);
+
+  scene.add(receptorGroup);
+  receptorMesh = receptorGroup;
+}
+
+function buildLigand() {
+  ligandGroup = new THREE.Group();
+
+  // Ligand as a small molecule — aromatic ring + pharmacophore groups
+  const ligandPositions = [
+    [0, 0, 0], [0.6, 0.3, 0.2], [-0.3, 0.5, -0.2],
+    [0.2, -0.5, 0.3], [-0.4, -0.3, -0.4], [0.5, -0.2, -0.3],
+  ];
+
+  const ligandColors = [0xA84B2F, 0xc85a3a, 0xD4A843, 0xa03820, 0xb8652e, 0xD4A843];
+
+  ligandPositions.forEach((pos, i) => {
+    const r = 0.15 + Math.random() * 0.12;
+    const geo = new THREE.SphereGeometry(r, 12, 12);
+    const mat = new THREE.MeshPhysicalMaterial({
+      color: ligandColors[i],
+      roughness: 0.2,
+      metalness: 0.3,
+      clearcoat: 0.8,
+      emissive: ligandColors[i],
+      emissiveIntensity: 0.4,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(pos[0], pos[1], pos[2]);
+    ligandGroup.add(mesh);
+    ligandAtoms.push(mesh);
+  });
+
+  // Bonds between ligand atoms
+  const bonds = [[0,1],[0,2],[0,3],[0,4],[1,5],[3,5]];
+  bonds.forEach(([a, b]) => {
+    const pa = new THREE.Vector3(...ligandPositions[a]);
+    const pb = new THREE.Vector3(...ligandPositions[b]);
+    const dir = new THREE.Vector3().subVectors(pb, pa);
+    const len = dir.length();
+    const geo = new THREE.CylinderGeometry(0.03, 0.03, len, 6);
+    const mat = new THREE.MeshBasicMaterial({ color: 0xA84B2F, transparent: true, opacity: 0.6 });
+    const bond = new THREE.Mesh(geo, mat);
+    bond.position.copy(pa).add(dir.multiplyScalar(0.5));
+    bond.lookAt(pb);
+    bond.rotateX(Math.PI / 2);
+    ligandGroup.add(bond);
+  });
+
+  ligandGroup.position.set(5, 0, 0); // Start far from receptor
+  scene.add(ligandGroup);
+}
+
+function buildParticles() {
+  const count = 3000;
+  const geo = new THREE.BufferGeometry();
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+
+  const teal = new THREE.Color(0x20808D);
+  const terra = new THREE.Color(0xA84B2F);
+  const gold = new THREE.Color(0xD4A843);
+  const palette = [teal, terra, gold];
+
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 30;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+
+    const c = palette[Math.floor(Math.random() * 3)];
+    colors[i * 3] = c.r;
+    colors[i * 3 + 1] = c.g;
+    colors[i * 3 + 2] = c.b;
+
+    sizes[i] = Math.random() * 3 + 0.5;
+  }
+
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+  const mat = new THREE.PointsMaterial({
+    size: 0.08,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.6,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+
+  particleSystem = new THREE.Points(geo, mat);
+  scene.add(particleSystem);
+}
+
+function buildEnergyGrid() {
+  const gridGeo = new THREE.PlaneGeometry(40, 40, 40, 40);
+  const gridMat = new THREE.MeshBasicMaterial({
+    color: 0x20808D,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.04,
+  });
+  energyField = new THREE.Mesh(gridGeo, gridMat);
+  energyField.rotation.x = -Math.PI / 2;
+  energyField.position.y = -4;
+  scene.add(energyField);
+}
+
+// --- ANIMATION ---
+function animate() {
+  requestAnimationFrame(animate);
+
+  const dt = clock.getDelta();
+  STATE.time += dt;
+
+  // Update temperature from BPM
+  STATE.temperature = bpmToTemp(STATE.bpm);
+  updateThermo();
+
+  // Camera orbit
+  const camAngle = STATE.time * 0.08;
+  const camRadius = 12 + Math.sin(STATE.time * 0.2) * 2;
+  camera.position.x = Math.cos(camAngle) * camRadius;
+  camera.position.z = Math.sin(camAngle) * camRadius;
+  camera.position.y = 2 + Math.sin(STATE.time * 0.15) * 1.5;
+  camera.lookAt(0, 0, 0);
+
+  // --- LIGAND MOVEMENT ---
+  // Target position based on binding state
+  const bindTarget = STATE.crooksDirection > 0 ?
+    Math.max(0, STATE.ligandProgress - dt * 0.3 * (1 - STATE.bindingPct)) :
+    Math.min(1, STATE.ligandProgress + dt * 0.3 * STATE.bindingPct);
+
+  // Temperature modulates exploration vs commitment
+  const tempFactor = (STATE.temperature - 250) / 150; // 0 at cold, 1 at hot
+  const noise = Math.sin(STATE.time * 3) * tempFactor * 0.5;
+
+  STATE.ligandProgress += (bindTarget - STATE.ligandProgress) * dt * 2;
+  STATE.ligandProgress = Math.max(0, Math.min(1, STATE.ligandProgress + noise * dt));
+
+  // Map progress to position: 0 = far (5,0,0), 1 = docked (-2,0,0)
+  const lx = 5 - STATE.ligandProgress * 7;
+  const ly = Math.sin(STATE.time * 2) * (1 - STATE.ligandProgress) * 1.5;
+  const lz = Math.cos(STATE.time * 1.5) * (1 - STATE.ligandProgress) * 1.5;
+
+  ligandGroup.position.lerp(new THREE.Vector3(lx, ly, lz), dt * 3);
+
+  // Ligand rotation — faster when unbound
+  const rotSpeed = (1 - STATE.ligandProgress) * 2 + 0.2;
+  ligandGroup.rotation.x += dt * rotSpeed * 0.5;
+  ligandGroup.rotation.y += dt * rotSpeed;
+
+  // Ligand glow based on binding
+  ligandAtoms.forEach(atom => {
+    atom.material.emissiveIntensity = 0.2 + STATE.ligandProgress * 0.8;
+  });
+
+  // --- RECEPTOR BREATHING ---
+  receptorAtoms.forEach((atom, i) => {
+    const bp = atom.userData.basePos;
+    const breathe = 1 + Math.sin(STATE.time * 1.5 + i * 0.3) * tempFactor * 0.15;
+    atom.position.set(bp[0] * breathe, bp[1] * breathe, bp[2] * breathe);
+    atom.material.opacity = atom.userData.baseOpacity + STATE.ligandProgress * 0.15;
+
+    // Color shift based on temperature
+    const hue = 0.5 - tempFactor * 0.15; // teal → greenish when hot
+    atom.material.color.setHSL(hue, 0.6, 0.35);
+  });
+
+  // Binding site glow
+  bindingSiteSphere.material.opacity = 0.05 + STATE.ligandProgress * 0.15;
+  bindingSiteSphere.material.emissiveIntensity = 0.2 + STATE.ligandProgress * 0.8;
+  const bsScale = 1 + Math.sin(STATE.time * 2) * 0.1;
+  bindingSiteSphere.scale.set(bsScale, bsScale, bsScale);
+
+  // --- PARTICLES: Brownian motion scaled by temperature ---
+  const positions = particleSystem.geometry.attributes.position.array;
+  const particleSpeed = 0.02 * tempFactor + 0.005;
+  for (let i = 0; i < positions.length; i += 3) {
+    positions[i] += (Math.random() - 0.5) * particleSpeed;
+    positions[i + 1] += (Math.random() - 0.5) * particleSpeed;
+    positions[i + 2] += (Math.random() - 0.5) * particleSpeed;
+
+    // Wrap around
+    if (Math.abs(positions[i]) > 15) positions[i] *= -0.9;
+    if (Math.abs(positions[i + 1]) > 10) positions[i + 1] *= -0.9;
+    if (Math.abs(positions[i + 2]) > 15) positions[i + 2] *= -0.9;
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true;
+  particleSystem.material.opacity = 0.3 + tempFactor * 0.4;
+  particleSystem.material.size = 0.05 + tempFactor * 0.08;
+
+  // Energy grid deformation
+  const gridPositions = energyField.geometry.attributes.position.array;
+  for (let i = 0; i < gridPositions.length; i += 3) {
+    const x = gridPositions[i];
+    const z = gridPositions[i + 1]; // note: plane is rotated
+    gridPositions[i + 2] = Math.sin(x * 0.3 + STATE.time * 0.5) *
+      Math.cos(z * 0.3 + STATE.time * 0.3) * (1 + tempFactor);
+  }
+  energyField.geometry.attributes.position.needsUpdate = true;
+
+  // --- UPDATE HUD ---
+  updateHUD();
+
+  renderer.render(scene, camera);
+}
+
+// --- HUD UPDATE ---
+function updateHUD() {
+  const el = (id) => document.getElementById(id);
+
+  el('bpmValue').textContent = Math.round(STATE.bpm);
+  el('bpmValue').style.color = STATE.bpm > 140 ? '#A84B2F' : STATE.bpm < 80 ? '#D4A843' : '#20808D';
+
+  const dSign = STATE.deltaBpm >= 0 ? '+' : '';
+  el('deltaValue').textContent = dSign + STATE.deltaBpm.toFixed(1);
+  el('deltaValue').style.color = Math.abs(STATE.deltaBpm) > 5 ? '#A84B2F' :
+    Math.abs(STATE.deltaBpm) > 1 ? '#D4A843' : 'rgba(224,224,224,0.3)';
+
+  el('tempK').textContent = STATE.temperature.toFixed(1) + ' K';
+  el('deltaG').textContent = STATE.deltaG.toFixed(1) + ' kcal/mol';
+  el('deltaH').textContent = STATE.deltaH.toFixed(1) + ' kcal/mol';
+  el('minusTdS').textContent = (STATE.minusTdS >= 0 ? '+' : '') + STATE.minusTdS.toFixed(1) + ' kcal/mol';
+  el('kdVal').textContent = STATE.kd > 1e-6 ? (STATE.kd * 1e6).toFixed(1) + ' mM' :
+    STATE.kd > 1e-9 ? (STATE.kd * 1e9).toFixed(1) + ' nM' :
+    (STATE.kd * 1e12).toFixed(1) + ' pM';
+
+  el('sigmaIrr').textContent = STATE.sigmaIrr.toFixed(3) + ' k_B';
+  el('sigmaFill').style.width = Math.min(100, STATE.sigmaIrr * 100) + '%';
+  el('sigmaFill').style.background = STATE.sigmaIrr < 0.01 ? '#D4A843' :
+    STATE.sigmaIrr < 0.1 ? '#20808D' : '#A84B2F';
+
+  el('landauerBits').textContent = STATE.landauerBits.toFixed(3);
+
+  el('sAudio').textContent = STATE.sAudio.toFixed(2) + ' bits';
+  el('sConfig').textContent = STATE.sConfig.toFixed(2) + ' bits';
+  el('mutualInfo').textContent = STATE.mutualInfo.toFixed(2) + ' bits';
+  el('diDt').textContent = STATE.diDt.toFixed(3) + ' bits/K';
+  el('sciVal').textContent = STATE.sci.toFixed(2);
+  el('sciFill').style.width = STATE.sci * 100 + '%';
+  el('bindPct').textContent = (STATE.bindingPct * 100).toFixed(0) + '%';
+
+  el('crooksCycle').textContent = STATE.crooksDirection > 0 ? 'FWD →' : '← REV';
+  el('crooksCycle').style.color = STATE.crooksDirection > 0 ? '#20808D' : '#A84B2F';
+
+  // State badge
+  const badge = el('stateBadge');
+  if (STATE.sigmaIrr < 0.01) {
+    badge.textContent = 'THERMODYNAMIC CLOSURE';
+    badge.style.background = 'rgba(212, 168, 67, 0.2)';
+    badge.style.borderColor = 'rgba(212, 168, 67, 0.5)';
+    badge.style.color = '#D4A843';
+  } else if (STATE.ligandProgress > 0.85) {
+    badge.textContent = 'DOCKED — σ_irr = ' + STATE.sigmaIrr.toFixed(3);
+    badge.style.background = 'rgba(32, 128, 141, 0.2)';
+    badge.style.borderColor = 'rgba(32, 128, 141, 0.5)';
+    badge.style.color = '#20808D';
+  } else if (STATE.ligandProgress < 0.3) {
+    badge.textContent = 'EXPLORING';
+    badge.style.background = 'rgba(168, 75, 47, 0.15)';
+    badge.style.borderColor = 'rgba(168, 75, 47, 0.3)';
+    badge.style.color = '#A84B2F';
+  } else {
+    badge.textContent = STATE.crooksDirection > 0 ? 'BINDING...' : 'UNBINDING...';
+    badge.style.background = 'rgba(224, 224, 224, 0.05)';
+    badge.style.borderColor = 'rgba(224, 224, 224, 0.1)';
+    badge.style.color = 'rgba(224, 224, 224, 0.6)';
+  }
+
+  // Crooks cycle dots
+  const dotIdx = Math.floor(STATE.crooksPhase * 6);
+  for (let i = 1; i <= 6; i++) {
+    const dot = el('dot' + i);
+    if (i - 1 === dotIdx) {
+      dot.style.background = STATE.crooksDirection > 0 ? '#20808D' : '#A84B2F';
+      dot.style.width = '10px';
+      dot.style.height = '10px';
+    } else {
+      dot.style.background = 'rgba(224,224,224,0.1)';
+      dot.style.width = '8px';
+      dot.style.height = '8px';
+    }
+  }
+}
+
+// --- WAVEFORM VISUALIZATION ---
+function drawWaveform() {
+  requestAnimationFrame(drawWaveform);
+  const canvas = document.getElementById('waveform');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 600, 60);
+
+  if (STATE.audioData) {
+    ctx.beginPath();
+    const sliceWidth = 600 / STATE.audioData.length;
+    let x = 0;
+    for (let i = 0; i < STATE.audioData.length; i++) {
+      const v = STATE.audioData[i] / 128.0;
+      const y = v * 30;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+      x += sliceWidth;
+    }
+    ctx.strokeStyle = STATE.crooksDirection > 0 ? 'rgba(32, 128, 141, 0.6)' : 'rgba(168, 75, 47, 0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  } else {
+    // Simulated waveform from BPM
+    ctx.beginPath();
+    for (let x = 0; x < 600; x++) {
+      const freq = STATE.bpm / 60;
+      const t = STATE.time + x * 0.01;
+      const y = 30 + Math.sin(t * freq * Math.PI * 2) * 20 *
+        (0.5 + 0.5 * Math.sin(t * 0.5)) *
+        (1 + Math.sin(t * freq * 4) * 0.3);
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(32, 128, 141, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Beat markers
+    const beatInterval = 600 / (STATE.bpm / 30); // pixels per beat
+    ctx.strokeStyle = 'rgba(212, 168, 67, 0.2)';
+    ctx.lineWidth = 1;
+    for (let bx = (STATE.time * 50 % beatInterval); bx < 600; bx += beatInterval) {
+      ctx.beginPath();
+      ctx.moveTo(bx, 0);
+      ctx.lineTo(bx, 60);
+      ctx.stroke();
+    }
+  }
+}
+
+// --- AUDIO ANALYSIS ---
+let audioContext, analyser, dataArray;
+
+async function initAudio() {
+  try {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const source = audioContext.createMediaStreamSource(stream);
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    source.connect(analyser);
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    // BPM detection loop
+    setInterval(() => {
+      analyser.getByteTimeDomainData(dataArray);
+      STATE.audioData = dataArray;
+      detectBPM(dataArray);
+    }, 100);
+
+    document.getElementById('trackName').textContent = 'Listening via microphone...';
+    document.getElementById('trackArtist').textContent = 'Play music — audio will be analyzed';
+  } catch (e) {
+    console.log('No mic access, using simulated audio');
+    // Fall back to simulated BPM
+    simulateBPM();
+  }
+}
+
+function detectBPM(data) {
+  // Simple onset detection via energy peaks
+  let energy = 0;
+  for (let i = 0; i < data.length; i++) {
+    const v = (data[i] - 128) / 128;
+    energy += v * v;
+  }
+  energy /= data.length;
+
+  // Use energy spikes for rough BPM
+  if (!detectBPM._history) {
+    detectBPM._history = [];
+    detectBPM._peaks = [];
+    detectBPM._lastPeak = 0;
+  }
+
+  detectBPM._history.push(energy);
+  if (detectBPM._history.length > 100) detectBPM._history.shift();
+
+  const avg = detectBPM._history.reduce((a, b) => a + b, 0) / detectBPM._history.length;
+
+  if (energy > avg * 1.5 && Date.now() - detectBPM._lastPeak > 200) {
+    detectBPM._peaks.push(Date.now());
+    detectBPM._lastPeak = Date.now();
+
+    if (detectBPM._peaks.length > 8) detectBPM._peaks.shift();
+
+    if (detectBPM._peaks.length >= 3) {
+      let intervals = [];
+      for (let i = 1; i < detectBPM._peaks.length; i++) {
+        intervals.push(detectBPM._peaks[i] - detectBPM._peaks[i - 1]);
+      }
+      const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+      const detectedBpm = Math.round(60000 / avgInterval);
+
+      if (detectedBpm > 40 && detectedBpm < 220 && !STATE.isManual) {
+        STATE.prevBpm = STATE.bpm;
+        STATE.bpm = STATE.bpm * 0.7 + detectedBpm * 0.3; // smooth
+        STATE.deltaBpm = STATE.bpm - STATE.prevBpm;
+      }
+    }
+  }
+}
+
+function simulateBPM() {
+  // Simulate a DJ set: gradual builds, drops, transitions
+  let phase = 0;
+  let targetBpm = 120;
+
+  setInterval(() => {
+    if (STATE.isManual) return;
+
+    phase += 0.01;
+
+    // Occasional tempo shifts
+    if (Math.random() < 0.005) {
+      targetBpm = 70 + Math.random() * 100; // 70-170 BPM
+    }
+
+    // Gradual approach
+    STATE.prevBpm = STATE.bpm;
+    STATE.bpm += (targetBpm - STATE.bpm) * 0.02;
+    STATE.bpm += Math.sin(phase * 3) * 0.5; // micro-fluctuations
+
+    STATE.deltaBpm = STATE.bpm - STATE.prevBpm;
+  }, 100);
+}
+
+// --- CONTROLS ---
+function initControls() {
+  const btnAuto = document.getElementById('btnAuto');
+  const btnManual = document.getElementById('btnManual');
+  const slider = document.getElementById('bpmSlider');
+  const btnCrooks = document.getElementById('btnCrooks');
+  const btnReset = document.getElementById('btnReset');
+
+  btnAuto.addEventListener('click', () => {
+    STATE.isManual = false;
+    btnAuto.classList.add('active');
+    btnManual.classList.remove('active');
+    slider.style.display = 'none';
+  });
+
+  btnManual.addEventListener('click', () => {
+    STATE.isManual = true;
+    btnManual.classList.add('active');
+    btnAuto.classList.remove('active');
+    slider.style.display = 'block';
+  });
+
+  slider.addEventListener('input', (e) => {
+    STATE.prevBpm = STATE.bpm;
+    STATE.bpm = parseFloat(e.target.value);
+    STATE.deltaBpm = STATE.bpm - STATE.prevBpm;
+  });
+
+  btnCrooks.addEventListener('click', () => {
+    STATE.crooksDirection *= -1;
+    STATE.crooksPhase = 0;
+    btnCrooks.textContent = STATE.crooksDirection > 0 ? 'CROOKS FLIP →' : '← CROOKS FLIP';
+  });
+
+  btnReset.addEventListener('click', () => {
+    STATE.totalWorkFwd = 0;
+    STATE.totalWorkRev = 0;
+    STATE.sigmaIrr = 0;
+    STATE.landauerBits = 0;
+  });
+
+  // Keyboard
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') {
+      STATE.prevBpm = STATE.bpm;
+      STATE.bpm = Math.min(200, STATE.bpm + 5);
+      STATE.deltaBpm = 5;
+    } else if (e.key === 'ArrowDown') {
+      STATE.prevBpm = STATE.bpm;
+      STATE.bpm = Math.max(40, STATE.bpm - 5);
+      STATE.deltaBpm = -5;
+    } else if (e.key === ' ') {
+      e.preventDefault();
+      STATE.crooksDirection *= -1;
+      STATE.crooksPhase = 0;
+    }
+  });
+}
+
+// --- APPLE MUSIC POLLING (via parent context) ---
+// In the full NATURaL app, this would be MusicKit.js or native Swift bridge
+// Here we expose a global for external control
+window.setTrackInfo = function(name, artist, bpm) {
+  document.getElementById('trackName').textContent = name;
+  document.getElementById('trackArtist').textContent = artist;
+  if (bpm && !STATE.isManual) {
+    STATE.prevBpm = STATE.bpm;
+    STATE.bpm = bpm;
+    STATE.deltaBpm = STATE.bpm - STATE.prevBpm;
+  }
+};
+
+// --- INIT ---
+document.getElementById('instructions').addEventListener('click', async () => {
+  document.getElementById('instructions').style.display = 'none';
+  document.getElementById('hud').style.display = 'block';
+
+  initThreeJS();
+  await initAudio();
+  initControls();
+  animate();
+  drawWaveform();
+});
+</script>
+</body>
+</html>

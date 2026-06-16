@@ -145,6 +145,7 @@ function Nav() {
           <button className="hide-sm" onClick={() => jump('principles')}>Approach</button>
           <button className="hide-sm" onClick={() => jump('connect')}>Connect</button>
           <a className="pill" href="FlexAIDdS/index.html">FlexAID∆S →</a>
+          <a className="pill hide-sm" href="periodic_table.html" style={{ borderColor: 'rgba(251,191,36,0.25)', color: 'var(--gold)' }}>Periodic Table →</a>
         </div>
       </div>
     </nav>
@@ -219,6 +220,148 @@ function Work() {
             <p>An open, reproducible benchmark suite. Same commit, same seed, same container → identical results. 95.3% binding-mode rescue on Astex Diverse 85-target cross-docking set.</p>
             <div className="work-meta"><Tag>Astex-85</Tag><Tag>cross-docking</Tag><Tag>reproducible</Tag></div>
           </Card>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function EntropyDockingShowcase() {
+  return (
+    <section id="entropy-docking" style={{
+      padding: '5.5rem 0',
+      background: 'linear-gradient(135deg, rgba(34,211,238,0.04) 0%, rgba(167,139,250,0.06) 50%, rgba(251,191,36,0.03) 100%)',
+      borderTop: '1px solid rgba(34,211,238,0.08)',
+      borderBottom: '1px solid rgba(34,211,238,0.08)',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <div className="container">
+        <Reveal>
+          <p className="eyebrow">// live thermodynamic simulation</p>
+          <h2 style={{
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 700,
+            fontSize: 'clamp(2.8rem, 7vw, 5rem)',
+            lineHeight: 1,
+            letterSpacing: '-0.02em',
+            marginBottom: '1.25rem',
+            color: 'var(--fg)',
+          }}>
+            <span style={{
+              background: 'linear-gradient(135deg, #22D3EE 0%, #FBBF24 55%, #A78BFA 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>ENTROPY</span>{' '}DOCKING
+          </h2>
+          <p style={{
+            fontSize: '1.2rem',
+            color: 'var(--terra)',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 500,
+            letterSpacing: '0.01em',
+            marginBottom: '1.25rem',
+            maxWidth: '700px',
+          }}>
+            Shannon × Music × Molecular — a live thermodynamic simulation where BPM = temperature
+          </p>
+          <p style={{
+            fontSize: '1.05rem',
+            color: 'var(--fg-muted)',
+            lineHeight: 1.7,
+            maxWidth: '660px',
+            marginBottom: '2.5rem',
+          }}>
+            Guide a drug molecule into its binding pocket using music tempo. Beat drops = Shannon Energy Collapse. σ_irr → 0 = perfect thermodynamic closure.
+          </p>
+          <Button variant="primary" href="entropy_docking.html" style={{ fontSize: '15px', padding: '14px 32px', letterSpacing: '0.06em' }}>
+            LAUNCH ENTROPY DOCKING →
+          </Button>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Ecosystem() {
+  const cards = [
+    {
+      tint: 'teal',
+      status: 'Open Source',
+      statusColor: 'var(--teal)',
+      statusBg: 'rgba(34,211,238,0.06)',
+      statusBorder: 'rgba(34,211,238,0.20)',
+      title: 'Shannon',
+      titleColor: 'var(--teal)',
+      desc: 'Shannon Entropy as the optimization metric — open source, first principles. The mathematical engine underlying all thermodynamic predictions.',
+      cta: 'GitHub →',
+      href: 'https://github.com/LeBonhommePharma/Shannon',
+      ctaColor: 'var(--teal)',
+      ctaBorder: 'rgba(34,211,238,0.35)',
+    },
+    {
+      tint: 'terra',
+      status: 'Live Demo',
+      statusColor: 'var(--terra)',
+      statusBg: 'rgba(167,139,250,0.06)',
+      statusBorder: 'rgba(167,139,250,0.25)',
+      title: 'Entropy Docking',
+      titleColor: 'var(--terra)',
+      desc: 'The live demo. BPM = temperature. Watch Shannon entropy collapse in real time as a ligand finds its binding pocket.',
+      cta: 'Launch Demo →',
+      href: 'entropy_docking.html',
+      ctaColor: 'var(--terra)',
+      ctaBorder: 'rgba(167,139,250,0.35)',
+    },
+    {
+      tint: 'gold',
+      status: 'Coming Soon',
+      statusColor: 'var(--gold)',
+      statusBg: 'rgba(251,191,36,0.06)',
+      statusBorder: 'rgba(251,191,36,0.20)',
+      title: 'NATURaL',
+      titleColor: 'var(--gold)',
+      desc: 'Coming soon. Music × Biology × Pharmacology at scale. The full clinical-grade application of the Shannon thermodynamic framework.',
+      cta: 'Preview →',
+      href: 'https://thebonhomme.com/NATURaL',
+      ctaColor: 'var(--gold)',
+      ctaBorder: 'rgba(251,191,36,0.30)',
+    },
+  ];
+
+  return (
+    <section id="ecosystem" className="section alt">
+      <div className="container">
+        <Reveal>
+          <p className="eyebrow">// intellectual universe</p>
+          <h2>The <span className="grad">Ecosystem</span>.</h2>
+          <p style={{ color: 'var(--fg-muted)', maxWidth: '640px' }}>
+            Shannon is the math. Entropy Docking is the demo. NATURaL is the application at scale.
+          </p>
+        </Reveal>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginTop: '2.5rem' }}>
+          {cards.map((c) => (
+            <Card key={c.title} tint={c.tint} style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{
+                fontFamily: 'var(--font-mono)', fontSize: '9px', letterSpacing: '0.16em',
+                textTransform: 'uppercase', padding: '4px 10px', borderRadius: '9999px',
+                alignSelf: 'flex-start', marginBottom: '1.1rem', display: 'inline-block',
+                color: c.statusColor, background: c.statusBg, border: '1px solid ' + c.statusBorder,
+              }}>{c.status}</span>
+              <h3 style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '1.5rem', color: c.titleColor, marginBottom: '0.75rem' }}>{c.title}</h3>
+              <p style={{ fontSize: '0.9rem', color: 'var(--fg-muted)', lineHeight: 1.65, maxWidth: 'none', flex: 1 }}>{c.desc}</p>
+              <div style={{ marginTop: '1.5rem' }}>
+                <a href={c.href} style={{
+                  fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 600,
+                  padding: '9px 18px', borderRadius: '8px', display: 'inline-flex', alignItems: 'center',
+                  textDecoration: 'none', letterSpacing: '0.04em',
+                  color: c.ctaColor, border: '1px solid ' + c.ctaBorder,
+                  background: 'transparent', transition: 'background 0.18s',
+                }}>{c.cta}</a>
+              </div>
+            </Card>
+          ))}
         </div>
       </div>
     </section>
@@ -316,6 +459,8 @@ function Footer() {
           </div>
           <div className="footer-links">
             <a href="FlexAIDdS/index.html">FlexAID∆S</a>
+            <a href="entropy_docking.html">Entropy Docking</a>
+            <a href="periodic_table.html">Periodic Table</a>
             <a href="https://github.com/NRGlab/FlexAIDdS" target="_blank" rel="noreferrer noopener">GitHub</a>
             <a href="https://x.com/BonhommePharma" target="_blank" rel="noreferrer noopener">@BonhommePharma</a>
             <a href="https://opensource.org/licenses/Apache-2.0" target="_blank" rel="noreferrer noopener">Apache 2.0</a>
@@ -332,7 +477,7 @@ function Footer() {
 }
 
 function App() {
-  return (<><Nav /><Hero /><Manifesto /><Work /><Principles /><Place /><Connect /><Footer /></>);
+  return (<><Nav /><Hero /><Manifesto /><Work /><EntropyDockingShowcase /><Principles /><Ecosystem /><Place /><Connect /><Footer /></>);
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
