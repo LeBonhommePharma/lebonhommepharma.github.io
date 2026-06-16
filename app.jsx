@@ -1,7 +1,75 @@
 // Le Bonhomme Pharma — parent brand page
-// Design system: FlexAIDSDesignSystem_d4748b (window.B)
+// Self-contained: no external component bundle needed.
+// Requires: React 18 UMD, ReactDOM 18 UMD, assets/flexaid-logo.js
 const { useState: useS, useEffect: useE, useRef: useR } = React;
-const B = window.FlexAIDSDesignSystem_d4748b;
+
+/* ── Inlined design system components ── */
+
+function BrandMark({ size = 48, poses = 6, fan = 58, period = 7, well = true }) {
+  const ref = useR(null);
+  const handle = useR(null);
+  useE(() => {
+    if (!ref.current) return;
+    const mount = window.mountFlexLogo;
+    if (!mount) return;
+    handle.current = mount(ref.current, { size, poses, fan, period, well });
+    return () => { if (handle.current && handle.current.destroy) handle.current.destroy(); };
+  }, [size, poses, fan, period, well]);
+  return <div ref={ref} style={{ display: 'inline-block', lineHeight: 0 }} />;
+}
+
+function Button({ children, variant = 'primary', href, onClick, style = {} }) {
+  const [hov, setHov] = useS(false);
+  const base = {
+    fontFamily: 'var(--font-mono)', fontSize: '13px', fontWeight: 600,
+    whiteSpace: 'nowrap', padding: '11px 22px', borderRadius: 'var(--r-md)',
+    cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px',
+    border: '1px solid transparent',
+    transition: 'all 0.18s cubic-bezier(0.16,1,0.3,1)',
+    transform: hov ? 'translateY(-1px)' : 'none', ...style,
+  };
+  const v = {
+    primary: { background: hov ? '#67E8F9' : '#22D3EE', color: '#0a0e14', boxShadow: hov ? '0 0 24px rgba(34,211,238,0.5)' : '0 0 18px rgba(34,211,238,0.3)' },
+    outline: { background: 'transparent', color: hov ? '#22D3EE' : '#d4dced', borderColor: hov ? '#22D3EE' : 'rgba(34,211,238,0.2)' },
+  };
+  const props = { style: { ...base, ...(v[variant] || v.primary) }, onMouseEnter: () => setHov(true), onMouseLeave: () => setHov(false), onClick };
+  if (href) return <a href={href} {...props}>{children}</a>;
+  return <button type="button" {...props}>{children}</button>;
+}
+
+function Card({ children, tint = 'teal', style = {}, className = '' }) {
+  const [hov, setHov] = useS(false);
+  const borders = {
+    teal:  { r: 'rgba(34,211,238,0.12)',  h: 'rgba(34,211,238,0.40)',  g: '0 0 24px rgba(34,211,238,0.10)' },
+    terra: { r: 'rgba(167,139,250,0.12)', h: 'rgba(167,139,250,0.35)', g: '0 0 20px rgba(167,139,250,0.10)' },
+    gold:  { r: 'rgba(251,191,36,0.12)',  h: 'rgba(251,191,36,0.35)',  g: '0 0 20px rgba(251,191,36,0.10)' },
+  };
+  const b = borders[tint] || borders.teal;
+  return (
+    <div className={className}
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{
+        background: 'rgba(16,20,28,0.80)', border: '1px solid ' + (hov ? b.h : b.r),
+        borderRadius: '22px', padding: '1.5rem',
+        boxShadow: hov ? '0 14px 40px rgba(0,0,0,.4), ' + b.g : 'none',
+        transform: hov ? 'translateY(-4px)' : 'none',
+        transition: 'transform 0.25s cubic-bezier(0.16,1,0.3,1), border-color 0.25s, box-shadow 0.25s',
+        ...style,
+      }}>
+      {children}
+    </div>
+  );
+}
+
+function Tag({ children }) {
+  return (
+    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', padding: '4px 10px', borderRadius: '14px', border: '1px solid rgba(34,211,238,0.12)', color: 'var(--fg-muted)', background: 'rgba(16,20,28,0.6)', whiteSpace: 'nowrap' }}>
+      {children}
+    </span>
+  );
+}
+
+/* ── Page components ── */
 
 function ParticleCanvas() {
   const ref = useR(null);
@@ -16,7 +84,8 @@ function ParticleCanvas() {
       particles = Array.from({ length: n }, () => ({
         x: Math.random() * c.width, y: Math.random() * c.height,
         vx: (Math.random() - 0.5) * 0.22, vy: (Math.random() - 0.5) * 0.22,
-        r: 0.7 + Math.random() * 1.5, col: palette[(Math.random() * 3) | 0], phase: Math.random() * Math.PI * 2,
+        r: 0.7 + Math.random() * 1.5, col: palette[(Math.random() * 3) | 0],
+        phase: Math.random() * Math.PI * 2,
       }));
     };
     const step = () => {
@@ -27,7 +96,9 @@ function ParticleCanvas() {
         if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
         if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.col; ctx.globalAlpha = 0.16 + 0.1 * Math.sin(t * 0.8 + p.phase); ctx.fill();
+        ctx.fillStyle = p.col;
+        ctx.globalAlpha = 0.16 + 0.1 * Math.sin(t * 0.8 + p.phase);
+        ctx.fill();
       }
       ctx.globalAlpha = 1; raf = requestAnimationFrame(step);
     };
@@ -42,12 +113,14 @@ function Reveal({ children, className = '', style = {} }) {
   const [shown, setShown] = useS(false);
   useE(() => {
     const el = ref.current; if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShown(true); obs.disconnect(); } }, { threshold: 0.15 });
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setShown(true); obs.disconnect(); }
+    }, { threshold: 0.12 });
     obs.observe(el); return () => obs.disconnect();
   }, []);
   return (
     <div ref={ref} className={className}
-      style={{ opacity: shown ? 1 : 0, transform: shown ? 'translateY(0)' : 'translateY(24px)', transition: 'opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out)', ...style }}>
+      style={{ opacity: shown ? 1 : 0, transform: shown ? 'translateY(0)' : 'translateY(24px)', transition: 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)', ...style }}>
       {children}
     </div>
   );
@@ -62,8 +135,8 @@ function Nav() {
   return (
     <nav className="nav">
       <div className="nav-inner">
-        <a className="nav-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <B.BrandMark size={28} poses={4} fan={54} period={6} well={false} />
+        <a className="nav-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ cursor: 'pointer' }}>
+          <BrandMark size={28} poses={4} fan={54} period={6} well={false} />
           <span className="brandword">Le Bonhomme <span className="accent">Pharma</span></span>
         </a>
         <div className="nav-links">
@@ -83,13 +156,13 @@ function Hero() {
     <header className="lbp-hero">
       <ParticleCanvas />
       <p className="hero-eyebrow">Montréal · Petite-Bourgogne · Open Science</p>
-      <div className="hero-mark"><B.BrandMark size={172} poses={8} fan={60} period={7.2} /></div>
+      <div className="hero-mark"><BrandMark size={172} poses={8} fan={60} period={7.2} /></div>
       <h1><span className="le">Le Bonhomme</span><span className="pharma">Pharma</span></h1>
       <p className="hero-lede">An independent lab building <span className="kw">open-source</span> computational chemistry — where drug binding is treated as what it physically is: a <span className="kw">free-energy</span> problem.</p>
       <p className="hero-sub">We ship the tools, the benchmarks, and the math in the open. No black boxes, no fabricated scores — every number traces back to a file you can read.</p>
       <div className="hero-ctas">
-        <B.Button variant="primary" href="FlexAIDdS/index.html">Explore FlexAID∆S</B.Button>
-        <B.Button variant="outline" href="https://x.com/BonhommePharma">Follow @BonhommePharma</B.Button>
+        <Button variant="primary" href="FlexAIDdS/index.html">Explore FlexAID∆S</Button>
+        <Button variant="outline" href="https://x.com/BonhommePharma">Follow @BonhommePharma</Button>
       </div>
       <div className="hero-equation"><Eq /></div>
     </header>
@@ -122,9 +195,9 @@ function Work() {
           <p style={{ color: 'var(--fg-muted)', maxWidth: '640px' }}>One shipping engine, and the open research that feeds it. Everything Apache-2.0, reproducible bit-for-bit.</p>
         </Reveal>
         <div className="work-grid">
-          <B.Card tint="teal" className="work-card flagship" style={{ display: 'flex', flexDirection: 'column', gridRow: 'span 2' }}>
+          <Card tint="teal" className="work-card flagship" style={{ display: 'flex', flexDirection: 'column', gridRow: 'span 2' }}>
             <span className="work-status ship">Shipping · v2.0</span>
-            <div style={{ marginBottom: '1.25rem' }}><B.BrandMark size={84} poses={7} fan={58} period={7} /></div>
+            <div style={{ marginBottom: '1.25rem' }}><BrandMark size={84} poses={7} fan={58} period={7} /></div>
             <h3>FlexAID<span className="delta">∆S</span></h3>
             <p>An entropy-driven molecular docking engine. Genetic-algorithm conformational search meets a full statistical-mechanics scoring stack — partition function, free energy, configurational entropy, Van't Hoff decomposition. Modernized FlexAID, rewritten in C++26 with Python bindings and GPU dispatch.</p>
             <div className="flagship-metrics">
@@ -133,19 +206,19 @@ function Work() {
               <div><div className="mv" style={{ color: '#FBBF24' }}>Open</div><div className="ml">Apache 2.0</div></div>
             </div>
             <a className="work-link" href="FlexAIDdS/index.html">Open the product page →</a>
-          </B.Card>
-          <B.Card tint="terra" className="work-card" style={{ display: 'flex', flexDirection: 'column' }}>
+          </Card>
+          <Card tint="terra" className="work-card" style={{ display: 'flex', flexDirection: 'column' }}>
             <span className="work-status research">Research</span>
             <h3>tENCoM Flexibility</h3>
             <p>Torsional ENCoM — a normal-mode model that lets backbone and side-chain flexibility enter scoring without exploding the search space.</p>
-            <div className="work-meta"><B.Tag>normal modes</B.Tag><B.Tag>backbone</B.Tag></div>
-          </B.Card>
-          <B.Card tint="gold" className="work-card" style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="work-meta"><Tag>normal modes</Tag><Tag>backbone</Tag></div>
+          </Card>
+          <Card tint="gold" className="work-card" style={{ display: 'flex', flexDirection: 'column' }}>
             <span className="work-status research">Open data</span>
             <h3>Astex-85 Benchmarks</h3>
             <p>An open, reproducible benchmark suite. Same commit, same seed, same container → identical results. 95.3% binding-mode rescue on Astex Diverse 85-target cross-docking set.</p>
-            <div className="work-meta"><B.Tag>Astex-85</B.Tag><B.Tag>cross-docking</B.Tag><B.Tag>reproducible</B.Tag></div>
-          </B.Card>
+            <div className="work-meta"><Tag>Astex-85</Tag><Tag>cross-docking</Tag><Tag>reproducible</Tag></div>
+          </Card>
         </div>
       </div>
     </section>
@@ -168,11 +241,11 @@ function Principles() {
         </Reveal>
         <div className="principles-grid">
           {items.map(([n, tint, h, p]) => (
-            <B.Card key={n} tint={tint} className={'principle ' + tint}>
+            <Card key={n} tint={tint} className={'principle ' + tint}>
               <div className="pn">{n}</div>
               <h4>{h}</h4>
               <p>{p}</p>
-            </B.Card>
+            </Card>
           ))}
         </div>
       </div>
@@ -237,7 +310,10 @@ function Footer() {
     <footer className="site-footer">
       <div className="footer-inner">
         <div className="footer-top">
-          <div className="footer-brand"><B.BrandMark size={26} poses={4} fan={54} period={6.4} well={false} /><span className="brandword">Le Bonhomme <span className="accent">Pharma</span></span></div>
+          <div className="footer-brand">
+            <BrandMark size={26} poses={4} fan={54} period={6.4} well={false} />
+            <span className="brandword">Le Bonhomme <span className="accent">Pharma</span></span>
+          </div>
           <div className="footer-links">
             <a href="FlexAIDdS/index.html">FlexAID∆S</a>
             <a href="https://github.com/NRGlab/FlexAIDdS" target="_blank" rel="noreferrer noopener">GitHub</a>
@@ -258,4 +334,5 @@ function Footer() {
 function App() {
   return (<><Nav /><Hero /><Manifesto /><Work /><Principles /><Place /><Connect /><Footer /></>);
 }
+
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
