@@ -171,13 +171,23 @@
     background: linear-gradient(to right, transparent, rgba(32,128,141,0.2), transparent);
     margin: 50px 0;
   }
+  .canvas-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 20px 0;
+  }
   canvas#systemDiagram {
-    width: 100%;
+    width: 1140px;
     height: 500px;
     border-radius: 12px;
     background: var(--panel);
     border: 1px solid rgba(32,128,141,0.12);
-    margin: 20px 0;
+    display: block;
+  }
+  @media (max-width: 768px) {
+    .container { padding: 24px 16px; }
+    h1 { font-size: 26px; }
+    h2 { font-size: 16px; }
   }
   .le-bonhomme {
     text-align: center;
@@ -280,7 +290,7 @@
 <!-- ============================================================ -->
 <h2>2. System Architecture: 5-Platform Thermodynamic Circle</h2>
 
-<canvas id="systemDiagram" width="1140" height="500"></canvas>
+<div class="canvas-scroll"><canvas id="systemDiagram" width="1140" height="500"></canvas></div>
 
 <div class="arch-grid">
   <div class="arch-card">
