@@ -113,6 +113,18 @@ function Nav({ active, onJump }) {
                  onClick={() => onJump(id)}>{label}</a>
             );
           })}
+          <a href="https://github.com/NRGlab/FlexAID" target="_blank" rel="noreferrer noopener"
+             style={{ fontFamily: "var(--font-mono)", fontSize: "12px", fontWeight: 600, color: "var(--fg-muted)", textDecoration: "none", padding: "4px 8px", borderRadius: "6px", border: "1px solid rgba(34,211,238,0.15)", whiteSpace: "nowrap", transition: "color 0.15s, border-color 0.15s" }}
+             onMouseEnter={e => { e.currentTarget.style.color = "var(--teal)"; e.currentTarget.style.borderColor = "rgba(34,211,238,0.4)"; }}
+             onMouseLeave={e => { e.currentTarget.style.color = "var(--fg-muted)"; e.currentTarget.style.borderColor = "rgba(34,211,238,0.15)"; }}>
+            FlexAID
+          </a>
+          <a href="../periodic_table.html"
+             style={{ fontFamily: "var(--font-mono)", fontSize: "12px", fontWeight: 600, color: "var(--fg-muted)", textDecoration: "none", padding: "4px 8px", borderRadius: "6px", border: "1px solid rgba(251,191,36,0.15)", whiteSpace: "nowrap", transition: "color 0.15s, border-color 0.15s" }}
+             onMouseEnter={e => { e.currentTarget.style.color = "var(--gold)"; e.currentTarget.style.borderColor = "rgba(251,191,36,0.4)"; }}
+             onMouseLeave={e => { e.currentTarget.style.color = "var(--fg-muted)"; e.currentTarget.style.borderColor = "rgba(251,191,36,0.15)"; }}>
+            Periodic
+          </a>
           <a className="gh" href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" rel="noreferrer noopener">
             <img src="assets/icon-github.svg" width="16" height="16" style={{ filter: "brightness(0) saturate(100%) invert(64%) sepia(8%) saturate(414%) hue-rotate(186deg)" }} alt="" />
           </a>

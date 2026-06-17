@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENTROPY DOCKING — Apple Ecosystem Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --teal: #20808D; --terra: #A84B2F; --gold: #D4A843;
+    --deep: #0a0e14; --panel: rgba(16, 20, 28, 0.92);
+  }
+  body {
+    background: var(--deep);
+    color: #d8d8d8;
+    font-family: 'Space Grotesk', sans-serif;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 30px;
+  }
+  h1 {
+    font-size: 38px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--teal), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+    letter-spacing: -1px;
+  }
+  .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: rgba(224,224,224,0.4);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--teal);
+    margin: 40px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(32,128,141,0.2);
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gold);
+    margin: 24px 0 10px;
+  }
+  p, li {
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(224,224,224,0.8);
+  }
+  .code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: rgba(32,128,141,0.08);
+    border: 1px solid rgba(32,128,141,0.15);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    overflow-x: auto;
+    line-height: 1.6;
+    color: rgba(224,224,224,0.85);
+  }
+  .code .kw { color: var(--terra); }
+  .code .fn { color: var(--teal); }
+  .code .str { color: var(--gold); }
+  .code .cmt { color: rgba(224,224,224,0.3); font-style: italic; }
+  .code .tp { color: #8bbbd0; }
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .arch-card {
+    background: var(--panel);
+    border: 1px solid rgba(32,128,141,0.15);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .arch-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--teal);
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+  .arch-card.terra { border-color: rgba(168,75,47,0.2); }
+  .arch-card.terra h4 { color: var(--terra); }
+  .arch-card.gold { border-color: rgba(212,168,67,0.2); }
+  .arch-card.gold h4 { color: var(--gold); }
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 2px 4px 2px 0;
+    letter-spacing: 0.5px;
+  }
+  .tag.teal { background: rgba(32,128,141,0.15); color: var(--teal); }
+  .tag.terra { background: rgba(168,75,47,0.15); color: var(--terra); }
+  .tag.gold { background: rgba(212,168,67,0.15); color: var(--gold); }
+  .flow-diagram {
+    background: var(--panel);
+    border: 1px solid rgba(32,128,141,0.12);
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 2;
+    text-align: center;
+    overflow-x: auto;
+  }
+  .flow-diagram .node {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 8px;
+    margin: 4px;
+    font-weight: 600;
+  }
+  .flow-diagram .node.teal { background: rgba(32,128,141,0.2); color: var(--teal); border: 1px solid rgba(32,128,141,0.3); }
+  .flow-diagram .node.terra { background: rgba(168,75,47,0.2); color: var(--terra); border: 1px solid rgba(168,75,47,0.3); }
+  .flow-diagram .node.gold { background: rgba(212,168,67,0.2); color: var(--gold); border: 1px solid rgba(212,168,67,0.3); }
+  .flow-diagram .arrow { color: rgba(224,224,224,0.3); margin: 0 4px; }
+  .mapping-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .mapping-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--teal);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(32,128,141,0.2);
+  }
+  .mapping-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: rgba(224,224,224,0.75);
+  }
+  .mapping-table tr:hover td { background: rgba(32,128,141,0.04); }
+  .highlight { color: var(--gold); font-weight: 600; }
+  .note {
+    background: rgba(212,168,67,0.06);
+    border-left: 3px solid var(--gold);
+    padding: 14px 18px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+  }
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(32,128,141,0.2), transparent);
+    margin: 50px 0;
+  }
+  canvas#systemDiagram {
+    width: 100%;
+    height: 500px;
+    border-radius: 12px;
+    background: var(--panel);
+    border: 1px solid rgba(32,128,141,0.12);
+    margin: 20px 0;
+  }
+  .le-bonhomme {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(224,224,224,0.15);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 60px;
+    padding-bottom: 30px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>ENTROPY DOCKING</h1>
+<div class="subtitle">Full Apple Ecosystem Architecture — AirPods Max + AirPods Pro 3</div>
+
+<!-- ============================================================ -->
+<h2>1. The Isomorphism: Hardware Features = Thermodynamic Sensors</h2>
+
+<p>Every AirPods feature maps to a thermodynamic observable. This isn't metaphor — it's dimensional analysis. Each sensor produces a time series whose Shannon entropy is measured in bits. The rate of entropy change across sensors is dI/dT. When these rates correlate across scales, you have multi-scale thermodynamic closure.</p>
+
+<table class="mapping-table">
+<tr>
+  <th>AirPods Feature</th>
+  <th>Thermodynamic Observable</th>
+  <th>Shannon Metric</th>
+  <th>Units</th>
+</tr>
+<tr>
+  <td>ANC (Active Noise Cancellation)</td>
+  <td>Information gating — low T regime</td>
+  <td>S_env → 0 (entropy floor)</td>
+  <td>bits filtered/s</td>
+</tr>
+<tr>
+  <td>Transparency Mode</td>
+  <td>Information flooding — high T regime</td>
+  <td>S_env → S_max (entropy ceiling)</td>
+  <td>bits passed/s</td>
+</tr>
+<tr>
+  <td>Adaptive Audio (Pro 3)</td>
+  <td>Dynamic β (inverse temp) control</td>
+  <td>dS_env/dt = automatic ∆T</td>
+  <td>bits/s²</td>
+</tr>
+<tr>
+  <td>Conversation Awareness</td>
+  <td>Phase transition detector</td>
+  <td>Speech onset = entropy spike</td>
+  <td>bits (step function)</td>
+</tr>
+<tr>
+  <td>Personalized Spatial Audio</td>
+  <td>Configurational state vector q(t)</td>
+  <td>6DOF → S_spatial</td>
+  <td>bits (3 pos + 3 rot)</td>
+</tr>
+<tr>
+  <td>Dynamic Head Tracking</td>
+  <td>dq/dt = velocity in config space</td>
+  <td>∂S_spatial/∂t</td>
+  <td>bits/s</td>
+</tr>
+<tr>
+  <td>Heart Rate (Pro 3 ear sensor)</td>
+  <td>Physiological temperature k_B T_physio</td>
+  <td>HRV → R-R entropy → SCI</td>
+  <td>bits (Shannon Collapse Index)</td>
+</tr>
+<tr>
+  <td>Hearing Health Audiometry</td>
+  <td>Perceptual transfer function H(f)</td>
+  <td>S_hearing per frequency band</td>
+  <td>bits/Hz</td>
+</tr>
+<tr>
+  <td>Digital Crown (Max)</td>
+  <td>Manual β (temperature) dial</td>
+  <td>User-controlled ∆T input</td>
+  <td>K/click</td>
+</tr>
+<tr>
+  <td>Personalized Volume (Pro 3)</td>
+  <td>Energy scaling E → αE</td>
+  <td>Amplitude → ΔG scaling</td>
+  <td>kcal/mol per dB</td>
+</tr>
+</table>
+
+<div class="note">
+  <strong>Key insight:</strong> ANC/Transparency is literally a Maxwell's demon gate. ANC selectively destroys environmental entropy (Landauer cost: I_lost = S_filtered / k_B ln 2). Transparency passes all bits through. Adaptive Audio is the demon learning the optimal filter — which IS the Crooks forward/reverse sampling problem. The H2 chip running on-device ML to classify noise is computing the same partition function as FlexAID∆S computing binding poses.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================ -->
+<h2>2. System Architecture: 5-Platform Thermodynamic Circle</h2>
+
+<canvas id="systemDiagram" width="1140" height="500"></canvas>
+
+<div class="arch-grid">
+  <div class="arch-card">
+    <h4>watchOS — Physiological Engine</h4>
+    <span class="tag teal">HealthKit</span>
+    <span class="tag teal">HRV</span>
+    <span class="tag gold">SCI</span>
+    <p>Continuous R-R interval collection via Apple Watch optical sensor. Computes Shannon Collapse Index (SCI) from HRV time series. Shares physiological state to all platforms via WatchConnectivity + HealthKit.</p>
+    <p><strong>Unique role:</strong> Ground truth physiological temperature. The watch sees your autonomic nervous system before you do.</p>
+  </div>
+
+  <div class="arch-card terra">
+    <h4>iOS — Central Orchestrator</h4>
+    <span class="tag terra">MusicKit</span>
+    <span class="tag terra">CoreBluetooth</span>
+    <span class="tag gold">AVAudioEngine</span>
+    <p>iPhone is the hub. Runs MusicKit for Apple Music integration (tempo, key, energy from audio analysis API). CoreBluetooth manages AirPods connection state. AVAudioEngine taps the audio pipeline for real-time spectral analysis.</p>
+    <p><strong>Unique role:</strong> BPM extraction, ∆tempo computation, audio entropy S_audio in real-time. Routes Shannon metrics to all platforms.</p>
+  </div>
+
+  <div class="arch-card gold">
+    <h4>iPadOS — Molecular Viewport</h4>
+    <span class="tag gold">SceneKit</span>
+    <span class="tag gold">ARKit</span>
+    <span class="tag teal">Metal</span>
+    <p>iPad renders the molecular docking scene. ARKit with LiDAR provides room-scale spatial anchoring. The binding pocket exists in your physical space. Metal compute shaders run the thermodynamic state machine at 120 fps.</p>
+    <p><strong>Unique role:</strong> AR molecular visualization. Your desk IS the binding pocket. Ligand floats in physical space.</p>
+  </div>
+
+  <div class="arch-card">
+    <h4>macOS — Compute Backend</h4>
+    <span class="tag teal">Metal Performance Shaders</span>
+    <span class="tag teal">FlexAID∆S</span>
+    <span class="tag terra">RE-DOCK</span>
+    <p>Mac runs actual FlexAID∆S docking calculations. RE-DOCK orchestrator manages the Crooks bidirectional cycle. Results stream to other platforms via MultipeerConnectivity or CloudKit.</p>
+    <p><strong>Unique role:</strong> Real molecular docking. Not a simulation — actual ΔG calculations from the FlexAID∆S engine running on Metal GPU.</p>
+  </div>
+
+  <div class="arch-card terra">
+    <h4>tvOS — Immersive Display</h4>
+    <span class="tag terra">AVKit</span>
+    <span class="tag terra">Spatial Audio</span>
+    <span class="tag gold">GameController</span>
+    <p>Apple TV drives the big screen. Full spatial audio scene with AirPods Max head tracking. The molecular world surrounds you. tvOS GameController framework maps Siri Remote gestures to temperature control.</p>
+    <p><strong>Unique role:</strong> Cinematic thermodynamic visualization. The TV shows the energy landscape; AirPods Max spatialize the molecular field around your head.</p>
+  </div>
+
+  <div class="arch-card gold">
+    <h4>visionOS — Full Immersion (Future)</h4>
+    <span class="tag gold">RealityKit</span>
+    <span class="tag gold">ImmersiveSpace</span>
+    <span class="tag teal">HandTracking</span>
+    <p>Vision Pro renders volumetric molecular structures. Hand tracking lets you physically grab the ligand and guide it into the pocket. Eye tracking measures attention entropy S_gaze.</p>
+    <p><strong>Unique role:</strong> You ARE inside the binding pocket. Haptic feedback through AirPods spatial audio = molecular forces as sound.</p>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================ -->
+<h2>3. AirPods Max: The Thermodynamic Crown</h2>
+
+<h3>3.1 Digital Crown = β (Inverse Temperature) Controller</h3>
+<p>The Digital Crown on AirPods Max is the most direct physical interface to the thermodynamic simulation. Each click of the crown adjusts β = 1/k_BT. Crown rotation maps to temperature sweep — the same parameter that drives the Van't Hoff decomposition in RE-DOCK.</p>
+
+<div class="code">
+<span class="cmt">// Swift — AirPods Max Digital Crown as temperature controller</span><br>
+<span class="kw">import</span> <span class="tp">MediaPlayer</span><br>
+<span class="kw">import</span> <span class="tp">CoreMotion</span><br><br>
+<span class="kw">class</span> <span class="tp">ThermodynamicCrownController</span> {<br>
+&nbsp;&nbsp;<span class="kw">private let</span> volumeView = <span class="tp">MPVolumeView</span>()<br>
+&nbsp;&nbsp;<span class="kw">private var</span> lastVolume: <span class="tp">Float</span> = 0.5<br><br>
+&nbsp;&nbsp;<span class="cmt">// Map volume (0-1) → temperature (250K-450K)</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> temperature: <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> 250.0 + <span class="tp">Double</span>(currentVolume) * 200.0<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cmt">// ∆T from crown rotation rate</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> deltaTempo: <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> dV = currentVolume - lastVolume<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="tp">Double</span>(dV) * 200.0 <span class="cmt">// K per frame</span><br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cmt">// Shannon Energy Collapse from crown acceleration</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> dIdT: <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> -deltaTempo * 0.023 <span class="cmt">// bits/K — calibrated to FlexAID∆S</span><br>
+&nbsp;&nbsp;}<br>
+}
+</div>
+
+<h3>3.2 Spatial Audio = Molecular Force Field</h3>
+<p>AirPods Max and Pro 3 both support Personalized Spatial Audio with dynamic head tracking. We map molecular forces to spatial sound sources. Each atom in the binding pocket is an audio emitter. Binding forces become bass frequencies. Repulsive forces become high-frequency distortion. The ligand approaching the pocket sounds like convergence — harmonics aligning.</p>
+
+<div class="code">
+<span class="cmt">// Swift — Molecular force → Spatial Audio mapping</span><br>
+<span class="kw">import</span> <span class="tp">AVFAudio</span><br>
+<span class="kw">import</span> <span class="tp">CoreMotion</span><br><br>
+<span class="kw">class</span> <span class="tp">MolecularSpatialAudio</span> {<br>
+&nbsp;&nbsp;<span class="kw">let</span> engine = <span class="tp">AVAudioEngine</span>()<br>
+&nbsp;&nbsp;<span class="kw">let</span> environment = <span class="tp">AVAudioEnvironmentNode</span>()<br>
+&nbsp;&nbsp;<span class="kw">var</span> atomEmitters: [<span class="tp">AVAudioPlayerNode</span>] = []<br><br>
+&nbsp;&nbsp;<span class="kw">func</span> <span class="fn">updateForces</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ligandPos: <span class="tp">SIMD3</span>&lt;<span class="tp">Float</span>&gt;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;receptorAtoms: [<span class="tp">AtomPosition</span>],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;headOrientation: <span class="tp">CMQuaternion</span><br>
+&nbsp;&nbsp;) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Each atom = spatial audio point source</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> (i, atom) <span class="kw">in</span> receptorAtoms.enumerated() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> distance = length(ligandPos - atom.position)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> force = atom.charge / (distance * distance)<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Attractive (negative) → low frequency hum</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Repulsive (positive) → high frequency buzz</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> freq = force > 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? 2000 + force * 500 <span class="cmt">// repulsive: 2-4kHz</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 80 + abs(force) * 40 <span class="cmt">// attractive: 80-200Hz</span><br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// 3D position relative to head tracking</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;atomEmitters[i].position = <span class="fn">worldToHead</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;atom.position, headOrientation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+</div>
+
+<h3>3.3 ANC/Transparency = Maxwell's Demon Gate</h3>
+<p>This is the deepest mapping. Active Noise Cancellation is a physical implementation of Maxwell's demon: it selectively destroys specific frequency components of the environmental sound field. The Landauer cost of this erasure is real and measurable.</p>
+
+<div class="code">
+<span class="cmt">// The ANC demon's information budget</span><br>
+<span class="cmt">// Each noise sample cancelled = 1 bit erased from environment</span><br>
+<span class="cmt">// Landauer bound: E_min = k_B T ln(2) per bit</span><br>
+<span class="cmt">//</span><br>
+<span class="cmt">// At room temp (300K):</span><br>
+<span class="cmt">//   E_Landauer = 1.38e-23 × 300 × 0.693 = 2.87e-21 J/bit</span><br>
+<span class="cmt">//</span><br>
+<span class="cmt">// ANC processing ~48kHz × 16 bits = 768,000 bits/second</span><br>
+<span class="cmt">// Minimum thermodynamic cost = 2.2e-15 W</span><br>
+<span class="cmt">// Actual H2 chip power ~10 mW = 10e-3 W</span><br>
+<span class="cmt">// Efficiency ratio: ~4.5e12 × Landauer bound</span><br>
+<span class="cmt">//</span><br>
+<span class="cmt">// That 12-order-of-magnitude gap IS the entropy we're measuring.</span><br>
+<span class="cmt">// Better ANC = closer to Landauer = lower σ_irr.</span><br><br>
+
+<span class="kw">struct</span> <span class="tp">ANCThermodynamics</span> {<br>
+&nbsp;&nbsp;<span class="kw">let</span> sampleRate: <span class="tp">Double</span> = 48000<br>
+&nbsp;&nbsp;<span class="kw">let</span> bitDepth: <span class="tp">Double</span> = 16<br>
+&nbsp;&nbsp;<span class="kw">let</span> kB: <span class="tp">Double</span> = 1.38e-23<br>
+&nbsp;&nbsp;<span class="kw">let</span> roomTemp: <span class="tp">Double</span> = 300<br><br>
+&nbsp;&nbsp;<span class="kw">var</span> bitsPerSecond: <span class="tp">Double</span> { sampleRate * bitDepth }<br><br>
+&nbsp;&nbsp;<span class="cmt">// Landauer minimum erasure cost</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> landauerPower: <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bitsPerSecond * kB * roomTemp * log(2)<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cmt">// σ_irr for the ANC demon</span><br>
+&nbsp;&nbsp;<span class="kw">func</span> <span class="fn">entropyProduction</span>(chipPower: <span class="tp">Double</span>) -> <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(chipPower - landauerPower) / (kB * roomTemp)<br>
+&nbsp;&nbsp;}<br>
+}
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================ -->
+<h2>4. AirPods Pro 3: Heart Rate = Physiological Temperature</h2>
+
+<h3>4.1 Ear-Canal Heart Rate → SCI Pipeline</h3>
+<p>AirPods Pro 3's optical heart rate sensor in the ear canal provides R-R interval data at clinical grade. This feeds directly into NATURaL's Shannon Collapse Index computation — no Apple Watch needed. The ear canal signal has less motion artifact than the wrist during chair yoga.</p>
+
+<div class="code">
+<span class="cmt">// Swift — AirPods Pro 3 Heart Rate → SCI</span><br>
+<span class="kw">import</span> <span class="tp">HealthKit</span><br><br>
+<span class="kw">class</span> <span class="tp">AirPodsPhysiologicalEngine</span> {<br>
+&nbsp;&nbsp;<span class="kw">let</span> store = <span class="tp">HKHealthStore</span>()<br>
+&nbsp;&nbsp;<span class="kw">var</span> rrIntervals: [<span class="tp">Double</span>] = []<br>
+&nbsp;&nbsp;<span class="kw">let</span> windowSize = 30 <span class="cmt">// 30 R-R intervals for SCI</span><br><br>
+&nbsp;&nbsp;<span class="cmt">// Shannon entropy of R-R interval distribution</span><br>
+&nbsp;&nbsp;<span class="kw">func</span> <span class="fn">computeSCI</span>() -> <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">guard</span> rrIntervals.count >= windowSize <span class="kw">else</span> { <span class="kw">return</span> 0 }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> window = <span class="tp">Array</span>(rrIntervals.suffix(windowSize))<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Bin R-R intervals (50ms bins, 10-30 range)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> histogram = [<span class="tp">Int</span>](repeating: 0, count: 20)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> rr <span class="kw">in</span> window {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> bin = <span class="fn">min</span>(19, <span class="fn">max</span>(0, <span class="tp">Int</span>((rr - 0.5) / 0.05)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;histogram[bin] += 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Shannon entropy H = -Σ p_i log2(p_i)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> H: <span class="tp">Double</span> = 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> count <span class="kw">in</span> histogram <span class="kw">where</span> count > 0 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> p = <span class="tp">Double</span>(count) / <span class="tp">Double</span>(windowSize)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H -= p * <span class="fn">log2</span>(p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// SCI = 1 - H/H_max (collapse = low entropy)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> H_max = <span class="fn">log2</span>(<span class="tp">Double</span>(windowSize))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> 1.0 - H / H_max<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cmt">// Physiological temperature from heart rate</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> physiologicalTemp: <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// HR 60 → 280K (rest), HR 120 → 320K (active)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> hr = 60.0 / (rrIntervals.last ?? 1.0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> 280.0 + (hr - 60) * (40.0 / 60.0)<br>
+&nbsp;&nbsp;}<br>
+}
+</div>
+
+<h3>4.2 Hearing Health Audiometry = Perceptual Transfer Function</h3>
+<p>AirPods Pro 3's clinical-grade hearing test produces a personal audiogram H(f). This IS the user's perceptual transfer function — it tells you exactly how many bits of information reach consciousness per frequency band. We use this to weight the audio entropy calculation: S_audio = Σ H(f) × S(f), where frequencies the user can't hear contribute zero entropy.</p>
+
+<div class="note">
+<strong>Clinical implication:</strong> A user with high-frequency hearing loss has a naturally lower S_audio ceiling. Their Shannon Energy Collapse events (dI/dT) have different dynamics. The game adapts: it routes more thermodynamic information to the frequency bands where the user has maximum perceptual entropy. This is Personalized Spatial Audio doing thermodynamics — the H2 chip is already computing the necessary transfer function.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================ -->
+<h2>5. Cross-Platform Data Flow</h2>
+
+<div class="flow-diagram">
+<span class="node gold">Apple Watch</span>
+<span class="arrow">—HRV/SCI→</span>
+<span class="node terra">iPhone</span>
+<span class="arrow">—Shannon metrics→</span>
+<span class="node teal">Mac</span>
+<br>
+<span class="node gold">AirPods Pro 3</span>
+<span class="arrow">—HR + Head Track→</span>
+<span class="node terra">iPhone</span>
+<span class="arrow">—∆G/∆H/σ_irr→</span>
+<span class="node gold">iPad AR</span>
+<br>
+<span class="node teal">AirPods Max</span>
+<span class="arrow">—Crown ∆T + 6DOF→</span>
+<span class="node terra">iPhone</span>
+<span class="arrow">—Spatial Audio→</span>
+<span class="node terra">Apple TV</span>
+<br><br>
+<span style="color: rgba(224,224,224,0.3);">All paths converge at iPhone (MusicKit + AVAudioEngine + CoreBluetooth hub)</span>
+</div>
+
+<div class="code">
+<span class="cmt">// Swift — Central orchestrator (iOS)</span><br>
+<span class="kw">import</span> <span class="tp">MusicKit</span><br>
+<span class="kw">import</span> <span class="tp">AVFAudio</span><br>
+<span class="kw">import</span> <span class="tp">MultipeerConnectivity</span><br>
+<span class="kw">import</span> <span class="tp">WatchConnectivity</span><br><br>
+<span class="kw">@Observable</span><br>
+<span class="kw">class</span> <span class="tp">EntropyDockingOrchestrator</span> {<br>
+&nbsp;&nbsp;<span class="cmt">// === INPUT CHANNELS ===</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> musicBPM: <span class="tp">Double</span> = 120<br>
+&nbsp;&nbsp;<span class="kw">var</span> musicDeltaBPM: <span class="tp">Double</span> = 0<br>
+&nbsp;&nbsp;<span class="kw">var</span> audioEntropy: <span class="tp">Double</span> = 0 <span class="cmt">// S_audio from AVAudioEngine tap</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> hrv_SCI: <span class="tp">Double</span> = 0 <span class="cmt">// from Watch or AirPods Pro 3</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> headOrientation: <span class="tp">simd_quatf</span> = .init() <span class="cmt">// AirPods head track</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> crownValue: <span class="tp">Double</span> = 0.5 <span class="cmt">// AirPods Max Digital Crown</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> ancMode: <span class="tp">ANCMode</span> = .adaptive <span class="cmt">// .anc / .transparency / .adaptive</span><br><br>
+&nbsp;&nbsp;<span class="cmt">// === DERIVED THERMODYNAMICS ===</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> temperature: <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Weighted: 60% music BPM, 30% crown, 10% HRV</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> T_music = 250 + (musicBPM - 60) * 1.25<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> T_crown = 250 + crownValue * 200<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> T_physio = 280 + (1 - hrv_SCI) * 40<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> T_music * 0.6 + T_crown * 0.3 + T_physio * 0.1<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="kw">var</span> dIdT: <span class="tp">Double</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Shannon Energy Collapse Rate</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Weighted sum of all ∆entropy rates</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> -musicDeltaBPM * 0.023 <span class="cmt">// bits/K</span><br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="cmt">// === CROOKS ROUND-TRIP ===</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> crooksDirection: <span class="tp">Int</span> = 1 <span class="cmt">// +1 forward, -1 reverse</span><br>
+&nbsp;&nbsp;<span class="kw">var</span> sigmaIrr: <span class="tp">Double</span> = 0<br><br>
+&nbsp;&nbsp;<span class="cmt">// === BROADCAST TO ALL PLATFORMS ===</span><br>
+&nbsp;&nbsp;<span class="kw">func</span> <span class="fn">broadcastState</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> state = <span class="tp">ThermodynamicState</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T: temperature, dIdT: dIdT,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sigmaIrr: sigmaIrr,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;direction: crooksDirection,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sci: hrv_SCI,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sAudio: audioEntropy,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headQ: headOrientation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// MultipeerConnectivity → Mac, iPad, Apple TV</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// WatchConnectivity → Apple Watch</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;multipeer.<span class="fn">broadcast</span>(state.encoded())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;watchSession.<span class="fn">sendMessage</span>(state.watchPayload())<br>
+&nbsp;&nbsp;}<br>
+}
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================ -->
+<h2>6. The Game Loop: Crooks Round-Trip as Gameplay</h2>
+
+<p>The game has one objective: achieve σ_irr → 0. This means completing a Crooks forward/reverse thermodynamic cycle with zero information loss. In practice:</p>
+
+<h3>Forward Cycle (Heating → Unbinding)</h3>
+<p>Music tempo increases. ANC fades toward Transparency (environmental entropy floods in). Temperature rises. Ligand explores — rattles in the pocket, samples alternative poses. Your heart rate climbs. The spatial audio field becomes chaotic — every atom buzzing at different frequencies. You're measuring the forward work W_fwd.</p>
+
+<h3>Reverse Cycle (Cooling → Binding)</h3>
+<p>Music tempo drops. ANC engages (demon gates the noise). Temperature falls. Ligand converges on the minimum energy pose. Your heart rate settles. Spatial audio harmonizes — all frequencies lock into a resonant chord. You're measuring the reverse work W_rev.</p>
+
+<h3>Closure Check</h3>
+<p>σ_irr = ⟨W_fwd⟩ + ⟨W_rev⟩ - 2ΔG. If this approaches zero, you've completed a thermodynamically reversible cycle. The information the system gained heating up was perfectly recovered cooling down. No bits lost. Crooks theorem is satisfied. The binding free energy ΔG extracted from the BAR estimator is exact.</p>
+
+<div class="note">
+<strong>Why this is a game and not just a visualization:</strong> The player's choices (crown rotation speed, when to trigger ANC/Transparency, which music to play, even their breathing pattern affecting HRV) determine whether the cycle closes. Random clicking gives high σ_irr. Mindful, entropy-aware control gives closure. The game teaches thermodynamics through embodied experience — the player develops physical intuition for the second law.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================ -->
+<h2>7. MusicKit Integration: BPM as Temperature</h2>
+
+<div class="code">
+<span class="cmt">// Swift — MusicKit real-time BPM + audio analysis</span><br>
+<span class="kw">import</span> <span class="tp">MusicKit</span><br>
+<span class="kw">import</span> <span class="tp">AVFAudio</span><br><br>
+<span class="kw">class</span> <span class="tp">MusicTempoEngine</span>: <span class="tp">ObservableObject</span> {<br>
+&nbsp;&nbsp;<span class="kw">@Published var</span> currentBPM: <span class="tp">Double</span> = 120<br>
+&nbsp;&nbsp;<span class="kw">@Published var</span> deltaBPM: <span class="tp">Double</span> = 0<br>
+&nbsp;&nbsp;<span class="kw">@Published var</span> audioEntropy: <span class="tp">Double</span> = 0<br>
+&nbsp;&nbsp;<span class="kw">@Published var</span> trackName: <span class="tp">String</span> = <span class="str">""</span><br>
+&nbsp;&nbsp;<span class="kw">@Published var</span> trackArtist: <span class="tp">String</span> = <span class="str">""</span><br><br>
+&nbsp;&nbsp;<span class="kw">private let</span> engine = <span class="tp">AVAudioEngine</span>()<br>
+&nbsp;&nbsp;<span class="kw">private var</span> prevBPM: <span class="tp">Double</span> = 120<br>
+&nbsp;&nbsp;<span class="kw">private var</span> fftBuffer: [<span class="tp">Float</span>] = []<br><br>
+&nbsp;&nbsp;<span class="kw">func</span> <span class="fn">startMonitoring</span>() <span class="kw">async</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// 1. MusicKit now-playing observation</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for await</span> entry <span class="kw">in</span> <span class="tp">MusicPlayer</span>.shared.queue.currentEntry.values {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if let</span> song = entry?.item <span class="kw">as?</span> <span class="tp">Song</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trackName = song.title<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trackArtist = song.artistName<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="kw">func</span> <span class="fn">startAudioTap</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Tap system audio output for real-time analysis</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> input = engine.inputNode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> format = input.outputFormat(forBus: 0)<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;input.<span class="fn">installTap</span>(onBus: 0, bufferSize: 4096,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format: format) { [<span class="kw">weak self</span>] buffer, time <span class="kw">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">self</span>?.<span class="fn">processAudioBuffer</span>(buffer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">try</span>? engine.<span class="fn">start</span>()<br>
+&nbsp;&nbsp;}<br><br>
+&nbsp;&nbsp;<span class="kw">private func</span> <span class="fn">processAudioBuffer</span>(_ buffer: <span class="tp">AVAudioPCMBuffer</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">guard let</span> data = buffer.floatChannelData?[0] <span class="kw">else</span> { <span class="kw">return</span> }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> count = <span class="tp">Int</span>(buffer.frameLength)<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Onset detection for BPM</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> energy: <span class="tp">Float</span> = 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> i <span class="kw">in</span> 0..&lt;count { energy += data[i] * data[i] }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;energy /= <span class="tp">Float</span>(count)<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// Shannon entropy of spectral distribution</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> histogram = [<span class="tp">Float</span>](repeating: 0, count: 32)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> i <span class="kw">in</span> 0..&lt;count {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> bin = <span class="fn">min</span>(31, <span class="tp">Int</span>((data[i] + 1) * 16))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;histogram[bin] += 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">var</span> H: <span class="tp">Float</span> = 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> h <span class="kw">in</span> histogram <span class="kw">where</span> h > 0 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> p = h / <span class="tp">Float</span>(count)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H -= p * <span class="fn">log2</span>(p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;audioEntropy = <span class="tp">Double</span>(H)<br>
+&nbsp;&nbsp;}<br>
+}
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================ -->
+<h2>8. Implementation Roadmap</h2>
+
+<div class="arch-grid">
+  <div class="arch-card gold">
+    <h4>PHASE 1: iOS + AirPods (4 weeks)</h4>
+    <p>MusicKit BPM extraction, AVAudioEngine spectral entropy, CoreMotion head tracking from AirPods, basic SwiftUI molecular visualization, Digital Crown → temperature mapping.</p>
+    <p><strong>Deliverable:</strong> iPhone app that shows docking state modulated by Apple Music tempo + AirPods head tracking.</p>
+  </div>
+  <div class="arch-card">
+    <h4>PHASE 2: + watchOS + HRV (3 weeks)</h4>
+    <p>WatchConnectivity for R-R intervals, SCI computation on Watch, physiological temperature channel, complication showing σ_irr.</p>
+    <p><strong>Deliverable:</strong> Two-device system: HRV from wrist or ear feeds into docking simulation on phone.</p>
+  </div>
+  <div class="arch-card terra">
+    <h4>PHASE 3: + iPadOS AR (4 weeks)</h4>
+    <p>ARKit + LiDAR molecular scene, Metal compute for thermodynamics, spatial anchoring of receptor in physical space, hand occlusion.</p>
+    <p><strong>Deliverable:</strong> AR docking game on iPad with spatial molecular rendering.</p>
+  </div>
+  <div class="arch-card gold">
+    <h4>PHASE 4: + macOS FlexAID∆S (6 weeks)</h4>
+    <p>Port FlexAID∆S thermodynamic engine to Metal, MultipeerConnectivity bridge, RE-DOCK Crooks cycle running on Mac GPU, results streaming to iOS/iPadOS.</p>
+    <p><strong>Deliverable:</strong> Real docking calculations driving the game — not simulation, actual ΔG.</p>
+  </div>
+  <div class="arch-card">
+    <h4>PHASE 5: + tvOS Cinematic (2 weeks)</h4>
+    <p>tvOS visualization on big screen, Siri Remote gestures, full spatial audio field with AirPods Max, cinematic camera paths through the molecular landscape.</p>
+    <p><strong>Deliverable:</strong> Living room thermodynamic cinema.</p>
+  </div>
+  <div class="arch-card terra">
+    <h4>PHASE 6: + visionOS (8 weeks)</h4>
+    <p>RealityKit volumetric rendering, ImmersiveSpace binding pocket, hand tracking for ligand manipulation, eye tracking for attention entropy, full Vision Pro spatial audio.</p>
+    <p><strong>Deliverable:</strong> You are inside the molecule. The ultimate embodied thermodynamics.</p>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================ -->
+<h2>9. The Complete Thermodynamic Circle (Apple Edition)</h2>
+
+<div class="flow-diagram" style="text-align: left; line-height: 2.2;">
+<span style="color: var(--gold); font-weight: 600;">MOLECULAR</span> (Mac: FlexAID∆S Metal GPU)<br>
+&nbsp;&nbsp;↓ ΔG, ΔH, -TΔS, S_config<br>
+<span style="color: var(--teal); font-weight: 600;">THERMODYNAMIC</span> (iPhone: RE-DOCK Crooks/BAR orchestrator)<br>
+&nbsp;&nbsp;↓ σ_irr, W_fwd, W_rev, dI/dT<br>
+<span style="color: var(--terra); font-weight: 600;">PHARMACOKINETIC</span> (iPad: PokeDrug AR overlay + 70 drug profiles)<br>
+&nbsp;&nbsp;↓ C(t), t_half, bioavailability, dose-response<br>
+<span style="color: var(--gold); font-weight: 600;">PERCEPTUAL</span> (AirPods: Spatial Audio force field + ANC demon gate)<br>
+&nbsp;&nbsp;↓ S_audio, H(f) audiogram, ANC bits_filtered/s<br>
+<span style="color: var(--teal); font-weight: 600;">PHYSIOLOGICAL</span> (Watch + AirPods Pro 3: HRV → SCI)<br>
+&nbsp;&nbsp;↓ Shannon Collapse Index, heart rate, ΔH_HRV<br>
+<span style="color: var(--terra); font-weight: 600;">EXPERIENTIAL</span> (Apple TV/Vision Pro: immersive visualization)<br>
+&nbsp;&nbsp;↓ head tracking 6DOF, eye tracking, hand tracking<br>
+<span style="color: var(--gold); font-weight: 600;">BEHAVIORAL</span> (Digital Crown ∆T + music selection + breathing)<br>
+&nbsp;&nbsp;↓ user choices → ∆BPM, ANC mode, tempo<br>
+<span style="color: var(--gold); font-weight: 600;">→ BACK TO MOLECULAR</span> (choices update T → new FlexAID∆S run)<br>
+</div>
+
+<div class="note">
+<strong>The full circle closes when σ_irr → 0 simultaneously at all scales.</strong> That's 7 scales of information dynamics, all measured in bits, all connected by Shannon entropy, all running on hardware you can buy at an Apple Store. The AirPods are not accessories — they're thermodynamic sensors. The Digital Crown is not a volume knob — it's a temperature dial. The Apple ecosystem is not a consumer product — it's a distributed thermodynamic computer.
+</div>
+
+<div class="le-bonhomme">
+  Le Bonhomme Pharma — ENTROPY DOCKING — Shannon × Music × Molecular × You<br>
+  "The constraint IS the method. The hardware IS the sensor. The user IS the experiment."
+</div>
+
+</div>
+
+<!-- System Diagram Canvas -->
+<script>
+const canvas = document.getElementById('systemDiagram');
+const ctx = canvas.getContext('2d');
+canvas.width = 1140;
+canvas.height = 500;
+
+const teal = '#20808D';
+const terra = '#A84B2F';
+const gold = '#D4A843';
+const dim = 'rgba(224,224,224,0.15)';
+const textColor = 'rgba(224,224,224,0.8)';
+
+function drawDevice(x, y, w, h, label, sublabel, color, icon) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.fillStyle = 'rgba(16, 20, 28, 0.95)';
+  roundRect(ctx, x, y, w, h, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = color;
+  ctx.font = 'bold 13px "Space Grotesk", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(icon, x + w/2, y + 28);
+
+  ctx.font = 'bold 12px "JetBrains Mono", monospace';
+  ctx.fillText(label, x + w/2, y + 48);
+
+  ctx.fillStyle = 'rgba(224,224,224,0.4)';
+  ctx.font = '10px "JetBrains Mono", monospace';
+  const lines = sublabel.split('\n');
+  lines.forEach((line, i) => {
+    ctx.fillText(line, x + w/2, y + 65 + i * 14);
+  });
+}
+
+function drawArrow(x1, y1, x2, y2, label, color) {
+  ctx.strokeStyle = color || dim;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Arrow head
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  ctx.fillStyle = color || dim;
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 8 * Math.cos(angle - 0.3), y2 - 8 * Math.sin(angle - 0.3));
+  ctx.lineTo(x2 - 8 * Math.cos(angle + 0.3), y2 - 8 * Math.sin(angle + 0.3));
+  ctx.fill();
+
+  if (label) {
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2 - 8;
+    ctx.fillStyle = 'rgba(224,224,224,0.3)';
+    ctx.font = '9px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, mx, my);
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// Layout
+// Center: iPhone
+drawDevice(460, 180, 220, 130, 'iPhone (iOS)', 'MusicKit + AVAudioEngine\nOrchestrator Hub\nCoreML + CoreBluetooth', terra, '📱');
+
+// Top: AirPods
+drawDevice(200, 20, 180, 110, 'AirPods Max', 'Digital Crown → β\nSpatial Audio 3D\nANC/Transparency', gold, '🎧');
+drawDevice(760, 20, 180, 110, 'AirPods Pro 3', 'Heart Rate → SCI\nHead Tracking 6DOF\nAdaptive Audio', gold, '🎧');
+
+// Left: Mac
+drawDevice(30, 220, 180, 110, 'Mac (macOS)', 'FlexAID∆S Metal\nRE-DOCK Engine\nCrooks/BAR', teal, '💻');
+
+// Right: iPad
+drawDevice(930, 220, 180, 110, 'iPad (iPadOS)', 'ARKit + LiDAR\nMolecular Scene\nMetal Compute', teal, '📱');
+
+// Bottom left: Watch
+drawDevice(200, 380, 180, 100, 'Apple Watch', 'HealthKit HRV\nSCI Computation\nComplication', teal, '⌚');
+
+// Bottom right: TV
+drawDevice(760, 380, 180, 100, 'Apple TV (tvOS)', 'Cinematic Display\nSpatial Audio Field\nSiri Remote ∆T', terra, '📺');
+
+// Bottom center: Vision Pro
+drawDevice(460, 380, 220, 100, 'Vision Pro (visionOS)', 'RealityKit Volumetric\nHand + Eye Tracking\nImmersiveSpace', gold, '🥽');
+
+// Arrows
+drawArrow(290, 130, 480, 180, 'Crown ∆T', gold);
+drawArrow(850, 130, 660, 180, 'HR + 6DOF', gold);
+drawArrow(210, 250, 460, 250, 'ΔG, σ_irr', teal);
+drawArrow(680, 250, 930, 250, 'State →', teal);
+drawArrow(520, 310, 420, 380, '', dim);
+drawArrow(620, 310, 720, 380, '', dim);
+drawArrow(570, 310, 570, 380, '', dim);
+drawArrow(290, 330, 460, 230, 'SCI', teal);
+drawArrow(850, 330, 680, 230, '', dim);
+
+// Title
+ctx.fillStyle = 'rgba(224,224,224,0.15)';
+ctx.font = '10px "JetBrains Mono", monospace';
+ctx.textAlign = 'center';
+ctx.fillText('ENTROPY DOCKING — 6-PLATFORM THERMODYNAMIC CIRCLE', 570, 490);
+</script>
+
+</body>
+</html>

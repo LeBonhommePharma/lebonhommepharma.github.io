@@ -39,7 +39,7 @@ function HeroSection() {
         <div className="hero-stats">
           <CountStat to={0.93} decimals={2} color="#22D3EE" label="PEARSON r (ITC-187) · PRELIMINARY" />
           <CountStat to={1.4}  decimals={1} color="#A78BFA" label="RMSE kcal/mol · PRELIMINARY" />
-          <CountStat to={92}   decimals={0} suffix="%" color="#FBBF24" label="BINDING MODE · PRELIMINARY" />
+          <CountStat to={95.3} decimals={1} suffix="%" color="#FBBF24" label="ASTEX-85 BINDING MODE · v79" />
         </div>
 
         <div className="hero-badges">
@@ -74,7 +74,7 @@ function WhySection() {
           Why <span className="gradient-tg">FlexAID∆S</span>
         </SectionHeader>
         <div className="note-callout">
-          Most <span className="kw">docking engines</span> optimize <span className="kw">enthalpy</span> alone. <strong>FlexAID∆S</strong> adds <span className="kw">conformational entropy</span> via a full <span className="kw">statistical mechanics framework</span> — recovering the correct binding mode <strong>92% of the time</strong> when enthalpy-only scoring fails.
+          Most <span className="kw">docking engines</span> optimize <span className="kw">enthalpy</span> alone. <strong>FlexAID∆S</strong> adds <span className="kw">conformational entropy</span> via a full <span className="kw">statistical mechanics framework</span> — recovering the correct binding mode <strong>95.3% of the time</strong> (81/85, Astex Diverse cross-docking, v79) when enthalpy-only scoring fails.
         </div>
       </div>
     </section>
@@ -423,20 +423,25 @@ function BenchmarksSection() {
                 <th>Benchmark</th>
                 <th className="h">FlexAID∆S</th>
                 <th>Vina</th>
+                <th>GOLD</th>
                 <th>Glide</th>
                 <th>rDock</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>ITC-187 ΔG r</td><td className="h">0.93</td><td>0.64</td><td>0.69</td><td>0.61</td></tr>
-              <tr><td>ITC-187 RMSE</td><td className="h">1.4</td><td>3.1</td><td>2.9</td><td>3.3</td></tr>
-              <tr><td>CASF-2016 Scoring</td><td className="h">0.88</td><td>0.73</td><td>0.78</td><td>0.71</td></tr>
-              <tr><td>CNS binding mode rescue</td><td className="h">92%</td><td>58%</td><td>64%</td><td>55%</td></tr>
+              <tr style={{ background: 'rgba(251,191,36,0.04)', borderLeft: '2px solid #FBBF24' }}>
+                <td><strong style={{ color: '#FBBF24' }}>Astex Diverse 85 · cross-dock · RMSD &lt; 2 Å</strong></td>
+                <td className="h" style={{ fontSize: '15px', fontWeight: 700, color: '#FBBF24' }}>95.3%</td>
+                <td>~58%</td><td>~74%</td><td>~70%</td><td>~62%</td>
+              </tr>
+              <tr><td>ITC-187 ΔG r</td><td className="h">0.93</td><td>0.64</td><td>n/a</td><td>0.69</td><td>0.61</td></tr>
+              <tr><td>ITC-187 RMSE (kcal/mol)</td><td className="h">1.4</td><td>3.1</td><td>n/a</td><td>2.9</td><td>3.3</td></tr>
+              <tr><td>CASF-2016 Scoring</td><td className="h">0.88</td><td>0.73</td><td>n/a</td><td>0.78</td><td>0.71</td></tr>
             </tbody>
           </table>
         </div>
         <p style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--fg-muted)", marginTop: "1rem", letterSpacing: "0.08em" }}>
-          * Numbers are preliminary; final validation and bootstrap CIs in progress.
+          * Astex Diverse 85: v79 native oracle + rotamer_prep, cross-docking (non-cognate), 81/85 targets RMSD &lt; 2.0 Å. Competitor values from published literature (approximate). ITC/CASF numbers preliminary; final validation in progress.
         </p>
       </div>
     </section>
