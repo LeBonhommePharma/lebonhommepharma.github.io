@@ -275,8 +275,8 @@ function EntropyDockingShowcase() {
           }}>
             Guide a drug molecule into its binding pocket using music tempo. Beat drops = Shannon Energy Collapse. σ_irr → 0 = perfect thermodynamic closure.
           </p>
-          <Button variant="primary" href="entropy_docking.html" style={{ fontSize: '15px', padding: '14px 32px', letterSpacing: '0.06em' }}>
-            LAUNCH ENTROPY DOCKING →
+          <Button variant="primary" href="entropy-docking/" style={{ fontSize: '15px', padding: '14px 32px', letterSpacing: '0.06em' }}>
+            Explore Entropy-Driven →
           </Button>
         </Reveal>
       </div>
@@ -309,8 +309,8 @@ function Ecosystem() {
       title: 'Entropy Docking',
       titleColor: 'var(--terra)',
       desc: 'The live demo. BPM = temperature. Watch Shannon entropy collapse in real time as a ligand finds its binding pocket.',
-      cta: 'Launch Demo →',
-      href: 'entropy_docking.html',
+      cta: 'Explore →',
+      href: 'entropy-docking/',
       ctaColor: 'var(--terra)',
       ctaBorder: 'rgba(167,139,250,0.35)',
     },
@@ -459,7 +459,7 @@ function Footer() {
           </div>
           <div className="footer-links">
             <a href="FlexAIDdS/index.html">FlexAID∆S</a>
-            <a href="entropy_docking.html">Entropy Docking</a>
+            <a href="entropy-docking/">Entropy Docking</a>
             <a href="periodic_table.html">Periodic Table</a>
             <a href="https://github.com/NRGlab/FlexAIDdS" target="_blank" rel="noreferrer noopener">GitHub</a>
             <a href="https://x.com/BonhommePharma" target="_blank" rel="noreferrer noopener">@BonhommePharma</a>
