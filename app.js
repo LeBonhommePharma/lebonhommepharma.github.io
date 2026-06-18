@@ -32,19 +32,8 @@
   });
 
   // ── Theme toggle ───────────────────────────────────────────
-  const themeToggle = document.querySelector('[data-theme-toggle]');
-  const savedTheme = localStorage.getItem('lbp-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  if (themeToggle) {
-    themeToggle.setAttribute('aria-label', savedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-    themeToggle.addEventListener('click', () => {
-      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = cur === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('lbp-theme', next);
-      themeToggle.setAttribute('aria-label', next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-    });
-  }
+  // Handled by the canonical controller in theme.js (anti-flash,
+  // localStorage persistence, aria sync). Nothing to do here.
 
   // ── Animated stat counters ─────────────────────────────────
   function animateCount(el) {

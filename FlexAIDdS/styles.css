@@ -32,7 +32,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* ───── NAV ───── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-  background: rgba(10,14,20,0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--teal-12);
 }
@@ -53,6 +53,15 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   color: var(--fg-muted); transition: color 0.2s;
 }
 .nav-links a:hover, .nav-links button:hover, .nav-links a.active { color: var(--teal); }
+/* On phones the in-page jump links (anchors without href) don't fit the
+   bar, so collapse them and keep the brand + external links visible. */
+@media (max-width: 767px) {
+  .nav-inner { padding: 0 1rem; }
+  .nav-links { gap: 10px; }
+  .nav-links a:not([href]) { display: none; }
+  /* wide config table scrolls instead of being clipped off-screen */
+  .cmake-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
 
 /* ───── HERO ───── */
 .hero {
@@ -298,7 +307,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 /* Footer */
 .site-footer {
-  background: rgba(10,14,20,0.9); border-top: 1px solid rgba(34,211,238,0.1);
+  background: var(--footer-bg); border-top: 1px solid rgba(34,211,238,0.1);
 }
 .footer-inner { max-width: 1152px; margin: 0 auto; padding: 2rem 1.5rem; }
 .footer-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
@@ -439,3 +448,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* Utility color aliases used in sections */
 .t-gold { color: var(--gold); }
 .gold   { color: var(--gold); }
+
+/* ───── Light theme surface fix-ups (accents preserved) ───── */
+[data-theme="light"] .section.alt { background: #eef2f8; }
+/* The molecular binding canvas stays a dark inset figure in both themes. */

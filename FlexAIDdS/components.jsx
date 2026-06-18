@@ -128,6 +128,8 @@ function Nav({ active, onJump }) {
           <a className="gh" href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" rel="noreferrer noopener">
             <img src="assets/icon-github.svg" width="16" height="16" style={{ filter: "brightness(0) saturate(100%) invert(64%) sepia(8%) saturate(414%) hue-rotate(186deg)" }} alt="" />
           </a>
+          {/* Canonical light/dark toggle injected by theme.js */}
+          <span data-theme-mount></span>
         </div>
       </div>
     </nav>

@@ -37,6 +37,19 @@
       --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
       --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
       --r:        10px;
+      --nav-bg:   rgba(7,8,13,.82);
+    }
+
+    /* ─── light theme (neon accents preserved) ─── */
+    [data-theme="light"] {
+      --bg:     #f4f6fb;
+      --bg2:    #ffffff;
+      --bg3:    #eef2f8;
+      --border: #d6deea;
+      --dim:    #5a6478;
+      --text:   #1e293b;
+      --white:  #0b1020;
+      --nav-bg: rgba(255,255,255,.85);
     }
 
     /* ─── base ─── */
@@ -89,7 +102,7 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: rgba(7,8,13,.82);
+      background: var(--nav-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -647,6 +660,8 @@
       .badge-btn { min-width: unset; width: 100%; }
     }
   </style>
+<link rel="stylesheet" href="./theme.css">
+<script src="./theme.js"></script>
 </head>
 <body>
 
@@ -654,12 +669,15 @@
 <nav>
   <div class="inner">
     <a class="nav-brand" href="#">NATURaL</a>
-    <ul class="nav-links">
-      <li><a href="#about">What</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#download">Get it</a></li>
-      <li><a href="https://github.com/lmorency/NATURaL" target="_blank" rel="noopener">GitHub</a></li>
-    </ul>
+    <div style="display:flex;align-items:center;gap:24px;">
+      <ul class="nav-links">
+        <li><a href="#about">What</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#download">Get it</a></li>
+        <li><a href="https://github.com/lmorency/NATURaL" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+      <span data-theme-mount></span>
+    </div>
   </div>
 </nav>
 

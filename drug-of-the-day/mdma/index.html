@@ -40,6 +40,25 @@
   --r-lg:        14px;
   --glow-teal:   0 0 20px rgba(34,211,238,0.25);
   --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
 }
 
 html { scroll-behavior: smooth; }
@@ -63,7 +82,7 @@ ul { list-style: none; }
 
 /* ── Nav ────────────────────────────────────────────────── */
 .nav {
-  background: rgba(10,14,20,0.92);
+  background: var(--nav-bg);
   border-bottom: 1px solid var(--border);
   padding: 0 1.5rem;
   height: var(--nav-h);
@@ -735,6 +754,8 @@ table.binding-table {
   background: #080c12;
 }
 </style>
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
 </head>
 <body>
 
@@ -748,6 +769,7 @@ table.binding-table {
   <div class="nav-right">
     <a href="/periodic_table.html">Periodic Table</a>
     <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
   </div>
 </nav>
 

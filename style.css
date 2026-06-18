@@ -7,6 +7,7 @@
 
 :root {
   --color-bg:          #0a0e14;
+  --color-header:      rgba(10,14,20,0.92);
   --color-surface:     rgba(16,20,28,0.90);
   --color-surface-2:   rgba(22,27,38,0.80);
   --color-border:      rgba(34,211,238,0.12);
@@ -36,6 +37,7 @@
 
 [data-theme="light"] {
   --color-bg:         #f1f5f9;
+  --color-header:     rgba(255,255,255,0.85);
   --color-surface:    #ffffff;
   --color-surface-2:  #e8edf5;
   --color-border:     rgba(0,0,0,0.10);
@@ -67,7 +69,7 @@ ul { list-style: none; }
 .site-header {
   position: sticky; top: 0; z-index: 100;
   height: var(--header-h);
-  background: rgba(10,14,20,0.92);
+  background: var(--color-header);
   border-bottom: 1px solid var(--color-border);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
 }
@@ -88,16 +90,7 @@ ul { list-style: none; }
 .header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 .gh-link { color: var(--color-text-muted); display: flex; align-items: center; transition: color 0.15s; }
 .gh-link:hover { color: var(--color-text); }
-.theme-toggle {
-  background: none; border: 1px solid var(--color-border); border-radius: var(--r-sm);
-  color: var(--color-text-muted); cursor: pointer; display: flex; align-items: center;
-  padding: 5px; transition: color 0.15s, border-color 0.15s;
-}
-.theme-toggle:hover { color: var(--color-text); border-color: var(--color-border-h); }
-.icon-sun { display: none; }
-.icon-moon { display: block; }
-[data-theme="light"] .icon-sun { display: block; }
-[data-theme="light"] .icon-moon { display: none; }
+/* Theme toggle component lives in theme.css (canonical). */
 .mobile-menu-toggle { display: none; }
 
 /* ── HERO ────────────────────────────────────────────────── */
@@ -122,7 +115,7 @@ ul { list-style: none; }
 .badge {
   font-family: var(--font-mono); font-size: 11px; padding: 4px 10px;
   border-radius: 20px; border: 1px solid var(--color-border);
-  color: var(--color-text-muted); background: rgba(16,20,28,0.6);
+  color: var(--color-text-muted); background: var(--color-surface);
 }
 .badge-accent { border-color: rgba(167,139,250,0.30); color: #A78BFA; background: rgba(167,139,250,0.08); }
 .hero h1 {
@@ -339,7 +332,7 @@ h2 {
 .eco-card.terra-card:hover { border-color: rgba(167,139,250,0.4); }
 
 /* Footer */
-.site-footer { background: rgba(10,14,20,0.98); border-top: 1px solid var(--color-border); padding: 3rem 0 2rem; }
+.site-footer { background: var(--color-surface-2); border-top: 1px solid var(--color-border); padding: 3rem 0 2rem; }
 .footer-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
 .footer-brand .logo-text { font-size: 14px; }
 .footer-brand p { font-size: 12px; color: var(--color-text-muted); margin-top: 6px; font-family: var(--font-mono); }
@@ -362,6 +355,17 @@ h2 {
   .arch-pipeline { flex-direction: column; }
   .arch-arrow { transform: rotate(90deg); align-self: center; }
   .arch-sub-row { grid-template-columns: 1fr; }
+}
+/* Mobile overflow hardening (audit 2026-06):
+   grid/flex items default to min-width:auto and refuse to shrink below
+   their content, so long code blocks and tables push the page wider than
+   the viewport. Allow them to shrink; inner wrappers already scroll. */
+@media (max-width: 900px) {
+  .install-card,
+  .install-card .code-block,
+  .benchmark-table-wrap,
+  .cmake-table-wrap { min-width: 0; }
+  .install-card .code-block pre { white-space: pre; }
 }
 @media (max-width: 640px) {
   .main-nav { display: none; }

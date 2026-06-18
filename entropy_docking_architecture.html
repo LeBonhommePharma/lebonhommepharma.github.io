@@ -10,10 +10,22 @@
   :root {
     --teal: #20808D; --terra: #A84B2F; --gold: #D4A843;
     --deep: #0a0e14; --panel: rgba(16, 20, 28, 0.92);
+    --fg: #d8d8d8; --fg-soft: rgba(224,224,224,0.8); --fg-dim: rgba(224,224,224,0.3);
   }
+  /* Light theme — accents preserved; the system diagram stays a dark inset figure */
+  [data-theme="light"] {
+    --deep: #f4f6fb; --panel: #ffffff;
+    --fg: #1e293b; --fg-soft: rgba(30,41,59,0.82); --fg-dim: rgba(30,41,59,0.4);
+  }
+  [data-theme="light"] p, [data-theme="light"] li,
+  [data-theme="light"] .code, [data-theme="light"] .mapping-table td { color: var(--fg-soft); }
+  [data-theme="light"] .subtitle, [data-theme="light"] .code .cmt,
+  [data-theme="light"] .flow-diagram .arrow, [data-theme="light"] .le-bonhomme { color: var(--fg-dim); }
+  [data-theme="light"] .mapping-table td { border-bottom-color: rgba(0,0,0,0.06); }
+  [data-theme="light"] canvas#systemDiagram { background: #0e1320; border-color: rgba(32,128,141,0.25); }
   body {
     background: var(--deep);
-    color: #d8d8d8;
+    color: var(--fg);
     font-family: 'Space Grotesk', sans-serif;
     padding: 0;
     min-height: 100vh;
@@ -184,6 +196,15 @@
     border: 1px solid rgba(32,128,141,0.12);
     display: block;
   }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 16px 0; }
+  .table-scroll .mapping-table { margin: 0; }
+  .back-home {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--teal); text-decoration: none;
+    padding: 8px 0; margin-bottom: 8px; letter-spacing: 1px;
+  }
+  .back-home:hover { color: var(--gold); }
   @media (max-width: 768px) {
     .container { padding: 24px 16px; }
     h1 { font-size: 26px; }
@@ -200,9 +221,14 @@
     padding-bottom: 30px;
   }
 </style>
+<link rel="stylesheet" href="./theme.css">
+<script src="./theme.js"></script>
 </head>
 <body>
+<div data-theme-mount style="position:fixed;top:14px;right:16px;z-index:200;"></div>
 <div class="container">
+
+<a class="back-home" href="/">&larr; Le Bonhomme Pharma</a>
 
 <h1>ENTROPY DOCKING</h1>
 <div class="subtitle">Full Apple Ecosystem Architecture — AirPods Max + AirPods Pro 3</div>
@@ -212,6 +238,7 @@
 
 <p>Every AirPods feature maps to a thermodynamic observable. This isn't metaphor — it's dimensional analysis. Each sensor produces a time series whose Shannon entropy is measured in bits. The rate of entropy change across sensors is dI/dT. When these rates correlate across scales, you have multi-scale thermodynamic closure.</p>
 
+<div class="table-scroll">
 <table class="mapping-table">
 <tr>
   <th>AirPods Feature</th>
@@ -280,6 +307,7 @@
   <td>kcal/mol per dB</td>
 </tr>
 </table>
+</div>
 
 <div class="note">
   <strong>Key insight:</strong> ANC/Transparency is literally a Maxwell's demon gate. ANC selectively destroys environmental entropy (Landauer cost: I_lost = S_filtered / k_B ln 2). Transparency passes all bits through. Adaptive Audio is the demon learning the optimal filter — which IS the Crooks forward/reverse sampling problem. The H2 chip running on-device ML to classify noise is computing the same partition function as FlexAID∆S computing binding poses.

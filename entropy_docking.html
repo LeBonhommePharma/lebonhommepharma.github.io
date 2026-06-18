@@ -411,8 +411,18 @@
     bottom: 20px;
   }
 </style>
+<link rel="stylesheet" href="./theme.css">
+<script src="./theme.js"></script>
 </head>
 <body>
+
+<!-- NOTE: This page is a fullscreen WebGL/HUD experience whose colours are
+     rendered on <canvas> and hardcoded in JS. A full light theme here is a
+     separate task; the canonical toggle is mounted for consistency. -->
+
+<a href="/" style="position:fixed;top:16px;left:18px;z-index:9999;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;color:rgba(224,224,224,0.75);text-decoration:none;background:rgba(10,14,20,0.55);border:1px solid rgba(32,128,141,0.3);border-radius:6px;padding:7px 12px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);" onmouseover="this.style.color='#D4A843'" onmouseout="this.style.color='rgba(224,224,224,0.75)'">&larr; Le Bonhomme Pharma</a>
+
+<div data-theme-mount style="position:fixed;top:16px;right:18px;z-index:9999;"></div>
 
 <canvas id="canvas3d"></canvas>
 

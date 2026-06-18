@@ -127,6 +127,23 @@
   /* ───────── GRID BACKGROUND ───────── */
   --grid-line: rgba(34,211,238,0.03);
   --grid-step: 40px;
+
+  /* ───────── CHROME (nav / footer) ───────── */
+  --nav-bg:    rgba(10,14,20,0.85);
+  --footer-bg: rgba(10,14,20,0.9);
+}
+
+/* ───────── LIGHT THEME — clean whites, accents preserved ───────── */
+[data-theme="light"] {
+  --bg:        #f1f5f9;
+  --bg-panel:  #ffffff;
+  --bg-card:   #ffffff;
+  --bg-alt:    #eef2f8;
+  --fg:        #1e293b;
+  --fg-muted:  #5a6478;
+  --grid-line: rgba(34,211,238,0.06);
+  --nav-bg:    rgba(255,255,255,0.85);
+  --footer-bg: rgba(255,255,255,0.9);
 }
 
 html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
