@@ -63,18 +63,33 @@
   }
 
   // ── Drug of the day (rotation by UTC date) ─────────────────
-  const drugs = [
-    'Lithium Carbonate', 'Cisplatin', 'Bortezomib', 'Fluoxetine',
-    'Morphine', 'Ketamine', 'MDMA', 'Psilocybin', 'LSD',
-    'Ibogaine', 'Cannabidiol', 'Cocaine HCl', 'Amphetamine',
-    'Haloperidol', 'Clozapine', 'Oxaliplatin', 'Naloxone',
-    'Naltrexone', 'Buprenorphine', 'Fentanyl', 'Methadone',
-    'Lorazepam', 'Propofol', 'Midazolam', 'Ketamine', 'Dexamethasone',
-    'Auranofin', '¹⁷⁷Lu-DOTATATE', 'Arsenic Trioxide', 'Sildenafil',
+  // One object drives both the label and the Mol* structure, so the displayed
+  // drug is always the complex loaded in the background.
+  const drugComplexes = [
+    { pdb: '1hsg', drug: 'Indinavir',      target: 'HIV-1 protease' },
+    { pdb: '3ert', drug: 'Tamoxifen',      target: 'estrogen receptor alpha' },
+    { pdb: '1iep', drug: 'Imatinib',       target: 'Abl kinase' },
+    { pdb: '1m17', drug: 'Erlotinib',      target: 'EGFR kinase' },
+    { pdb: '3nss', drug: 'Oseltamivir',    target: 'influenza neuraminidase' },
+    { pdb: '6lu7', drug: 'N3 inhibitor',   target: 'SARS-CoV-2 main protease' },
+    { pdb: '4cox', drug: 'Celecoxib',      target: 'cyclooxygenase-2' },
+    { pdb: '1hwi', drug: 'Donepezil',      target: 'acetylcholinesterase' },
+    { pdb: '2rh1', drug: 'Carazolol',      target: 'beta-2 adrenergic receptor' },
+    { pdb: '3htb', drug: 'Dabigatran',     target: 'thrombin' },
+    { pdb: '2src', drug: 'Dasatinib',      target: 'Src/Abl kinase' },
+    { pdb: '3eml', drug: 'Crizotinib',     target: 'ALK kinase' },
+    { pdb: '4dkl', drug: 'Sorafenib',      target: 'RAF kinase' },
+    { pdb: '2pgh', drug: 'Flurbiprofen',   target: 'cyclooxygenase' },
+    { pdb: '1cbs', drug: 'Retinoic acid',  target: 'cellular retinoic acid-binding protein' },
   ];
-  const dayIdx = Math.floor(Date.now() / 86400000) % drugs.length;
+  const dayIdx = Math.floor(Date.now() / 86400000) % drugComplexes.length;
+  const todaysComplex = drugComplexes[dayIdx];
   const label = document.getElementById('drug-of-day-label');
-  if (label) label.textContent = drugs[dayIdx];
+  if (label) {
+    label.innerHTML = '<strong>' + todaysComplex.drug + '</strong> · ' +
+      '<span class="drug-target">' + todaysComplex.target + '</span> ' +
+      '<span class="drug-pdb">PDB ' + todaysComplex.pdb.toUpperCase() + '</span>';
+  }
 
   // ── Mobile menu toggle ─────────────────────────────────────
   const mobileToggle = document.querySelector('.mobile-menu-toggle');
@@ -109,8 +124,58 @@
   }
 
   // ── Mol* viewer (optional 3D background) ──────────────────
-  // Only init if the molstar global is available
-  if (window.molstar && document.getElementById('molstar-viewer')) {
+  function loadMolstarFallback(done) {
+    if (window.molstar) {
+      done();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/molstar@4.5.0/build/viewer/molstar.js';
+    script.onload = done;
+    script.onerror = () => {
+      const viewerEl = document.getElementById('molstar-viewer');
+      if (viewerEl) viewerEl.classList.add('molstar-unavailable');
+    };
+    document.head.appendChild(script);
+  }
+
+  function setPublicationView(viewer) {
+    try {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if (viewer.plugin && viewer.plugin.canvas3d) {
+        viewer.plugin.canvas3d.setProps({
+          renderer: {
+            backgroundColor: isLight ? 0xf8fafc : 0x0a0e14,
+            backgroundAlpha: 0,
+            ambientIntensity: 0.72,
+            lightIntensity: 0.58,
+          },
+          camera: {
+            fog: 0,
+            clipFar: true,
+          },
+          postprocessing: {
+            outline: {
+              name: 'on',
+              params: { scale: 1, threshold: 0.28, color: isLight ? 0x111827 : 0x000000 },
+            },
+            occlusion: {
+              name: 'on',
+              params: { samples: 32, radius: 5, bias: 0.85, blurKernelSize: 15, resolutionScale: 1 },
+            },
+          },
+          trackball: {
+            animate: { name: 'spin', params: { speed: 0.35 } },
+          },
+        });
+      }
+    } catch(e) {
+      // Mol* prop schemas differ slightly across builds; keep the structure visible.
+    }
+  }
+
+  function initMolstar() {
+    if (!window.molstar || !document.getElementById('molstar-viewer')) return;
     try {
       molstar.Viewer.create('molstar-viewer', {
         layoutIsExpanded: false,
@@ -122,14 +187,24 @@
         viewportShowExpand: false,
         viewportShowSelectionMode: false,
         viewportShowAnimation: false,
-        pdbProvider: 'pdbe',
+        viewportShowControls: false,
+        pdbProvider: 'rcsb',
         emdbProvider: 'pdbe',
+        canvas3d: {
+          transparentBackground: true,
+          renderer: { backgroundAlpha: 0 },
+          camera: { fog: 0 },
+        },
       }).then(viewer => {
-        viewer.loadPdb('1hvr'); // Thrombin + PPACK — a classic dock
+        Promise.resolve(viewer.loadPdb(todaysComplex.pdb)).then(() => {
+          setPublicationView(viewer);
+        });
       });
     } catch(e) {
       // Molstar failed silently — no problem, just hides the viewer
     }
   }
+
+  loadMolstarFallback(initMolstar);
 
 })();
