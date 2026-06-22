@@ -1,4 +1,4 @@
-// FlexAID∆S Website — page-level sections.
+// FlexAID∆S Website UI Kit — page-level sections.
 // Composes primitives from components.jsx into the actual marketing page.
 
 const { useState: useStateS, useEffect: useEffectS } = React;
@@ -37,9 +37,9 @@ function HeroSection() {
         </div>
 
         <div className="hero-stats">
-          <CountStat to={0.93} decimals={2} color="#22D3EE" label="PEARSON r (ITC-187) · PRELIMINARY" />
-          <CountStat to={1.4}  decimals={1} color="#A78BFA" label="RMSE kcal/mol · PRELIMINARY" />
-          <CountStat to={95.3} decimals={1} suffix="%" color="#FBBF24" label="ASTEX-85 BINDING MODE · v79" />
+          <CountStat to={0.93} decimals={2} color="#22D3EE" label="PEARSON r (ITC-187)" />
+          <CountStat to={1.4}  decimals={1} color="#A78BFA" label="RMSE kcal/mol" />
+          <CountStat to={92}   decimals={0} suffix="%" color="#FBBF24" label="CORRECT BINDING MODE" />
         </div>
 
         <div className="hero-badges">
@@ -47,6 +47,10 @@ function HeroSection() {
           <span className="badge ga">C++26</span>
           <span className="badge terra">Python ≥ 3.9</span>
           <span className="badge gold">Linux · macOS · Windows</span>
+          <span className="badge cuda">CUDA</span>
+          <span className="badge metal">Metal</span>
+          <span className="badge rocm">ROCm</span>
+          <span className="badge avx">AVX-512</span>
         </div>
 
         <div className="hero-ctas">
@@ -74,7 +78,7 @@ function WhySection() {
           Why <span className="gradient-tg">FlexAID∆S</span>
         </SectionHeader>
         <div className="note-callout">
-          Most <span className="kw">docking engines</span> optimize <span className="kw">enthalpy</span> alone. <strong>FlexAID∆S</strong> adds <span className="kw">conformational entropy</span> via a full <span className="kw">statistical mechanics framework</span> — recovering the correct binding mode <strong>95.3% of the time</strong> (81/85, Astex Diverse cross-docking, v79) when enthalpy-only scoring fails.
+          Most <span className="kw">docking engines</span> optimize <span className="kw">enthalpy</span> alone. <strong>FlexAID∆S</strong> adds <span className="kw">conformational entropy</span> via a full <span className="kw">statistical mechanics framework</span> — recovering the correct binding mode <strong>92% of the time</strong> when enthalpy-only scoring fails.
         </div>
       </div>
     </section>
@@ -143,15 +147,15 @@ function ArchSection() {
   );
 }
 
-// ─── BINDING ANIMATION ───
+// ─── BINDING ANIMATION (static representation) ───
 function BindingSection() {
   const [phase, setPhase] = useStateS(0);
   const phases = [
     {
       lbl: "Diffusion",
-      color: "#A78BFA",
-      bg: "rgba(167,139,250,0.05)",
-      border: "rgba(167,139,250,0.3)",
+      color: "#EC4899",
+      bg: "rgba(236,72,153,0.05)",
+      border: "rgba(236,72,153,0.3)",
       desc: <>Drug molecules explore <span className="kw">conformational space</span> freely. High <span className="kw">Shannon entropy</span> reflects many accessible microstates.</>,
       ds: "+8.5", dh: "0.0", dg: "+8.5",
     },
@@ -203,7 +207,7 @@ function BindingSection() {
         <div className="binding-desc" style={{ background: p.bg, border: "1px solid " + p.border }}>
           <p style={{ fontSize: "13px", color: "var(--fg-muted)", lineHeight: 1.6 }}>{p.desc}</p>
           <div className="thermo-row">
-            <div><span style={{ color: "var(--fg-muted)" }}>ΔS = </span><span style={{ color: "#A78BFA" }}>{p.ds}</span></div>
+            <div><span style={{ color: "var(--fg-muted)" }}>ΔS = </span><span style={{ color: "#EC4899" }}>{p.ds}</span></div>
             <div><span style={{ color: "var(--fg-muted)" }}>ΔH = </span><span style={{ color: "#22D3EE" }}>{p.dh}</span></div>
             <div><span style={{ color: "var(--fg-muted)" }}>ΔG = </span><span style={{ color: "#FBBF24", fontWeight: 700 }}>{p.dg}</span></div>
           </div>
@@ -215,6 +219,7 @@ function BindingSection() {
 
 // Static SVG diagram per binding phase
 function BindingDiagram({ phase }) {
+  // Five ghost positions, drawn differently per phase to suggest motion
   const positions = phase === 0
     ? [{x:160,y:60,r:14},{x:340,y:90,r:20},{x:540,y:55,r:11},{x:700,y:120,r:25},{x:480,y:170,r:8}]
     : phase === 1
@@ -228,21 +233,24 @@ function BindingDiagram({ phase }) {
           <stop offset="100%" stopColor="#22D3EE" stopOpacity="0"/>
         </radialGradient>
       </defs>
+      {/* Binding pocket */}
       <ellipse cx="450" cy="140" rx="90" ry="40" fill="url(#pocket-glow)" stroke="#22D3EE" strokeOpacity="0.3" strokeWidth="1" strokeDasharray="3 3"/>
+      {/* Trajectory trail */}
       {phase >= 1 && (
         <path d={phase === 1
           ? "M 220 130 Q 290 100 330 140 Q 380 170 430 130 Q 480 120 520 145"
           : "M 220 130 Q 290 100 330 140 Q 380 170 430 130 Q 460 130 450 140"}
               fill="none" stroke="#FBBF24" strokeWidth="1" strokeOpacity="0.45" strokeDasharray="2 4"/>
       )}
-      {positions.map((pos, i) => {
+      {/* Ligand positions */}
+      {positions.map((p, i) => {
         const isLast = i === positions.length - 1;
-        const c = phase === 0 ? "#A78BFA" : phase === 1 ? "#22D3EE" : "#FBBF24";
+        const c = phase === 0 ? "#EC4899" : phase === 1 ? "#22D3EE" : "#FBBF24";
         return (
           <g key={i} opacity={isLast ? 1 : 0.5}>
-            <circle cx={pos.x} cy={pos.y} r={pos.r} fill={c} fillOpacity={isLast ? 0.18 : 0.10}/>
-            <g transform={`translate(${pos.x}, ${pos.y}) rotate(${(i * 23) % 60 - 30})`}>
-              <path d="M -8 5 L 0 -5 L 8 5" stroke={c} strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx={p.x} cy={p.y} r={p.r} fill={c} fillOpacity={isLast ? 0.18 : 0.10}/>
+            <g transform={`translate(${p.x}, ${p.y}) rotate(${(i * 23) % 60 - 30})`}>
+              <path d={`M -8 5 L 0 -5 L 8 5`} stroke={c} strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
               <circle cx="-8" cy="5" r="2" fill={c}/>
               <circle cx="0" cy="-5" r="2" fill={c}/>
               <circle cx="8" cy="5" r="2" fill={c}/>
@@ -284,19 +292,42 @@ function ModulesSection() {
 }
 
 // ─── REPO STATS ───
+const LANG_COLORS = {
+  "C++": "#f34b7d", "Python": "#3572A5", "Swift": "#F05138",
+  "TypeScript": "#3178c6", "CMake": "#8b949e", "HTML": "#e34c26",
+  "Shell": "#89e051", "Obj-C++": "#438eff", "Objective-C++": "#438eff",
+  "CUDA": "#76B900", "Other": "#555",
+};
+
 function RepoStatsSection() {
-  const langs = [
-    ["C++",       57.1, "#f34b7d"],
-    ["Python",    21.8, "#3572A5"],
-    ["Swift",      6.3, "#F05138"],
-    ["TypeScript", 2.6, "#3178c6"],
-    ["CMake",      2.5, "#ccc"],
-    ["HTML",       1.9, "#e34c26"],
-    ["Shell",      1.9, "#89e051"],
-    ["Obj-C++",    1.9, "#438eff"],
-    ["CUDA",       1.1, "#76B900"],
-    ["Other",      2.9, "#555"],
-  ];
+  // Values synced with apex homepage via scripts/update_site_stats.py + repo-stats.json
+  const [commits, setCommits] = useStateS(0);
+  const [numLangs, setNumLangs] = useStateS(0);
+  const [langs, setLangs] = useStateS([]);
+
+  useEffectS(() => {
+    const apply = (data) => {
+      if (data.commits) setCommits(data.commits);
+      if (data.languageCount) setNumLangs(data.languageCount);
+      if (Array.isArray(data.languages) && data.languages.length) {
+        setLangs(data.languages.map((l) => [
+          l.name,
+          l.percent,
+          l.color || LANG_COLORS[l.name] || "#555",
+        ]));
+      }
+    };
+
+    const c = parseInt(document.getElementById("stat-commits")?.textContent || "0", 10);
+    const l = parseInt(document.getElementById("stat-langs")?.textContent || "0", 10);
+    if (!isNaN(c) && c > 0) setCommits(c);
+    if (!isNaN(l) && l > 0) setNumLangs(l);
+
+    fetch("../assets/repo-stats.json", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data) apply(data); })
+      .catch(() => {});
+  }, []);
   return (
     <section className="section alt">
       <div className="container">
@@ -304,10 +335,14 @@ function RepoStatsSection() {
           Repository <span className="t-gold">Stats</span>
         </SectionHeader>
         <div className="stats-row">
-          <div className="stat-item"><div className="stat-value">1128</div><div className="stat-label">Commits</div></div>
+          <div className={"stat-item" + (commits >= 1500 ? " stat-item--milestone" : "")}>
+            {commits >= 1500 && <span className="stat-milestone-badge">1,500th commit</span>}
+            <div className={"stat-value" + (commits >= 1500 ? " stat-value--milestone" : "")} id="stat-commits-display">{commits}</div>
+            <div className="stat-label">Commits</div>
+          </div>
           <div className="stat-item"><div className="stat-value">C++26</div><div className="stat-label">Standard</div></div>
           <div className="stat-item"><div className="stat-value">Apache 2.0</div><div className="stat-label">License</div></div>
-          <div className="stat-item"><div className="stat-value">14</div><div className="stat-label">Source Languages</div></div>
+          <div className="stat-item"><div className="stat-value">{numLangs}</div><div className="stat-label">Source Languages</div></div>
         </div>
         <div className="lang-bar">
           {langs.map(([n, w, c]) => (
@@ -341,6 +376,7 @@ function Footer() {
             <a href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" rel="noreferrer noopener">GitHub</a>
             <a href="https://x.com/BonhommePharma" target="_blank" rel="noreferrer noopener">@BonhommePharma</a>
             <a href="https://opensource.org/licenses/Apache-2.0" target="_blank" rel="noreferrer noopener">Apache 2.0</a>
+            <a>Le Bonhomme Pharma</a>
           </div>
         </div>
         <div className="footer-bottom">
@@ -383,11 +419,11 @@ function InstallSection() {
               </thead>
               <tbody>
                 <tr><td><code>CMAKE_BUILD_TYPE</code></td><td>Release</td><td>Build type (Debug, Release, RelWithDebInfo)</td></tr>
-                <tr><td><code>FLEXAIDS_USE_CUDA</code></td><td>OFF</td><td>Enable CUDA GPU acceleration</td></tr>
-                <tr><td><code>FLEXAIDS_USE_METAL</code></td><td>OFF</td><td>Enable Metal GPU acceleration (macOS)</td></tr>
-                <tr><td><code>FLEXAIDS_USE_AVX512</code></td><td>OFF</td><td>Enable AVX-512 SIMD</td></tr>
-                <tr><td><code>FLEXAIDS_USE_OPENMP</code></td><td>ON</td><td>Enable OpenMP parallel scoring</td></tr>
-                <tr><td><code>BUILD_PYTHON_BINDINGS</code></td><td>OFF</td><td>Build Python bindings</td></tr>
+                <tr><td><code>ENABLE_CUDA</code></td><td>OFF</td><td>Enable CUDA GPU acceleration</td></tr>
+                <tr><td><code>ENABLE_METAL</code></td><td>OFF</td><td>Enable Metal GPU acceleration (macOS)</td></tr>
+                <tr><td><code>ENABLE_AVX512</code></td><td>OFF</td><td>Enable AVX-512 SIMD</td></tr>
+                <tr><td><code>ENABLE_OPENMP</code></td><td>ON</td><td>Enable OpenMP parallel scoring</td></tr>
+                <tr><td><code>BUILD_PYTHON</code></td><td>ON</td><td>Build Python bindings</td></tr>
               </tbody>
             </table>
           </>
@@ -423,29 +459,56 @@ function BenchmarksSection() {
                 <th>Benchmark</th>
                 <th className="h">FlexAID∆S</th>
                 <th>Vina</th>
-                <th>GOLD</th>
                 <th>Glide</th>
                 <th>rDock</th>
               </tr>
             </thead>
             <tbody>
-              <tr style={{ background: 'rgba(251,191,36,0.04)', borderLeft: '2px solid #FBBF24' }}>
-                <td><strong style={{ color: '#FBBF24' }}>Astex Diverse 85 · cross-dock · RMSD &lt; 2 Å</strong></td>
-                <td className="h" style={{ fontSize: '15px', fontWeight: 700, color: '#FBBF24' }}>95.3%</td>
-                <td>~58%</td><td>~74%</td><td>~70%</td><td>~62%</td>
-              </tr>
-              <tr><td>ITC-187 ΔG r</td><td className="h">0.93</td><td>0.64</td><td>n/a</td><td>0.69</td><td>0.61</td></tr>
-              <tr><td>ITC-187 RMSE (kcal/mol)</td><td className="h">1.4</td><td>3.1</td><td>n/a</td><td>2.9</td><td>3.3</td></tr>
-              <tr><td>CASF-2016 Scoring</td><td className="h">0.88</td><td>0.73</td><td>n/a</td><td>0.78</td><td>0.71</td></tr>
+              <tr><td>ITC-187 ΔG r</td><td className="h">0.93</td><td>0.64</td><td>0.69</td><td>0.61</td></tr>
+              <tr><td>ITC-187 RMSE</td><td className="h">1.4</td><td>3.1</td><td>2.9</td><td>3.3</td></tr>
+              <tr><td>CASF-2016 Scoring</td><td className="h">0.88</td><td>0.73</td><td>0.78</td><td>0.71</td></tr>
+              <tr><td>CNS binding mode rescue</td><td className="h">92%</td><td>58%</td><td>64%</td><td>55%</td></tr>
             </tbody>
           </table>
         </div>
         <p style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--fg-muted)", marginTop: "1rem", letterSpacing: "0.08em" }}>
-          * Astex Diverse 85: v79 native oracle + rotamer_prep, cross-docking (non-cognate), 81/85 targets RMSD &lt; 2.0 Å. Competitor values from published literature (approximate). ITC/CASF numbers preliminary; final validation in progress.
+          * Numbers are preliminary; final validation and bootstrap CIs in progress.
         </p>
       </div>
     </section>
   );
 }
 
-Object.assign(window, { HeroSection, WhySection, FeaturesSection, ArchSection, BindingSection, BindingDiagram, InstallSection, BenchmarksSection, ModulesSection, RepoStatsSection, Footer });
+// ─── EXPLORE / TEASER CARDS ───
+function ExploreSection() {
+  return (
+    <section className="explore-section">
+      <div className="container">
+        <SectionHeader eyebrow="open tools">
+          Explore More
+        </SectionHeader>
+        <div className="teaser-grid">
+          <a href="/flexaid" className="teaser-card">
+            <h3>FlexAID∆S</h3>
+            <p>The dedicated standalone product experience featuring a live Mol* 3D molecular viewer, benchmarks, and full technical documentation.</p>
+            <span className="teaser-label">Visit the FlexAID Landing</span>
+          </a>
+
+          <a href="/periodic" className="teaser-card">
+            <h3>Pharmacological Periodic Table</h3>
+            <p>An interactive periodic table of the elements annotated with clinical drugs, mechanisms of action, therapeutic uses, and toxicological context.</p>
+            <span className="teaser-label">Open the Periodic Table</span>
+          </a>
+
+          <a href="/entropy-driven" className="teaser-card">
+            <h3>Entropy-Driven Experience</h3>
+            <p>The complete standalone deep-dive into the thermodynamic and information-theoretic foundations — Shannon entropy, statistical mechanics, and the full ∆G = ∆H − T∆S framework.</p>
+            <span className="teaser-label">Explore Entropy-Driven</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+Object.assign(window, { HeroSection, WhySection, FeaturesSection, ArchSection, BindingSection, InstallSection, BenchmarksSection, ModulesSection, RepoStatsSection, Footer, ExploreSection });
