@@ -780,7 +780,7 @@
         <a href="#install">Install</a>
         <a href="#benchmarks">Benchmarks</a>
         <a href="#modules">Modules</a>
-        <a href="/entropy-docking/">Play</a>
+        <a href="/entropy-docking/">Entropy Docking</a>
         <a href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
         </a>
@@ -1213,43 +1213,64 @@
 
         <div class="stats-row">
           <div class="stat-item">
-            <div class="stat-value">328</div>
+            <div class="stat-value" id="repo-stat-commits">1627</div>
             <div class="stat-label">Commits</div>
           </div>
           <div class="stat-item">
-            <div class="stat-value">C++20</div>
-            <div class="stat-label">Standard</div>
+            <div class="stat-value" id="repo-stat-stars">9</div>
+            <div class="stat-label">Stars</div>
           </div>
           <div class="stat-item">
-            <div class="stat-value">Apache 2.0</div>
-            <div class="stat-label">License</div>
+            <div class="stat-value" id="repo-stat-release">v2.0.0</div>
+            <div class="stat-label">Latest Release</div>
           </div>
           <div class="stat-item">
-            <div class="stat-value">6</div>
+            <div class="stat-value" id="repo-stat-langs">14</div>
             <div class="stat-label">Languages</div>
           </div>
         </div>
 
         <!-- Language bar -->
-        <div class="lang-bar">
-          <div style="width:67%; background:#f34b7d;" title="C++ 67%"></div>
-          <div style="width:18%; background:#3572A5;" title="Python 18%"></div>
-          <div style="width:3.8%; background:#F05138;" title="Swift 3.8%"></div>
-          <div style="width:3.4%; background:#438eff;" title="Obj-C++ 3.4%"></div>
-          <div style="width:2.7%; background:#ccc;" title="CMake 2.7%"></div>
-          <div style="width:1.8%; background:#76B900;" title="CUDA 1.8%"></div>
-          <div style="width:3.3%; background:#555;" title="Other 3.3%"></div>
+        <div class="lang-bar" id="repo-lang-bar">
+          <div style="width:45.9%; background:#f34b7d;" title="C++ 45.9%"></div>
+          <div style="width:22.3%; background:#3572A5;" title="Python 22.3%"></div>
+          <div style="width:7.7%; background:#e34c26;" title="HTML 7.7%"></div>
+          <div style="width:4.1%; background:#F05138;" title="Swift 4.1%"></div>
+          <div style="width:2.8%; background:#89e051;" title="Shell 2.8%"></div>
+          <div style="width:1.9%; background:#8b949e;" title="CMake 1.9%"></div>
+          <div style="width:1.7%; background:#3178c6;" title="TypeScript 1.7%"></div>
+          <div style="width:1.4%; background:#438eff;" title="Obj-C++ 1.4%"></div>
+          <div style="width:1.3%; background:#f1e05a;" title="JavaScript 1.3%"></div>
+          <div style="width:10.9%; background:#555555;" title="Other 10.9%"></div>
         </div>
 
-        <div class="lang-legend">
-          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#f34b7d;"></div>C++ 67%</div>
-          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#3572A5;"></div>Python 18%</div>
-          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#F05138;"></div>Swift 3.8%</div>
-          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#438eff;"></div>Obj-C++ 3.4%</div>
-          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#ccc;"></div>CMake 2.7%</div>
-          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#76B900;"></div>CUDA 1.8%</div>
-          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#555;"></div>Other 3.3%</div>
+        <div class="lang-legend" id="repo-lang-legend">
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#f34b7d;"></div>C++ 45.9%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#3572A5;"></div>Python 22.3%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#e34c26;"></div>HTML 7.7%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#F05138;"></div>Swift 4.1%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#89e051;"></div>Shell 2.8%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#8b949e;"></div>CMake 1.9%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#3178c6;"></div>TypeScript 1.7%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#438eff;"></div>Obj-C++ 1.4%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#f1e05a;"></div>JavaScript 1.3%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#555555;"></div>Other 10.9%</div>
+        </div>C++ 45.9%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#3572A5;"></div>Python 22.3%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#e34c26;"></div>HTML 7.7%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#F05138;"></div>Swift 4.1%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#89e051;"></div>Shell 2.8%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#8b949e;"></div>CMake 1.9%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#3178c6;"></div>TypeScript 1.7%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#438eff;"></div>Obj-C++ 1.4%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#f1e05a;"></div>JavaScript 1.3%</div>
+          <div class="lang-legend-item"><div class="lang-legend-dot" style="background:#555555;"></div>Other 10.9%</div>
         </div>
+        <p style="margin-top:1rem;font-size:0.8rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">
+          Updated <span id="repo-stat-updated">2026-07-06</span> ·
+          <a href="/entropy-docking/" style="color:var(--teal);">Play Entropy Docking</a> ·
+          <a href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" rel="noopener noreferrer" style="color:var(--teal);">GitHub</a>
+        </p>
       </div>
     </section>
 
@@ -1295,9 +1316,47 @@
   <!-- ═══════════════════════════════════════════════
        JAVASCRIPT
        ═══════════════════════════════════════════════ -->
+  <span id="stat-commits" hidden>1627</span>
+  <span id="stat-langs" hidden>14</span>
+  <span id="stat-stars" hidden>9</span>
+  <span id="last-updated" hidden>2026-07-06</span>
+  <span id="latest-release" hidden>v2.0.0</span>
+
   <script>
   (function() {
     'use strict';
+
+    /* ─── LIVE REPO STATS (shared with apex + FlexAIDdS) ─── */
+    fetch('../assets/repo-stats.json', { cache: 'no-store' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(data) {
+        if (!data) return;
+        var commits = document.getElementById('repo-stat-commits');
+        var langs = document.getElementById('repo-stat-langs');
+        var stars = document.getElementById('repo-stat-stars');
+        var release = document.getElementById('repo-stat-release');
+        var updated = document.getElementById('repo-stat-updated');
+        if (commits && data.commits) commits.textContent = String(data.commits);
+        if (langs && data.languageCount) langs.textContent = String(data.languageCount);
+        if (stars && data.stars != null) stars.textContent = String(data.stars);
+        if (release && data.latestRelease) release.textContent = data.latestRelease;
+        if (updated && data.lastUpdated) updated.textContent = data.lastUpdated;
+        if (data.languages && data.languages.length) {
+          var bar = document.getElementById('repo-lang-bar');
+          var legend = document.getElementById('repo-lang-legend');
+          if (bar) {
+            bar.innerHTML = data.languages.map(function(lang) {
+              return '<div style="width:' + lang.percent + '%; background:' + lang.color + ';" title="' + lang.name + ' ' + lang.percent + '%"></div>';
+            }).join('');
+          }
+          if (legend) {
+            legend.innerHTML = data.languages.map(function(lang) {
+              return '<div class="lang-legend-item"><div class="lang-legend-dot" style="background:' + lang.color + ';"></div>' + lang.name + ' ' + lang.percent + '%</div>';
+            }).join('');
+          }
+        }
+      })
+      .catch(function() {});
 
     /* ─── MOBILE NAV ─── */
     var mobileToggle = document.getElementById('mobile-toggle');
