@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#05070b"/><stop offset="1" stop-color="#0e2230"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><text x="50" y="50" dominant-baseline="central" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-weight="700" font-size="30" fill="#67E8F9">T∆S</text></svg></template>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'SF Pro Display';font-weight:300;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Light.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:400;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Regular.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:500;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Medium.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:600;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Semibold.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:700;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Bold.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:900;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Black.otf') format('opentype');}
+body{margin:0;background:#05070b;font-family:'SF Pro Display',-apple-system,'Helvetica Neue',sans-serif;color:#d4dced;-webkit-font-smoothing:antialiased;}
+a{color:#22D3EE;text-decoration:none;}
+a:hover{color:#67E8F9;}
+@keyframes flow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes eqglow{0%,100%{text-shadow:0 0 22px rgba(34,211,238,0.22)}50%{text-shadow:0 0 42px rgba(34,211,238,0.42),0 0 60px rgba(251,191,36,0.16)}}
+@keyframes prism{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+</style>
+</helmet>
+<section data-turn="1" ref="{{ rootRef }}" style="display:flex;flex-direction:column;gap:clamp(40px,6vw,80px);padding:clamp(28px,5vw,72px) clamp(16px,4vw,56px) 96px;align-items:center;background:#05070b;">
+
+  <!-- ============ SHARED LEGEND · COLOR = MEANING ============ -->
+  <sc-if value="{{ showLegend }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:1 1 100%;width:100%;max-width:1120px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.24em;color:#A78BFA;text-transform:uppercase;">Color = Meaning</span>
+      <span style="font-size:13px;color:#8a93a8;">the FlexAID∆S semantic system — three equation terms, three system states</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.14);border-radius:10px;overflow:hidden;">
+      <div style="background:#0a0e14;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:11px;height:11px;border-radius:3px;background:#22D3EE;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#22D3EE;">∆H</span></div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#d4dced;margin-top:8px;">enthalpy</div><div style="font-size:11px;color:#8a93a8;margin-top:2px;">what binds</div></div>
+      <div style="background:#0a0e14;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:11px;height:11px;border-radius:3px;background:#A78BFA;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#A78BFA;">T∆S</span></div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#d4dced;margin-top:8px;">entropy</div><div style="font-size:11px;color:#8a93a8;margin-top:2px;">what disorders</div></div>
+      <div style="background:#0a0e14;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:11px;height:11px;border-radius:3px;background:#FBBF24;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#FBBF24;">∆G</span></div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#d4dced;margin-top:8px;">free energy</div><div style="font-size:11px;color:#8a93a8;margin-top:2px;">the verdict</div></div>
+      <div style="background:#0a0e14;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:11px;height:11px;border-radius:3px;background:var(--acc-green,#00FF96);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--acc-green,#00FF96);">favorable</span></div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#d4dced;margin-top:8px;">spontaneous</div><div style="font-size:11px;color:#8a93a8;margin-top:2px;">∆G&lt;0 · validated</div></div>
+      <div style="background:#0a0e14;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:11px;height:11px;border-radius:3px;background:var(--acc-red,#F87171);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--acc-red,#F87171);">penalty</span></div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#d4dced;margin-top:8px;">collapse</div><div style="font-size:11px;color:#8a93a8;margin-top:2px;">clash · deception</div></div>
+      <div style="background:#0a0e14;padding:14px 16px;"><div style="display:flex;align-items:center;gap:8px;"><span style="width:11px;height:11px;border-radius:3px;background:var(--acc-orange,#FF7D0A);"></span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--acc-orange,#FF7D0A);">temperature</span></div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#d4dced;margin-top:8px;">the T knob</div><div style="font-size:11px;color:#8a93a8;margin-top:2px;">scales entropy</div></div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ============ 1A · MONUMENT ============ -->
+  <div id="1a" style="display:flex;flex-direction:column;width:100%;max-width:1120px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:20px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.14em;color:#0a0e14;background:#22D3EE;padding:5px 11px;border-radius:4px;">1A</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;letter-spacing:0.2em;color:#d4dced;text-transform:uppercase;">Monument</span>
+      <span style="font-size:13px;color:#8a93a8;">Equation-forward, centered, monumental</span>
+    </div>
+
+    <div style="width:100%;background:#0a0e14;background-image:linear-gradient(rgba(34,211,238,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,0.035) 1px,transparent 1px);background-size:40px 40px;border:1px solid rgba(34,211,238,0.12);border-radius:14px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,0.6);">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 44px;border-bottom:1px solid rgba(34,211,238,0.10);background:rgba(10,14,20,0.6);">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;letter-spacing:0.02em;color:#22D3EE;">FlexAID<span style="color:#FBBF24;">∆S</span></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#8a93a8;text-transform:uppercase;">Le Bonhomme Pharma · Montréal · Open Science</span>
+      </div>
+
+      <div style="padding:clamp(40px,6vw,72px) clamp(20px,4vw,64px) clamp(36px,5vw,60px);display:flex;flex-direction:column;align-items:center;text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.28em;color:#A78BFA;text-transform:uppercase;margin-bottom:26px;">The Unified Entropy Program</div>
+        <h1 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(40px,7vw,76px);line-height:0.98;letter-spacing:-0.02em;color:#d4dced;">MAKE <span style="background:linear-gradient(90deg,#22D3EE,#A78BFA,#FBBF24,#22D3EE);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 8.5s linear infinite;">ENTROPY</span><br>GREAT AGAIN</h1>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:0.34em;color:#8a93a8;margin-top:18px;">· · ·  M · E · G · A  · · ·</div>
+        <p style="max-width:56ch;margin:26px 0 0;font-size:18px;line-height:1.6;color:#8a93a8;">One entropy kernel, six open-source works, three scales of matter. The <span style="color:#A78BFA;">−T∆S</span> term the rest of the field rounds to zero — put back where it belongs.</p>
+
+        <div style="margin:40px 0 4px;font-family:'JetBrains Mono',monospace;font-size:44px;font-weight:700;letter-spacing:0.01em;animation:eqglow 4s ease-in-out infinite;"><span style="color:#FBBF24;">∆G</span><span style="color:#8a93a8;"> = </span><span style="color:#22D3EE;">∆H</span><span style="color:#8a93a8;"> − </span><span style="color:var(--acc-orange,#FF7D0A);">T</span><span style="color:#A78BFA;">∆S</span></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:#8a93a8;margin-top:10px;">H = −Σ <span style="color:#67E8F9;">pᵢ</span> log₂ <span style="color:#67E8F9;">pᵢ</span></div>
+
+        <div style="display:flex;gap:44px;margin-top:44px;">
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700;line-height:1;color:#22D3EE;">6</div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;color:#8a93a8;text-transform:uppercase;margin-top:6px;">Works</div></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700;line-height:1;color:#A78BFA;">3</div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;color:#8a93a8;text-transform:uppercase;margin-top:6px;">Domains</div></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700;line-height:1;color:#FBBF24;">1</div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;color:#8a93a8;text-transform:uppercase;margin-top:6px;">Kernel</div></div>
+          <div><div style="font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:700;line-height:1;color:var(--acc-green,#00FF96);">∞</div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;color:#8a93a8;text-transform:uppercase;margin-top:6px;">Apache-2.0</div></div>
+        </div>
+
+        <div style="display:flex;gap:14px;margin-top:44px;">
+          <a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#0a0e14;background:#22D3EE;padding:14px 24px;border-radius:7px;box-shadow:0 0 calc(18px * var(--glow-mult,1)) rgba(34,211,238,0.35);"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>View on GitHub →</a>
+          <a href="#kernel-1a" style="display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#d4dced;background:transparent;padding:14px 24px;border-radius:7px;border:1px solid rgba(34,211,238,0.25);">Read the thesis</a>
+        </div>
+
+        <div style="margin-top:38px;display:flex;align-items:center;gap:16px;padding:12px 20px;border:1px dashed rgba(167,139,250,0.35);border-radius:8px;background:rgba(167,139,250,0.05);">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.16em;color:#A78BFA;text-transform:uppercase;">Validation · figures pending</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8a93a8;">Pearson r <b style="color:#3a4257;">▮▮▮</b></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8a93a8;">RMSE <b style="color:#3a4257;">▮▮▮</b></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8a93a8;">Binding-mode <b style="color:#3a4257;">▮▮▮</b></span>
+        </div>
+      </div>
+
+      <div id="kernel-1a" style="padding:52px 64px;border-top:1px solid rgba(34,211,238,0.10);background:rgba(12,16,22,0.5);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.24em;color:#A78BFA;text-transform:uppercase;text-align:center;margin-bottom:8px;">The −T∆S Thesis</div>
+        <h2 style="margin:0 0 40px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:26px;color:#d4dced;">One kernel, measured three ways</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;">
+          <div style="padding:26px;border:1px solid rgba(34,211,238,0.15);border-radius:10px;background:rgba(16,20,28,0.6);"><div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.14em;color:#22D3EE;text-transform:uppercase;margin-bottom:10px;">Matter · binding</div><div style="font-family:'JetBrains Mono',monospace;font-size:15px;margin-bottom:12px;"><span style="color:#FBBF24;">∆G</span><span style="color:#8a93a8;"> = </span><span style="color:#22D3EE;">∆H</span><span style="color:#8a93a8;"> − </span><span style="color:var(--acc-orange,#FF7D0A);">T</span><span style="color:#A78BFA;">∆S</span></div><p style="margin:0;font-size:14px;line-height:1.6;color:#8a93a8;max-width:none;">Conformational entropy rescues the binding modes an enthalpy-only score gets right for the wrong reason. Powers FlexAID∆S, tENCoM, PoseBust, NRGsuite.</p></div>
+          <div style="padding:26px;border:1px solid rgba(167,139,250,0.18);border-radius:10px;background:rgba(16,20,28,0.6);"><div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.14em;color:#A78BFA;text-transform:uppercase;margin-bottom:10px;">Mind · cognition</div><div style="font-family:'JetBrains Mono',monospace;font-size:15px;color:#d4dced;margin-bottom:12px;">H = −Σ pᵢ log₂ pᵢ</div><p style="margin:0;font-size:14px;line-height:1.6;color:#8a93a8;max-width:none;">Entropy over an agent's action distribution. A <span style="color:var(--acc-red,#F87171);">collapse</span> flags evaluation-awareness and strategic deception in frontier LLMs. Powers Shannon.</p></div>
+          <div style="padding:26px;border:1px solid rgba(251,191,36,0.18);border-radius:10px;background:rgba(16,20,28,0.6);"><div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.14em;color:#FBBF24;text-transform:uppercase;margin-bottom:10px;">Body · physiology</div><div style="font-family:'JetBrains Mono',monospace;font-size:15px;color:#d4dced;margin-bottom:12px;">HRV → <span style="color:var(--acc-green,#00FF96);">coherence</span></div><p style="margin:0;font-size:14px;line-height:1.6;color:#8a93a8;max-width:none;">Heart-rate-variability entropy, read in real time as a Shannon Collapse Index during guided practice. Powers ClusterFuck (ex-NATURaL).</p></div>
+        </div>
+      </div>
+
+      <div style="padding:52px 64px 60px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.24em;color:#A78BFA;text-transform:uppercase;margin-bottom:24px;">The Works · six repos, six meanings</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;">
+          <div style="padding:22px;border:1px solid rgba(34,211,238,0.12);border-top:2px solid #FBBF24;border-radius:10px;background:rgba(16,20,28,0.8);display:flex;flex-direction:column;gap:6px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:#d4dced;">FlexAID∆S</span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FBBF24;">∆G</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#FBBF24;text-transform:uppercase;">∆G · full score</span><p style="margin:4px 0 0;font-size:13px;line-height:1.5;color:#8a93a8;max-width:none;">Entropy-driven molecular docking engine. GA search + full ∆G = ∆H − T∆S score.</p><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#5a6478;margin-top:auto;">C++26 · PYTHON · PYMOL</span></div>
+          <div style="padding:22px;border:1px solid rgba(34,211,238,0.12);border-top:2px solid var(--acc-red,#F87171);border-radius:10px;background:rgba(16,20,28,0.8);display:flex;flex-direction:column;gap:6px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:#d4dced;">Shannon</span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--acc-red,#F87171);">H↓</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--acc-red,#F87171);text-transform:uppercase;">collapse · deception</span><p style="margin:4px 0 0;font-size:13px;line-height:1.5;color:#8a93a8;max-width:none;">Entropy-collapse detection for frontier LLM agents — evaluation-awareness &amp; deception.</p><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#5a6478;margin-top:auto;">C++20 · PYTHON</span></div>
+          <div style="padding:22px;border:1px solid rgba(34,211,238,0.12);border-top:2px solid #A78BFA;border-radius:10px;background:rgba(16,20,28,0.8);display:flex;flex-direction:column;gap:6px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:#d4dced;">tENCoM</span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#A78BFA;">T∆S</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#A78BFA;text-transform:uppercase;">entropy · flexibility</span><p style="margin:4px 0 0;font-size:13px;line-height:1.5;color:#8a93a8;max-width:none;">Torsional ENCoM. Normal-mode backbone flexibility &amp; vibrational entropy model.</p><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#5a6478;margin-top:auto;">C++ · MODEL</span></div>
+          <div style="padding:22px;border:1px solid rgba(34,211,238,0.12);border-top:2px solid var(--acc-green,#00FF96);border-radius:10px;background:rgba(16,20,28,0.8);display:flex;flex-direction:column;gap:6px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:#d4dced;">PoseBust</span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--acc-green,#00FF96);">✓</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--acc-green,#00FF96);text-transform:uppercase;">validated · pass</span><p style="margin:4px 0 0;font-size:13px;line-height:1.5;color:#8a93a8;max-width:none;">PoseBusters-compatible geometric validation. Physical plausibility for docked ligands.</p><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#5a6478;margin-top:auto;">C++26</span></div>
+          <div style="padding:22px;border:1px solid rgba(34,211,238,0.12);border-top:2px solid #22D3EE;border-radius:10px;background:rgba(16,20,28,0.8);display:flex;flex-direction:column;gap:6px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:#d4dced;">NRGsuite</span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#22D3EE;">∆H</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:#22D3EE;text-transform:uppercase;">∆H · contacts</span><p style="margin:4px 0 0;font-size:13px;line-height:1.5;color:#8a93a8;max-width:none;">PyMOL plugin packaging the NRGlab docking toolchain for interactive use.</p><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#5a6478;margin-top:auto;">PYTHON · PYMOL</span></div>
+          <div style="padding:22px;border:1px solid rgba(34,211,238,0.12);border-top:2px solid var(--acc-orange,#FF7D0A);border-radius:10px;background:rgba(16,20,28,0.8);display:flex;flex-direction:column;gap:6px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:#d4dced;">ClusterFuck</span><span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--acc-orange,#FF7D0A);">T</span></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--acc-orange,#FF7D0A);text-transform:uppercase;">physiology · ex-NATURaL</span><p style="margin:4px 0 0;font-size:13px;line-height:1.5;color:#8a93a8;max-width:none;">Multi-platform Apple HRV biofeedback. Real-time entropy → Shannon Collapse Index.</p><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;color:#5a6478;margin-top:auto;">SWIFT · HEALTHKIT</span></div>
+        </div>
+      </div>
+
+      <div style="padding:22px 64px;border-top:1px solid rgba(34,211,238,0.10);display:flex;justify-content:space-between;align-items:center;background:rgba(10,14,20,0.6);">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a93a8;">© 2026 Le Bonhomme Pharma · Montréal (Little Burgundy) · Québec</span>
+        <a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a93a8;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>github.com/LeBonhommePharma</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 1B · MANIFESTO ============ -->
+  <div id="1b" style="display:flex;flex-direction:column;width:100%;max-width:1120px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:20px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.14em;color:#0a0e14;background:#A78BFA;padding:5px 11px;border-radius:4px;">1B</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;letter-spacing:0.2em;color:#d4dced;text-transform:uppercase;">Manifesto</span>
+      <span style="font-size:13px;color:#8a93a8;">Asymmetric — statement left, ledger of works right</span>
+    </div>
+
+    <div style="width:100%;background:#0a0e14;background-image:linear-gradient(rgba(34,211,238,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,0.035) 1px,transparent 1px);background-size:40px 40px;border:1px solid rgba(34,211,238,0.12);border-radius:14px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,0.6);">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 44px;border-bottom:1px solid rgba(34,211,238,0.10);background:rgba(10,14,20,0.6);">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#22D3EE;">FlexAID<span style="color:#FBBF24;">∆S</span></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#8a93a8;text-transform:uppercase;">Le Bonhomme Pharma · Open Science</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));">
+        <div style="padding:clamp(36px,5vw,60px) clamp(20px,4vw,48px) clamp(32px,4vw,56px);border-right:1px solid rgba(34,211,238,0.10);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.26em;color:#A78BFA;text-transform:uppercase;margin-bottom:30px;">Manifesto · MEGA</div>
+          <h1 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(34px,5.2vw,58px);line-height:0.96;letter-spacing:-0.02em;color:#d4dced;">Make<br><span style="background:linear-gradient(90deg,#22D3EE,#A78BFA,#FBBF24,#22D3EE);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 8.5s linear infinite;">Entropy</span><br>Great<br>Again</h1>
+          <p style="max-width:42ch;margin:32px 0 0;font-size:16px;line-height:1.7;color:#8a93a8;">Enthalpy-only scores get the right answer for the wrong reason. The entropy term — <span style="color:#A78BFA;">−T∆S</span> — is not optional, and it is not just for docking.</p>
+          <p style="max-width:42ch;margin:18px 0 0;font-size:16px;line-height:1.7;color:#8a93a8;">The same kernel that ranks a bound ligand measures <span style="color:var(--acc-red,#F87171);">collapse</span> in a reasoning agent and <span style="color:var(--acc-green,#00FF96);">coherence</span> in a beating heart. One idea, made rigorous, shipped open.</p>
+          <div style="margin:34px 0 0;padding:22px 24px;border:1px solid rgba(34,211,238,0.14);border-radius:10px;background:rgba(12,16,22,0.6);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;text-align:center;"><span style="color:#FBBF24;">∆G</span><span style="color:#8a93a8;"> = </span><span style="color:#22D3EE;">∆H</span><span style="color:#8a93a8;"> − </span><span style="color:var(--acc-orange,#FF7D0A);">T</span><span style="color:#A78BFA;">∆S</span></div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;text-align:center;color:#8a93a8;margin-top:8px;">H = −Σ <span style="color:#67E8F9;">pᵢ</span> log₂ <span style="color:#67E8F9;">pᵢ</span></div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:30px;">
+            <a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#0a0e14;background:#22D3EE;padding:12px 20px;border-radius:7px;box-shadow:0 0 calc(16px * var(--glow-mult,1)) rgba(34,211,238,0.35);"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>github.com/LeBonhommePharma →</a>
+          </div>
+        </div>
+
+        <div style="padding:44px 44px 40px;background:rgba(12,16,22,0.4);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.22em;color:#A78BFA;text-transform:uppercase;margin-bottom:20px;">The Ledger · six works</div>
+          <div style="display:flex;flex-direction:column;">
+            <div style="display:grid;grid-template-columns:16px 1fr auto;gap:14px;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(34,211,238,0.08);"><span style="width:9px;height:9px;border-radius:2px;background:#FBBF24;"></span><div><div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#d4dced;">FlexAID∆S</div><div style="font-size:12px;color:#8a93a8;">Entropy-driven docking engine — the full ∆G.</div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#FBBF24;">∆G</span></div>
+            <div style="display:grid;grid-template-columns:16px 1fr auto;gap:14px;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(34,211,238,0.08);"><span style="width:9px;height:9px;border-radius:2px;background:var(--acc-red,#F87171);"></span><div><div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#d4dced;">Shannon</div><div style="font-size:12px;color:#8a93a8;">LLM entropy-collapse — deception & eval-awareness.</div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--acc-red,#F87171);">H↓</span></div>
+            <div style="display:grid;grid-template-columns:16px 1fr auto;gap:14px;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(34,211,238,0.08);"><span style="width:9px;height:9px;border-radius:2px;background:#A78BFA;"></span><div><div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#d4dced;">tENCoM</div><div style="font-size:12px;color:#8a93a8;">Torsional ENCoM — vibrational entropy model.</div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#A78BFA;">T∆S</span></div>
+            <div style="display:grid;grid-template-columns:16px 1fr auto;gap:14px;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(34,211,238,0.08);"><span style="width:9px;height:9px;border-radius:2px;background:var(--acc-green,#00FF96);"></span><div><div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#d4dced;">PoseBust</div><div style="font-size:12px;color:#8a93a8;">Geometric pose validation — physical plausibility.</div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--acc-green,#00FF96);">✓</span></div>
+            <div style="display:grid;grid-template-columns:16px 1fr auto;gap:14px;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(34,211,238,0.08);"><span style="width:9px;height:9px;border-radius:2px;background:#22D3EE;"></span><div><div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#d4dced;">NRGsuite</div><div style="font-size:12px;color:#8a93a8;">PyMOL plugin — the NRGlab toolchain, interactive.</div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#22D3EE;">∆H</span></div>
+            <div style="display:grid;grid-template-columns:16px 1fr auto;gap:14px;align-items:baseline;padding:14px 0;"><span style="width:9px;height:9px;border-radius:2px;background:var(--acc-orange,#FF7D0A);"></span><div><div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#d4dced;">ClusterFuck <span style="font-size:10px;color:#8a93a8;font-weight:400;">ex-NATURaL</span></div><div style="font-size:12px;color:#8a93a8;">Apple HRV biofeedback — entropy → Collapse Index.</div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--acc-orange,#FF7D0A);">T</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 1C · SPECTRUM ============ -->
+  <div id="1c" style="display:flex;flex-direction:column;width:100%;max-width:1120px;">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:20px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.14em;color:#0a0e14;background:#FBBF24;padding:5px 11px;border-radius:4px;">1C</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;letter-spacing:0.2em;color:#d4dced;text-transform:uppercase;">Spectrum</span>
+      <span style="font-size:13px;color:#8a93a8;">The kernel as a prism — one white light, six meaning-coded works</span>
+    </div>
+
+    <div style="width:100%;background:#0a0e14;background-image:linear-gradient(rgba(34,211,238,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,0.035) 1px,transparent 1px);background-size:40px 40px;border:1px solid rgba(34,211,238,0.12);border-radius:14px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,0.6);">
+      <div style="padding:clamp(36px,5vw,56px) clamp(20px,4vw,56px) 20px;text-align:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.28em;color:#A78BFA;text-transform:uppercase;margin-bottom:18px;">Make Entropy Great Again</div>
+        <h1 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(30px,4.6vw,46px);line-height:1;letter-spacing:-0.02em;color:#d4dced;">One <span style="color:#67E8F9;">H = −Σ pᵢ log₂ pᵢ</span> kernel,<br>refracted into six works</h1>
+        <p style="max-width:60ch;margin:18px auto 0;font-size:15px;line-height:1.6;color:#8a93a8;">Colour is not decoration here — each hue is a term of the free-energy equation or a state of the system. Follow the spectrum.</p>
+      </div>
+
+      <!-- prism rail -->
+      <div style="padding:24px 56px 8px;">
+        <div style="height:10px;border-radius:6px;background:linear-gradient(90deg,#FBBF24,var(--acc-red,#F87171),#A78BFA,var(--acc-green,#00FF96),#22D3EE,var(--acc-orange,#FF7D0A));background-size:300% 100%;animation:prism 9s linear infinite;box-shadow:0 0 calc(22px * var(--glow-mult,1)) rgba(103,232,249,0.25);"></div>
+      </div>
+
+      <!-- six columns -->
+      <div style="padding:20px 56px 52px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;">
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:3px solid #FBBF24;"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#FBBF24;">∆G</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#d4dced;">FlexAID∆S</span><span style="font-size:11px;line-height:1.45;color:#8a93a8;">Docking engine — the full free-energy verdict.</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:3px solid var(--acc-red,#F87171);"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--acc-red,#F87171);">H↓</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#d4dced;">Shannon</span><span style="font-size:11px;line-height:1.45;color:#8a93a8;">LLM entropy-collapse — the deception alarm.</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:3px solid #A78BFA;"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#A78BFA;">T∆S</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#d4dced;">tENCoM</span><span style="font-size:11px;line-height:1.45;color:#8a93a8;">Vibrational entropy — where flexibility lives.</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:3px solid var(--acc-green,#00FF96);"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--acc-green,#00FF96);">✓</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#d4dced;">PoseBust</span><span style="font-size:11px;line-height:1.45;color:#8a93a8;">Pose validation — the plausibility gate.</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:3px solid #22D3EE;"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#22D3EE;">∆H</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#d4dced;">NRGsuite</span><span style="font-size:11px;line-height:1.45;color:#8a93a8;">Contacts toolchain — interactive in PyMOL.</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:3px solid var(--acc-orange,#FF7D0A);"><span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--acc-orange,#FF7D0A);">T</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#d4dced;">ClusterFuck</span><span style="font-size:11px;line-height:1.45;color:#8a93a8;">HRV biofeedback — the body's thermal knob.</span></div>
+      </div>
+
+      <div style="padding:22px 56px;border-top:1px solid rgba(34,211,238,0.10);display:flex;justify-content:space-between;align-items:center;background:rgba(10,14,20,0.6);">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8a93a8;">Le Bonhomme Pharma · Apache-2.0 · Montréal</span>
+        <a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>github.com/LeBonhommePharma →</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1260,&quot;height&quot;:1500},&quot;accentGreen&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#00FF96&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Semantic colours&quot;,&quot;options&quot;:[&quot;#00FF96&quot;,&quot;#22C55E&quot;,&quot;#4ADE80&quot;,&quot;#10B981&quot;]},&quot;accentRed&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FB7185&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Semantic colours&quot;,&quot;options&quot;:[&quot;#F87171&quot;,&quot;#EF4444&quot;,&quot;#FB7185&quot;,&quot;#DC2626&quot;]},&quot;accentOrange&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FF7D0A&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Semantic colours&quot;,&quot;options&quot;:[&quot;#FF7D0A&quot;,&quot;#F97316&quot;,&quot;#FDBA74&quot;,&quot;#EA580C&quot;]},&quot;showLegend&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;glowIntensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.6,&quot;min&quot;:0,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;unit&quot;:&quot;×&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  applyTheme() {
+    const el = this.rootRef.current;
+    if (!el) return;
+    const p = this.props || {};
+    el.style.setProperty('--acc-green', p.accentGreen ?? '#00FF96');
+    el.style.setProperty('--acc-red', p.accentRed ?? '#F87171');
+    el.style.setProperty('--acc-orange', p.accentOrange ?? '#FF7D0A');
+    el.style.setProperty('--glow-mult', String(p.glowIntensity ?? 1));
+  }
+  componentDidMount() { this.applyTheme(); }
+  componentDidUpdate() { this.applyTheme(); }
+  renderVals() {
+    return {
+      rootRef: this.rootRef,
+      showLegend: this.props.showLegend ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>

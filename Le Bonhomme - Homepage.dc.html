@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a0e14"/><stop offset="1" stop-color="#12212e"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><text x="50" y="50" dominant-baseline="central" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-weight="700" font-size="52" fill="#FBBF24">∆</text></svg></template>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'SF Pro Display';font-weight:300;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Light.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:400;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Regular.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:500;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Medium.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:600;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Semibold.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:700;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Bold.otf') format('opentype');}
+@font-face{font-family:'SF Pro Display';font-weight:900;font-style:normal;font-display:swap;src:url('_ds/flexaid-s-design-system-316ea2bb-4ea9-4cc2-890d-a68af60403a5/fonts/SF-Pro-Display-Black.otf') format('opentype');}
+:root,[data-theme=night]{--bg:#0a0e14;--text:#d4dced;--muted:#8a93a8;--faint:#5a6478;--surface:rgba(16,20,28,0.82);--surface2:rgba(12,16,22,0.55);--nav:rgba(10,14,20,0.82);--border:rgba(120,190,220,0.12);--border2:rgba(120,190,220,0.20);--grid:rgba(34,211,238,0.03);--teal:#22D3EE;--violet:#A78BFA;--gold:#FBBF24;--green:#00FF96;--coral:#F87171;--orange:#FF7D0A;--cyan:#67E8F9;}
+[data-theme=day]{--bg:#e9edf5;--text:#16233f;--muted:#586277;--faint:#93a0b6;--surface:rgba(255,255,255,0.92);--surface2:rgba(255,255,255,0.64);--nav:rgba(233,237,245,0.88);--border:rgba(28,52,88,0.14);--border2:rgba(28,52,88,0.24);--grid:rgba(28,64,116,0.06);--teal:#0E90AE;--violet:#7C3AED;--gold:#B0680C;--green:#06A35E;--coral:#D62B2B;--orange:#E86F0A;--cyan:#2C7BC0;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:#0a0e14;color:#d4dced;font-family:'SF Pro Display',-apple-system,'Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;transition:background .4s ease;}
+a{color:var(--teal);text-decoration:none;}
+a:hover{filter:brightness(1.2);}
+button{font-family:inherit;-webkit-appearance:none;appearance:none;cursor:pointer;}
+@keyframes flow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes eqglow{0%,100%{text-shadow:0 0 22px rgba(34,211,238,0.20)}50%{text-shadow:0 0 44px rgba(34,211,238,0.38),0 0 64px rgba(251,191,36,0.14)}}
+@keyframes meter{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@keyframes pulseArrow{0%,100%{opacity:0.3}50%{opacity:1}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.nav-burger{display:none;}
+.tg-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:30px;border-radius:6px;border:0;background:transparent;color:var(--muted);cursor:pointer;transition:background .2s ease,color .2s ease;}
+.tg-btn:hover{color:var(--text);}
+.theme-toggle[data-mode="day"] .tg-sun{background:color-mix(in srgb,var(--gold) 20%,transparent);color:var(--gold);}
+.theme-toggle[data-mode="night"] .tg-moon{background:color-mix(in srgb,var(--teal) 18%,transparent);color:var(--teal);}
+.nav-links a{white-space:nowrap;}
+@media(max-width:1024px){.grid3{grid-template-columns:repeat(2,1fr)!important;}}
+@media(max-width:760px){
+  .nav-links{display:none!important;}
+  .nav-div{display:none!important;}
+  .nav-gh{display:none!important;}
+  .nav-burger{display:inline-flex!important;}
+  .grid3{grid-template-columns:1fr!important;}
+  .grid2{grid-template-columns:1fr!important;}
+  .founder{grid-template-columns:1fr!important;gap:26px!important;}
+  .founder .fcol{align-items:flex-start!important;flex-direction:row!important;gap:16px!important;}
+  .ftop{flex-direction:column!important;gap:26px!important;}
+  .flinks{grid-template-columns:1fr!important;}
+  .fbottom{flex-direction:column!important;gap:8px!important;}
+}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" data-theme="{{ theme }}" style="position:relative;background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;min-height:100vh;overflow-x:hidden;color:var(--text);transition:background-color .4s ease;">
+
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:linear-gradient(90deg,var(--teal),var(--violet),var(--gold),var(--green),var(--coral),var(--orange),var(--cyan),var(--teal));background-size:300% 100%;animation:meter 12s linear infinite;opacity:0.9;"></div>
+
+  <!-- NAV -->
+  <nav style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:13px clamp(16px,4vw,40px);background:var(--nav);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);">
+    <a href="#top" aria-label="Le Bonhomme Pharma" style="display:inline-flex;align-items:center;gap:10px;flex-shrink:0;white-space:nowrap;text-decoration:none;"><span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--violet));font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--bg);box-shadow:0 4px 14px -4px color-mix(in srgb,var(--teal) 60%,transparent);">∆</span><span style="display:inline-flex;align-items:baseline;gap:6px;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;letter-spacing:0.01em;color:var(--text);">Le Bonhomme<span style="color:var(--gold);font-weight:600;">Pharma</span></span></a>
+    <div style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);">
+      <div class="nav-links" style="display:flex;align-items:center;gap:clamp(14px,1.7vw,22px);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.01em;">
+        <a href="#products" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">Products</a>
+        <a href="#manifesto" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">Manifesto</a>
+        <a href="#about" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">LP</a>
+        <a href="https://thebonhomme.com/FlexAIDdS/" style="color:var(--teal);transition:filter .2s ease;" style-hover="filter:brightness(1.25);">FlexAID∆S</a>
+        <a href="{{ dodHref }}" title="Drug of the Day" style="color:{{ dodColor }};font-weight:600;transition:filter .2s ease;" style-hover="filter:brightness(1.2);">℞ {{ dodName }}</a>
+      </div>
+      <div class="nav-div" style="width:1px;height:22px;background:var(--border);"></div>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:10px;">
+        <div class="theme-toggle" data-mode="{{ theme }}" role="group" aria-label="Theme" style="display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border2);border-radius:9px;background:var(--surface);">
+          <button class="tg-btn tg-sun" onClick="{{ setDay }}" aria-label="Day mode"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.6"></circle><path d="M12 2.8v1.8M12 19.4v1.8M4.6 4.6l1.3 1.3M18.1 18.1l1.3 1.3M2.8 12h1.8M19.4 12h1.8M4.6 19.4l1.3-1.3M18.1 5.9l1.3-1.3"></path></svg></button>
+          <button class="tg-btn tg-moon" onClick="{{ setNight }}" aria-label="Night mode"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 13.2A8.3 8.3 0 1 1 11.3 3.5 6.5 6.5 0 0 0 20.5 13.2z"></path></svg></button>
+        </div>
+        <a class="nav-gh" href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text);border:1px solid var(--border2);border-radius:8px;transition:border-color .2s ease,color .2s ease;" style-hover="border-color:var(--teal);color:var(--teal);"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>GitHub</a>
+        <button class="nav-burger" onClick="{{ toggleMenu }}" aria-label="Menu" style="align-items:center;justify-content:center;width:40px;height:38px;color:var(--text);background:var(--surface);border:1px solid var(--border2);border-radius:8px;font-size:18px;line-height:1;">{{ burgerIcon }}</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;top:100%;left:0;right:0;display:flex;flex-direction:column;padding:8px clamp(16px,4vw,40px) 16px;background:var(--nav);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);box-shadow:0 20px 40px -18px rgba(0,0,0,0.5);">
+        <a href="#products" onClick="{{ closeMenu }}" style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--text);padding:14px 4px;border-bottom:1px solid var(--border);">Products</a>
+        <a href="#manifesto" onClick="{{ closeMenu }}" style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--text);padding:14px 4px;border-bottom:1px solid var(--border);">Manifesto</a>
+        <a href="#about" onClick="{{ closeMenu }}" style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--text);padding:14px 4px;border-bottom:1px solid var(--border);">LP · Founder</a>
+        <a href="https://thebonhomme.com/FlexAIDdS/" style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--teal);padding:14px 4px;border-bottom:1px solid var(--border);">FlexAID∆S</a>
+        <a href="{{ dodHref }}" style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--text);padding:14px 4px;border-bottom:1px solid var(--border);">Drug of the Day · <span style="color:{{ dodColor }};font-weight:600;">{{ dodName }}</span></a>
+        <a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--text);padding:14px 4px;">GitHub →</a>
+      </div>
+    </sc-if>
+  </nav>
+
+  <!-- HERO -->
+  <header id="top" style="position:relative;min-height:calc(100svh - 52px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:88px clamp(18px,5vw,40px) 76px;overflow:hidden;">
+    <canvas ref="{{ canvasRef }}" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;max-width:940px;width:100%;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(9px,2.4vw,11px);letter-spacing:0.28em;text-transform:uppercase;color:var(--violet);margin-bottom:24px;">Little Burgundy · Montréal · Open Science</div>
+      <h1 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(40px,10vw,78px);line-height:0.96;letter-spacing:-0.02em;color:var(--text);">Le <span style="background:linear-gradient(90deg,var(--teal),var(--violet),var(--gold),var(--teal));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:flow 8.5s linear infinite;">Bonhomme</span><br>Pharma</h1>
+      <p style="max-width:60ch;margin:26px 0 0;font-size:clamp(15px,2.6vw,19px);line-height:1.55;color:var(--text);opacity:0.86;">We've been told to say <span style="color:var(--coral);font-weight:600;">NO</span> to drugs. Bonhomme disagrees. <span style="color:var(--green);font-weight:600;">ALL IN</span> psychopharmacology — <span style="color:var(--green);">open-source</span>, <span style="color:var(--teal);">thermodynamically rigorous</span>, unapologetically pro-drug in the clinical sense that matters.</p>
+
+      <div style="margin:36px 0 0;font-family:'JetBrains Mono',monospace;font-size:clamp(28px,6.5vw,40px);font-weight:700;animation:eqglow 4s ease-in-out infinite;"><span style="color:var(--gold);">∆G</span><span style="color:var(--muted);"> = </span><span style="color:var(--teal);">∆H</span><span style="color:var(--muted);"> − </span><span style="color:var(--orange);">T</span><span style="color:var(--violet);">∆S</span></div>
+
+      <div style="display:flex;align-items:center;gap:6px;margin-top:32px;flex-wrap:wrap;justify-content:center;">
+        <sc-for list="{{ pipeline }}" as="p" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 16px;border:1px solid var(--border2);border-radius:9px;background:var(--surface);min-width:104px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:{{ p.c }};letter-spacing:0.12em;">{{ p.n }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text);">{{ p.step }}</span>
+            <span style="font-size:10.5px;color:var(--muted);text-align:center;line-height:1.35;">{{ p.detail }}</span>
+          </div>
+          <span style="color:var(--teal);font-size:16px;animation:pulseArrow 2.4s ease-in-out infinite;">›</span>
+        </sc-for>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);padding-left:2px;">pose &amp; affinity</span>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;justify-content:center;">
+        <a href="https://thebonhomme.com/FlexAIDdS/" style="display:inline-flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--bg);background:var(--teal);padding:15px 24px;border-radius:8px;box-shadow:0 0 24px color-mix(in srgb,var(--teal) 40%,transparent);" style-hover="filter:brightness(1.08);transform:translateY(-2px);">Explore FlexAID<span style="color:var(--gold);font-weight:700;">∆S</span> →</a>
+        <a href="#manifesto" style="display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--text);padding:15px 24px;border-radius:8px;border:1px solid var(--border2);" style-hover="background:var(--surface);">Read the Manifesto</a>
+      </div>
+
+      <div style="display:flex;gap:clamp(20px,5vw,34px);margin-top:44px;flex-wrap:wrap;justify-content:center;">
+        <div style="display:flex;flex-direction:column;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:clamp(22px,5vw,26px);font-weight:700;color:var(--gold);">96.4%</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px;">Astex Diverse · top pose</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:clamp(22px,5vw,26px);font-weight:700;color:var(--cyan);">&lt;1µs</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px;">per token · Shannon</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:clamp(22px,5vw,26px);font-weight:700;color:var(--green);">7</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px;">open-source works</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;"><span style="font-family:'JetBrains Mono',monospace;font-size:clamp(22px,5vw,26px);font-weight:700;color:var(--violet);">Apache 2.0</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px;">by construction</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MANIFESTO -->
+  <section id="manifesto" style="position:relative;padding:clamp(64px,9vw,100px) clamp(18px,5vw,40px);border-top:1px solid var(--border);background:var(--surface2);">
+    <div style="max-width:900px;margin:0 auto;" data-reveal>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--violet);margin-bottom:20px;">Manifesto</div>
+      <p style="max-width:none;font-size:clamp(19px,3.4vw,24px);line-height:1.5;color:var(--text);margin:0 0 26px;font-weight:500;">The psychiatric system isn't broken — it was built for a different century. We're building the tools for <span style="color:var(--green);">this</span> one.</p>
+      <p style="max-width:76ch;font-size:clamp(14px,2.2vw,16px);line-height:1.7;color:var(--muted);margin:0 0 18px;"><span style="color:var(--green);">Open-source. Thermodynamically rigorous. Unapologetically pro-drug</span> in the clinical sense that matters: every molecule is a hypothesis about biology, and the stigma attached to psychoactives has killed more people than the molecules themselves.</p>
+      <p style="max-width:76ch;font-size:clamp(14px,2.2vw,16px);line-height:1.7;color:var(--muted);margin:0;">From the <span style="color:var(--teal);">statistical mechanics of ligand binding</span> to the social mechanics of <span style="color:var(--green);">harm reduction</span>, the physics is the same: systems seek lower free energy. Our job is to lower the barrier — algorithmically, pharmacologically, politically.</p>
+      <blockquote style="margin:40px 0 0;padding:26px clamp(20px,4vw,34px);border-left:3px solid var(--gold);background:color-mix(in srgb,var(--gold) 7%,transparent);border-radius:0 10px 10px 0;">
+        <p style="max-width:none;margin:0;font-family:'JetBrains Mono',monospace;font-size:clamp(17px,3vw,22px);line-height:1.45;color:var(--text);font-weight:500;">"Drug is <span style="color:var(--gold);">ALWAYS</span> an answer — sometimes the only one available."</p>
+        <div style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">— @BonhommePharma</div>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="products" style="padding:clamp(64px,9vw,100px) clamp(18px,5vw,40px);">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:48px;" data-reveal>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--violet);margin-bottom:14px;">Open-Source Arsenal</div>
+        <h2 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(30px,5.5vw,44px);letter-spacing:-0.02em;color:var(--text);">What We Build</h2>
+      </div>
+      <div class="grid3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+        <sc-for list="{{ products }}" as="p" hint-placeholder-count="7">
+          <a href="{{ p.href }}" data-reveal style="--cc:{{ p.c }};display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--border);border-top:2px solid var(--cc);border-radius:12px;background:var(--surface);transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s cubic-bezier(.16,1,.3,1),border-color .3s;" style-hover="transform:translateY(-5px);box-shadow:0 16px 44px -14px var(--cc);border-color:var(--cc);">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cc);">{{ p.kind }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--cc);">{{ p.glyph }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;color:var(--text);">{{ p.name }}</span>
+              <sc-if value="{{ p.tag }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--cc);border:1px solid var(--cc);border-radius:999px;padding:2px 8px;animation:pulseArrow 2.6s ease-in-out infinite;">{{ p.tag }}</span></sc-if>
+            </div>
+            <p style="max-width:none;margin:0;font-size:13.5px;line-height:1.55;color:var(--muted);flex:1;">{{ p.desc }}</p>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--cc);margin-top:4px;">{{ p.cta }} →</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section style="padding:clamp(64px,9vw,100px) clamp(18px,5vw,40px);border-top:1px solid var(--border);background:var(--surface2);">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:48px;" data-reveal>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--violet);margin-bottom:14px;">Operating Principles</div>
+        <h2 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(30px,5.5vw,44px);letter-spacing:-0.02em;color:var(--text);">The Physics First</h2>
+      </div>
+      <div class="grid2" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+        <sc-for list="{{ principles }}" as="pr" hint-placeholder-count="4">
+          <div data-reveal style="padding:clamp(24px,4vw,32px);border:1px solid var(--border);border-radius:12px;background:var(--surface);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:{{ pr.c }};margin-bottom:14px;">{{ pr.n }}</div>
+            <h3 style="margin:0 0 10px;font-family:'JetBrains Mono',monospace;font-size:clamp(19px,3.4vw,22px);font-weight:700;color:{{ pr.c }};">{{ pr.title }}</h3>
+            <p style="max-width:none;margin:0;font-size:14px;line-height:1.62;color:var(--muted);">{{ pr.body }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDER -->
+  <section id="about" style="padding:clamp(64px,9vw,100px) clamp(18px,5vw,40px);">
+    <div class="founder" style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:180px 1fr;gap:44px;align-items:start;" data-reveal>
+      <div class="fcol" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div style="width:150px;height:150px;flex-shrink:0;border-radius:14px;overflow:hidden;border:1px solid var(--border2);box-shadow:0 0 22px color-mix(in srgb,var(--teal) 14%,transparent);animation:floatY 6s ease-in-out infinite;">
+          <img src="uploads/ED804FFD-5860-4E50-AE4B-CA3705CBCD71_1_105_c-b39ec103.jpeg" alt="Louis-Philippe Morency" style="width:100%;height:100%;object-fit:cover;object-position:center 28%;display:block;">
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Founder</span>
+      </div>
+      <div>
+        <h2 style="margin:0;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:clamp(24px,5vw,32px);letter-spacing:-0.01em;color:var(--text);">Louis-Philippe <span style="color:var(--teal);">(LP)</span> Morency</h2>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal);margin-top:6px;">PhD Candidate · Psychopharmacology · Université de Montréal · Le Bonhomme Pharma</div>
+        <p style="max-width:none;font-size:15px;line-height:1.68;color:var(--muted);margin:18px 0 0;">Built <span style="color:var(--gold);">FlexAID∆S</span> because the field needed <span style="color:var(--teal);">thermodynamically honest docking</span> and nobody else was going to do it from a basement in Little Burgundy. Main coder on FlexAID∆S, Shannon, ClusterFuck and NRGsuite — <span style="color:var(--gold);">96.4%</span> on Astex Diverse 85, without crystal coordinates. Anti-prohibitionist. Writing a book on housing, organized crime, and <span style="color:var(--green);">harm reduction</span> in Montréal. Shannon entropy and cats.</p>
+        <div style="display:flex;gap:18px;margin-top:22px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:12.5px;">
+          <a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener">@LeBonhommePharma</a>
+          <a href="mailto:lp@thebonhomme.com">lp@thebonhomme.com</a>
+          <a href="https://github.com/NRGlab" target="_blank" rel="noreferrer noopener" style="color:var(--muted);">NRGlab · UdeM</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding:60px clamp(18px,5vw,40px) 40px;border-top:1px solid var(--border);background:var(--surface2);">
+    <div class="ftop" style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;">
+      <div style="max-width:320px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--text);">Le Bonhomme <span style="color:var(--gold);">Pharma</span></div>
+        <p style="max-width:none;font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 0;">Radical open-source computational pharmacology. Little Burgundy · Montréal · Québec.</p>
+      </div>
+      <div class="flinks" style="display:grid;grid-template-columns:1fr 1fr;gap:8px 40px;font-family:'JetBrains Mono',monospace;font-size:12px;">
+        <a href="https://thebonhomme.com/FlexAIDdS/" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">FlexAID∆S — docking engine</a>
+        <a href="https://thebonhomme.com/entropy-driven/" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">Entropy-Driven — landing</a>
+        <a href="https://github.com/LeBonhommePharma/Shannon" target="_blank" rel="noreferrer noopener" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">Shannon — LLM entropy</a>
+        <a href="https://github.com/LeBonhommePharma/NATURaL" target="_blank" rel="noreferrer noopener" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">ClusterFuck — biofeedback · <span style="color:var(--orange);">pending</span></a>
+        <a href="https://thebonhomme.com/entropy-docking/" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">Entropy Docking — interactive</a>
+        <a href="{{ dodHref }}" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">Drug of the Day · <span style="color:{{ dodColor }};">{{ dodName }}</span></a>
+        <a href="https://thebonhomme.com/periodic/" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">Periodic Table</a>
+        <a href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" rel="noreferrer noopener" style="color:var(--text);transition:color .2s ease;" style-hover="color:var(--teal);">GitHub — FlexAID∆S</a>
+      </div>
+    </div>
+    <div class="fbottom" style="max-width:1200px;margin:36px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.06em;color:var(--faint);">
+      <span>© 2025–2026 Le Bonhomme Pharma · Apache 2.0 · Montréal, Québec</span>
+      <span><span style="color:var(--gold);">∆G</span> = <span style="color:var(--teal);">∆H</span> − <span style="color:var(--violet);">T∆S</span></span>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;night&quot;,&quot;options&quot;:[&quot;night&quot;,&quot;day&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;,&quot;label&quot;:&quot;Default theme&quot;},&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;,&quot;label&quot;:&quot;Animations &amp; reveals&quot;},&quot;showParticles&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;,&quot;label&quot;:&quot;Molecular particle field&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:64,&quot;min&quot;:20,&quot;max&quot;:140,&quot;step&quot;:4,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;,&quot;label&quot;:&quot;Particle density&quot;}}">
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  canvasRef = React.createRef();
+  state = { theme: (this.props.defaultTheme === "day" ? "day" : "night"), menuOpen: false };
+
+  componentDidMount() {
+    this._applyBodyBg();
+    this._setupReveal();
+    this._setupParticles();
+  }
+  componentDidUpdate() { this._applyBodyBg(); }
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._onResize) window.removeEventListener("resize", this._onResize);
+  }
+  _applyBodyBg() {
+    document.body.style.background = this.state.theme === "day" ? "#e9edf5" : "#0a0e14";
+  }
+  _toggleTheme = () => this.setState(s => ({ theme: s.theme === "day" ? "night" : "day" }));
+  _toggleMenu = () => this.setState(s => ({ menuOpen: !s.menuOpen }));
+  _closeMenu = () => this.setState({ menuOpen: false });
+
+  _setupReveal() {
+    const root = this.rootRef.current;
+    if (!root || this.props.motion === false || !("IntersectionObserver" in window)) return;
+    const els = Array.from(root.querySelectorAll("[data-reveal]"));
+    els.forEach(el => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(20px)";
+      el.style.transition = "opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)";
+    });
+    this._io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = "1";
+          e.target.style.transform = "none";
+          this._io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    els.forEach(el => this._io.observe(el));
+  }
+
+  _setupParticles() {
+    const canvas = this.canvasRef.current;
+    if (!canvas) return;
+    if (this.props.motion === false || this.props.showParticles === false) return;
+    const ctx = canvas.getContext("2d");
+    const PAL = { night: ["#22D3EE", "#A78BFA", "#67E8F9", "#FBBF24"], day: ["#0E90AE", "#7C3AED", "#2C7BC0", "#B0680C"] };
+    let w = 0, h = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let base = Math.max(16, Math.min(180, Math.round(this.props.density ?? 64)));
+    let nodes = [];
+    const seed = () => {
+      const small = window.innerWidth < 680;
+      const count = small ? Math.round(base * 0.5) : base;
+      nodes = new Array(count).fill(0).map(() => ({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
+        r: Math.random() * 1.6 + 0.8,
+        ci: (Math.random() * 4) | 0,
+      }));
+    };
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      w = rect.width; h = rect.height;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      seed();
+    };
+    this._onResize = resize;
+    window.addEventListener("resize", resize);
+    resize();
+    const LINK = 128;
+    const draw = () => {
+      const pal = PAL[this.state.theme] || PAL.night;
+      const lineA = this.state.theme === "day" ? 0.22 : 0.16;
+      const dotA = this.state.theme === "day" ? 0.55 : 0.7;
+      ctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < -20) n.x = w + 20; if (n.x > w + 20) n.x = -20;
+        if (n.y < -20) n.y = h + 20; if (n.y > h + 20) n.y = -20;
+        for (let j = i + 1; j < nodes.length; j++) {
+          const m = nodes[j];
+          const dx = n.x - m.x, dy = n.y - m.y;
+          const d = Math.hypot(dx, dy);
+          if (d < LINK) {
+            ctx.globalAlpha = (1 - d / LINK) * lineA;
+            ctx.strokeStyle = pal[n.ci];
+            ctx.lineWidth = 0.6;
+            ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(m.x, m.y); ctx.stroke();
+          }
+        }
+      }
+      for (const n of nodes) {
+        ctx.globalAlpha = dotA;
+        ctx.fillStyle = pal[n.ci];
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      this._raf = requestAnimationFrame(draw);
+    };
+    draw();
+  }
+
+  renderVals() {
+    const drugs = [
+      { name: "Cocaine HCl", slug: "cocaine", live: true, note: "competitive DAT/NET/SERT reuptake inhibitor · DAT Ki ≈ 250 nM" },
+      { name: "MDMA", slug: "mdma", live: true, note: "substrate-mediated SERT/NET/DAT efflux · SERT Ki = 34 nM · FDA Breakthrough Therapy" },
+      { name: "DMT", slug: "dmt", live: true, note: "endogenous 5-HT2A agonist · Ki ≈ 170 nM · near-zero tolerance" },
+      { name: "Psilocin", slug: "psilocin", live: true, note: "psilocybin's active metabolite · 5-HT2A Ki ~107 nM" },
+      { name: "LSD", slug: "lsd", live: true, note: "ergoline · 5-HT2A Ki ~1 nM · receptor lid-lock" },
+      { name: "Amphetamine", slug: "amphetamine", live: true, note: "DAT/NET substrate-releaser · DAT Ki ~1,400 nM" },
+      { name: "Fentanyl", slug: "fentanyl", live: true, note: "μ-opioid full agonist · MOR Ki ~1.1 nM · naloxone-reversible" },
+      { name: "Salvinorin A", slug: "salvinorin-a", live: true, note: "κ-opioid full agonist · KOR Ki ~1.8 nM · non-serotonergic" },
+      { name: "Ketamine", slug: "ketamine", note: "NMDA-receptor antagonist · dissociative anesthetic · esketamine FDA-approved for depression" },
+      { name: "Methamphetamine", slug: "methamphetamine", note: "TAAR1 agonist & monoamine releaser · Schedule II (Desoxyn)" },
+      { name: "Methylphenidate", slug: "methylphenidate", note: "DAT/NET reuptake inhibitor · ADHD (Ritalin)" },
+      { name: "Lisdexamfetamine", slug: "lisdexamfetamine", note: "amphetamine prodrug · ADHD (Vyvanse)" },
+      { name: "Modafinil", slug: "modafinil", note: "atypical DAT inhibitor · wakefulness-promoting (Provigil)" },
+      { name: "Morphine", slug: "morphine", note: "μ-opioid full agonist · prototypical analgesic" },
+      { name: "Oxycodone", slug: "oxycodone", note: "semi-synthetic μ-opioid full agonist" },
+      { name: "Hydromorphone", slug: "hydromorphone", note: "μ-opioid full agonist · potent analgesic" },
+      { name: "Codeine", slug: "codeine", note: "μ-opioid prodrug · CYP2D6 → morphine" },
+      { name: "Tramadol", slug: "tramadol", note: "μ-opioid agonist + serotonin/NE reuptake inhibitor" },
+      { name: "Methadone", slug: "methadone", note: "μ-opioid agonist + NMDA antagonist · OUD maintenance" },
+      { name: "Buprenorphine", slug: "buprenorphine", note: "partial μ-opioid agonist / κ antagonist · OUD (Suboxone)" },
+      { name: "Naloxone", slug: "naloxone", note: "competitive μ-opioid antagonist · overdose reversal (Narcan)" },
+      { name: "Naltrexone", slug: "naltrexone", note: "opioid antagonist · alcohol & opioid use disorder" },
+      { name: "Diazepam", slug: "diazepam", note: "GABA-A positive allosteric modulator · benzodiazepine (Valium)" },
+      { name: "Alprazolam", slug: "alprazolam", note: "GABA-A PAM · benzodiazepine (Xanax)" },
+      { name: "Clonazepam", slug: "clonazepam", note: "GABA-A PAM · benzodiazepine (Klonopin)" },
+      { name: "Zolpidem", slug: "zolpidem", note: "GABA-A α1-selective PAM · Z-drug hypnotic (Ambien)" },
+      { name: "Propofol", slug: "propofol", note: "GABA-A PAM · IV general anesthetic" },
+      { name: "Nitrous Oxide", slug: "nitrous-oxide", note: "NMDA antagonist · inhaled anesthetic & analgesic" },
+      { name: "Dextromethorphan", slug: "dextromethorphan", note: "NMDA antagonist / σ1 agonist · dissociative at high dose" },
+      { name: "Memantine", slug: "memantine", note: "uncompetitive NMDA antagonist · Alzheimer's" },
+      { name: "Caffeine", slug: "caffeine", note: "adenosine A1/A2A receptor antagonist" },
+      { name: "Nicotine", slug: "nicotine", note: "nicotinic acetylcholine-receptor agonist" },
+      { name: "Varenicline", slug: "varenicline", note: "α4β2 nicotinic partial agonist · smoking cessation (Chantix)" },
+      { name: "THC", slug: "thc", note: "CB1/CB2 partial agonist · principal cannabinoid" },
+      { name: "CBD", slug: "cbd", note: "non-euphoric cannabinoid · 5-HT1A / TRPV1 · FDA (Epidiolex)" },
+      { name: "Psilocybin", slug: "psilocybin", note: "prodrug → psilocin · 5-HT2A agonist · Breakthrough Therapy" },
+      { name: "Mescaline", slug: "mescaline", note: "phenethylamine 5-HT2A agonist" },
+      { name: "2C-B", slug: "2c-b", note: "phenethylamine 5-HT2A agonist / partial" },
+      { name: "Ibogaine", slug: "ibogaine", note: "multi-target (NMDA, opioid, σ) · anti-addictive" },
+      { name: "Fluoxetine", slug: "fluoxetine", note: "SSRI · serotonin reuptake inhibitor (Prozac)" },
+      { name: "Sertraline", slug: "sertraline", note: "SSRI (Zoloft)" },
+      { name: "Escitalopram", slug: "escitalopram", note: "SSRI (Lexapro)" },
+      { name: "Venlafaxine", slug: "venlafaxine", note: "SNRI · serotonin-norepinephrine reuptake inhibitor" },
+      { name: "Duloxetine", slug: "duloxetine", note: "SNRI (Cymbalta)" },
+      { name: "Bupropion", slug: "bupropion", note: "NDRI · norepinephrine-dopamine reuptake inhibitor (Wellbutrin)" },
+      { name: "Buspirone", slug: "buspirone", note: "5-HT1A partial agonist · anxiolytic" },
+      { name: "Aripiprazole", slug: "aripiprazole", note: "dopamine D2 partial agonist · atypical antipsychotic (Abilify)" },
+      { name: "Risperidone", slug: "risperidone", note: "D2 / 5-HT2A antagonist · atypical antipsychotic" },
+      { name: "Olanzapine", slug: "olanzapine", note: "multi-receptor antagonist · atypical antipsychotic (Zyprexa)" },
+      { name: "Quetiapine", slug: "quetiapine", note: "D2 / 5-HT2A antagonist · atypical antipsychotic (Seroquel)" },
+      { name: "Clozapine", slug: "clozapine", note: "multi-receptor atypical antipsychotic · treatment-resistant" },
+      { name: "Haloperidol", slug: "haloperidol", note: "D2 antagonist · typical antipsychotic" },
+      { name: "Lithium", slug: "lithium", note: "mood stabilizer · GSK-3 / inositol-depletion" },
+      { name: "Lamotrigine", slug: "lamotrigine", note: "voltage-gated Na+ channel blocker · mood stabilizer" },
+      { name: "Valproate", slug: "valproate", note: "Na+ channel / GABAergic · anticonvulsant & mood stabilizer" },
+      { name: "Gabapentin", slug: "gabapentin", note: "α2δ voltage-gated Ca2+ channel ligand" },
+      { name: "Pregabalin", slug: "pregabalin", note: "α2δ Ca2+ channel ligand (Lyrica)" },
+      { name: "Melatonin", slug: "melatonin", note: "MT1 / MT2 receptor agonist · circadian" },
+      { name: "Diphenhydramine", slug: "diphenhydramine", note: "H1 antihistamine / antimuscarinic (Benadryl)" },
+      { name: "Scopolamine", slug: "scopolamine", note: "muscarinic acetylcholine antagonist" },
+      { name: "Donepezil", slug: "donepezil", note: "acetylcholinesterase inhibitor · Alzheimer's" },
+      { name: "GHB", slug: "ghb", note: "GABA-B & GHB-receptor agonist · Xyrem (narcolepsy)" },
+      { name: "Mitragynine", slug: "kratom", note: "kratom alkaloid · atypical μ-opioid partial agonist" },
+    ];
+    const now = new Date();
+    const doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+    const today = drugs[doy % drugs.length];
+    const bindingColor = (d) => {
+      const s = (d.name + " " + d.note).toLowerCase();
+      if (/opioid|naloxone|naltrexone|\bmor\b|\bkor\b/.test(s)) return "var(--coral)";
+      if (/gaba|benzodiazepine|z-drug|propofol|\bghb\b/.test(s)) return "var(--gold)";
+      if (/nmda|dissociative|σ1|sigma/.test(s)) return "var(--cyan)";
+      if (/cb1|cb2|cannabinoid/.test(s)) return "var(--green)";
+      if (/dat|net|sert|reuptake|releaser|taar1|amphetamine|stimulant|ssri|snri|ndri/.test(s)) return "var(--teal)";
+      if (/5-ht|seroton|ergoline|psychedelic|phenethylamine|dopamine|\bd2\b|antipsychotic/.test(s)) return "var(--violet)";
+      if (/nicotinic|muscarinic|acetylcholinesterase|antihistamine|\bh1\b|cholin/.test(s)) return "var(--orange)";
+      if (/channel|mood stabilizer|lithium|α2δ|na\+|ca2\+/.test(s)) return "var(--gold)";
+      if (/adenosine/.test(s)) return "var(--cyan)";
+      if (/melatonin|mt1|mt2/.test(s)) return "var(--violet)";
+      return "var(--muted)";
+    };
+    const dodColor = bindingColor(today);
+    const dodHref = "https://thebonhomme.com/drug-of-the-day/" + today.slug + "/";
+
+    return {
+      rootRef: this.rootRef,
+      canvasRef: this.canvasRef,
+      theme: this.state.theme,
+      menuOpen: this.state.menuOpen,
+      toggleTheme: this._toggleTheme,
+      setDay: () => this.setState({ theme: "day" }),
+      setNight: () => this.setState({ theme: "night" }),
+      toggleMenu: this._toggleMenu,
+      closeMenu: this._closeMenu,
+      themeLabel: this.state.theme === "day" ? "● Night" : "○ Day",
+      burgerIcon: this.state.menuOpen ? "✕" : "≡",
+      dodName: today.name,
+      dodColor: dodColor,
+      dodHref: dodHref,
+      pipeline: [
+        { n: "01", step: "Target", detail: "binding-site cleft", c: "var(--teal)" },
+        { n: "02", step: "Dock", detail: "GA conformational search", c: "var(--cyan)" },
+        { n: "03", step: "Score", detail: "soft complementarity", c: "var(--violet)" },
+        { n: "04", step: "Rank", detail: "top-scoring poses", c: "var(--gold)" },
+      ],
+      products: [
+        { name: "FlexAID∆S", kind: "Docking Engine", glyph: "∆G", c: "var(--gold)", href: "https://thebonhomme.com/FlexAIDdS/", cta: "Explore FlexAID∆S", desc: "Entropy-driven molecular docking. The full \u0394G = \u0394H \u2212 T\u0394S with Shannon entropy — torsional ENCoM, Voronoi contact function, GPU batch scoring. 96.4% on Astex Diverse 85." },
+        { name: "Shannon", kind: "Entropy Toolkit", glyph: "H↓", c: "var(--coral)", href: "https://github.com/LeBonhommePharma/Shannon", cta: "View on GitHub", desc: "Entropy-collapse detector for frontier LLM agents. Zero-shot evaluation-awareness and strategic-deception monitoring via the same H = \u2212\u03a3 p\u1d62 log\u2082 p\u1d62 kernel that powers binding and HRV." },
+        { name: "Entropy-Driven", kind: "Product Docs", glyph: "T∆S", c: "var(--violet)", href: "https://thebonhomme.com/entropy-driven/", cta: "Read the docs", desc: "The full FlexAID∆S entropy-driven docking landing — architecture, benchmarks, install, modules and live repository stats. One kernel, refracted into six works." },
+        { name: "Entropy Docking", kind: "Interactive", glyph: "♪", c: "var(--cyan)", href: "https://thebonhomme.com/entropy-docking/", cta: "Launch experience", desc: "Shannon × Music × Molecular, in AR/VR. BPM drives temperature, Crooks cycles, HRV coupling and binding entropy collapse — click to play in-browser." },
+        { name: "ClusterFuck", tag: "name pending · soon", kind: "Biofeedback", glyph: "T", c: "var(--orange)", href: "https://github.com/LeBonhommePharma/NATURaL", cta: "View on GitHub", desc: "Multi-platform Apple biofeedback — name coming soon. Real-time HRV entropy \u2192 Shannon Collapse Index during guided chair yoga. Shared kernel with FlexAID∆S across Watch, iPhone, TV, Vision Pro." },
+        { name: "Drug of the Day", tag: "Today · " + today.name, kind: "Harm Reduction", glyph: "℞", c: "var(--green)", href: dodHref, cta: "Today's drug — " + today.name, desc: "Today: " + today.name + " — " + today.note + ". Rotates every day. Rigorous pharmacology plus entropy-docking commentary. Mechanism over moralising." },
+        { name: "Periodic Table", kind: "Reference", glyph: "⊞", c: "var(--teal)", href: "https://thebonhomme.com/periodic/", cta: "Open table", desc: "The periodic table of psychoactive compounds — pharmacological classes, receptor targets and structural families. The reference sheet your professor wouldn't give you." },
+      ],
+      principles: [
+        { n: "01 / Thermodynamics", title: "∆G = ∆H − T∆S", c: "var(--gold)", body: "Every binding event is a thermodynamic equation. Ignoring the entropy term isn't a shortcut — it's a wrong answer. We compute the whole thing." },
+        { n: "02 / Open Science", title: "Apache 2.0, Full Stop", c: "var(--green)", body: "Proprietary docking tools gatekeep science behind paywalls. Drug discovery belongs to everyone. Our code ships under Apache 2.0, reproducible by construction." },
+        { n: "03 / Harm Reduction", title: "Education Over Prohibition", c: "var(--coral)", body: "The war on drugs failed the pharmacology exam. Psychoactives are tools with mechanisms — understandable, predictable, teachable. We teach them." },
+        { n: "04 / Mechanistic Rigor", title: "No Black Boxes", c: "var(--cyan)", body: "ML correlation without mechanism is astrology with better marketing. We use neural networks as a last resort, not a first instinct. First principles, every time." },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
