@@ -4,7 +4,7 @@
 (function (global) {
   'use strict';
 
-  var BUILD = '20260622-publication';
+  var BUILD = '20260721-onload-fix';
   var IOS_MAX_DPR = 2;      // effective device-pixel-ratio ceiling on iOS
   var BOOT_TIMEOUT_MS = 20000;  // hang -> visible error instead of an endless spinner
   var viewers = new WeakMap();
@@ -18,8 +18,15 @@
     if (!origFetch) return;
     global.fetch = function (input, init) {
       var url = typeof input === 'string' ? input : (input && input.url) || '';
-      if (url.indexOf('molstarvolseg.ncbr.muni.cz') !== -1) {
-        return Promise.resolve(new Response('{}', {
+      // Mol* volume/segmentation probes (and a broken empty default server that
+      // resolves to same-origin /list_entries/…) are not needed for Drug-of-the-Day
+      // structure pages. Stub them so a 404 HTML body never gets JSON-parsed.
+      if (
+        url.indexOf('molstarvolseg.ncbr.muni.cz') !== -1 ||
+        /\/list_entries\//i.test(url) ||
+        /volumes?[_-]?and[_-]?seg/i.test(url)
+      ) {
+        return Promise.resolve(new Response('{"entries":[]}', {
           status: 200,
           headers: { 'Content-Type': 'application/json' },
         }));
@@ -28,7 +35,7 @@
     };
     global.addEventListener('unhandledrejection', function (e) {
       var msg = e.reason && (e.reason.message || String(e.reason)) || '';
-      if (/molstarvolseg|multiScale|is not iterable/i.test(msg)) {
+      if (/molstarvolseg|multiScale|is not iterable|list_entries/i.test(msg)) {
         e.preventDefault();
         log('warn', 'suppressed non-fatal Mol* rejection', e.reason);
       }
@@ -195,7 +202,17 @@
 
       function build() {
         var ligandComp = null;
-        return plugin.managers.structure.component.clear(struct).then(function () {
+        // clear() can throw "is not iterable" on some Mol* 4.x hierarchy states
+        // (esp. after volume-stream probes fail). Soft-fail and still add reps.
+        var clearP = Promise.resolve();
+        try {
+          clearP = plugin.managers.structure.component.clear(struct).catch(function (err) {
+            log('warn', 'component.clear failed, continuing', err);
+          });
+        } catch (err) {
+          log('warn', 'component.clear threw, continuing', err);
+        }
+        return clearP.then(function () {
           return plugin.managers.structure.component.add(
             { structure: struct },
             { type: { name: 'static', params: 'polymer' } }
@@ -307,14 +324,18 @@
 
   function loadMolstarScript(done) {
     if (global.molstar) return done();
+    // Important: never pass the load Event into `done` — Event is truthy and
+    // would be treated as an error by callers (`if (err) …`).
+    function ok() { done(); }
+    function fail(err) { done(err instanceof Error ? err : new Error('Mol* script failed')); }
     var script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.js';
-    script.onload = done;
+    script.onload = ok;
     script.onerror = function () {
       var fb = document.createElement('script');
       fb.src = 'https://unpkg.com/molstar@4.5.0/build/viewer/molstar.js';
-      fb.onload = done;
-      fb.onerror = function () { done(new Error('Mol* script failed')); };
+      fb.onload = ok;
+      fb.onerror = function () { fail(new Error('Mol* script failed')); };
       document.head.appendChild(fb);
     };
     document.head.appendChild(script);
@@ -514,7 +535,10 @@
       viewportShowControls: false,
       pdbProvider: 'rcsb',
       emdbProvider: 'pdbe',
-      volumesAndSegmentationsDefaultServer: '',
+      // Never leave this as '' — Mol* resolves relative /list_entries/ against the
+      // page origin and then JSON-parses the 404 HTML. Disabled streaming + a
+      // dummy absolute server keeps the probe path off the site origin.
+      volumesAndSegmentationsDefaultServer: 'https://molstarvolseg.ncbr.muni.cz/v2',
       volumeStreamingDisabled: true,
       canvas3d: {
         transparentBackground: false,
