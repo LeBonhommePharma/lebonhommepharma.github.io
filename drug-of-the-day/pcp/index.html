@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCP — Drug of the Day #032 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of phencyclidine (PCP, 'angel dust'): the eponymous PCP site — a high-affinity, long-residence open-channel block of the NMDA receptor, roughly an order of magnitude more potent and longer-acting than ketamine. Real ChEMBL Ki/IC50 values at the NMDA PCP-site, GluN2A/GluN2B subtypes and sigma-1, plus DAT reuptake inhibition; long half-life and lipophilic/gastric redistribution pharmacokinetics; dose-dependent agitation, dissociation, analgesia and toxicity; harm reduction (unpredictable agitation and injury, hyperthermia/rhabdomyolysis, never mix with depressants); the 1970s street history; and an interactive 3D NMDA-receptor binding-site visualization via Mol* Viewer using PDB 7SAB — an actual PCP-bound structure.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-block   { color: var(--rose); background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/ketamine/">Ketamine #011</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#032 · Drug of the Day</span>
+    <span class="pill pill-terra">Arylcyclohexylamine dissociative</span>
+    <span class="pill pill-rose">Schedule II (US) · Schedule I (many jurisdictions)</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">PCP</span>
+  </h1>
+  <p class="hero-iupac">IUPAC: 1-(1-phenylcyclohexyl)piperidine · C<sub>17</sub>H<sub>25</sub>N · MW 243.39 g/mol · CAS 77-10-1 · ChEMBL CHEMBL275528 · PDB ligand 1PC</p>
+  <p class="hero-class">
+    <strong>Phencyclidine.</strong>
+    The arylcyclohexylamine that named a receptor site. PCP is the archetypal <em>open-channel blocker</em> of the
+    NMDA-type glutamate receptor — the eponymous <em>"PCP site"</em> deep in the pore — binding with roughly an
+    order of magnitude higher affinity and far longer residence than its younger, gentler cousin
+    <a href="/drug-of-the-day/ketamine/">ketamine</a>. Originally the surgical anesthetic Sernyl (Parke-Davis, 1950s),
+    abandoned over emergence delirium, reborn as a 1970s street drug.
+    Street/context names: angel dust, sherm, wet, embalming fluid, PeaCePill, Sernyl(an), CI-395.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value terra">NMDA-R · PCP site</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Open-channel blocker</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">PCP-site K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~23 nM (human)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">vs. ketamine</span>
+      <span class="fact-value gold">~15–20× more potent</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub></span>
+      <span class="fact-value">~7–50 h (variable)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">Hepatic CYP · hydroxylation</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Secondary</span>
+      <span class="fact-value">σ<sub>1</sub> · DAT · nAChR</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Class</span>
+      <span class="fact-value teal">Dissociative</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>The Eponymous PCP Site — High-Affinity, Long-Residence Channel Block</h2>
+
+      <p>
+        Like ketamine, PCP is not an agonist and not a transporter substrate: it is a <strong>physical plug</strong>
+        wedged inside the ion-conducting pore of the <strong>NMDA-type ionotropic glutamate receptor</strong> — a
+        heterotetramer of two obligatory GluN1 subunits plus two GluN2 subunits. Its binding pocket, in the central
+        channel vestibule near the GluN1/GluN2 asparagine (N-site) ring that also coordinates the Mg<sup>2+</sup> block,
+        is literally called the <em>"PCP site"</em> — historically defined by <strong>[<sup>3</sup>H]TCP</strong> and
+        <strong>[<sup>3</sup>H]MK-801</strong> radioligand binding. PCP, ketamine, MK-801 (dizocilpine), dextromethorphan
+        and memantine all occupy this same site. PCP just holds it harder and longer.
+      </p>
+
+      <p>
+        The block is <strong>use-dependent</strong>: the channel must first <strong>open</strong> — glutamate + the
+        co-agonist glycine/D-serine bound <em>and</em> the membrane depolarized enough to relieve resting
+        Mg<sup>2+</sup> — before protonated PCP can reach its site. It then becomes deeply <em>trapped</em>: the gate
+        can close around the bound molecule and unblock is slow. The distinguishing feature versus ketamine is
+        <strong>kinetics and affinity</strong>. In matched human/pig cortex assays PCP displaces channel-blocker
+        radioligands with <strong>K<sub>i</sub> ≈ 15–60 nM</strong> — roughly <strong>15–20× tighter</strong> than
+        ketamine's ~420 nM PCP-site K<sub>i</sub> — and its slower off-rate (longer residence) is what turns a brief
+        ketamine "K-hole" into hours of unpredictable, fluctuating PCP intoxication.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title sert">① Pore Occlusion (N-site)</div>
+          <p>Protonated PCP enters the open channel and lodges near the GluN1/GluN2 asparagine ring deep in the vestibule, occluding Na<sup>+</sup>/Ca<sup>2+</sup> flux. The cryo-EM structure <strong>PDB 7SAB</strong> resolves PCP (ligand 1PC) in exactly this central cavity of a GluN1a/GluN2B receptor.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">② Higher Affinity + Longer Residence</div>
+          <p>Same site as ketamine, but PCP's larger phenyl/cyclohexyl/piperidine scaffold buries more of the hydrophobic vestibule and unblocks more slowly. Human PCP-site K<sub>i</sub> ~23 nM vs ketamine ~420 nM — the potency and duration gap is the whole story.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">③ Deep Trapping</div>
+          <p>PCP is a strongly trapping blocker: the gate shuts on it and it escapes only when the channel re-opens. Slow, voltage-dependent unblock means effects outlast free plasma drug and preferentially silence the most active synapses — a built-in activity filter turned up to eleven.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">④ Cortical Disinhibition</div>
+          <p>By blocking NMDA receptors on tonically active GABAergic interneurons, PCP <strong>disinhibits</strong> pyramidal cells, driving a glutamate surge onto AMPA receptors — "excitation via inhibition of inhibition". This is the substrate for the agitation, thought disorganization, and psychotomimetic profile.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">⑤ σ<sub>1</sub>, DAT &amp; Monoamines</div>
+          <p>PCP is also a σ<sub>1</sub> receptor ligand (human K<sub>i</sub> ~1.1 µM) and a sub-µM–µM inhibitor of dopamine (DAT), norepinephrine and serotonin reuptake. This monoaminergic arm — stronger than ketamine's — adds a stimulant, hyperthermic, and euphoric/dysphoric colouring on top of the dissociation.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ NMDA-Hypofunction Model</div>
+          <p>PCP intoxication reproduces positive, negative <em>and</em> cognitive features of schizophrenia more faithfully than any amphetamine psychosis. PCP/ketamine NMDA block is the empirical foundation of the <strong>glutamatergic (NMDA-hypofunction) hypothesis</strong> of schizophrenia.</p>
+        </div>
+      </div>
+
+      <p>
+        Secondary pharmacology is real and, unlike ketamine, contributes materially: PCP inhibits monoamine
+        transporters at sub-µM–low-µM concentrations (dopamine reuptake block feeds the euphoria and the
+        agitation/hyperthermia), engages σ<sub>1</sub> receptors (~1.1 µM), the muscarinic-flavoured
+        butyrylcholinesterase (K<sub>i</sub> ~0.5 µM), and non-competitive nicotinic-receptor sites. None of these
+        displaces NMDA channel block as the core mechanism, but the broader monoaminergic reach helps explain why PCP
+        is more agitating, more sympathomimetic, and more dangerous in overdose than ketamine.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">PCP⁺</span>
+        <span class="arrow">→ enters ONLY the open NMDA channel (Glu + Gly bound, membrane depolarized) →</span>
+        <span class="step">deep pore block at PCP-site (N-ring)</span>
+        <span class="arrow">→ slow unblock / strong trapping →</span>
+        <span class="effect">Ca²⁺/Na⁺ influx ↓↓ on active interneurons</span>
+        <br>
+        <span class="step">GABA tone ↓</span>
+        <span class="arrow">→ pyramidal disinhibition + glutamate/AMPA surge →</span>
+        <span class="step">+ DAT/NET/SERT reuptake block</span>
+        <span class="arrow">→</span>
+        <span class="effect">dissociation · analgesia · agitation · sympathomimetic storm</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Lipophilic, Long, and Recycled — Why PCP Waxes and Wanes for Hours</h2>
+
+      <p>
+        PCP's clinical menace is as much pharmacokinetic as pharmacodynamic. It is a small, very
+        <strong>lipophilic</strong> weak base (logP ≈ 4.3, pK<sub>a</sub> ≈ 8.5–9.5), so it distributes into a
+        <strong>large volume of distribution</strong> and sequesters in brain and fat. Two features make its time-course
+        notoriously unpredictable: a <strong>long, variable elimination half-life</strong> (reported ~7 to &gt;50 h;
+        often cited around 17–24 h, longer in overdose) and <strong>gastric ion-trapping</strong> — PCP secreted into
+        acidic stomach fluid is protonated, re-absorbed distally, and effectively <em>recycled</em>. The result is a
+        fluctuating, relapsing intoxication that can re-intensify hours after the last dose.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Common routes</span><span class="pk-val">Smoked · oral · insufflated · IV</span></div>
+        <div class="pk-row"><span class="pk-key">Onset (smoked/IV)</span><span class="pk-val">~2 – 5 min</span></div>
+        <div class="pk-row"><span class="pk-key">Onset (oral)</span><span class="pk-val">~30 – 60 min</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (elimination)</span><span class="pk-val">~7 – 50 h (variable)</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~6 L/kg (lipophilic)</span></div>
+        <div class="pk-row"><span class="pk-key">logP / pK<sub>a</sub></span><span class="pk-val">~4.3 / ~8.5–9.5</span></div>
+        <div class="pk-row"><span class="pk-key">Primary metabolism</span><span class="pk-val">Hepatic CYP hydroxylation</span></div>
+        <div class="pk-row"><span class="pk-key">Excreted unchanged</span><span class="pk-val">~10% (pH-dependent, renal)</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> hepatic oxidation (CYP3A4 and CYP2B6 among others) hydroxylates the
+        cyclohexyl/piperidine rings to <strong>PCHP</strong> and <strong>PPC</strong>, which are then glucuronidated
+        and cleared renally. The parent drug carries essentially all the activity; the hydroxy metabolites are
+        pharmacologically minor.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">PCP</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP3A4 / 2B6
+          <span style="font-size:10px;color:var(--fg-dim)">ring hydroxylation</span>
+        </div>
+        <div class="meta-node inactive">PCHP</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          UGT
+        </div>
+        <div class="meta-node inactive">glucuronides → urine</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">PCP</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP
+          <span style="font-size:10px;color:var(--fg-dim)">hydroxylation</span>
+        </div>
+        <div class="meta-node inactive">PPC</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          UGT / renal
+        </div>
+        <div class="meta-node inactive">conjugates → urine (pH-sensitive)</div>
+      </div>
+
+      <p>
+        Because clearance of the ~10% excreted unchanged is <strong>pH-dependent</strong>, urinary acidification was
+        historically proposed to speed elimination — but it is now generally <strong>avoided</strong>: acidosis worsens
+        the rhabdomyolysis-driven risk of myoglobinuric renal failure that is itself a leading cause of PCP death.
+        Detection windows are long precisely because of the lipophilic depot: urine immunoassays can stay positive for
+        <strong>days to a week or more</strong> after heavy use.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology &amp; Clinical Context</div>
+      <h2>Dose-Dependent Dissociation, Analgesia — and Toxicity</h2>
+
+      <p>
+        A single activity-gated molecular action fans out along a steep, <strong>dose-dependent</strong> curve. Unlike
+        ketamine, where sub-anesthetic dosing is fairly forgiving, PCP's higher potency, longer residence, and stronger
+        monoaminergic reach make the low-dose-to-toxic window narrower and the trajectory harder to predict —
+        especially when it is smoked on plant material (parsley, cannabis, tobacco), where the dose per hit is
+        wildly uneven.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Low Dose → Dissociation, Euphoria, Numbness</h4>
+          <p>NMDA-dependent corticothalamic and cortico-cortical integration is disrupted, uncoupling sensory input from self-referential processing: depersonalization/derealization, distorted body schema, profound analgesia and numbness, euphoria or blank detachment, and the characteristic <strong>nystagmus</strong> (vertical <em>and</em> horizontal — a near-pathognomonic exam sign). Users describe feeling powerful, weightless, or "elsewhere".</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Moderate Dose → Agitation, Analgesia, Catatonia</h4>
+          <p>As disinhibition and monoamine reuptake block deepen, the picture becomes unpredictable: ataxia, slurred speech, rigidity or waxy catatonia alternating with sudden agitation, sensory storms, and a striking <strong>insensitivity to pain</strong>. It is the analgesia plus disinhibition — not any intrinsic "PCP rage" — that produces the classic scenario of unpredictable, self-injurious behaviour with no felt injury. The reputation for superhuman strength is largely myth built on anesthesia + adrenergic drive.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>High Dose → Sympathomimetic Storm &amp; Toxidrome</h4>
+          <p>The overdose is a dissociative-adrenergic emergency: hypertension, tachycardia, <strong>hyperthermia</strong>, diaphoresis, muscular rigidity and hyperactivity driving <strong>rhabdomyolysis</strong> → myoglobinuric acute kidney injury, plus seizures, hypertensive crisis, and fluctuating coma. Death is typically from hyperthermia/rhabdomyolysis, trauma sustained while anesthetized and agitated, aspiration, or the consequences of extreme hypertension — rarely from respiratory arrest by PCP alone.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>Beyond the Acute → Prolonged Psychosis</h4>
+          <p>Because PCP is potent, long-residence and lipophilically stored, a fraction of users develop a <strong>prolonged psychotic state</strong> — days to weeks of paranoia, thought disorder, and cognitive disruption outlasting measurable drug — that can be clinically indistinguishable from acute schizophrenia. This is the observation that anchored the NMDA-hypofunction model of psychosis and that separates PCP, experientially and psychiatrically, from the shorter, cleaner ketamine experience.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        Emergency management is supportive and pharmacologic, not moralistic: minimize sensory stimulation, and use
+        <strong>benzodiazepines</strong> first-line for agitation, hypertension, hyperthermia and seizures, with
+        aggressive <strong>cooling</strong> and IV fluids to protect the kidneys against rhabdomyolysis. There is no
+        antidote and no reversal agent.
+      </p>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">04 · Harm Reduction</div>
+      <h2>Clinical Risk Profile</h2>
+      <p style="max-width:none;">Evidence-based, non-moralistic. PCP is more potent, longer-acting and less predictable than ketamine — the dominant harms are unpredictable agitation and self-injury under anesthesia, hyperthermia/rhabdomyolysis, uneven street dosing, and combination with other depressants.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> opioids (fentanyl, heroin, oxycodone) · benzodiazepines · alcohol · GHB/GBL · other CNS depressants — additive sedation, loss of airway reflexes, and vomit-aspiration while dissociated/unconscious. Stimulants (cocaine, amphetamine) stack cardiac strain and hyperthermia onto an already sympathomimetic drug. PCP is <strong>not an opioid</strong>: naloxone will NOT reverse it, but give it anyway if opioids may be on board. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Acute Risks
+          </h4>
+          <ul>
+            <li>Unpredictable agitation + profound analgesia → self-injury, trauma, drowning, and injury to others with no felt pain</li>
+            <li>Hyperthermia + muscular rigidity/hyperactivity → rhabdomyolysis → acute kidney injury</li>
+            <li>Hypertensive crisis, seizures, fluctuating coma; effects can re-intensify hours later (gastric recycling)</li>
+            <li>Dissociative anesthesia + vomiting → aspiration; never alone, recovery position if down</li>
+            <li>Prolonged (days–weeks) psychosis in a subset of users</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Chronic / Repeated Use
+          </h4>
+          <ul>
+            <li>Persistent cognitive impairment — memory, attention, executive function — with heavy use</li>
+            <li>Recurrent or persistent psychosis; flashback-like dissociative states</li>
+            <li>Tolerance and a genuine psychological dependence/craving syndrome with escalation</li>
+            <li>Mood disturbance, anxiety, speech and social dysfunction between uses</li>
+            <li>Lipophilic storage means the drug (and detection) lingers for days after each use</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Drug Interactions
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Opioids</strong> — additive respiratory depression, sedation, aspiration</li>
+            <li><strong style="color:var(--rose)">Alcohol / benzodiazepines / GHB</strong> — deep sedation, airway loss, blackout</li>
+            <li><strong style="color:var(--rose)">Stimulants</strong> (cocaine, amphetamine, MDMA) — additive hypertension, hyperthermia, cardiac strain, seizures</li>
+            <li>Other dissociatives (ketamine, DXM, MXE) — unpredictable additive dissociation and toxicity</li>
+            <li>Tramadol / bupropion / other pro-convulsants — additive seizure risk</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Dosing &amp; Testing
+          </h4>
+          <ul>
+            <li>PCP is extremely potent (active in single-digit mg) with a steep, unpredictable dose-response — there is no "safe" recreational dose to recommend</li>
+            <li>Smoked on plant material the dose per hit is wildly uneven — a major cause of accidental overdose</li>
+            <li>Misrepresentation is common: "dust", "wet" or "sherm" may be far stronger or adulterated than expected; test your supply (reagent kits + fentanyl test strips)</li>
+            <li>Never use alone; a calm, low-stimulation, safe environment reduces agitation and injury</li>
+            <li>Do not re-dose chasing effect — long half-life and gastric recycling mean it stacks and re-surges</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STREET HISTORY -->
+    <div class="section">
+      <div class="section-eyebrow">05 · Street History</div>
+      <h2>From Sernyl to Angel Dust</h2>
+      <p>
+        PCP was first synthesized in 1926 and developed by <strong>Parke-Davis in the 1950s</strong> as the
+        intravenous surgical anesthetic <strong>Sernyl</strong> (CI-395). It delivered the dissociative dream —
+        analgesia and anesthesia with preserved airway and cardiovascular tone — but human trials were derailed by
+        severe <strong>emergence reactions</strong>: agitation, delirium, hallucinations and prolonged psychosis on
+        waking. Human use was withdrawn around 1965; a veterinary formulation, <strong>Sernylan</strong>, persisted
+        for a while as a large-animal immobilizer. (Ketamine, synthesized in 1962 as a shorter, milder analog, was the
+        pharmaceutical industry's answer to exactly this problem.)
+      </p>
+      <p>
+        PCP re-emerged on the street in <strong>1967 San Francisco</strong> as the "PeaCePill," and through the 1970s
+        became <strong>"angel dust"</strong> — sprinkled or sprayed onto parsley, mint, tobacco or cannabis and smoked
+        ("sherm", "wet", and the "embalming fluid" folklore of joints dipped in PCP ± formaldehyde). Its cheapness,
+        potency and the lurid press coverage of agitated, pain-insensitive users made it a defining drug-panic of the
+        era. The US placed it in <strong>Schedule II in 1978</strong>, and precursor controls followed. Recreational
+        use has waxed and waned regionally ever since, but PCP's lasting scientific legacy is larger than its street
+        footprint: it named the PCP site, and it handed neuroscience the <strong>NMDA-hypofunction model of
+        schizophrenia</strong>.
+      </p>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Binding Pose · NMDA-R PCP site</span>
+          <span class="ngl-pdb-tag">PDB: 7SAB</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="7SAB"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            Receptor (GluN1a/GluN2B cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Pore-lining residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            PCP (ligand 1PC)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">7SAB</strong> — cryo-EM (4.3 Å) of the
+          <strong style="color:var(--fg-muted)">Phencyclidine-bound GluN1a–GluN2B NMDA receptor</strong>
+          (Chou, Epstein, Michalski, Fine, Biggin, Furukawa, 2022, <em>Nat Struct Mol Biol</em>). This is an
+          <em>actual PCP-bound</em> structure — PCP is modeled in the channel vestibule as PDB chemical component
+          <strong style="color:var(--fg-muted)">1PC</strong> (1-(1-phenylcyclohexyl)piperidine, C<sub>17</sub>H<sub>25</sub>N).
+          The ketamine sibling from the same channel-blocker structural programme is <strong style="color:var(--fg-muted)">7EU7</strong> (S-ketamine).
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/7SAB" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Receptor Binding / Block Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Phencyclidine</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Mechanism</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">NMDA-R · PCP site</div>
+                <span class="target-full">Glutamate [NMDA] receptor · human</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> = 23 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">human cortex · range 15–60 nM · pChEMBL 7.6</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Open-channel block</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">NMDA-R (rat)</div>
+                <span class="target-full">[<sup>3</sup>H]TCP / [<sup>3</sup>H]MK-801 site</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 38–65 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">IC<sub>50</sub> 9.8–47 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:88%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Channel blocker</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">GluN1/GluN2A</div>
+                <span class="target-full">NMDA-R GRIN1/GRIN2A · human</span>
+              </td>
+              <td>
+                <div class="affinity-val">IC<sub>50</sub> = 0.40 µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">functional Ca²⁺ (FLIPR)</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:52%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Channel blocker</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">GluN1/GluN2B</div>
+                <span class="target-full">NMDA-R GRIN1/GRIN2B · human</span>
+              </td>
+              <td>
+                <div class="affinity-val">IC<sub>50</sub> = 1.26 µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">subtype in PDB 7SAB</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:40%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Channel blocker</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">σ<sub>1</sub>R</div>
+                <span class="target-full">Sigma-1 receptor · human</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> = 1,090 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:24%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Ligand</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">DAT / monoamines</div>
+                <span class="target-full">DA · NE · 5-HT reuptake</span>
+              </td>
+              <td>
+                <div class="affinity-val">sub-µM – µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">uptake inhibition (see note)</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:20%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Reuptake inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">BuChE</div>
+                <span class="target-full">Butyrylcholinesterase (secondary)</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> = 520 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:30%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Inhibitor</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          Phencyclidine (ChEMBL CHEMBL275528). NMDA PCP-site: human K<sub>i</sub> 15.3 nM (J Med Chem 2001) &amp; 23 nM
+          (postmortem human frontal cortex, J Med Chem 1998); rat/guinea-pig K<sub>i</sub> 28–65 nM, IC<sub>50</sub>
+          9.8–47 nM ([<sup>3</sup>H]TCP / [<sup>3</sup>H]MK-801, J Med Chem 1992–1996). Human GluN2A/GluN2B functional
+          IC<sub>50</sub> 0.40 / 1.26 µM (Bioorg Med Chem Lett 2011). σ<sub>1</sub> K<sub>i</sub> 1,090 nM &amp; BuChE
+          K<sub>i</sub> 520 nM (J Med Chem 1992 / 1984). DAT/monoamine reuptake inhibition is well documented at
+          sub-µM–µM but is not curated as a single ChEMBL K<sub>i</sub> here — shown qualitatively, not as a fabricated
+          value. Ketamine's PCP-site K<sub>i</sub> ≈ 420 nM for comparison — PCP is ~15–20× more potent. Rel. bars
+          normalized to the tightest NMDA value; lower value = higher affinity.
+        </div>
+      </div>
+
+      <!-- Entropy / Docking commentary -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>ΔS Note · FlexAID∆S Perspective</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">entropy</span>
+        </div>
+        <div style="padding:0.85rem 1rem;font-size:12px;color:var(--fg-muted);line-height:1.6;">
+          <p style="margin:0 0 0.6rem;max-width:none;">
+            PCP and ketamine bind the <strong style="color:var(--fg)">same pre-formed, water-filled vestibule</strong>,
+            so both are gated by the receptor's own conformational cycle rather than by folding a flexible site around
+            the ligand — the dominant −TΔS term is <em>desolvation and channel-water release</em>, not ligand
+            conformational entropy (PCP, like ketamine, has only ~2 rotatable bonds and surrenders little internal
+            entropy). What distinguishes PCP is <strong style="color:var(--fg)">buried nonpolar surface</strong>: the
+            phenyl + cyclohexyl + piperidine scaffold displaces and orders more vestibule water than ketamine's
+            chlorophenyl-cyclohexanone, so the favourable hydrophobic (solvent-entropy) driving force is larger — a
+            first-principles read on why the PCP-site K<sub>i</sub> is ~15–20× tighter.
+          </p>
+          <p style="margin:0;max-width:none;">
+            In FlexAID∆S terms, a rigorous ΔG decomposition here should weight ΔS<sub>solvent</sub> and pore-water
+            release far above ligand ΔS<sub>conf</sub>. "Trapping" is a second, slower entropic gate: closing the
+            channel around the bound blocker collapses the configurational entropy of the bound state and raises the
+            escape barrier — and PCP's deeper, longer-residence occupancy sits further down that well than ketamine's.
+            The Shannon-entropy collapse on binding is concentrated in solvent and side-chain microstates lining the
+            pore, the opposite weighting from a floppy-ligand orthosteric binder.
+          </p>
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #032 · PCP (Phencyclidine) · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/ketamine/">Ketamine #011</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Data: ChEMBL CHEMBL275528 (bioactivity); Chou et al. (2022) Nat Struct Mol Biol (PDB 7SAB, ligand 1PC);
+    Zhang et al. (2021) Nature (PDB 7EU7, S-ketamine, comparison); NMDA PCP-site K<sub>i</sub>/IC<sub>50</sub>
+    J Med Chem 1988–2001, Bioorg Med Chem Lett 2011; σ<sub>1</sub>/BuChE J Med Chem 1984–1993. ·
+    <a href="https://www.rcsb.org/structure/7SAB" target="_blank" rel="noopener noreferrer">PDB 7SAB</a>
+    <br>
+    For harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '7SAB',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

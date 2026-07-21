@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lithium — Drug of the Day #058 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of lithium (lithium carbonate): a monovalent mood-stabilizing cation that inhibits GSK-3β and inositol monophosphatase by displacing Mg²⁺ at the active site. Inositol-depletion and GSK-3 hypotheses, narrow therapeutic index (0.6–1.2 mM), gold-standard anti-suicidal efficacy, renal pharmacokinetics, NSAID/thiazide/ACE interactions, and an interactive 3D GSK-3β structure via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 600; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Entropy Box ────────────────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-block   { color: var(--rose); background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#058 · Drug of the Day</span>
+    <span class="pill pill-terra">Mood Stabilizer · Monovalent Cation</span>
+    <span class="pill pill-teal">Element 3 · Li⁺</span>
+    <span class="pill pill-rose">Narrow Therapeutic Index</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Lithium</span>
+  </h1>
+  <p class="hero-iupac">Lithium carbonate · Li₂CO₃ · MW 73.89 g/mol · CAS 554-13-2 · elemental Li⁺, MW 6.94 · ATC N05AN01</p>
+  <p class="hero-class">
+    <strong>Lithium (as the carbonate or citrate salt).</strong>
+    The lightest metal and the oldest psychiatric drug still first-line — a bare monovalent ion, not a receptor ligand.
+    It has <strong>no binding pocket, no scaffold, no metabolism</strong>: it works by out-competing Mg²⁺ at the active
+    sites of a family of magnesium-dependent phosphomonoesterases, above all <em>GSK-3β</em> and <em>inositol monophosphatase</em>.
+    Brand names: Eskalith, Lithobid, Priadel, Camcolit, Carbolith.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary targets</span>
+      <span class="fact-value terra">GSK-3β · IMPase</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Mg²⁺-competitive ion</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">IMPase K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~0.8 mM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">GSK-3β K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~2 mM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Serum range</span>
+      <span class="fact-value gold">0.6–1.2 mM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Toxic above</span>
+      <span class="fact-value" style="color:var(--rose)">1.5 mM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Elimination</span>
+      <span class="fact-value">Renal · unchanged</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub></span>
+      <span class="fact-value">~18–24 h</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>An Ion That Steals Magnesium's Seat</h2>
+
+      <p>
+        Lithium is not a drug in the medicinal-chemistry sense. There is <strong>no ligand, no pharmacophore,
+        no orthosteric pocket</strong> — just a hydrated Li⁺ cation with an ionic radius (~0.76 Å) close enough
+        to Mg²⁺ (~0.72 Å) that it can slip into magnesium-binding sites. But Li⁺ carries only a single positive
+        charge where Mg²⁺ carries two, so once seated it <strong>cannot support the catalysis that Mg²⁺ enables</strong>.
+        The result is inhibition of a whole family of <em>Mg²⁺-dependent phosphomonoesterases</em>. Two of them
+        dominate the psychiatric story.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title sert">① Inositol Monophosphatase (IMPase)</div>
+          <p>Li⁺ is an <strong>uncompetitive</strong> inhibitor of IMPase (K<sub>i</sub> ~0.8 mM), trapping the enzyme–substrate complex by displacing one of the two catalytic Mg²⁺ ions. IMPase is the terminal step recycling inositol; blocking it starves the PI cycle — the <em>inositol-depletion hypothesis</em>.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">② GSK-3β</div>
+          <p>Li⁺ directly inhibits glycogen synthase kinase-3β (K<sub>i</sub> ~2 mM) by <strong>competing with Mg²⁺</strong> at the ATP-adjacent metal site, and indirectly by promoting inhibitory Ser9 phosphorylation. GSK-3β sits under Wnt/β-catenin, circadian, and neurotrophic signaling — the <em>GSK-3 hypothesis</em>.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">③ Inositol Depletion</div>
+          <p>With IMPase and inositol polyphosphate 1-phosphatase (IPPase, K<sub>i</sub> ~0.3 mM) blocked, free <em>myo</em>-inositol falls preferentially in the most active neurons. PIP₂ resynthesis slows, damping overactive Gq/PLC signaling only where it is firing hardest — an activity-dependent brake.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">④ Neurotrophic / Anti-Apoptotic</div>
+          <p>GSK-3β inhibition disinhibits β-catenin and stabilizes the pro-survival program: ↑ BDNF, ↑ Bcl-2, ↓ tau phosphorylation, ↑ neurogenesis. Chronic lithium measurably increases gray-matter volume in humans — a structural signature no other mood drug reliably shows.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ Circadian Resetting</div>
+          <p>GSK-3β phosphorylates core clock proteins (REV-ERBα, PER2, CRY). By inhibiting it, lithium lengthens and stabilizes the circadian period — plausibly why it blunts the manic/depressive oscillation itself rather than just the poles.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ Other Mg²⁺ Enzymes</div>
+          <p>The same displacement inhibits bisphosphate 3′-nucleotidase (BPNT1, K<sub>i</sub> ~0.15 mM), phosphoglucomutase, and fructose-1,6-bisphosphatase. Most are hit only at supratherapeutic Li⁺ — but they explain the systemic toxicity that shadows the narrow window.</p>
+        </div>
+      </div>
+
+      <p>
+        The unifying physics: <strong>every high-value lithium target is a magnesium enzyme, and lithium's therapeutic
+        serum concentration (0.6–1.2 mM) sits precisely in the range of its inhibition constants for IMPase, IPPase and
+        BPNT1.</strong> That is not a coincidence — it is why lithium works at all, and simultaneously why its therapeutic
+        index is razor-thin. There is no way to raise the dose for more GSK-3β effect without dragging Li⁺ toward the
+        concentrations that poison every other magnesium enzyme in the body.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">Overactive neuron</span>
+        <span class="arrow">→ Gq/PLC → PIP₂ hydrolysis →</span>
+        <span class="effect">IP₃ + DAG (signaling burst)</span>
+        <br>
+        <span class="step">IP₃ → IP₂ → IP₁</span>
+        <span class="arrow">→ IMPase (needs Mg²⁺) →</span>
+        <span class="effect">free inositol → PIP₂ resynthesis</span>
+        <br>
+        <span class="step">Li⁺ displaces Mg²⁺ at IMPase</span>
+        <span class="arrow">→ IP₁ accumulates, inositol falls →</span>
+        <span class="danger">PIP₂ pool depletes → overactive signaling damped</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>No Metabolism, All Kidney</h2>
+
+      <p>
+        Lithium's PK is unusually simple and unusually dangerous. Being an element, it is <strong>not metabolized,
+        not protein-bound, and not conjugated</strong>. It distributes into total body water, and it is cleared
+        <strong>entirely by the kidney, unchanged</strong>. Everything that governs lithium safety therefore reduces
+        to a single variable: <em>renal handling of the ion</em>. Anything that shifts sodium balance or glomerular
+        filtration shifts lithium — which is the root of every major interaction and every toxicity.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~95–100%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (IR / ER)</span><span class="pk-val">0.5–3 h / 4–12 h</span></div>
+        <div class="pk-row"><span class="pk-key">Plasma protein binding</span><span class="pk-val">0%</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">0.7–0.9 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Metabolism</span><span class="pk-val">None</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (elimination)</span><span class="pk-val">18–24 h</span></div>
+        <div class="pk-row"><span class="pk-key">Renal clearance</span><span class="pk-val">~20–40 mL/min</span></div>
+        <div class="pk-row"><span class="pk-key">Therapeutic serum</span><span class="pk-val">0.6–1.2 mM</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Renal handling — the whole game:</strong> lithium is freely filtered at the glomerulus, then
+        ~60–80% is <em>reabsorbed in the proximal tubule via the same paths as sodium</em>. Lithium is invisible
+        to the distal nephron, so it tracks sodium and volume status. This is why the clinically relevant "cascade"
+        is not a metabolic one — it is a tubular one.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Li⁺ (plasma)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          Glomerulus
+          <span style="font-size:10px;color:var(--fg-dim)">freely filtered</span>
+        </div>
+        <div class="meta-node active">Filtered Li⁺</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          Prox. tubule
+          <span style="font-size:10px;color:var(--fg-dim)">Na⁺-coupled reabsorption</span>
+        </div>
+        <div class="meta-node inactive">~60–80% reabsorbed</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Low Na⁺ / low volume</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          ↑ prox. reabsorption
+        </div>
+        <div class="meta-node active">↑ Li⁺ retained ★</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          serum ↑
+        </div>
+        <div class="meta-node inactive" style="color:var(--rose);border-color:rgba(244,63,94,0.35)">TOXICITY</div>
+      </div>
+
+      <p>
+        <strong>The dehydration / sodium coupling (★)</strong> is the single most important safety fact in the file.
+        Because the proximal tubule reabsorbs lithium <em>in proportion to sodium</em>, anything that depletes sodium
+        or volume — dehydration, a low-salt diet, vomiting, diarrhoea, heavy sweating, a heat wave, or a diuretic —
+        makes the kidney claw back more lithium, and serum levels climb into the toxic range on an
+        <strong>unchanged dose</strong>. Conversely, a sodium load speeds lithium excretion and can drop a patient
+        subtherapeutic. Renal impairment (including lithium's own long-term nephrotoxicity) directly lowers clearance.
+      </p>
+      <p>
+        Steady state takes <strong>~5 days</strong>; levels are drawn as a standardized <strong>12-hour trough</strong>.
+        The long half-life plus zero metabolic buffering means a change in renal function does not announce itself —
+        it accumulates silently until a routine level, a tremor, or a confusional state reveals it.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY / CLINICAL CONTEXT -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Clinical Pharmacology</div>
+      <h2>The Anti-Suicidal Gold Standard</h2>
+
+      <p>
+        Lithium is the <strong>best-validated mood stabilizer in psychiatry</strong> and, uniquely, the only
+        psychotropic with robust evidence of an <em>anti-suicidal effect that is at least partly independent of
+        its mood effect</em>. It remains first-line for bipolar maintenance more than seventy years after Cade's
+        1949 report — a survival almost no other drug of that era can claim.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>Anti-Suicidal Efficacy — Its Signature Property</h4>
+          <p>Meta-analyses of randomized trials (Cipriani et al., 2013, BMJ) show lithium reduces completed suicide and self-harm versus placebo and versus active comparators in mood disorders — an effect not fully explained by relapse prevention. Population and observational data even associate trace lithium in drinking water with lower regional suicide rates. No other mood agent carries this evidence. This is the reason lithium is not replaced despite its inconvenience.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Bipolar Maintenance &amp; Acute Mania</h4>
+          <p>First-line for long-term prophylaxis in bipolar I, reducing both manic and depressive relapse; effective in acute mania (onset over 1–2 weeks, so often paired with an antipsychotic or benzodiazepine for rapid control). Maintenance targets ~0.6–0.8 mM; acute mania is pushed toward 0.8–1.2 mM. "Classic" euphoric mania with few prior episodes responds best.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Augmentation in Unipolar Depression</h4>
+          <p>Lithium is an evidence-based augmentation strategy for treatment-resistant major depression added to an antidepressant, and it potentiates ECT. The effect is modest but real, and — again — it pulls down suicidality, which is often the deciding factor in resistant, high-risk depression.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Why It Is Hard to Replace</h4>
+          <p>Anticonvulsant stabilizers (valproate, lamotrigine, carbamazepine) and atypical antipsychotics cover pieces of the bipolar spectrum, but none combines lithium's maintenance efficacy, anti-suicidal signal, and neurotrophic/gray-matter effects. The cost is the monitoring burden and the narrow index — a trade every prescriber and patient negotiates explicitly.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        The mechanistic irony is that we still cannot say <strong>which</strong> of lithium's actions — inositol
+        depletion, GSK-3β inhibition, circadian resetting, or neurotrophic signaling — is <em>the</em> therapeutic
+        one. They are almost certainly not separable: all descend from the same act of an ion displacing magnesium
+        from a set of phosphomonoesterases that happen to sit at the crossroads of neuronal signaling, survival,
+        and timekeeping.
+      </p>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">04 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>Docking an Ion: The Limiting Case of ΔS</h2>
+
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+          Lithium is the <strong>degenerate limit of a docking problem</strong>. A conventional ligand carries
+          rotatable bonds, a hydrophobic surface, and a conformational ensemble; docking it means estimating the
+          <code>ΔS_conf</code> penalty as a flexible molecule is pinned into one pose. Li⁺ has <strong>none of that</strong>
+          — it is a point charge with zero internal degrees of freedom. Its entire binding thermodynamics live in
+          its <em>hydration shell</em> and in the <em>protein and solvent</em> around it, not in the ligand.
+        </p>
+        <p>
+          What lithium actually does at the site shown in <strong>PDB 1PYX</strong> is <em>substitute for a
+          coordinated metal</em>. In FlexAID∆S terms this is not a lock-and-key entropy collapse of a flexible
+          ligand but a <strong>desolvation + metal-exchange</strong> event: Li⁺ sheds part of its tightly held
+          water (a large, favorable <code>ΔS_solv</code>), enters the octahedral Mg²⁺ coordination geometry, and
+          — because it brings only +1 where +2 is required — <strong>fails to organize the catalytic transition
+          state</strong>. The Shannon entropy of the active-site metal microstate does not collapse onto the
+          productive conformer; it is diverted to a catalytically dead one.
+        </p>
+        <p>
+          The instructive contrast with a cocaine- or DMT-type ligand: those achieve inhibition by
+          <em>rigid-pocket trapping</em> — a high-affinity molecule freezing a flexible protein. Lithium achieves
+          inhibition by <em>charge mismatch inside an otherwise normal coordination sphere</em>. The measured
+          inhibition constants (IMPase K<sub>i</sub> ~0.8 mM, GSK-3β K<sub>i</sub> ~2 mM) correspond to weak,
+          millimolar binding — a <code>ΔG</code> of only about <strong>−4 kcal/mol</strong> — which is exactly why
+          therapeutic concentrations must be held in the millimolar band, and exactly why the therapeutic window is
+          so unforgiving. There is no affinity headroom to spend.
+        </p>
+      </div>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">05 · Harm Reduction</div>
+      <h2>The Narrowest Window in Psychiatry</h2>
+      <p style="max-width:none;">Clinical, non-moralistic. Lithium is highly effective and highly demanding: the gap between the therapeutic level and the toxic level is smaller than for almost any drug in routine use. Respect the number, monitor the number.</p>
+
+      <div class="fatal-box">
+        <strong>TOXICITY IS CONCENTRATION-DRIVEN:</strong> serum &gt;1.5 mM = toxic · &gt;2.5 mM = medical emergency (may need haemodialysis). Anything that dehydrates you or depletes sodium raises the level on an unchanged dose. <strong>NSAIDs, thiazide diuretics, and ACE inhibitors / ARBs reduce lithium clearance and drive levels up.</strong> Never start these without re-checking a level.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Toxicity Ladder (by serum level)
+          </h4>
+          <ul>
+            <li>1.5–2.0 mM: coarse tremor, nausea/vomiting, diarrhoea, drowsiness, ataxia</li>
+            <li>2.0–2.5 mM: confusion, slurred speech, myoclonus, nystagmus, hyperreflexia</li>
+            <li>&gt;2.5 mM: seizures, coma, cardiovascular collapse, renal failure — dialysis</li>
+            <li>SILENT (chronic): can be toxic at "normal" levels if built up slowly — symptoms, not just the number</li>
+            <li>Fine resting tremor is common and benign even in range; coarse tremor is a red flag</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Chronic Organ Effects — Monitor
+          </h4>
+          <ul>
+            <li><strong>Thyroid:</strong> hypothyroidism (common) &amp; goitre — check TSH every 6–12 months</li>
+            <li><strong>Kidney:</strong> nephrogenic diabetes insipidus (polyuria/thirst); long-term CKD risk — check eGFR</li>
+            <li><strong>Parathyroid:</strong> hypercalcaemia / hyperparathyroidism — check calcium</li>
+            <li><strong>Cardiac:</strong> benign T-wave flattening; caution in sick sinus syndrome</li>
+            <li><strong>Weight gain</strong> and mild cognitive dulling are common adherence issues</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Drug Interactions (raise levels → toxicity)
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">NSAIDs</strong> (ibuprofen, naproxen, etc.) — ↓ renal clearance, ↑ Li⁺ up to 25–40%</li>
+            <li><strong style="color:var(--rose)">Thiazide diuretics</strong> — Na⁺ depletion → ↑ proximal Li⁺ reabsorption</li>
+            <li><strong style="color:var(--rose)">ACE inhibitors / ARBs</strong> — ↓ GFR &amp; Na⁺ → ↑ Li⁺</li>
+            <li>Metronidazole, some antibiotics — ↓ clearance</li>
+            <li>Serotonergics / antipsychotics — additive neurotoxicity, rare serotonin-syndrome / NMS-like states</li>
+            <li>Relatively safer diuretic if one is needed: amiloride (with monitoring)</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Practical Safety &amp; Monitoring
+          </h4>
+          <ul>
+            <li>Keep hydration and salt intake <strong>steady</strong> — don't crash-diet, don't binge salt</li>
+            <li>Heat waves, fever, vomiting, diarrhoea, endurance exercise → hold dose &amp; seek a level</li>
+            <li>Draw a standardized 12-hour trough; recheck 5 days after any dose change</li>
+            <li>Pregnancy: 1st-trimester cardiac (Ebstein anomaly) risk — specialist decision, not automatic stop</li>
+            <li>Overdose of extended-release tablets: delayed, prolonged peaks — treat aggressively, consider dialysis</li>
+            <li>Don't stop abruptly: rapid discontinuation sharply raises relapse and suicide risk</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Target · GSK-3β active site (Mg²⁺-dependent)</span>
+          <span class="ngl-pdb-tag">PDB: 1PYX</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="1PYX"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            GSK-3β (cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            AMP-PNP (ATP analog, ANP)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#4ade80;box-shadow:0 0 4px #4ade80"></div>
+            Mg²⁺ (the ion Li⁺ displaces)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">1PYX</strong> — human Glycogen synthase kinase-3β
+          in complex with the non-hydrolysable ATP analog AMP-PNP (ANP) and <strong style="color:var(--fg-muted)">Mg²⁺</strong>
+          (Bertrand et al., 2003, <em>J Mol Biol</em>).
+          <strong>This viewer shows the enzyme lithium inhibits — not lithium bound in a pocket.</strong>
+          Li⁺ is a bare monovalent cation with no drug-in-pocket co-crystal; it acts by
+          <strong>displacing the catalytic Mg²⁺</strong> shown here at the ATP-adjacent metal site. No organic
+          lithium ligand exists to display.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/1PYX" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Enzyme Inhibition Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Li⁺ Enzyme Inhibition</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Li⁺ vs Mg²⁺ enzymes</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Li⁺ potency</th>
+              <th>Rel.</th>
+              <th>Mode</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">BPNT1</div>
+                <span class="target-full">Bisphosphate 3′-nucleotidase</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 0.15 mM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">most Li-sensitive</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Mg²⁺-comp.</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">IPPase</div>
+                <span class="target-full">Inositol polyphosphate 1-phosphatase</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 0.3 mM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:80%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Uncompet.</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">IMPase</div>
+                <span class="target-full">Inositol monophosphatase (IMPA1)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 0.8 mM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">inositol-depletion</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:64%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Uncompet.</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">GSK-3β</div>
+                <span class="target-full">Glycogen synthase kinase-3β</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">K<sub>i</sub> ≈ 2 mM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">+ indirect Ser9-P</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:40%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Mg²⁺-comp.</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">FBPase</div>
+                <span class="target-full">Fructose-1,6-bisphosphatase</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ~ mM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:22%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Mg²⁺-comp.</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">Serum (Rx)</div>
+                <span class="target-full">Therapeutic window</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">0.6–1.2 mM</div>
+                <div style="font-size:10px;color:var(--rose);font-family:var(--font-mono)">toxic &gt;1.5 mM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:56%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">in-range</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          Li⁺ inhibition constants: IMPase — Hallcher &amp; Sherman (1980) J Biol Chem 255:10896;
+          IPPase — Inhorn &amp; Majerus (1988) J Biol Chem; GSK-3β — Klein &amp; Melton (1996) PNAS 93:8455 &amp;
+          Ryves &amp; Harwood (2001) BBRC 280:720 (Mg²⁺-competitive); BPNT1 — López-Coronado et al. (1999) J Biol Chem.
+          Values are millimolar — lithium is a weak, Mg²⁺-competitive inhibitor, which is why the
+          therapeutic serum band (0.6–1.2 mM) overlaps its own K<sub>i</sub> values. Lower K<sub>i</sub> = greater Li⁺ sensitivity.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #058 · Lithium (lithium carbonate) · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    References: Hallcher &amp; Sherman (1980) J Biol Chem; Berridge et al. (1989) Cell (inositol-depletion); Klein &amp; Melton (1996) PNAS; Ryves &amp; Harwood (2001) BBRC; Bertrand et al. (2003) J Mol Biol 333:393 (1PYX); Cipriani et al. (2013) BMJ 346:f3646 (anti-suicidal). ·
+    <a href="https://www.rcsb.org/structure/1PYX" target="_blank" rel="noopener noreferrer">PDB 1PYX</a>
+    <br>
+    Structure shows the target enzyme GSK-3β with Mg²⁺, not lithium in a pocket — Li⁺ is a monovalent ion that inhibits by displacing Mg²⁺.
+    For harm reduction &amp; interaction resources: <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '1PYX',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

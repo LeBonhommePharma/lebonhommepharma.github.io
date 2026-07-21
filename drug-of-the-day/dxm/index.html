@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dextromethorphan (DXM) — Drug of the Day #041 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of dextromethorphan (DXM): a morphinan cough suppressant that is a weak NMDA open-channel blocker, sigma-1 agonist, and serotonin-reuptake inhibitor. CYP2D6 O-demethylation to the potent NMDA blocker dextrorphan (Ki 220 nM), the recreational dose 'plateaus', poor- vs extensive-metabolizer pharmacokinetics, the OTC cough-syrup context, real ChEMBL binding affinities, harm reduction (serotonin syndrome with SSRIs/MAOIs, dangerous combination products with acetaminophen and antihistamines, bromism from chronic hydrobromide megadosing, and the codeine 'purple drank' myth), plus an interactive 3D NMDA-receptor channel visualization via Mol* using PDB 7EU7.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-block   { color: var(--rose); background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/ketamine/">Ketamine #011</a>
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#041 · Drug of the Day</span>
+    <span class="pill pill-terra">Morphinan dissociative</span>
+    <span class="pill pill-teal">OTC antitussive (US) · Drug of concern</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Dextromethorphan</span>
+  </h1>
+  <p class="hero-iupac">IUPAC: (+)-3-methoxy-17-methylmorphinan · (4bS,8aR,9S)-3-methoxy-11-methyl-6,7,8,8a,9,10-hexahydro-5H-9,4b-(epiminoethano)phenanthrene · C<sub>18</sub>H<sub>25</sub>NO · MW 271.40 g/mol · CAS 125-71-3 · ChEMBL CHEMBL52440</p>
+  <p class="hero-class">
+    <strong>Dextromethorphan (DXM).</strong>
+    The dextrorotatory morphinan — a mirror-image relative of the opioid levorphanol that lost almost all of its
+    opioid activity but kept a <em>use-dependent NMDA open-channel block</em>, a high-affinity <em>sigma-1 agonism</em>,
+    and, at high dose, <em>serotonin-reuptake inhibition</em>. It is the "DM" in a thousand cough syrups, and its
+    dissociative pharmacology is largely carried by its CYP2D6 metabolite <strong>dextrorphan</strong>.
+    Context names: DXM, DM, robo, dex, "Triple C", robotripping, skittling.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value terra">NMDA-R (channel) · σ<sub>1</sub></span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Open-channel blocker</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">σ<sub>1</sub> K<sub style="font-size:0.7em">i</sub> (DXM)</span>
+      <span class="fact-value gold">348 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">NMDA K<sub style="font-size:0.7em">i</sub> (dextrorphan)</span>
+      <span class="fact-value terra">220 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CYP2D6 → dextrorphan</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Active metabolite</span>
+      <span class="fact-value gold">Dextrorphan (DXO)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Class</span>
+      <span class="fact-value teal">Dissociative / antitussive</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>A Weak Channel Blocker With a Potent Metabolite</h2>
+
+      <p>
+        Dextromethorphan is the <strong>d-isomer of a codeine analog</strong> that was deliberately engineered to keep
+        the antitussive action of opioids while shedding the analgesia and dependence. In the process it became a
+        genuinely polypharmacological molecule. Its recreationally and clinically relevant actions are three:
+        <strong>non-competitive, use-dependent open-channel block of the NMDA-type glutamate receptor</strong>,
+        <strong>sigma-1 (σ<sub>1</sub>) receptor agonism</strong>, and <strong>serotonin (and, weaker, norepinephrine)
+        reuptake inhibition</strong>. Unlike morphine, DXM has negligible μ-opioid affinity — naloxone does not reverse
+        its core effects.
+      </p>
+
+      <p>
+        The load-bearing subtlety: <strong>DXM itself is only a modest NMDA blocker</strong> (human PCP-site
+        K<sub>i</sub> ≈ 1.7 µM). The dissociative "trip" is driven far more by its <strong>O-demethylated metabolite
+        dextrorphan (DXO)</strong>, a roughly <em>8-fold more potent</em> open-channel blocker (K<sub>i</sub> ≈ 220 nM,
+        same PCP site as ketamine and PCP). Because that conversion is done by the highly polymorphic enzyme
+        <strong>CYP2D6</strong>, an individual's genotype rewrites their pharmacology — this is one of the cleanest
+        real-world examples of pharmacogenetics shaping a subjective drug effect.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title net">① NMDA Open-Channel Block</div>
+          <p>Protonated DXM/dextrorphan enter the <strong>open</strong> NMDA channel and lodge in the pore near the GluN1/GluN2 asparagine (N-site) ring — the same PCP/ketamine site. Use-dependent, partially trapped, and voltage-sensitive. Dextrorphan carries most of the potency.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">② Sigma-1 Agonism</div>
+          <p>DXM's <strong>highest-affinity target</strong> (K<sub>i</sub> ≈ 348 nM, [³H](+)-pentazocine displacement). σ<sub>1</sub> is an ER chaperone at mitochondria-associated membranes; agonism modulates Ca²⁺ signaling, BDNF, and — controversially — contributes to the dissociative, mood, and neuroprotective profile.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">③ Serotonin Reuptake Inhibition</div>
+          <p>At the high plasma levels reached during recreational megadosing, DXM inhibits <strong>SERT</strong> (and NET) — the mechanistic basis of the very real <strong style="color:var(--rose)">serotonin-syndrome</strong> risk with MAOIs and SSRIs. This is not a footnote; it is the deadliest interaction on the page.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">④ Cortical Disinhibition</div>
+          <p>As with ketamine, NMDA block on tonically active GABAergic interneurons <strong>disinhibits</strong> pyramidal cells, releasing a glutamate surge onto AMPA receptors. The dissociative and dream-like phenomenology tracks the same corticothalamic uncoupling.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ nAChR &amp; Na-Channel Effects</div>
+          <p>DXM also antagonizes α3β4 <strong>nicotinic receptors</strong> and weakly blocks neuronal <strong>Na⁺ channels</strong> ([³H]BTX-site K<sub>i</sub> low-µM). These contribute to the antitussive action and to autonomic/cardiac effects at overdose more than to the "high".</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">⑥ The AVP-786 / Nuedexta Twist</div>
+          <p>Combining DXM with a <strong>CYP2D6 inhibitor</strong> (quinidine in Nuedexta; deuteration in deudextromethorphan/AVP-786) is used clinically to <em>raise DXM</em> levels for pseudobulbar affect — deliberately biasing the parent-vs-metabolite balance the opposite way from a recreational user chasing dextrorphan.</p>
+        </div>
+      </div>
+
+      <div class="pathway-box">
+        <span class="step">DXM⁺</span>
+        <span class="arrow">→ weak NMDA block + σ<sub>1</sub> agonism + SERT/NET inhibition →</span>
+        <span class="step">CYP2D6 O-demethylation</span>
+        <span class="arrow">→</span>
+        <span class="effect">dextrorphan (potent NMDA block, K<sub>i</sub> ≈ 220 nM)</span>
+        <br>
+        <span class="step">Open-channel block on interneurons</span>
+        <span class="arrow">→ GABA tone ↓ →</span>
+        <span class="effect">pyramidal disinhibition → glutamate/AMPA surge → dissociation, plateaus</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>CYP2D6 Is the Whole Story</h2>
+
+      <p>
+        DXM is well absorbed orally but hit hard by first-pass metabolism. The committed step is
+        <strong>CYP2D6-mediated O-demethylation to dextrorphan</strong>; a minor arm is CYP3A4/3A5
+        <strong>N-demethylation to 3-methoxymorphinan</strong>. Both eventually converge on
+        <strong>3-hydroxymorphinan</strong>, which is glucuronidated and renally cleared. Because CYP2D6 is
+        genetically polymorphic, the same 1 mg/kg dose produces radically different exposure between people.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">low (high first-pass)</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (oral)</span><span class="pk-val">~2 – 3 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> — extensive metab. (EM)</span><span class="pk-val">~2 – 4 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> — poor metab. (PM)</span><span class="pk-val">~13 – 30 h</span></div>
+        <div class="pk-row"><span class="pk-key">Primary enzyme</span><span class="pk-val">CYP2D6 (O-demethyl.)</span></div>
+        <div class="pk-row"><span class="pk-key">Secondary enzyme</span><span class="pk-val">CYP3A4 / 3A5 (N-demethyl.)</span></div>
+        <div class="pk-row"><span class="pk-key">Active metabolite</span><span class="pk-val">Dextrorphan (NMDA K<sub>i</sub> 220 nM)</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">large (~5 – 6 L/kg)</span></div>
+        <div class="pk-row"><span class="pk-key">Elimination</span><span class="pk-val">renal (glucuronides)</span></div>
+        <div class="pk-row"><span class="pk-key">Salt form (OTC)</span><span class="pk-val">hydrobromide (HBr)</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> the CYP2D6 arm both <em>activates</em> DXM (to the dissociative dextrorphan)
+        and, in fast metabolizers, <em>shortens its stay</em> — the enzyme giveth and taketh away.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Dextromethorphan</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2D6
+          <span style="font-size:10px;color:var(--fg-dim)">O-demethyl.</span>
+        </div>
+        <div class="meta-node active">Dextrorphan (DXO) ★</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP3A / UGT
+        </div>
+        <div class="meta-node inactive">3-hydroxymorphinan → glucuronide → urine</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Dextromethorphan</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP3A4 / 3A5
+          <span style="font-size:10px;color:var(--fg-dim)">N-demethyl.</span>
+        </div>
+        <div class="meta-node inactive">3-methoxymorphinan</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2D6
+        </div>
+        <div class="meta-node inactive">3-hydroxymorphinan</div>
+      </div>
+
+      <p>
+        <strong>Extensive metabolizers (EMs, the majority)</strong> convert DXM to dextrorphan rapidly: strong
+        dissociation but a short parent half-life. <strong>Poor metabolizers (PMs, ~5–10% of Europeans, higher in some
+        populations)</strong> — plus anyone taking a CYP2D6 inhibitor — form little dextrorphan, accumulate the parent
+        drug, and show <em>markedly prolonged half-lives</em> and higher σ<sub>1</sub>/serotonergic parent exposure. That
+        combination (more DXM, less clearance, more SERT engagement) is exactly the pharmacology that raises
+        serotonin-syndrome and toxicity risk. <strong>SSRIs (fluoxetine, paroxetine) and bupropion are potent CYP2D6
+        inhibitors</strong> — they turn an EM into a functional PM <em>and</em> add serotonergic load: a double hit.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology &amp; Clinical Context</div>
+      <h2>Antitussive by Day, Dissociative by the Bottle — the "Plateaus"</h2>
+
+      <p>
+        At therapeutic antitussive doses (10–30 mg) DXM suppresses the medullary cough reflex with no appreciable
+        psychoactivity. Recreational use scales the dose by <strong>one to two orders of magnitude</strong>, and the
+        subjective effects famously arrive in discrete steps that the user community (after William White's DXM FAQ)
+        calls <strong>"plateaus"</strong> — a genuine dose–response staircase reflecting progressive NMDA blockade layered
+        on σ<sub>1</sub> and serotonergic tone.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>1st Plateau · ~1.5–2.5 mg/kg (~100–200 mg)</h4>
+          <p>Mild stimulation, euphoria, music enhancement, a slight "buzz" and restlessness — closer to an intoxicant than a dissociative. Body load and nausea already possible.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>2nd Plateau · ~2.5–7.5 mg/kg (~200–400 mg)</h4>
+          <p>Stronger euphoria and intoxication, exaggerated "robo-walk" ataxia, slurred speech, closed-eye imagery, short-term memory disruption. The classic "robotripping" zone.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>3rd Plateau · ~7.5–15 mg/kg (~400–600 mg)</h4>
+          <p>Frank dissociation: altered perception of time and body, dream-like visuals, impaired motor control, and a distinct disconnection from the environment. This is dextrorphan-dominated NMDA territory.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>4th Plateau · ~15+ mg/kg (~600 mg and up)</h4>
+          <p>Full dissociative anesthesia — profound sensory disconnection, near-immobility, ego dissolution, and a state some users compare to the ketamine "K-hole". Also where cardiovascular, thermoregulatory, and airway risks climb steeply; overdose and combination-product toxicity dominate real-world harm here.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        Clinically, the same molecule keeps finding new lives: <strong>Nuedexta</strong> (DXM + quinidine) for
+        pseudobulbar affect, and <strong>Auvelity</strong> (DXM + bupropion) — FDA-approved in 2022 for major depressive
+        disorder, riding the same NMDA-plus-σ<sub>1</sub> logic that made ketamine a rapid antidepressant, with bupropion
+        deployed as a CYP2D6 inhibitor to keep DXM levels up. The recreational and psychiatric stories are the same
+        pharmacology read at different doses.
+      </p>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">04 · Harm Reduction</div>
+      <h2>Clinical Risk Profile</h2>
+      <p style="max-width:none;">Evidence-based, non-moralistic. Pure DXM has a fairly wide margin <em>alone</em>, but the two
+      things that actually kill people are (1) <strong>serotonergic drug interactions</strong> and (2) <strong>combination
+      cough-and-cold products</strong> — the acetaminophen, antihistamine, and decongestant riding along in the same bottle.
+      Megadosing "DM" syrup for dissociation means megadosing everything else in it.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> MAOIs (phenelzine, tranylcypromine, moclobemide, linezolid, methylene blue) → <strong>serotonin syndrome / hyperthermia — documented deaths, absolute contraindication</strong> · SSRIs / SNRIs / other serotonergics (also raise DXM via CYP2D6 block) → serotonin syndrome · other CNS/respiratory depressants (opioids, benzodiazepines, alcohol, GHB) → sedation + airway loss while dissociated · <strong>combination products</strong>: acetaminophen (hepatotoxic overdose), chlorpheniramine/antihistamines (anticholinergic + serotonergic toxicity, "Triple C"), pseudoephedrine/phenylephrine (hypertensive/cardiac strain). Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Serotonin Syndrome
+          </h4>
+          <ul>
+            <li>DXM is a serotonin-reuptake inhibitor at high dose — <strong style="color:var(--rose)">the single most dangerous property here</strong></li>
+            <li><strong style="color:var(--rose)">MAOIs are absolutely contraindicated</strong> — fatal hyperthermia is documented; includes linezolid and methylene blue</li>
+            <li>SSRIs/SNRIs, tramadol, triptans, MDMA, St. John's Wort stack serotonergic load</li>
+            <li>Warning signs: agitation, sweating, shivering, hyperreflexia/clonus, rigidity, fever, rapid heart rate → medical emergency</li>
+            <li>Many SSRIs also inhibit CYP2D6, raising DXM levels — a compounding double hit</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            The Combination-Product Trap
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Acetaminophen (paracetamol)</strong>: many DM syrups/tablets contain it — a DXM megadose = an acetaminophen overdose = potentially fatal liver failure. This is a leading cause of serious harm</li>
+            <li><strong style="color:var(--rose)">"Triple C" / Coricidin HBP Cough &amp; Cold</strong>: DXM + chlorpheniramine → anticholinergic toxicity, tachycardia, seizures, serotonergic load</li>
+            <li>Pseudoephedrine/phenylephrine: added cardiac and hypertensive strain</li>
+            <li>Guaifenesin: violent vomiting at high dose</li>
+            <li>Rule: <strong>only single-ingredient DXM</strong> is even remotely defensible; never megadose a multi-ingredient product</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Bromism &amp; the "Purple Drank" Myth
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Bromism is real</strong> — but from the salt, not CBD: OTC DXM is dextromethorphan <strong>hydrobromide</strong>. Chronic megadosing delivers gram-scale bromide, and case reports document <strong>chronic bromism</strong> (confusion, ataxia, psychosis, acneiform rash)</li>
+            <li>Myth: "DXM + CBD causes bromism." CBD does not add bromide. CBD <em>can</em> inhibit CYP2D6/3A4 and shift DXM levels — a metabolic interaction, not bromism</li>
+            <li>Myth: DXM is "purple drank / lean." <strong>Lean is codeine + promethazine</strong> (an opioid + antihistamine) — a different drug entirely; media conflate all cough-syrup misuse</li>
+            <li>Accuracy matters: the risks of DXM and of codeine syrup are not interchangeable</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Acute Risks &amp; Testing
+          </h4>
+          <ul>
+            <li>Dissociation → falls, injury, vomiting with impaired airway; never dose alone, sit/lie down before onset</li>
+            <li>Tachycardia, hypertension, hyperthermia (worse with stimulants/serotonergics), and at high plateaus, mania/psychosis</li>
+            <li>CYP2D6 genotype is unknown to most users — the "same dose" is not the same drug person to person; start low</li>
+            <li>Reagent test (Marquis, Mecke) to confirm DXM vs adulterants; watch for combination-product fillers on the label</li>
+            <li>Repeated heavy use → tolerance, psychological dependence, and a real craving/withdrawal pattern</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D · NMDA-R channel (DXM-site target)</span>
+          <span class="ngl-pdb-tag">PDB: 7EU7</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="7EU7"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            Receptor (GluN1/GluN2A cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Pore / N-site (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Channel-blocker site (ligand JC9 = S-ketamine)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">7EU7</strong> — cryo-EM (3.5 Å) of the human
+          <strong style="color:var(--fg-muted)">GluN1–GluN2A NMDA receptor with S-ketamine, glycine and glutamate</strong>
+          (Zhang, Ye, Zhu et al., 2021, <em>Nature</em>). <strong style="color:var(--harm-fatal-strong)">Honest label:</strong> no
+          dextromethorphan- or dextrorphan-bound NMDA co-crystal exists. This structure shows the
+          <em>open-channel blocker site</em> (ligand <strong style="color:var(--fg-muted)">JC9</strong> = S-ketamine) in the
+          pore vestibule — the <em>same PCP/channel site</em> that DXM and its potent metabolite dextrorphan occupy.
+          It is shown here as the best real structure of DXM's primary target, <strong>not</strong> as DXM itself.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/7EU7" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+          &nbsp;·&nbsp; sigma-1 alternative: <a href="https://www.rcsb.org/structure/5HK1" target="_blank" rel="noopener noreferrer">PDB 5HK1</a> (human σ<sub>1</sub> + PD144418)
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Binding / Block Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">DXM &amp; dextrorphan</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">σ<sub>1</sub> · DXM</div>
+                <span class="target-full">Sigma non-opioid receptor 1 · human</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">K<sub>i</sub> = 348 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">(+)-pentazocine displ. · pChEMBL 6.46</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:92%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">NMDA-R · dextrorphan</div>
+                <span class="target-full">Glutamate [NMDA] receptor · human (metabolite)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> = 220 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">PCP-site displ. · pChEMBL 6.66</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Open-channel block</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">SERT · DXM</div>
+                <span class="target-full">Serotonin transporter (high-dose)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 40 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">5-HT uptake · literature (see note)</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:96%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Reuptake inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">NMDA-R · DXM</div>
+                <span class="target-full">Glutamate [NMDA] receptor · human (parent)</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> = 1680 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">PCP-site displ. · pChEMBL 5.78</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:60%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Open-channel block</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">NMDA-R · DXM (rat)</div>
+                <span class="target-full">[³H]MK-801 / PCP site · rat brain</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="font-size:11px">K<sub>i</sub> ≈ 2.2 – 4.5 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:48%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Channel blocker</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">σ<sub>1</sub> · DXM (rat)</div>
+                <span class="target-full">Sigma-1 site · rat (selectivity assay)</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> = 5.07 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:40%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">M<sub>2</sub> mAChR · DXM</div>
+                <span class="target-full">Muscarinic ACh receptor (secondary)</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> = 10 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:22%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          σ<sub>1</sub> 348 nM &amp; NMDA (DXM 1680 nM; dextrorphan 220 nM) &amp; M<sub>2</sub>: ChEMBL CHEMBL52440 /
+          CHEMBL1254766 (Bioorg Med Chem Lett 2004; J Med Chem 1998; J Med Chem 1994; Bioorg Med Chem 2009).
+          SERT ≈ 40 nM is a literature functional value (5-HT-uptake inhibition, Codd et al. 1995 J Pharmacol Exp Ther) —
+          <em>not</em> a ChEMBL K<sub>i</sub>; reported values span low-nM to sub-µM. Rel. bars scaled by −log(affinity);
+          lower value = stronger. Note the inversion: DXM is a weak NMDA blocker, but dextrorphan is ~8× stronger.
+        </div>
+      </div>
+
+      <!-- Entropy / Docking commentary -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>ΔS Note · FlexAID∆S Perspective</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">entropy</span>
+        </div>
+        <div style="padding:0.85rem 1rem;font-size:12px;color:var(--fg-muted);line-height:1.6;">
+          <p style="margin:0 0 0.6rem;max-width:none;">
+            DXM is a near-rigid morphinan: a fused tetracyclic cage with a single rotatable bond (the methyl ether).
+            When it — or dextrorphan — plugs the <strong style="color:var(--fg)">pre-formed, water-filled NMDA pore</strong>,
+            it surrenders almost <strong style="color:var(--fg)">no internal conformational entropy</strong>. As with
+            ketamine, the dominant −TΔS term is <em>desolvation</em>: displacing and re-ordering the channel waters
+            around the N-site ring. The Shannon-entropy collapse on binding lives in the <strong style="color:var(--fg)">solvent
+            and pore side-chain microstates</strong>, not in the ligand.
+          </p>
+          <p style="margin:0;max-width:none;">
+            The pharmacogenetic twist has an entropic reading too. The subjective effect is dominated by dextrorphan
+            (K<sub>i</sub> 220 nM) rather than DXM (1.7 µM) — a ~1 kcal/mol swing in ΔG concentrated almost entirely in
+            the <em>enthalpic/desolvation</em> gain from removing the 3-methyl ether (adding an H-bonding phenol) while
+            the rigid scaffold's ΔS<sub>conf</sub> stays essentially constant. A defensible ΔG decomposition here weights
+            <strong style="color:var(--fg)">ΔS<sub>solvent</sub> and pore-water release</strong> far above ligand
+            ΔS<sub>conf</sub> — the same signature FlexAID∆S flags for rigid channel blockers versus floppy orthosteric binders.
+          </p>
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #041 · Dextromethorphan (DXM) · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/ketamine/">Ketamine #011</a>
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Data: ChEMBL CHEMBL52440 (DXM) &amp; CHEMBL1254766 (dextrorphan) bioactivity &amp; mechanism;
+    Zhang et al. (2021) Nature (PDB 7EU7); human σ<sub>1</sub> structure PDB 5HK1 (Schmidt et al. 2016, Nature);
+    Codd et al. (1995) J Pharmacol Exp Ther (SERT). No DXM/dextrorphan co-crystal exists — NMDA channel shown with S-ketamine, labeled honestly. ·
+    <a href="https://www.rcsb.org/structure/7EU7" target="_blank" rel="noopener noreferrer">PDB 7EU7</a>
+    <br>
+    For harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '7EU7',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

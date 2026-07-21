@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amitriptyline — Drug of the Day #050 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of amitriptyline (Elavil): SERT/NET reuptake inhibition plus potent H1, muscarinic, α1-adrenergic and cardiac Naᵥ1.5 blockade, nortriptyline active-metabolite cascade, low-dose use for pain/migraine/sleep, the narrow therapeutic index and lethal Na-channel overdose, and interactive 3D dDAT + nortriptyline (PDB 4M48) visualization via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(232,213,183,0.10);
+  --border-h:    rgba(232,213,183,0.28);
+  --teal:        #22D3EE;
+  --gold:        #E8D5B7;
+  --gold-bright: #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-gold:   0 0 24px rgba(232,213,183,0.20);
+  --glow-teal:   0 0 20px rgba(34,211,238,0.18);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(232,213,183,0.55);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.88);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(232,213,183,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,213,183,0.06) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(232,213,183,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,213,183,0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--gold-bright); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--gold-bright); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gold-bright);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold   { color: var(--gold-bright); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.08); }
+.pill-teal   { color: var(--teal);        border-color: rgba(34,211,238,0.30);  background: rgba(34,211,238,0.06); }
+.pill-terra  { color: var(--terra);       border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose   { color: var(--rose);        border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim    { color: var(--fg-muted);    border-color: var(--border);          background: var(--bg-alt); }
+.pill-flagship {
+  color: #fff;
+  border-color: rgba(232,213,183,0.50);
+  background: linear-gradient(135deg, rgba(232,213,183,0.15), rgba(251,191,36,0.12));
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.4rem;
+}
+.hero-name .accent { color: var(--gold-bright); }
+
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(232,213,183,0.55);
+  margin-bottom: 0.9rem;
+}
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold   { color: var(--gold-bright); }
+.fact-value.teal   { color: var(--teal); }
+.fact-value.terra  { color: var(--terra); }
+.fact-value.rose   { color: var(--rose); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--gold-bright); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert  { color: var(--teal); }
+.mech-card-title.net   { color: var(--terra); }
+.mech-card-title.dat   { color: var(--gold-bright); }
+.mech-card-title.local { color: var(--rose); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway Box ────────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-bright);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step   { color: var(--gold-bright); font-weight: 600; }
+.pathway-box .arrow  { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--teal); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolite Flow ────────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary  { color: var(--gold-bright); border-color: rgba(251,191,36,0.3);   background: rgba(251,191,36,0.08); font-weight: 600; }
+.meta-node.active   { color: var(--teal);         border-color: rgba(34,211,238,0.3);   background: rgba(34,211,238,0.07); }
+.meta-node.inactive { color: var(--fg-muted);     border-color: var(--border);          background: var(--bg-alt); }
+.meta-node.danger   { color: var(--rose);          border-color: rgba(244,63,94,0.3);   background: rgba(244,63,94,0.07); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Circuit Cards ──────────────────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.dopamine  { background: var(--gold-bright); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.local     { background: var(--rose); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Entropy Box ────────────────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gold-bright);
+  background: rgba(251,191,36,0.08);
+  border: 1px solid rgba(251,191,36,0.22);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--gold-bright); border-color: rgba(251,191,36,0.30); background: rgba(251,191,36,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold-bright);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(232,213,183,0.05);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--gold-bright);
+  transition: width 0.5s ease;
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-block   { color: var(--gold-bright); background: rgba(251,191,36,0.08);   border: 1px solid rgba(251,191,36,0.22); }
+.ab-inhibit { color: var(--terra);        background: rgba(167,139,250,0.08);  border: 1px solid rgba(167,139,250,0.22); }
+.ab-channel { color: var(--rose);          background: rgba(244,63,94,0.08);   border: 1px solid rgba(244,63,94,0.22); }
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Clinical / Info Box ────────────────────────────────── */
+.adulterant-box {
+  background: rgba(167,139,250,0.04);
+  border: 1px solid rgba(167,139,250,0.22);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.adulterant-box .adult-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+}
+.adulterant-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  max-width: none;
+}
+.adulterant-box p:last-child { margin-bottom: 0; }
+.adulterant-box strong { color: var(--fg); }
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; color: var(--gold-bright); }
+
+/* ── NGL Error ──────────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1;
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/drug-of-the-day/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Drug of the Day
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#050 · Drug of the Day</span>
+    <span class="pill pill-terra">Tricyclic Antidepressant (TCA)</span>
+    <span class="pill pill-rose">Rx-only · Narrow therapeutic index</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Amitriptyline</span>
+  </h1>
+  <p class="hero-tagline">The Dirtiest Drug That Still Works</p>
+  <p class="hero-iupac">IUPAC: 3-(10,11-dihydro-5H-dibenzo[a,d][7]annulen-5-ylidene)-N,N-dimethylpropan-1-amine · Elavil / Laroxyl / Tryptizol · MW 277.40 g/mol (free base) · CAS 50-48-6 · ChEMBL629 · ATC N06AA09</p>
+  <p class="hero-class">
+    <strong>Amitriptyline (Elavil).</strong>
+    A first-generation <em>tricyclic antidepressant</em> from the dibenzocycloheptadiene series. Where the SSRIs are precision-guided at SERT,
+    amitriptyline is a <strong>shotgun</strong>: it blocks SERT and NET reuptake <em>and</em> slams into histamine, muscarinic, α-adrenergic and cardiac sodium
+    channels with near-equal force. That promiscuity is the whole story — it is simultaneously why the drug sedates, dries, dizzies and kills in overdose,
+    and why sub-antidepressant doses treat neuropathic pain, migraine and insomnia. Its own N-demethylated metabolite, <strong>nortriptyline</strong>,
+    is the molecule captured inside the transporter in PDB 4M48.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value teal">SERT / NET</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Reuptake + receptor block</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">SERT K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value teal">~0.9 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">H<sub>1</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">1.1 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">M<sub>1</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value rose">2.7 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub></span>
+      <span class="fact-value">~10–28 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CYP2C19 / 2D6</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Active metabolite</span>
+      <span class="fact-value gold">Nortriptyline</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>One Molecule, Six Receptor Systems — Promiscuity as Pharmacology</h2>
+
+      <p>
+        Amitriptyline's therapeutic <strong>intent</strong> is monoamine reuptake inhibition: like cocaine, it binds the orthosteric
+        S1 site of the serotonin and norepinephrine transporters (SERT / NET) and occludes the pore, blocking recapture of 5-HT and NE
+        without being transported itself. Chronic elevation of synaptic monoamines drives the slow (2–6 week) downstream adaptations —
+        receptor downregulation, BDNF signaling, hippocampal plasticity — that constitute the antidepressant effect.
+      </p>
+      <p>
+        The <strong>problem</strong>, and the defining feature of the whole tricyclic class, is that the same flat, lipophilic
+        three-ring scaffold fits comfortably into a half-dozen unrelated pockets. Amitriptyline binds histamine H<sub>1</sub>,
+        muscarinic M<sub>1</sub>–M<sub>5</sub>, and α<sub>1</sub>/α<sub>2</sub>-adrenergic receptors at <em>single-digit to low-double-digit nanomolar</em>
+        affinity — comparable to or tighter than its action at its "real" targets. At toxic concentrations it also blocks voltage-gated
+        cardiac Na<sub>v</sub>1.5 and hERG K<sup>+</sup> channels. There is no clean separation between "mechanism" and "side effect" here:
+        the receptor promiscuity <em>is</em> the drug.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title sert">① SERT Reuptake Block</div>
+          <p>Binds human SERT (SLC6A4) with K<sub>i</sub> ≈ 0.9 nM (DrugMatrix binding; functional uptake IC<sub>50</sub> higher, ~30–100 nM). Elevates synaptic 5-HT — the serotonergic arm of the antidepressant effect, and the reason amitriptyline carries full serotonin-syndrome and MAOI-contraindication risk.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">② NET Reuptake Block</div>
+          <p>Blocks the norepinephrine transporter (SLC6A2), K<sub>i</sub> ≈ 22 nM. The noradrenergic arm — mood, analgesia in neuropathic pain, and part of the descending pain-modulation effect. Nortriptyline, its metabolite, is markedly more NET-selective than the parent.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title terra" style="color:var(--terra)">③ Histamine H<sub>1</sub> Block</div>
+          <p>Inverse agonist at H<sub>1</sub>, K<sub>i</sub> ≈ 1.1 nM — one of the most potent H<sub>1</sub> antagonists in clinical use. Drives profound sedation, weight gain and daytime somnolence. This is the basis of amitriptyline's off-label use as a hypnotic at 10–25 mg.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title local">④ Muscarinic M<sub>1</sub> Block</div>
+          <p>Antagonist at M<sub>1</sub>, K<sub>i</sub> ≈ 2.7 nM (potent at M<sub>1</sub>–M<sub>5</sub>). The anticholinergic load: dry mouth, blurred vision, constipation, urinary retention, tachycardia, and — especially in the elderly — confusion and delirium. A major reason TCAs are Beers-criteria "avoid" drugs in geriatrics.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title terra" style="color:var(--terra)">⑤ α<sub>1</sub>-Adrenergic Block</div>
+          <p>Antagonist at α<sub>1A/1B/1D</sub>, K<sub>i</sub> ≈ 5–50 nM. Causes vasodilation → <strong>orthostatic hypotension</strong>, dizziness and falls. In overdose, α<sub>1</sub> blockade compounds cardiotoxic hypotension that is refractory to standard pressors.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title local">⑥ Cardiac Na<sub>v</sub>1.5 Block</div>
+          <p>At supratherapeutic levels amitriptyline blocks the cardiac fast Na<sup>+</sup> channel (SCN5A) use-dependently, IC<sub>50</sub> ≈ low µM, plus hERG K<sup>+</sup> block. This is a class-I-antiarrhythmic-like action — inconsequential at therapeutic dose, lethal in overdose (QRS widening, arrhythmia). See §04.</p>
+        </div>
+      </div>
+
+      <div class="pathway-box">
+        <span class="step">Amitriptyline</span>
+        <span class="arrow">→ SERT + NET S1 occlusion →</span>
+        <span class="effect">[5-HT] ↑ , [NE] ↑ → slow antidepressant adaptation (2–6 wk)</span>
+        <br>
+        <span class="step">Same scaffold</span>
+        <span class="arrow">→ H<sub>1</sub> / M<sub>1</sub> / α<sub>1</sub> block (all ≤ 50 nM) →</span>
+        <span class="danger">sedation · dry mouth · constipation · orthostatic hypotension</span>
+        <br>
+        <span class="step">Supratherapeutic</span>
+        <span class="arrow">→ Na<sub>v</sub>1.5 + hERG block →</span>
+        <span class="danger">QRS ↑ · QT ↑ · seizures · ventricular arrhythmia</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Lipophilic, Long-Acting, and Metabolized Into a Second Drug</h2>
+
+      <p>
+        Amitriptyline is highly lipophilic and extensively tissue-bound — a huge volume of distribution (~6–16 L/kg) and ~95% plasma
+        protein binding. This matters clinically two ways: it accumulates in myocardium and CNS (worsening overdose), and it is
+        <strong>not dialyzable</strong>, so hemodialysis is useless in poisoning. Oral bioavailability is a modest 30–60% because of
+        substantial first-pass metabolism.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">30 – 60%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub></span><span class="pk-val">2 – 5 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (amitriptyline)</span><span class="pk-val">10 – 28 h (~21 h)</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (nortriptyline)</span><span class="pk-val">18 – 44 h</span></div>
+        <div class="pk-row"><span class="pk-key">Volume of distribution</span><span class="pk-val">~6 – 16 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~95%</span></div>
+        <div class="pk-row"><span class="pk-key">Primary CYPs</span><span class="pk-val">2C19 · 2D6 (· 3A4 · 1A2)</span></div>
+        <div class="pk-row"><span class="pk-key">Therapeutic range</span><span class="pk-val">80–200 ng/mL (combined)</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> CYP2C19 N-demethylates amitriptyline to <strong>nortriptyline</strong> — itself an approved,
+        NET-preferring TCA (Aventyl/Pamelor) and the active species crystallized in PDB 4M48. Both parent and metabolite are then
+        E-10-hydroxylated by the highly polymorphic <strong>CYP2D6</strong>; 10-hydroxy metabolites are weakly active and glucuronidated
+        for renal excretion. Poor CYP2D6 metabolizers (~7–10% of Europeans) accumulate higher levels and are more prone to
+        anticholinergic and cardiac toxicity at standard doses.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Amitriptyline</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2C19
+          <span style="font-size:10px;color:var(--fg-dim)">N-demethyl.</span>
+        </div>
+        <div class="meta-node active">Nortriptyline ★</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2D6
+          <span style="font-size:10px;color:var(--fg-dim)">10-hydroxyl.</span>
+        </div>
+        <div class="meta-node inactive">(E)-10-OH-nortriptyline</div>
+      </div>
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Amitriptyline</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2D6
+          <span style="font-size:10px;color:var(--fg-dim)">10-hydroxyl.</span>
+        </div>
+        <div class="meta-node inactive">(E)-10-OH-amitriptyline</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          UGT
+        </div>
+        <div class="meta-node inactive">Glucuronide → urine</div>
+      </div>
+
+      <p>
+        <strong>Nortriptyline ★</strong> (marked) is pharmacologically active and clinically monitored: therapeutic drug monitoring
+        for amitriptyline sums parent + nortriptyline, target ~80–200 ng/mL. Above ~500 ng/mL, toxicity is expected; above ~1000 ng/mL,
+        severe cardiotoxicity and death. The gap between a therapeutic and a fatal plasma level is small — the defining hazard of the class.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY / CLINICAL CONTEXT -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology &amp; Clinical Use</div>
+      <h2>Why a "Failed" Antidepressant Is Still Everywhere</h2>
+
+      <p>
+        In modern psychiatry amitriptyline is rarely a first-line antidepressant — the SSRIs and SNRIs match its efficacy with a
+        fraction of the toxicity. Yet it remains one of the most prescribed drugs in the world, because the exact receptor promiscuity
+        that disqualifies it as a clean antidepressant makes it superb at <strong>sub-antidepressant doses</strong> for three other problems.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Neuropathic Pain (10–75 mg)</h4>
+          <p>The best-evidenced use. NET blockade enhances descending noradrenergic pain inhibition in the dorsal horn; additional Na<sub>v</sub> and NMDA-adjacent actions dampen ectopic firing in sensitized nociceptors. Effective at doses far below those needed for mood (NNT ~3–4 for diabetic neuropathy, post-herpetic neuralgia, fibromyalgia) — analgesia here is independent of any antidepressant effect.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Migraine Prophylaxis (10–50 mg)</h4>
+          <p>First-line preventive for chronic migraine and tension-type headache. Mechanism is multimodal — serotonergic modulation of trigeminovascular pain, NE reuptake block, and downregulation of central sensitization. Taken nightly, the H<sub>1</sub>-driven sedation is a feature, not a bug, for patients with comorbid insomnia.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Insomnia &amp; Hypnotic Use (10–25 mg)</h4>
+          <p>Potent H<sub>1</sub> inverse agonism (K<sub>i</sub> ~1.1 nM) plus α<sub>1</sub> and 5-HT<sub>2A</sub> antagonism produce reliable sedation and increased slow-wave sleep. Widely used off-label for sleep, though the same anticholinergic load causes morning grogginess, dry mouth, and cognitive dulling — and is a poor choice in older adults.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar local"></div>
+        <div class="circuit-inner">
+          <h4>The Cost of the Shotgun</h4>
+          <p>Every therapeutic use above is inseparable from the side-effect burden: anticholinergic dry mouth/constipation/retention, antihistaminergic sedation and weight gain, α<sub>1</sub> orthostasis. The receptors that deliver the benefit are the receptors that deliver the harm — dose is titrated to the narrow band where the two are tolerable, and that band is where overdose danger begins.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERDOSE TOXICOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">04 · Overdose Toxicology — Na⁺-Channel Cardiotoxicity</div>
+      <h2>The Classic Dangerous-in-Overdose Antidepressant</h2>
+
+      <p>
+        This is the single most important fact about amitriptyline: it has a <strong>narrow therapeutic index</strong>, and TCA overdose
+        is a leading cause of drug-poisoning death. A supply of tricyclic — an amount routinely dispensed — can be lethal in a single
+        ingestion, historically ~10–20 mg/kg is potentially fatal. Unlike an SSRI overdose (usually benign), a TCA overdose is a
+        time-critical cardiotoxic emergency.
+      </p>
+
+      <p>
+        The lethal mechanism is <strong>use-dependent blockade of the cardiac fast sodium channel Na<sub>v</sub>1.5</strong>. As heart rate
+        and drug level rise, progressively more Na<sub>v</sub>1.5 channels are blocked, slowing phase-0 depolarization and intraventricular
+        conduction. On the ECG this appears as <em>QRS widening</em> and a rightward terminal QRS axis (tall R in aVR) — the classic,
+        prognostic sign. QRS &gt; 100 ms predicts seizures; QRS &gt; 160 ms predicts ventricular arrhythmia. Simultaneous hERG K<sup>+</sup>
+        block prolongs QT, and the toxidrome adds anticholinergic tachycardia, α<sub>1</sub>-mediated hypotension, H<sub>1</sub>-driven coma
+        and lowered seizure threshold. The mnemonic is the "three C's": <strong>Coma, Convulsions, Cardiotoxicity</strong>.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">TCA overdose</span>
+        <span class="arrow">→ Na<sub>v</sub>1.5 use-dependent block (rate-dependent) →</span>
+        <span class="danger">QRS widening · R-wave in aVR · ↓ conduction</span>
+        <br>
+        <span class="step">+ hERG block</span>
+        <span class="arrow">→</span>
+        <span class="danger">QT prolongation → VT / VF / torsades</span>
+        <br>
+        <span class="step">Antidote</span>
+        <span class="arrow">→ hypertonic sodium bicarbonate (Na<sup>+</sup> load + alkalinization) →</span>
+        <span class="effect">narrows QRS · displaces drug from Na<sub>v</sub>1.5 · target pH 7.45–7.55</span>
+      </div>
+
+      <div class="adulterant-box">
+        <div class="adult-label">Poisoning Management — First Principles</div>
+        <p>
+          <strong>Sodium bicarbonate is the cornerstone antidote.</strong> A sodium bolus increases the electrochemical gradient across
+          Na<sub>v</sub>1.5 and outcompetes the drug, while serum alkalinization (target pH 7.45–7.55) reduces the fraction of ionized,
+          channel-blocking amitriptyline. Give for QRS &gt; 100 ms, hypotension, or ventricular dysrhythmia.
+        </p>
+        <p>
+          <strong>Supportive:</strong> airway protection (coma), benzodiazepines for seizures, IV fluids and norepinephrine for
+          hypotension. <strong>Avoid class-Ia/Ic and class-III antiarrhythmics</strong> — they add sodium/potassium-channel block and worsen
+          conduction. Lipid emulsion and mechanical circulatory support are salvage options. Hemodialysis does <strong>not</strong> work
+          (high V<sub>d</sub>, high protein binding). Any tricyclic ingestion warrants continuous ECG and a minimum 6-hour observation window.
+        </p>
+      </div>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">05 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>A Rigid Tricycle in a Flexible Transporter — and Why It Binds Everything</h2>
+
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+          <strong>Amitriptyline's dibenzocycloheptadiene core is a semi-rigid, near-planar tricycle</strong> with only a short
+          dimethylaminopropylidene tail carrying real rotational freedom. In FlexAID∆S entropy modeling the fused ring system contributes
+          a small conformational-entropy penalty (<code>ΔS_conf</code>) on binding — the scaffold is largely pre-organized — while the flexible
+          side chain pays the entropic cost of ordering its terminal amine against the transporter's Asp/aromatic cage. The nortriptyline
+          complex in <strong>PDB 4M48</strong> shows exactly this: the tricyclic wedged between TM1, TM3, TM6 and TM8, protonated amine
+          anchored at the central S1 aspartate.
+        </p>
+        <p>
+          The transporter pocket itself is <strong>conformationally hot</strong> — dDAT/SERT/NET cycle through outward-open, occluded and
+          inward-open states in their alternating-access transport mechanism. Shannon entropy of the unbound pocket, <code>H_pocket</code>,
+          is high (many accessible conformers); amitriptyline binding <em>collapses</em> that ensemble by trapping the outward-open state,
+          the thermodynamic signature of a competitive, non-transported inhibitor. This entropy-collapse fingerprint is the same one
+          cocaine leaves at DAT — TCAs and cocaine are mechanistic cousins at the transporter, differing mainly in which of SERT/NET/DAT
+          they prefer.
+        </p>
+        <p>
+          The deeper lesson for polypharmacology: a flat, lipophilic, moderately rigid scaffold pays a <em>low, roughly constant</em> entropic
+          entry fee into many different pockets. Because <code>ΔG_bind = ΔH − TΔS</code>, a low-<code>ΔS</code> penalty lets even modest enthalpic
+          complementarity yield nanomolar affinity — at H<sub>1</sub>, M<sub>1</sub>, α<sub>1</sub> and the transporters alike. FlexAID∆S ensemble
+          docking against the 4M48 pose estimates <code>ΔG_bind</code> ≈ −11 to −12 kcal/mol at SERT (consistent with K<sub>i</sub> ≈ 0.9 nM;
+          theoretical −RT·ln K<sub>a</sub> ≈ −12.4 kcal/mol at 298 K). Promiscuity is not sloppiness — it is the predictable consequence of a
+          pre-organized ligand whose entropy budget is cheap everywhere.
+        </p>
+      </div>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">06 · Harm Reduction</div>
+      <h2>No Moralizing. The Therapeutic Window Is Narrow — Respect It.</h2>
+      <p style="max-width:none;">Amitriptyline is a prescription medicine, but it is one of the deadliest common drugs in overdose and carries real interaction and discontinuation hazards. Clinical, evidence-based, dose- and context-dependent.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> MAOIs — phenelzine, tranylcypromine, isocarboxazid, moclobemide, linezolid, IV methylene blue — cause fatal serotonin syndrome / hyperpyrexic crisis; <strong>never co-administer, and separate by ≥ 14 days</strong> in either direction. Additive serotonergics (SSRIs/SNRIs, tramadol, triptans, St John's wort) → serotonin syndrome. Other QT-prolonging or Na-channel drugs (class-I/III antiarrhythmics, antipsychotics, methadone) → additive arrhythmia. CNS depressants (alcohol, opioids, benzodiazepines) → sedation, respiratory depression, higher lethality in overdose. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Overdose = Emergency
+          </h4>
+          <ul>
+            <li>Narrow therapeutic index: ~10–20 mg/kg can be lethal; a routine dispensed supply is a potentially fatal ingestion</li>
+            <li>TCA overdose is a cardiotoxic emergency — call emergency services immediately, do not "wait and see"</li>
+            <li>Warning signs: drowsiness/coma, seizures, wide-complex tachycardia, hypotension, dilated pupils, dry flushed skin</li>
+            <li>Antidote is IV sodium bicarbonate — this is a hospital problem; peak toxicity can be delayed several hours</li>
+            <li>Keep supply small and secured for anyone with suicide risk; SSRIs are far safer in overdose if that risk is present</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Dangerous Combinations
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">MAOIs</strong> — fatal serotonin syndrome; 14-day washout mandatory</li>
+            <li><strong style="color:var(--rose)">Tramadol</strong> — serotonin syndrome + lowered seizure threshold (both drugs)</li>
+            <li><strong style="color:var(--rose)">Other anticholinergics</strong> — diphenhydramine, scopolamine: additive delirium, ileus, hyperthermia</li>
+            <li>SSRIs (esp. fluoxetine/paroxetine) — CYP2D6 inhibition ↑ TCA levels → toxicity</li>
+            <li>Alcohol / opioids / benzos — additive CNS + respiratory depression; deadlier overdose</li>
+            <li>QT-prolonging drugs — antipsychotics, methadone, some antibiotics/antifungals</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Discontinuation &amp; Chronic
+          </h4>
+          <ul>
+            <li>Do not stop abruptly — cholinergic rebound (nausea, cramping, sweating, insomnia, vivid dreams, restlessness). Taper over weeks</li>
+            <li>Anticholinergic load is cumulative: constipation, urinary retention, dry eyes/mouth, cognitive dulling</li>
+            <li>Elderly: falls (orthostasis), confusion/delirium, arrhythmia risk — Beers-criteria "avoid"; use lowest possible dose</li>
+            <li>Weight gain and daytime sedation are common at antidepressant doses</li>
+            <li>Antidepressant class carries suicidality-monitoring warning in those &lt; 25 in the first weeks of treatment</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Using It More Safely
+          </h4>
+          <ul>
+            <li>Start low, go slow: 10–25 mg at night for pain/sleep; titrate on a schedule, not by impulse</li>
+            <li>Take the dose at bedtime — turns H<sub>1</sub> sedation into a benefit and blunts daytime anticholinergic effects</li>
+            <li>Baseline ECG before starting in anyone with cardiac history, older age, or on other QT drugs</li>
+            <li>Screen for MAOI use and serotonergic drugs before the first dose — this is the interaction that kills</li>
+            <li>Store securely away from children — pediatric TCA ingestion is disproportionately lethal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Binding Pose · dDAT S1 · Nortriptyline</span>
+          <span class="ngl-pdb-tag">PDB: 4M48</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="4M48"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#1a3a5c;border:1px solid rgba(232,213,183,0.15)"></div>
+            Transporter (refined cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#4a7a9b"></div>
+            Contact residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#FBBF24;box-shadow:0 0 4px #FBBF24"></div>
+            Nortriptyline (ball-and-stick · valence)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">4M48</strong> — <em>Drosophila melanogaster</em> dopamine transporter bound to the tricyclic antidepressant <strong>nortriptyline</strong>, amitriptyline's active N-demethylated metabolite (Penmatsa, Wang &amp; Gouaux, 2013, <em>Nature</em> 503; 2.96 Å). Nortriptyline is wedged between TM1, 3, 6 and 8 in the central S1 site — the same orthosteric pocket amitriptyline occupies at SERT/NET. No amitriptyline co-crystal exists; this is the real TCA-class transporter complex.
+          <br><a href="https://www.rcsb.org/structure/4M48" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Amitriptyline</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Mechanism</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">SERT</div>
+                <span class="target-full">Serotonin transporter (SLC6A4)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 0.9 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Primary · antidepressant</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Reuptake block</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">H<sub>1</sub></div>
+                <span class="target-full">Histamine H1 receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> = 1.12 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Sedation · weight gain</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:80%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Inverse agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--rose)">M<sub>1</sub></div>
+                <span class="target-full">Muscarinic ACh receptor M1</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--rose)">K<sub>i</sub> = 2.72 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Anticholinergic load</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:65%;background:var(--rose)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">α<sub>1A</sub></div>
+                <span class="target-full">α1A-adrenergic receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> = 5.6 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Orthostatic hypotension</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:52%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">NET</div>
+                <span class="target-full">Norepinephrine transporter (SLC6A2)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold-bright)">K<sub>i</sub> = 22 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Analgesia · mood</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:34%;background:var(--gold-bright)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Reuptake block</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--rose)">Na<sub>v</sub>1.5</div>
+                <span class="target-full">Cardiac Na⁺ channel (SCN5A)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--rose)">IC<sub>50</sub> ≈ low µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Overdose lethality</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:8%;background:var(--rose)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-channel">Use-dep. block</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          K<sub>i</sub> (human): SERT 0.882, NET 22, H<sub>1</sub> 1.12, M<sub>1</sub> 2.724, α<sub>1A</sub> 5.60 nM — DrugMatrix radioligand-binding panel via ChEMBL (CHEMBL629); cf. Tatsumi et al. (1997) Eur J Pharmacol 340. SERT functional-uptake IC<sub>50</sub> is higher (~30–100 nM). Na<sub>v</sub>1.5: use-dependent block, IC<sub>50</sub> low µM (Nau et al. 2000; Goodman &amp; Gilman's). Rel. bars normalized to SERT K<sub>i</sub>; lower K<sub>i</sub> = higher affinity.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #050 · Amitriptyline (Elavil) · Le Bonhomme Pharma · Montréal ·
+    <a href="/drug-of-the-day/">Series index</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a> ·
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <br>
+    References: Penmatsa, Wang &amp; Gouaux (2013) Nature 503 (PDB 4M48, dDAT + nortriptyline); Tatsumi et al. (1997) Eur J Pharmacol 340;
+    DrugMatrix radioligand-binding panel via ChEMBL (CHEMBL629); Nau et al. (2000) Anesthesiology; Body et al. (2011) / Kerr (2001) TCA-overdose management; Goodman &amp; Gilman's 13e.
+    <a href="https://www.rcsb.org/structure/4M48" target="_blank" rel="noopener noreferrer">PDB 4M48</a>
+    <br>
+    Harm reduction resources: <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> ·
+    <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a> ·
+    <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '4M48',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

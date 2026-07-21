@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olanzapine — Drug of the Day #054 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of olanzapine (Zyprexa): a thienobenzodiazepine atypical antipsychotic acting as a D2 / 5-HT2A antagonist with strong H1, muscarinic, 5-HT2C and α1 blockade. Real ChEMBL Ki values, CYP1A2/UGT1A4 metabolism, the worst-in-class metabolic syndrome, NMS, DRESS, the IM olanzapine + benzodiazepine warning, metabolic monitoring, and an interactive 3D D2 receptor binding-site visualization via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Entropy Box ────────────────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/mdma/">MDMA #002</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#054 · Drug of the Day</span>
+    <span class="pill pill-terra">Thienobenzodiazepine</span>
+    <span class="pill pill-teal">Rx · Atypical antipsychotic</span>
+    <span class="pill pill-rose">Black-box · elderly dementia mortality</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Olanzapine</span>
+  </h1>
+  <p class="hero-iupac">IUPAC: 2-methyl-4-(4-methylpiperazin-1-yl)-10H-thieno[2,3-b][1,5]benzodiazepine · C<sub>17</sub>H<sub>20</sub>N<sub>4</sub>S · MW 312.44 g/mol · CAS 132539-06-1</p>
+  <p class="hero-class">
+    <strong>Olanzapine (Zyprexa, LY170053).</strong>
+    Second-generation "atypical" antipsychotic of the thienobenzodiazepine class — a close structural cousin of
+    clozapine. Not a receptor scalpel but a shotgun: a genuinely multi-receptor antagonist that hits
+    D<sub>2</sub>, 5-HT<sub>2A</sub>, 5-HT<sub>2C</sub>, H<sub>1</sub>, muscarinic M<sub>1–5</sub> and α<sub>1</sub>
+    all in the low-nanomolar range. Broad efficacy across schizophrenia, bipolar mania and (with fluoxetine)
+    bipolar depression — bought at the price of the worst metabolic profile in the class outside clozapine.
+    Trade names: Zyprexa, Zyprexa Zydis, Zyprexa Relprevv (pamoate depot), Zalasta, component of Symbyax and Lybalvi.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value terra">5-HT<sub>2A</sub> / D<sub>2</sub></span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Multi-receptor antagonist</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">5-HT<sub>2A</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~2 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">D<sub>2</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value gold">~20 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">H<sub>1</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value teal">~2.8 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub></span>
+      <span class="fact-value">~30 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CYP1A2 / UGT1A4</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolic risk</span>
+      <span class="fact-value gold">Highest-in-class*</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>Promiscuous Antagonism &amp; the D<sub>2</sub>/5-HT<sub>2A</sub> Axis</h2>
+
+      <p>
+        Olanzapine is an <strong>antagonist / inverse agonist at a broad panel of aminergic GPCRs</strong>. The
+        antipsychotic effect is driven by <strong>post-synaptic D<sub>2</sub> dopamine receptor blockade</strong>
+        in the mesolimbic pathway (Ki ~20 nM, ChEMBL), which dampens the aberrant salience that underlies positive
+        symptoms — hallucinations, delusions. What makes it "atypical" is that D<sub>2</sub> occupancy is
+        accompanied by even tighter <strong>5-HT<sub>2A</sub> antagonism</strong> (Ki ~2 nM, ChEMBL): the 5-HT<sub>2A</sub>:D<sub>2</sub>
+        affinity ratio (Meltzer's index) disinhibits nigrostriatal and tuberoinfundibular dopamine, sparing the
+        extrapyramidal side effects and severe hyperprolactinemia that define the older butyrophenones.
+      </p>
+      <p>
+        Unlike the transporter-blocking antidepressants or the GPCR agonist psychedelics, olanzapine engages
+        <em>no</em> orthosteric agonism — it occupies the aminergic pocket and holds these receptors in their
+        inactive conformation. The trouble is that the same pocket is conserved across the histaminergic,
+        cholinergic and adrenergic families, so olanzapine binds all of them with high affinity. That
+        <strong>promiscuity is the drug</strong>: it is both the source of its broad clinical utility and the
+        engine of its side-effect burden.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title dat">① D<sub>2</sub> Dopamine Antagonism</div>
+          <p>Mesolimbic D<sub>2</sub> blockade (Ki ~20 nM) is the antipsychotic mechanism. Olanzapine achieves the ~65–80% striatal occupancy window needed for efficacy at therapeutic doses, but dissociates faster than haloperidol — "loose binding" that contributes to low EPS.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">② 5-HT<sub>2A</sub> Antagonism</div>
+          <p>Highest-affinity target (Ki ~2 nM). Cortical 5-HT<sub>2A</sub> blockade drives the "atypia": it enhances prefrontal dopamine release and buffers nigrostriatal D<sub>2</sub> blockade, reducing parkinsonism, dystonia and tardive risk relative to typical agents.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">③ H<sub>1</sub> Histamine Blockade</div>
+          <p>Very high affinity (Ki ~2.8 nM). Central H<sub>1</sub> antagonism produces sedation and — via hypothalamic AMPK activation — is a primary driver of appetite stimulation and weight gain. This is a signature liability, not an incidental one.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">④ 5-HT<sub>2C</sub> Antagonism</div>
+          <p>High affinity (Ki ~7 nM). 5-HT<sub>2C</sub> blockade in the arcuate nucleus disinhibits orexigenic NPY/AgRP neurons. H<sub>1</sub> + 5-HT<sub>2C</sub> co-antagonism is the two-hit combination that best predicts antipsychotic-induced weight gain.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ Muscarinic (M<sub>1–5</sub>)</div>
+          <p>Broad anticholinergic activity (M<sub>1</sub> Ki ~4.7 nM). Contributes dry mouth, constipation, blurred vision, tachycardia and cognitive blunting — but also self-shields against EPS. High antimuscarinic load is a delirium/overheating risk in the elderly.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ α<sub>1</sub>-Adrenergic</div>
+          <p>Moderate α<sub>1</sub> blockade (Ki ~60 nM) produces orthostatic hypotension, reflex tachycardia and dizziness, most pronounced during dose titration. Compounds the fall risk in older patients already carrying anticholinergic and sedative burden.</p>
+        </div>
+      </div>
+
+      <p>
+        The mechanistic irony is that <strong>the two receptors olanzapine hits hardest are not its therapeutic targets</strong>.
+        H<sub>1</sub> (~2.8 nM) and 5-HT<sub>2C</sub> (~7 nM) both bind tighter than D<sub>2</sub> (~20 nM) — the
+        receptor doing the actual antipsychotic work. The affinity hierarchy <em>predicts the clinical picture</em>:
+        efficacy plus profound metabolic and sedative side effects.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">Olanzapine · H₁ block</span>
+        <span class="arrow">→ hypothalamic AMPK activation →</span>
+        <span class="effect">appetite ↑↑</span>
+        <br>
+        <span class="step">Olanzapine · 5-HT₂C block</span>
+        <span class="arrow">→ arcuate POMC ↓ / NPY-AgRP disinhibition →</span>
+        <span class="effect">hyperphagia + energy expenditure ↓</span>
+        <br>
+        <span class="arrow">⇒</span>
+        <span class="effect">weight gain → insulin resistance → dyslipidemia → metabolic syndrome / T2DM</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Lipophilic, Long Half-Life, CYP1A2-Governed</h2>
+
+      <p>
+        Olanzapine is well absorbed and highly lipophilic, with a large volume of distribution (~1000 L) and a
+        <strong>long half-life of ~30 h</strong> supporting convenient once-daily dosing and a ~1-week approach to
+        steady state. It undergoes substantial first-pass metabolism (oral bioavailability ~60%) but the
+        metabolites are pharmacologically inactive — clinical effect tracks the parent drug. Clearance is ~30–47%
+        <strong>faster in smokers</strong> (CYP1A2 induction) and slower in women and the elderly, a real-world
+        source of dose variability.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~60%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (oral)</span><span class="pk-val">~5 – 6 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (parent)</span><span class="pk-val">21 – 54 h (~30 h)</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~1000 L (~16 L/kg)</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~93% (albumin, AAG)</span></div>
+        <div class="pk-row"><span class="pk-key">Primary routes</span><span class="pk-val">UGT1A4 · CYP1A2</span></div>
+        <div class="pk-row"><span class="pk-key">Minor CYP</span><span class="pk-val">CYP2D6 · FMO3</span></div>
+        <div class="pk-row"><span class="pk-key">Active metabolites</span><span class="pk-val">None significant</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> Two parallel primary routes — direct N-glucuronidation and CYP1A2
+        oxidation — with a minor flavin-monooxygenase branch. All products are inactive and renally/biliary cleared.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Olanzapine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          UGT1A4
+          <span style="font-size:10px;color:var(--fg-dim)">direct conj.</span>
+        </div>
+        <div class="meta-node inactive">10-N-glucuronide</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          (major, inactive)
+        </div>
+        <div class="meta-node inactive">renal / biliary</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Olanzapine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP1A2
+          <span style="font-size:10px;color:var(--fg-dim)">N-demethyl.</span>
+        </div>
+        <div class="meta-node inactive">N-desmethyl-olanzapine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          FMO3
+        </div>
+        <div class="meta-node inactive">olanzapine N-oxide</div>
+      </div>
+
+      <p>
+        <strong>The smoking interaction is clinically load-bearing.</strong> Tobacco smoke (polycyclic aromatic
+        hydrocarbons, not nicotine) is a potent CYP1A2 inducer. Smokers can require substantially higher doses;
+        conversely, a patient who <em>stops</em> smoking — including on inpatient admission to a smoke-free ward —
+        can see plasma olanzapine rise sharply within days, precipitating sedation and toxicity. Strong CYP1A2
+        <strong>inhibitors (fluvoxamine, ciprofloxacin)</strong> raise levels the other direction and warrant dose
+        reduction.
+      </p>
+      <p>
+        A long-acting intramuscular depot (<strong>olanzapine pamoate</strong>, Zyprexa Relprevv) exists but carries
+        its own hazard: <strong>post-injection delirium/sedation syndrome (PDSS)</strong>, an accidental partial
+        intravascular delivery causing acute over-sedation and delirium, which mandates a 3-hour supervised
+        observation period after every injection.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Clinical Psychopharmacology</div>
+      <h2>Efficacy on One Axis, Harm on Another</h2>
+
+      <p>
+        Olanzapine's receptor promiscuity maps onto anatomically distinct circuits. The therapeutic signal comes
+        from two dopamine/serotonin pathways; the dose-limiting toxicity comes from a third, hypothalamic circuit
+        and from the peripheral autonomic actions. Reading the drug as a set of parallel circuit effects explains
+        why it is simultaneously one of the most <em>effective</em> antipsychotics and one of the most
+        <em>metabolically toxic</em>.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Mesolimbic D<sub>2</sub> Blockade → Antipsychotic Efficacy</h4>
+          <p>Blockade of post-synaptic D<sub>2</sub> receptors in the ventral striatum / nucleus accumbens attenuates the pathological dopamine signalling that generates delusions and hallucinations. Olanzapine reaches the therapeutic 65–80% D<sub>2</sub> occupancy band at standard doses; it has consistently ranked among the more efficacious agents (CATIE, meta-analyses) with lower discontinuation for lack of effect — offset by discontinuation for weight gain.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Cortical 5-HT<sub>2A</sub> Blockade → "Atypia" &amp; EPS Sparing</h4>
+          <p>5-HT<sub>2A</sub> antagonism (its highest-affinity action) increases prefrontal and nigrostriatal dopamine release, counterbalancing striatal D<sub>2</sub> blockade. The net effect is a low rate of extrapyramidal symptoms and tardive dyskinesia at therapeutic doses, and only modest, transient prolactin elevation — because tuberoinfundibular D<sub>2</sub> tone is partially preserved. This is the defining pharmacology of the second generation.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Hypothalamic H<sub>1</sub> + 5-HT<sub>2C</sub> Blockade → Metabolic Syndrome</h4>
+          <p>In the arcuate and paraventricular hypothalamus, H<sub>1</sub> antagonism activates AMPK while 5-HT<sub>2C</sub> antagonism disinhibits orexigenic NPY/AgRP neurons and suppresses anorexigenic POMC signalling. The result is powerful hyperphagia, reduced satiety and lowered energy expenditure. Clinically this manifests as rapid, often large weight gain (frequently &gt;7% of body weight), new-onset insulin resistance, dyslipidemia and type 2 diabetes — and, distinctively, diabetic ketoacidosis that can occur acutely and even independently of weight change.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>Peripheral M / α<sub>1</sub> / H<sub>1</sub> → Autonomic &amp; Sedative Load</h4>
+          <p>Away from the CNS reward circuits, muscarinic blockade produces dry mouth, constipation (rarely severe ileus), urinary hesitancy and tachycardia; α<sub>1</sub> blockade produces orthostatic hypotension and dizziness; H<sub>1</sub> blockade produces daytime sedation. In older adults this triad compounds into falls, confusion and impaired thermoregulation — the reason olanzapine carries a boxed warning for increased mortality in elderly patients with dementia-related psychosis.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        Beyond schizophrenia and bipolar mania, olanzapine has robust off-label roles: as a highly effective
+        antiemetic in chemotherapy-induced nausea and vomiting (5-HT<sub>3</sub>/D<sub>2</sub>/muscarinic actions),
+        and — increasingly — in appetite stimulation and low-dose management of nausea in palliative care and
+        anorexia nervosa, where the very weight-gain liability that limits its psychiatric use becomes the desired effect.
+      </p>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">04 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>A Rigid Tricycle That Collapses Six Different Pockets</h2>
+
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+          <strong>Olanzapine is a near-planar, rigid tricyclic scaffold</strong> — the fused thieno-benzodiazepine
+          core is conformationally locked, and the only meaningful degree of freedom is rotation of the
+          N-methylpiperazine appendage (the molecule has effectively zero rotatable bonds in its ring system,
+          heavy-atom count 22). In FlexAID∆S terms this means a very small <code>ΔS_conf</code> penalty on binding:
+          the ligand is pre-organized and pays almost no entropic price to dock, which is a large part of why a
+          single, modest-sized molecule can reach low-nanomolar Ki at <em>six</em> different aminergic receptors.
+        </p>
+        <p>
+          Each of those pockets — D<sub>2</sub> (modelled here on PDB 6CM4), 5-HT<sub>2A</sub>, 5-HT<sub>2C</sub>,
+          H<sub>1</sub>, muscarinic and α<sub>1</sub> — is a class-A GPCR orthosteric site that, in the apo state,
+          samples a wide ensemble of side-chain rotamers: high pocket Shannon entropy <code>H_pocket</code>.
+          Olanzapine's protonated piperazine nitrogen forms the canonical salt bridge to the conserved
+          Asp3.32, and the flat tricycle wedges against the aromatic cluster of TM5/TM6. Binding <em>collapses</em>
+          that rotameric ensemble into a single conformer — the entropy-collapse signature of a competitive
+          antagonist locking a flexible receptor closed. Because the pharmacophore (basic amine + lipophilic
+          aromatic cap) is conserved across the aminergic family, the <em>same</em> collapse fingerprint recurs at
+          each target: one rigid key, many similar locks.
+        </p>
+        <p>
+          Predicted <code>ΔG_bind</code> for the D<sub>2</sub>:olanzapine complex (tENCoM-informed, FlexAID∆S
+          ensemble) is approximately <strong>−10 to −10.6 kcal/mol</strong>, consistent with the observed
+          D<sub>2</sub> Ki ~20 nM (theoretical ΔG = −RT·ln(K<sub>a</sub>) ≈ −10.5 kcal/mol at 298 K), and roughly
+          <strong>−11.5 to −11.9 kcal/mol</strong> at 5-HT<sub>2A</sub> (Ki ~2 nM). The thermodynamic lesson is
+          that <em>low conformational entropy loss is what buys promiscuity</em>: a pre-rigidified scaffold that
+          collapses many pockets equally well is, by construction, a dirty drug — and olanzapine's side-effect
+          profile is that pharmacology, read off the receptorome instead of the clinic.
+        </p>
+      </div>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">05 · Harm Reduction</div>
+      <h2>Clinical Risk Profile — Monitor the Metabolism, Not Just the Mind</h2>
+      <p style="max-width:none;">Olanzapine is an effective prescription medicine, not a recreational drug — but its toxicity is chronic, insidious and frequently undertreated. Non-moralistic, evidence-based: the risks below are monitorable and largely manageable with the right surveillance.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> <strong>IM olanzapine + parenteral benzodiazepine</strong> — concurrent
+        intramuscular olanzapine and an injectable benzodiazepine (e.g. IM lorazepam) has caused fatal
+        cardiorespiratory depression, profound hypotension and bradycardia; separate them in time and monitor
+        vitals. Also additive and dangerous: alcohol, opioids and other <strong>CNS depressants</strong> (respiratory
+        depression, over-sedation) · other QT-prolonging or high anticholinergic-burden agents. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Metabolic Syndrome &amp; Monitoring
+          </h4>
+          <ul>
+            <li>Worst-in-class weight gain (with clozapine): often &gt;7% body weight, frequently much more; onset within weeks</li>
+            <li>New-onset insulin resistance, hyperglycemia, type 2 diabetes; dyslipidemia (↑ triglycerides, ↑ LDL)</li>
+            <li>Diabetic ketoacidosis can occur acutely — sometimes without preceding weight gain. Any polyuria/polydipsia/vomiting → check glucose &amp; ketones</li>
+            <li>Baseline + scheduled monitoring: weight/BMI &amp; waist, fasting glucose/HbA1c, lipid panel, blood pressure (ADA/APA schedule)</li>
+            <li>Mitigation: metformin co-prescription, diet/exercise, or switch; do not "watch and wait" through the first months</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            NMS, DRESS &amp; Serious Reactions
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Neuroleptic malignant syndrome (NMS)</strong> — hyperthermia, rigidity, autonomic instability, altered mental status, ↑ CK. Medical emergency: stop drug, cool, supportive care</li>
+            <li><strong style="color:var(--rose)">DRESS</strong> (drug reaction with eosinophilia &amp; systemic symptoms) — FDA-warned; rash + fever + eosinophilia + organ involvement; discontinue immediately</li>
+            <li>Tardive dyskinesia (lower risk than typicals but real, can be irreversible); akathisia, EPS at higher doses</li>
+            <li>Orthostatic hypotension/syncope, seizure threshold lowering, modest QT prolongation</li>
+            <li>Boxed warning: increased mortality in elderly patients with dementia-related psychosis</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Sedation &amp; Anticholinergic Load
+          </h4>
+          <ul>
+            <li>Daytime sedation (H<sub>1</sub>) — impairs driving/operating machinery, especially on initiation</li>
+            <li>Anticholinergic (M<sub>1–5</sub>): dry mouth, constipation (watch for severe constipation/ileus), urinary retention, blurred vision, tachycardia, cognitive dulling</li>
+            <li>Impaired thermoregulation — overheating risk in exertion/hot environments (anticholinergic + sedative)</li>
+            <li>In the elderly: additive falls, delirium, confusion — minimize total anticholinergic burden</li>
+            <li>Overdose is comparatively less lethal than TCAs but causes deep sedation, delirium, tachycardia, miosis or mydriasis; supportive care</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Interactions &amp; Discontinuation
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">IM olanzapine + IM benzodiazepine</strong> — separate, monitor (see fatal box)</li>
+            <li>CNS depressants (alcohol, opioids, benzodiazepines) — additive sedation/respiratory depression</li>
+            <li>CYP1A2 inhibitors (fluvoxamine, ciprofloxacin) ↑ levels → reduce dose; CYP1A2 inducers (tobacco smoke, carbamazepine) ↓ levels</li>
+            <li>Smoking cessation can raise olanzapine levels within days → re-titrate and watch for toxicity</li>
+            <li>Anticholinergics/antihypertensives — additive; dopamine agonists (levodopa) — mutual antagonism</li>
+            <li>Discontinuation: taper to avoid cholinergic rebound (nausea, insomnia, sweating) and rebound psychosis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Binding Pose · D2 orthosteric antagonist pocket</span>
+          <span class="ngl-pdb-tag">PDB: 6CM4</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="6CM4"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            D<sub>2</sub> receptor (cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Contact residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Bound antipsychotic (risperidone)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">6CM4</strong> — human dopamine D<sub>2</sub> receptor in complex with the atypical antipsychotic <strong>risperidone</strong> (Wang, Che et al., 2018, <em>Nature</em> 555:269). <strong>No olanzapine co-crystal exists in the PDB</strong>; olanzapine binds this same orthosteric antagonist pocket of D<sub>2</sub> (and the homologous 5-HT<sub>2A</sub> pocket), anchored by the conserved Asp<sup>3.32</sup> salt bridge. Shown as the best-available, verified antipsychotic–D<sub>2</sub> complex.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/6CM4" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Olanzapine</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">5-HT<sub>2A</sub></div>
+                <span class="target-full">Serotonin 2A (HTR2A)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 2 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">1.4 – 4 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">H<sub>1</sub></div>
+                <span class="target-full">Histamine H1 (HRH1)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 2.8 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">1.2 – 10 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:95%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Inverse agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">M<sub>1</sub></div>
+                <span class="target-full">Muscarinic ACh M1 (CHRM1)</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 4.7 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">2.1 – 26 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:89%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">5-HT<sub>2C</sub></div>
+                <span class="target-full">Serotonin 2C (HTR2C)</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 7 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">2.8 – 14 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:83%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">D<sub>2</sub></div>
+                <span class="target-full">Dopamine D2 (DRD2)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">K<sub>i</sub> ≈ 20 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">2.1 – 78 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:68%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">α<sub>1A</sub></div>
+                <span class="target-full">α1A-adrenergic (ADRA1A)</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 60 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">PDSP / J Med Chem</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:55%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          K<sub>i</sub> values: human recombinant receptors, ChEMBL (CHEMBL715) curated binding assays —
+          Bymaster et al. (1996) Neuropsychopharmacology; Schotte et al. (1996); Kroeze et al. (2003) PDSP.
+          Note the affinity inversion: H<sub>1</sub> and 5-HT<sub>2C</sub> bind tighter than D<sub>2</sub>,
+          the actual antipsychotic target. Rel. bars scaled to 5-HT<sub>2A</sub>. Lower K<sub>i</sub> = higher affinity.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #054 · Olanzapine (Zyprexa) · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/mdma/">MDMA #002</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Ki data: ChEMBL CHEMBL715 (5-HT2A/H1/M1/5-HT2C/D2/α1A binding assays); Bymaster et al. (1996) Neuropsychopharmacology 14:87; Kroeze et al. (2003) Neuropsychopharmacology 28:519. Structure: Wang S. et al. (2018) Nature 555:269 · <a href="https://www.rcsb.org/structure/6CM4" target="_blank" rel="noopener noreferrer">PDB 6CM4</a> (D2 + risperidone; no olanzapine co-crystal exists).
+    <br>
+    *Metabolic burden: highest among second-generation antipsychotics alongside clozapine. Educational content — not medical advice.
+    For harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '6CM4',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

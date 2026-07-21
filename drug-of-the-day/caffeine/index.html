@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caffeine — Drug of the Day #014 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of caffeine (1,3,7-trimethylxanthine): competitive adenosine A2A / A1 receptor antagonism, disinhibition of dopaminergic and arousal circuits, CYP1A2 metabolism to paraxanthine, tolerance and withdrawal, real ChEMBL binding affinities, harm reduction for caffeine-powder overdose and stimulant stacking, and interactive 3D A2A binding-site visualization (PDB 5MZP) via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(34,211,238,0.55);
+  margin-bottom: 0.9rem;
+}
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+.hero-class em { color: var(--teal); font-style: italic; }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-value.rose { color: var(--rose); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.a2a { color: var(--teal); }
+.mech-card-title.a1  { color: var(--terra); }
+.mech-card-title.dop { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.arousal   { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.adenosine { background: var(--terra); }
+.circuit-bar.auto      { background: var(--rose); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Entropy Box ────────────────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-antag   { color: var(--rose); background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/drug-of-the-day/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Drug of the Day
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#014 · Drug of the Day</span>
+    <span class="pill pill-terra">Methylxanthine</span>
+    <span class="pill pill-teal">Unscheduled · World's most-used psychoactive</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Caffeine</span>
+  </h1>
+  <p class="hero-tagline">The drug you're probably on right now</p>
+  <p class="hero-iupac">IUPAC: 1,3,7-trimethyl-3,7-dihydro-1H-purine-2,6-dione · MW 194.19 g/mol · CAS 58-08-2 · CHEMBL113</p>
+  <p class="hero-class">
+    <strong>1,3,7-Trimethylxanthine.</strong>
+    A plant-defense purine alkaloid from <em>Coffea</em>, <em>Camellia sinensis</em>, <em>Theobroma cacao</em>, guaraná and kola.
+    Pharmacologically it is not a stimulant in the amphetamine sense — it releases no monoamines and blocks no transporter.
+    It is a <strong>competitive adenosine-receptor antagonist</strong>: it takes the brakes off, rather than pressing the accelerator.
+    Context names: coffee, espresso, matcha, pre-workout, energy drink, "the daily 200 mg."
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value teal">A<sub>2A</sub></span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Antagonist / inverse agonist</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">A<sub>2A</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value teal">~2.4–23 µM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">A<sub>1</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~11–45 µM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub> (adult)</span>
+      <span class="fact-value">~4–6 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CYP1A2 → paraxanthine</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Oral F</span>
+      <span class="fact-value gold">~99%</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Dependence</span>
+      <span class="fact-value rose">Real (DSM-5 withdrawal)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>Adenosine-Receptor Antagonism &amp; the Pharmacology of Disinhibition</h2>
+
+      <p>
+        Adenosine is the brain's endogenous "fatigue signal." As ATP is consumed through a waking day, extracellular
+        <strong>adenosine</strong> accumulates and tonically activates its receptors, damping neuronal firing and building
+        <em>sleep pressure</em>. Caffeine's entire dietary pharmacology is that it <strong>competitively blocks this signal</strong>.
+        It is a structural mimic of adenosine's purine ring, so it slots into the same orthosteric pocket — but it is a
+        <strong>silent antagonist / inverse agonist</strong>, occupying the site without triggering the downstream G-protein response.
+      </p>
+
+      <p>
+        The two receptors that matter at coffee-relevant concentrations are <strong>A<sub>1</sub></strong> (G<sub>i/o</sub>-coupled,
+        widespread, presynaptic inhibitory) and <strong>A<sub>2A</sub></strong> (G<sub>s</sub>-coupled, concentrated in striatum,
+        olfactory tubercle and immune cells). Caffeine has micromolar, roughly <strong>non-selective</strong> affinity across
+        A<sub>1</sub>, A<sub>2A</sub> and A<sub>2B</sub> — which is precisely why its effects are broad rather than targeted.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title a2a">① A<sub>2A</sub> Blockade (Striatal)</div>
+          <p>A<sub>2A</sub> is densely expressed on striatopallidal (indirect-pathway) GABAergic neurons, where it is physically co-localized with dopamine D<sub>2</sub> receptors. Blocking A<sub>2A</sub> is the dominant route by which caffeine facilitates dopaminergic signaling. Captured atomically in PDB 5MZP.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dop">② A<sub>2A</sub>–D<sub>2</sub> Heteromer</div>
+          <p>A<sub>2A</sub> and D<sub>2</sub> form receptor heteromers with antagonistic allosteric crosstalk: A<sub>2A</sub> activation lowers D<sub>2</sub> affinity/signaling. Caffeine removes that A<sub>2A</sub> tone, <strong>disinhibiting D<sub>2</sub></strong> — indirect dopaminergic facilitation without any direct dopamine release.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title a1">③ A<sub>1</sub> Blockade (Arousal)</div>
+          <p>A<sub>1</sub> antagonism lifts presynaptic inhibition of glutamatergic, cholinergic, and dopaminergic terminals across cortex and basal forebrain, raising excitatory tone. This is the core wakefulness effect — caffeine counteracts the adenosine that would otherwise slow you toward sleep.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title a1">④ Cerebral Vasoconstriction</div>
+          <p>Adenosine dilates cerebral vessels via A<sub>2A</sub>/A<sub>2B</sub>. Antagonism produces mild cerebral vasoconstriction and reduced cerebral blood flow — the basis of caffeine's anti-migraine adjuvant effect, and the rebound vasodilation of withdrawal headache.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ What It Is NOT (at real doses)</div>
+          <p>Phosphodiesterase inhibition, ryanodine-receptor Ca²⁺ release, and GABA<sub>A</sub> antagonism are all textbook caffeine actions — but they require <strong>millimolar</strong> concentrations, 20–100× higher than the ~20–50 µM plasma seen after coffee. Dietary caffeine is essentially pure adenosine antagonism.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ Non-Selective by Design</div>
+          <p>Unlike targeted A<sub>2A</sub> antagonists in Parkinson's trials (istradefylline), caffeine hits A<sub>1</sub>, A<sub>2A</sub> and A<sub>2B</sub> at overlapping micromolar K<sub>i</sub>. Its breadth — cardiac, renal, immune, CNS — flows directly from this promiscuity across the adenosine family.</p>
+        </div>
+      </div>
+
+      <p>
+        The clean way to state it: caffeine does not stimulate. It <strong>removes an inhibition</strong>. Every downstream
+        "stimulant" effect — alertness, elevated dopamine tone, tachycardia, diuresis, bronchodilation — is a disinhibition of a
+        system that adenosine had been quietly holding down.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">Adenosine (rising through waking day)</span>
+        <span class="arrow">→ A<sub>1</sub>/A<sub>2A</sub> activation →</span>
+        <span class="effect">neuronal firing ↓ · sleep pressure ↑</span>
+        <br>
+        <span class="step">Caffeine</span>
+        <span class="arrow">→ competitively occupies A<sub>1</sub>/A<sub>2A</sub> (no signal) →</span>
+        <span class="effect">adenosine brake released → arousal ↑</span>
+        <br>
+        <span class="step">A<sub>2A</sub> blockade (striatum)</span>
+        <span class="arrow">→ A<sub>2A</sub>–D<sub>2</sub> heteromer disinhibited →</span>
+        <span class="effect">D<sub>2</sub> signaling ↑ → motivation, reward salience ↑</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Near-Complete Absorption, CYP1A2-Limited Clearance</h2>
+
+      <p>
+        Caffeine is almost a textbook of clean oral PK: <strong>~99% oral bioavailability</strong>, negligible first-pass loss,
+        rapid and complete distribution across the blood-brain barrier (it is lipophilic enough to cross freely and is not a
+        P-glycoprotein substrate). It distributes into total body water (V<sub>d</sub> ≈ 0.5 L/kg) and is only modestly
+        protein-bound (~30%). The whole system is governed by one enzyme.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~99%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub></span><span class="pk-val">30 – 120 min</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (healthy adult)</span><span class="pk-val">~4 – 6 h</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~0.5 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~30%</span></div>
+        <div class="pk-row"><span class="pk-key">Primary enzyme</span><span class="pk-val">CYP1A2 (~95%)</span></div>
+        <div class="pk-row"><span class="pk-key">Active metabolite</span><span class="pk-val">Paraxanthine (~84%)</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (neonate)</span><span class="pk-val">~80 – 100 h</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>The half-life is not a constant — it is a lifestyle readout.</strong> CYP1A2 activity is highly variable.
+        Cigarette smoke <em>induces</em> CYP1A2 and roughly halves caffeine T<sub>½</sub> (smokers clear it fast, which is
+        why quitting smoking can cause accidental caffeine over-exposure). Conversely, pregnancy (third trimester T<sub>½</sub>
+        ≈ 15 h), oral contraceptives, and CYP1A2 inhibitors dramatically <em>slow</em> clearance. Neonates barely metabolize
+        it at all — the basis of therapeutic caffeine citrate for apnea of prematurity.
+      </p>
+
+      <p>
+        <strong>Metabolism cascade:</strong> CYP1A2 performs three parallel N-demethylations. The N3-demethylation dominates,
+        making <strong>paraxanthine</strong> (1,7-dimethylxanthine) the primary human metabolite — and it is itself a
+        pharmacologically active adenosine antagonist.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Caffeine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP1A2
+          <span style="font-size:10px;color:var(--fg-dim)">N3-demethyl.</span>
+        </div>
+        <div class="meta-node active">Paraxanthine ★ (~84%)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP1A2 / 2A6
+        </div>
+        <div class="meta-node inactive">1-methylxanthine / 1-methyluric acid</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Caffeine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP1A2
+          <span style="font-size:10px;color:var(--fg-dim)">N1-demethyl.</span>
+        </div>
+        <div class="meta-node active">Theobromine (~12%)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP1A2
+        </div>
+        <div class="meta-node inactive">7-methylxanthine</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Caffeine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP1A2
+          <span style="font-size:10px;color:var(--fg-dim)">N7-demethyl.</span>
+        </div>
+        <div class="meta-node active">Theophylline (~4%)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP1A2
+        </div>
+        <div class="meta-node inactive">Methyluric acids → urine</div>
+      </div>
+
+      <p>
+        <strong>Paraxanthine</strong> (marked ★) is not a metabolic footnote — it is arguably a co-active drug. It shares
+        caffeine's adenosine-antagonist profile, additionally stimulates lipolysis and Na⁺/K⁺-ATPase, and lacks some of
+        caffeine's anxiogenic edge; several groups argue paraxanthine carries much of the felt "coffee" effect during the
+        elimination phase. <strong>Theophylline</strong> (a bronchodilator drug in its own right) and <strong>theobromine</strong>
+        (the dominant xanthine in chocolate) round out the trio. Because clearance funnels through a single enzyme, CYP1A2
+        drug interactions are the main PK hazard — see harm reduction.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology</div>
+      <h2>Circuit-Level Translation — Removing Brakes, Not Adding Fuel</h2>
+
+      <p>
+        Because caffeine acts by disinhibition, its circuit effects are the mirror image of a releasing agent like amphetamine.
+        There is no monoamine flood, no vesicular dumping, no transporter reversal. Instead, systems that adenosine had been
+        tonically restraining are allowed to run closer to their natural set-points. The subjective result — alert, motivated,
+        slightly euphoric, socially warmer — is real but comparatively subtle, and it plateaus.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar arousal"></div>
+        <div class="circuit-inner">
+          <h4>Ascending Arousal (A<sub>1</sub>) → Wakefulness &amp; Vigilance</h4>
+          <p>A<sub>1</sub> antagonism across basal forebrain, cortex and the sleep-regulating adenosine system counteracts homeostatic sleep pressure, sustaining cholinergic and glutamatergic arousal tone. This is the effect that "works" — improved sustained attention, reaction time, and vigilance, most pronounced when reversing an adenosine-loaded sleep-deprived baseline rather than adding to a rested one.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Indirect Dopaminergic Facilitation (A<sub>2A</sub>–D<sub>2</sub>) → Motivation &amp; Mild Reward</h4>
+          <p>By relieving A<sub>2A</sub> tone on striatopallidal neurons and within A<sub>2A</sub>–D<sub>2</sub> heteromers, caffeine enhances D<sub>2</sub>-mediated signaling in the striatum — a permissive, indirect effect. It modestly increases reward salience and motivation and has genuine but low abuse liability. It does not produce the accumbal dopamine surge that drives compulsive stimulant use, which is why caffeine "dependence" is real but mild.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar auto"></div>
+        <div class="circuit-inner">
+          <h4>Autonomic &amp; Peripheral (A<sub>1</sub>/A<sub>2A</sub>/A<sub>2B</sub>) → Cardiac, Renal, Bronchial</h4>
+          <p>Peripheral adenosine blockade raises heart rate and, transiently, blood pressure (blunted by tolerance); antagonizes adenosine-mediated renal vasoconstriction, producing mild diuresis; relaxes bronchial smooth muscle (weak theophylline-like bronchodilation); and stimulates gastric acid secretion. These are dose-dependent and are where susceptible individuals — arrhythmia-prone, anxious, hypertensive — encounter the ceiling.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar adenosine"></div>
+        <div class="circuit-inner">
+          <h4>Homeostatic Adaptation → Tolerance</h4>
+          <p>Chronic antagonism drives compensatory <strong>upregulation of adenosine receptors</strong> and adjusts downstream tone. Within days to weeks the CNS re-establishes near-baseline arousal in the drug's presence — tolerance to the alerting and pressor effects. The system is now calibrated <em>around</em> caffeine, so its absence unmasks an adenosine-oversensitive state: the withdrawal syndrome.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        <strong>Tolerance and withdrawal are the defining features of regular use.</strong> DSM-5 recognizes caffeine withdrawal
+        as a diagnosis. On abrupt cessation in habituated users, symptoms emerge at ~12–24 h, peak at ~20–51 h, and can last
+        2–9 days: throbbing <strong>headache</strong> (rebound cerebral vasodilation as the vasoconstrictive block lifts),
+        fatigue, low mood, irritability, difficulty concentrating, and flu-like malaise. Tapering over a week avoids essentially
+        all of it. This is a genuine physical dependence — modest, self-limiting, and pharmacologically predictable.
+      </p>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">04 · Harm Reduction</div>
+      <h2>Clinical Risk Profile</h2>
+      <p style="max-width:none;">Caffeine is remarkably safe in beverage form and genuinely dangerous in concentrated form. The risk is almost entirely about <strong>dose and formulation</strong> — a cup of coffee and a scoop of anhydrous powder are separated by two orders of magnitude, and the powder has killed healthy young people.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS &amp; OVERDOSE:</strong> Pure caffeine powder / high-dose anhydrous pills (a single teaspoon ≈ ~3,000–5,000 mg ≈ 25–50 cups — acutely lethal) · caffeine + potent CYP1A2 inhibitor <strong>fluvoxamine</strong> (caffeine clearance falls up to ~5-fold → toxic accumulation) · high-dose caffeine + sympathomimetic stimulants (ephedrine, DMAA, amphetamine, cocaine) in anyone with underlying cardiac disease → arrhythmia/sudden death. Estimated acute lethal oral dose ≈ 150–200 mg/kg (~10 g adult), lower with cardiac risk. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Powder / Overdose
+          </h4>
+          <ul>
+            <li>Pure anhydrous caffeine is the real killer: household scales can't measure a safe dose — 1/16 tsp vs 1 tsp is the gap between a coffee and a corpse</li>
+            <li>Overdose: vomiting, tachyarrhythmia, agitation, hypokalemia, hyperglycemia, seizures; deaths reported at plasma >80 mg/L</li>
+            <li>Massive OD is a medical emergency: activated charcoal, telemetry, beta-blockade for arrhythmia, hemodialysis in severe cases</li>
+            <li>FDA has taken enforcement action against bulk powdered/liquid caffeine sold to consumers — for good reason</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Cardiac (Susceptible)
+          </h4>
+          <ul>
+            <li>Moderate caffeine (≤400 mg/day) is not arrhythmogenic in the general population — this is well established</li>
+            <li>But in susceptible people it can trigger palpitations, SVT, atrial fibrillation, or PVCs</li>
+            <li>Energy-drink loads (200–500 mg fast, + taurine/sugar) linked to ED visits and rare arrhythmic events, especially in adolescents and those with occult long-QT or cardiomyopathy</li>
+            <li>Transient BP rise; caution with uncontrolled hypertension</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Interactions &amp; Stacking
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Fluvoxamine / ciprofloxacin</strong> — potent CYP1A2 inhibitors, cause caffeine toxicity at normal intake</li>
+            <li><strong style="color:var(--rose)">Ephedrine / DMAA / sympathomimetics</strong> — additive cardiovascular strain, historically fatal stacks</li>
+            <li>Pre-workout / fat-burner blends routinely hide 300+ mg plus yohimbine, synephrine — additive load</li>
+            <li>Theophylline — additive xanthine toxicity; MAOIs — potential hypertensive interaction at high doses</li>
+            <li>Alcohol / energy drinks — caffeine masks sedation, not impairment; encourages overdrinking</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Anxiety, Sleep &amp; Dosing
+          </h4>
+          <ul>
+            <li>~400 mg/day is the commonly cited healthy-adult ceiling; ~200 mg/day in pregnancy (slow clearance)</li>
+            <li>Adenosine antagonism can precipitate anxiety/panic — pronounced in panic disorder and at high doses ("caffeinism": jitters, tremor, insomnia)</li>
+            <li>T<sub>½</sub> ~5 h means an afternoon coffee still has ~¼ onboard at bedtime — measurably fragments sleep even when you fall asleep fine</li>
+            <li>Dependence is real: taper over ~7 days to avoid withdrawal headache/fatigue rather than quitting cold</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">05 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>A Rigid Ligand Pays Almost No Entropy Tax</h2>
+
+      <p>
+        Binding free energy is <code>ΔG = ΔH − TΔS</code>, and the <code>ΔS</code> term splits into a solvent/vibrational
+        component and a <strong>configurational (conformational) component</strong> — the entropy a ligand surrenders when it
+        stops sampling its free-solution rotamers and freezes into a single bound pose. This is the term LP's FlexAID∆S engine
+        models explicitly rather than absorbing into a fudge factor.
+      </p>
+
+      <p>
+        Caffeine is a near-ideal case study because it is a <strong>flat, fully fused bicyclic purine with zero rotatable bonds</strong>
+        (ChEMBL rtb = 0; the three N-methyls are effectively symmetric rotors that contribute negligible configurational entropy).
+        Where a flexible drug forfeits several kcal·mol⁻¹ of −TΔS<sub>conf</sub> on binding, caffeine forfeits almost none: the
+        molecule in the A<sub>2A</sub> pocket of <strong>PDB 5MZP</strong> looks essentially like the molecule in bulk water. In
+        Shannon terms, the ligand's internal conformational distribution barely collapses on binding — <strong>near-zero ΔS<sub>conf</sub></strong>.
+      </p>
+
+      <p>
+        That reframes caffeine's modest micromolar affinity honestly. It is <em>not</em> a high-affinity binder — its K<sub>i</sub>
+        sits in the low-micromolar-to-tens-of-micromolar range across the adenosine subtypes. But it is a <strong>robust and
+        promiscuous</strong> one, and rigidity is why: with the entropic penalty pre-paid by the scaffold, the binding budget is
+        dominated by enthalpic aromatic stacking against the pocket phenylalanine and hydrogen bonding to the conserved asparagine
+        (Asn253<sup>6.55</sup>). The dominant remaining entropy costs are <strong>desolvation and vibrational rigidification</strong>
+        (the tENCoM term), not torsional freezing. A rigid, planar, weakly-binding-but-reliable purine is exactly the ligand
+        profile where an explicit ΔS decomposition earns its keep — it explains why caffeine binds four related receptors at
+        similar affinity rather than selecting one, and why medicinal chemists append flexible substituents (as in istradefylline)
+        to <em>buy</em> selectivity at the cost of re-introducing a conformational-entropy penalty.
+      </p>
+
+      <div class="entropy-box">
+        <div class="entropy-label">ΔS Decomposition · Caffeine @ A2A (5MZP)</div>
+        <p>
+          <strong>−TΔS<sub>conf</sub> ≈ 0</strong> — rigid fused purine, 0 rotatable bonds, no rotamer library to collapse.
+        </p>
+        <p>
+          <strong>ΔH</strong> dominated by π-stacking (Phe168, ECL2) + H-bond to Asn253<sup>6.55</sup>; modest by absolute magnitude.
+        </p>
+        <p>
+          <strong>−TΔS<sub>desolv/vib</sub></strong> is the real cost term — pocket + ligand desolvation and vibrational
+          rigidification (tENCoM). Net: micromolar, broadly non-selective, entropically cheap.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Binding Pose · A2A orthosteric pocket</span>
+          <span class="ngl-pdb-tag">PDB: 5MZP</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="5MZP"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            Receptor (refined cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Contact residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Caffeine (CFF · ball-and-stick)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">5MZP</strong> — thermostabilized human adenosine A<sub>2A</sub> receptor (A2AR-StaR2-bRIL) in complex with <strong>caffeine (ligand CFF)</strong> at 2.1 Å (Doré / Heptares, 2017). This is a genuine caffeine co-crystal — the antagonist purine occupies the orthosteric pocket, stacking against Phe168 and H-bonding to Asn253.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/5MZP" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Adenosine Receptor Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Caffeine · human</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity (K<sub>i</sub>)</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">A<sub>2A</sub></div>
+                <span class="target-full">Adenosine A2a (ADORA2A)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">2.4 – 23 µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">e.g. 2,480 / 9,560 / 23,400 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">A<sub>1</sub></div>
+                <span class="target-full">Adenosine A1 (ADORA1)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">10.7 – 44.9 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:52%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">A<sub>2B</sub></div>
+                <span class="target-full">Adenosine A2b (ADORA2B)</span>
+              </td>
+              <td>
+                <div class="affinity-val">10.4 – 33.8 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:55%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">A<sub>3</sub></div>
+                <span class="target-full">Adenosine A3 (ADORA3)</span>
+              </td>
+              <td>
+                <div class="affinity-val">~13 µM · often &gt;100 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:14%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Weak / ~inactive</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          Human K<sub>i</sub>, radioligand displacement / functional; ranges reflect real assay-to-assay spread. Source: ChEMBL (compound CHEMBL113) — A<sub>2A</sub> CHEMBL251, A<sub>1</sub> CHEMBL226, A<sub>2B</sub> CHEMBL255, A<sub>3</sub> CHEMBL256; primary refs incl. Müller/Jacobson (J Med Chem 2002), Yang et al. (Bioorg Med Chem Lett 2013). Rel. bars normalized to most-potent (A<sub>2A</sub>). Lower K<sub>i</sub> = higher affinity. Caffeine is deliberately non-selective across the family.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #014 · Caffeine · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Binding data: ChEMBL v34 compound CHEMBL113 (adenosine A1/A2A/A2B/A3). Structure: Doré et al. / Heptares, human A2A + caffeine, 2.1 Å ·
+    <a href="https://www.rcsb.org/structure/5MZP" target="_blank" rel="noopener noreferrer">PDB 5MZP</a>.
+    Pharmacology per Fredholm et al. (Pharmacol Rev 1999) "Actions of caffeine in the brain"; caffeine withdrawal per DSM-5.
+    <br>
+    Harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '5MZP',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

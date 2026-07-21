@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naltrexone — Drug of the Day #070 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of naltrexone (Vivitrol/ReVia) and low-dose naltrexone (LDN): competitive µ/κ/δ-opioid receptor antagonism, real human Ki values from ChEMBL, 6β-naltrexol metabolism, precipitated-withdrawal risk, post-depot overdose vulnerability, TLR4/microglial LDN story, and interactive 3D inactive-state MOR + β-FNA antagonist structure via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(232,213,183,0.10);
+  --border-h:    rgba(232,213,183,0.28);
+  --teal:        #22D3EE;
+  --gold:        #E8D5B7;
+  --gold-bright: #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-gold:   0 0 24px rgba(232,213,183,0.20);
+  --glow-teal:   0 0 20px rgba(34,211,238,0.18);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(232,213,183,0.55);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.88);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(232,213,183,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,213,183,0.06) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(232,213,183,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,213,183,0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--gold-bright); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--gold-bright); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gold-bright);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold   { color: var(--gold-bright); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.08); }
+.pill-teal   { color: var(--teal);        border-color: rgba(34,211,238,0.30);  background: rgba(34,211,238,0.06); }
+.pill-terra  { color: var(--terra);       border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose   { color: var(--rose);        border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim    { color: var(--fg-muted);    border-color: var(--border);          background: var(--bg-alt); }
+.pill-flagship {
+  color: #fff;
+  border-color: rgba(232,213,183,0.50);
+  background: linear-gradient(135deg, rgba(232,213,183,0.15), rgba(251,191,36,0.12));
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.4rem;
+}
+.hero-name .accent { color: var(--gold-bright); }
+
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(232,213,183,0.55);
+  margin-bottom: 0.9rem;
+}
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold   { color: var(--gold-bright); }
+.fact-value.teal   { color: var(--teal); }
+.fact-value.terra  { color: var(--terra); }
+.fact-value.rose   { color: var(--rose); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--gold-bright); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.dat   { color: var(--gold-bright); }
+.mech-card-title.net   { color: var(--terra); }
+.mech-card-title.sert  { color: var(--teal); }
+.mech-card-title.local { color: var(--rose); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway Box ────────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-bright);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step   { color: var(--gold-bright); font-weight: 600; }
+.pathway-box .arrow  { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--teal); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolite Flow ────────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary  { color: var(--gold-bright); border-color: rgba(251,191,36,0.3);   background: rgba(251,191,36,0.08); font-weight: 600; }
+.meta-node.active   { color: var(--teal);         border-color: rgba(34,211,238,0.3);   background: rgba(34,211,238,0.07); }
+.meta-node.inactive { color: var(--fg-muted);     border-color: var(--border);          background: var(--bg-alt); }
+.meta-node.danger   { color: var(--rose);          border-color: rgba(244,63,94,0.3);   background: rgba(244,63,94,0.07); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Circuit Cards ──────────────────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.dopamine  { background: var(--gold-bright); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.local     { background: var(--rose); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Entropy Box ────────────────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gold-bright);
+  background: rgba(251,191,36,0.08);
+  border: 1px solid rgba(251,191,36,0.22);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--gold-bright); border-color: rgba(251,191,36,0.30); background: rgba(251,191,36,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold-bright);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(232,213,183,0.05);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--gold-bright);
+  transition: width 0.5s ease;
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-block   { color: var(--gold-bright); background: rgba(251,191,36,0.08);   border: 1px solid rgba(251,191,36,0.22); }
+.ab-inhibit { color: var(--terra);        background: rgba(167,139,250,0.08);  border: 1px solid rgba(167,139,250,0.22); }
+.ab-channel { color: var(--rose);          background: rgba(244,63,94,0.08);   border: 1px solid rgba(244,63,94,0.22); }
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Adulteration / Callout Box ─────────────────────────── */
+.adulterant-box {
+  background: rgba(167,139,250,0.04);
+  border: 1px solid rgba(167,139,250,0.22);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.adulterant-box .adult-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+}
+.adulterant-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  max-width: none;
+}
+.adulterant-box p:last-child { margin-bottom: 0; }
+.adulterant-box strong { color: var(--fg); }
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; color: var(--gold-bright); }
+
+/* ── NGL Error ──────────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1;
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/drug-of-the-day/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Drug of the Day
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/fentanyl/">Fentanyl #007</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">Drug of the Day · #070</span>
+    <span class="pill pill-terra">Opioid receptor antagonist</span>
+    <span class="pill pill-teal">Rx · Not scheduled</span>
+    <span class="pill pill-rose">Black-box: hepatotoxicity (high dose)</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Naltrexone</span>
+  </h1>
+  <p class="hero-tagline">The lock with no key — competitive µ-opioid blockade</p>
+  <p class="hero-iupac">IUPAC: 17-(cyclopropylmethyl)-4,5α-epoxy-3,14-dihydroxymorphinan-6-one · C<sub>20</sub>H<sub>23</sub>NO<sub>4</sub> · MW 341.4 g/mol (freebase); 377.9 (·HCl) · CAS 16590-41-3 · ATC N07BB04 · ChEMBL CHEMBL19019</p>
+  <p class="hero-class">
+    <strong>Naltrexone (ReVia, Depade oral; Vivitrol depot IM; low-dose "LDN").</strong>
+    A morphinan <em>antagonist</em> — the pharmacological inverse of every other opioid on this site. Structurally it is
+    <strong>naloxone's long-acting oral cousin</strong>: the N-allyl of naloxone swapped for an N-cyclopropylmethyl,
+    which buys oral bioavailability and a real duration of action. It slots into the µ-opioid pocket, contacts the same
+    residues an agonist would, and then <strong>does nothing</strong> — no G-protein coupling, no reward, just occupancy.
+    Used for opioid use disorder <em>and</em> alcohol use disorder, because it also blocks the endogenous opioids alcohol
+    recruits. Not a rescue drug — that job belongs to naloxone.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value gold">MOR (µ)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Competitive antagonist</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">MOR K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value gold">0.2 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">KOR / DOR K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">0.4 / 10.8 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub> (oral)</span>
+      <span class="fact-value">~4 h (parent)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Active metabolite</span>
+      <span class="fact-value teal">6β-naltrexol</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">DD → glucuronide</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Depot duration</span>
+      <span class="fact-value terra">~28 days (IM)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>Occupancy Without Activation — Competitive Antagonism at µ/κ/δ</h2>
+
+      <p>
+        Naltrexone is a <strong>competitive, reversible, surmountable antagonist</strong> at all three classical
+        opioid receptors, with highest affinity at the <strong>µ-opioid receptor (MOR)</strong>. It binds the same
+        orthosteric pocket an agonist like morphine or fentanyl would occupy — deep in the 7-transmembrane bundle,
+        salt-bridging its protonated amine to <strong>Asp147<sup>3.32</sup></strong> — but the morphinan scaffold,
+        with its bulky N-cyclopropylmethyl and 6-keto/14-hydroxyl substitution, fails to trigger the TM6 outward
+        swing that opens the G-protein cavity. The result is <em>pure occupancy</em>: no Gα<sub>i/o</sub> coupling,
+        no cAMP suppression, no GIRK activation, no reward. In receptor-reserve terms, it is a spanner in the door.
+      </p>
+
+      <p>
+        Because the block is <strong>competitive</strong>, it can in principle be overcome by a large enough agonist
+        dose — but naltrexone's sub-nanomolar MOR affinity (K<sub>i</sub> ≈ <em>0.2 nM</em>, human recombinant,
+        ChEMBL) means the concentrations required are enormous and dangerous. At clinical exposure it functionally
+        silences MOR signaling for hours (oral) to weeks (depot). Reported constitutive activity at MOR makes some
+        of naltrexone's effect look <strong>inverse-agonist-like</strong> in dependent tissue, which is part of why
+        it can <em>precipitate</em> withdrawal rather than merely fail to relieve it.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title dat">① µ-Opioid (MOR) Blockade</div>
+          <p>Primary target. K<sub>i</sub> ≈ 0.2 nM (human recombinant, [³H]DAMGO displacement). Occludes the orthosteric site, preventing β-endorphin, enkephalin, morphine, heroin, and fentanyl from coupling G<sub>i/o</sub>. This is the anti-reward and the withdrawal-precipitating action.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">② κ-Opioid (KOR) Blockade</div>
+          <p>K<sub>i</sub> ≈ 0.4 nM ([³H]U-69,593 displacement). Naltrexone blocks dynorphin/KOR signaling almost as tightly as MOR. KOR antagonism is dysphoria-relieving and is one hypothesized contributor to the anti-craving effect in alcohol use disorder.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">③ δ-Opioid (DOR) Blockade</div>
+          <p>K<sub>i</sub> ≈ 10.8 nM — real but ~50× weaker than MOR. Enkephalin/DOR block rounds out the "pan-antagonist" profile. Naltrexone is not selective; it lowers the ceiling on the entire endogenous opioid system.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title local">④ Endogenous Opioid Blockade → AUD</div>
+          <p>Alcohol triggers β-endorphin release into the ventral tegmental area / nucleus accumbens. That endogenous opioid tone is a major driver of alcohol's reward and priming. MOR blockade severs this loop: drinking becomes less reinforcing, reducing heavy-drinking days.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ 6β-Naltrexol (active metabolite)</div>
+          <p>The dominant circulating species after oral dosing is 6β-naltrexol — itself a peripherally-weighted MOR antagonist with a longer half-life (~13 h). It extends and smooths the blockade well past the parent's clearance.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ TLR4 / Microglia (LDN regime)</div>
+          <p>At micromolar exposure — and in stereochemistry-independent fashion — naltrexone antagonizes <strong>TLR4</strong> on microglia, dampening glial pro-inflammatory signaling. This non-opioid action underpins the low-dose naltrexone (LDN) hypothesis (§05). Evidence is early.</p>
+        </div>
+      </div>
+
+      <div class="pathway-box">
+        <span class="step">Agonist (heroin / fentanyl / β-endorphin)</span>
+        <span class="arrow">→ MOR → TM6 opens → G<sub>i/o</sub> →</span>
+        <span class="effect">analgesia · euphoria · respiratory depression</span>
+        <br>
+        <span class="step">Naltrexone</span>
+        <span class="arrow">→ occupies MOR orthosteric site (K<sub>i</sub> 0.2 nM) → TM6 stays closed →</span>
+        <span class="danger">no coupling · agonist locked out · reward = 0</span>
+        <br>
+        <span class="step">Alcohol</span>
+        <span class="arrow">→ β-endorphin ↑ → (blocked MOR) →</span>
+        <span class="effect">reduced reinforcement → fewer heavy-drinking days</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Heavy First-Pass, a Long-Lived Metabolite, and a 28-Day Depot</h2>
+
+      <p>
+        Orally, naltrexone is nearly completely absorbed but hammered by <strong>first-pass metabolism</strong> —
+        systemic bioavailability of the parent is low and highly variable (~5–40%). The saving grace is its major
+        metabolite: hepatic <strong>dihydrodiol dehydrogenase (DD / AKR1C)</strong> reduces the 6-keto group to
+        <strong>6β-naltrexol</strong>, an active antagonist that circulates at far higher concentrations than the
+        parent and carries a longer half-life. Metabolism is <em>largely CYP-independent</em>, so classic CYP drug
+        interactions are minimal; both parent and metabolite are then glucuronidated and renally cleared.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability (parent)</span><span class="pk-val">~5 – 40%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (oral)</span><span class="pk-val">~1 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (naltrexone)</span><span class="pk-val">~4 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (6β-naltrexol)</span><span class="pk-val">~13 h</span></div>
+        <div class="pk-row"><span class="pk-key">Plasma protein binding</span><span class="pk-val">~21%</span></div>
+        <div class="pk-row"><span class="pk-key">Primary metabolism</span><span class="pk-val">Dihydrodiol dehydrogenase</span></div>
+        <div class="pk-row"><span class="pk-key">Elimination</span><span class="pk-val">Renal (glucuronides)</span></div>
+        <div class="pk-row"><span class="pk-key">Depot (Vivitrol IM)</span><span class="pk-val">380 mg / ~28 days</span></div>
+      </div>
+
+      <p>
+        The <strong>extended-release IM depot (Vivitrol, 380 mg)</strong> sidesteps first-pass entirely: a PLGA
+        microsphere suspension releases naltrexone over roughly a month, giving a durable, adherence-independent
+        blockade. This is the formulation's whole point — a person cannot simply skip a dose to "get around" the
+        block. But that same durability is the source of its most dangerous failure mode: as the depot wanes near
+        the end of the interval, blockade fades while opioid tolerance stays low (§04).
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Naltrexone</div>
+        <div class="meta-enzyme"><span>→</span>Dihydrodiol DH</div>
+        <div class="meta-node active">6β-Naltrexol (active, T½ ~13 h)</div>
+        <div class="meta-enzyme"><span>→</span>UGT glucuronidation</div>
+        <div class="meta-node inactive">6β-Naltrexol-glucuronide</div>
+        <div class="meta-enzyme"><span>→</span>Renal</div>
+        <div class="meta-node inactive">Urine</div>
+      </div>
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Naltrexone</div>
+        <div class="meta-enzyme"><span>→</span>2-hydroxylation</div>
+        <div class="meta-node inactive">2-hydroxy-3-O-methyl-naltrexol (minor)</div>
+        <div class="meta-enzyme"><span>→</span>UGT</div>
+        <div class="meta-node inactive">Glucuronide conjugates</div>
+      </div>
+    </div>
+
+    <!-- CLINICAL PHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Clinical Pharmacology</div>
+      <h2>Two Diseases, One Mechanism: Blocking the Reward You Didn't Know Was Opioid</h2>
+
+      <p>
+        Naltrexone is FDA-approved (since 1984 for opioid dependence; 1994 for alcohol) for two indications that
+        look unrelated until you trace them both back to the µ-opioid receptor.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Opioid Use Disorder — Extinction of Reward</h4>
+          <p>With MOR occupied at sub-nanomolar affinity, exogenous opioids simply do not work: no high, no analgesia, no respiratory depression. There is nothing to reinforce. Unlike methadone or buprenorphine (agonist/partial-agonist maintenance), naltrexone is a pure <strong>antagonist maintenance</strong> — it does not treat withdrawal or craving directly, it removes the payoff. The depot's month-long blockade makes it viable precisely because oral adherence in OUD is notoriously poor.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Alcohol Use Disorder — Cutting the Endorphin Loop</h4>
+          <p>Alcohol's reward is partly opioid-mediated: ethanol drives β-endorphin release onto MOR in the mesolimbic system, disinhibiting VTA dopamine neurons. Block MOR and you blunt that surge — drinking feels less rewarding and the priming effect of the first drink weakens. Clinically this shows up as fewer heavy-drinking days and reduced relapse to heavy drinking (COMBINE trial). Naltrexone does not cause an aversive reaction like disulfiram; it quietly lowers the reinforcement.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>The "Sinclair Method" (targeted extinction)</h4>
+          <p>An evidence-based AUD protocol: take naltrexone ~1 h <em>before</em> drinking, so every drinking episode occurs under MOR blockade. Over weeks the opioid-reinforced drinking behavior undergoes pharmacological extinction, and consumption falls. It is a genuine, mechanism-honest use of the antagonist — reinforcement learning run in reverse.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar local"></div>
+        <div class="circuit-inner">
+          <h4>Combination products &amp; other uses</h4>
+          <p>Naltrexone is paired with bupropion as <strong>Contrave</strong> (weight management: MOR block disinhibits POMC neurons in the hypothalamus) and formulated with morphine (Embeda) or oxycodone (Troxyca) as an abuse-deterrent sequestered core that only releases antagonist if the pill is crushed. It is <strong>not</strong> an analgesic and <strong>not</strong> an emergency reversal agent.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRECIPITATED WITHDRAWAL / OVERDOSE -->
+    <div class="section">
+      <div class="section-eyebrow">04 · The Two Hard Rules</div>
+      <h2>Precipitated Withdrawal Before You Start · Overdose Risk After You Stop</h2>
+
+      <p>
+        Naltrexone has two failure modes that are not side effects — they are direct, predictable consequences of
+        the pharmacology, and both have killed people. Any honest account has to lead with them.
+      </p>
+
+      <div class="adulterant-box">
+        <div class="adult-label">Rule 1 · Precipitated Withdrawal</div>
+        <p>
+          <strong>You must be opioid-free before the first dose.</strong> If any opioid is still occupying MOR,
+          a sub-nanomolar antagonist will <em>displace it off the receptor</em> in minutes, converting a slow
+          natural taper into an abrupt, severe, <strong>precipitated withdrawal</strong> — vomiting, diarrhea,
+          agitation, autonomic storm — far worse than spontaneous withdrawal and not reversible by re-dosing the
+          opioid (it's outcompeted). Standard practice: <strong>7–10 opioid-free days</strong> for long-acting
+          agonists (methadone), <strong>3–7 days</strong> for short-acting (heroin, oxycodone), often confirmed
+          with a naloxone challenge or a documented negative window before induction.
+        </p>
+      </div>
+
+      <div class="adulterant-box">
+        <div class="adult-label">Rule 2 · Post-Treatment Overdose Vulnerability</div>
+        <p>
+          Sustained MOR blockade means <strong>opioid tolerance falls</strong> during treatment — receptors are
+          not being stimulated, so the adaptations that let a tolerant user survive high doses regress. When the
+          blockade ends — a missed oral dose, or the tail of a depot cycle as the depot <strong>wanes</strong> —
+          the person is functionally opioid-naïve but often returns to their <em>old</em> dose. That dose is now
+          potentially <strong>fatal</strong>. This is one of the best-documented overdose-death mechanisms in
+          antagonist-maintenance treatment, and it is why depot naltrexone requires a relapse/overdose plan and
+          take-home naloxone.
+        </p>
+      </div>
+
+      <div class="pathway-box">
+        <span class="step">Start naltrexone with opioids on board</span>
+        <span class="arrow">→ displacement →</span>
+        <span class="danger">precipitated withdrawal (minutes, severe, refractory)</span>
+        <br>
+        <span class="step">Months of blockade</span>
+        <span class="arrow">→ tolerance ↓ → blockade ends (miss dose / depot wanes) → relapse at old dose →</span>
+        <span class="danger">respiratory depression → overdose death</span>
+      </div>
+    </div>
+
+    <!-- LDN -->
+    <div class="section">
+      <div class="section-eyebrow">05 · Low-Dose Naltrexone (LDN)</div>
+      <h2>1.5–4.5 mg: The Off-Label Story, Told Honestly</h2>
+
+      <p>
+        <strong>Low-dose naltrexone</strong> (typically 1.5–4.5 mg, versus 50 mg for AUD/OUD) is a genuinely
+        different pharmacological regime, and it has attracted a large, enthusiastic, and <em>evidence-thin</em>
+        following for chronic pain and autoimmune conditions. Two non-mutually-exclusive mechanisms are proposed:
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title sert">Endorphin rebound hypothesis</div>
+          <p>A brief, low-dose MOR blockade may trigger compensatory upregulation of endogenous opioid tone (β-endorphin, enkephalins) and receptor density. As the short blockade lifts, the rebound endorphin signaling is proposed to be analgesic and immunomodulatory. Mechanistically plausible; direct human evidence is limited.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">TLR4 / glial hypothesis</div>
+          <p>Naltrexone (and its <em>(+)</em>-enantiomer, which has no opioid activity) antagonizes TLR4 on microglia, reducing release of pro-inflammatory cytokines and reactive glial signaling implicated in central pain sensitization. This is a real, opioid-independent action observed in preclinical models.</p>
+        </div>
+      </div>
+
+      <div class="adulterant-box">
+        <div class="adult-label">Evidence status — no bullshit</div>
+        <p>
+          LDN is used off-label for <strong>fibromyalgia, Crohn's disease, multiple sclerosis, complex regional
+          pain syndrome</strong> and more. The supporting data are mostly <strong>small, short, single-centre or
+          pilot trials</strong> (e.g. small crossover fibromyalgia studies from Stanford; small open-label Crohn's
+          series) plus a large body of patient-reported benefit. Signals are promising and the safety/cost profile
+          is excellent, but there are <strong>few adequately powered, placebo-controlled RCTs</strong>, and
+          systematic reviews consistently conclude the evidence is <em>insufficient to establish efficacy</em>.
+          LDN is best framed as a low-risk, plausibly-active intervention that is <strong>still experimental</strong>
+          — not a proven therapy. Anyone selling it as a miracle cure is ahead of the data.
+        </p>
+      </div>
+    </div>
+
+    <!-- NALTREXONE vs NALOXONE -->
+    <div class="section">
+      <div class="section-eyebrow">06 · Naltrexone ≠ Naloxone</div>
+      <h2>Not the Rescue Drug — Know Which Antagonist You're Holding</h2>
+
+      <p>
+        The two are structural twins and both are µ-opioid antagonists, but they are <strong>not interchangeable</strong>,
+        and confusing them in an overdose can cost a life.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Naloxone (Narcan) — the emergency reversal agent</h4>
+          <p>N-allyl morphinan. Almost no oral bioavailability, so it's given IV/IM/intranasal. Onset in 1–3 minutes, duration only 30–90 minutes — deliberately short, so it's a <em>rescue</em> tool that snatches an agonist off MOR to restore breathing <strong>right now</strong>. Because it's short-acting, a person revived from a long-acting opioid can re-sedate and needs monitoring/re-dosing.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Naltrexone — the maintenance blocker</h4>
+          <p>N-cyclopropylmethyl morphinan. Orally active, long-acting (parent ~4 h, 6β-naltrexol ~13 h, depot ~28 days). It is for <em>preventing</em> relapse over weeks, not for reversing an overdose in progress — its onset and route make it useless as an acute antidote. If someone is overdosing: give <strong>naloxone</strong> and call emergency services. Naltrexone is the drug you were on before; naloxone is the drug that brings you back.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">07 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>An Antagonist Is an Entropy Trap That Refuses to Pay Out</h2>
+
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+          <strong>The morphinan cage is rigid.</strong> Naltrexone's 4,5-epoxymorphinan core is a fused pentacyclic
+          scaffold with essentially one low-energy conformation; only the N-cyclopropylmethyl and the hydroxyls carry
+          any rotational freedom. In FlexAID∆S terms this means a very small ligand <code>ΔS_conf</code> penalty on
+          binding — the molecule is pre-organized, arriving at MOR already shaped like the bound state. Almost all of
+          the −RT·ln(K<sub>a</sub>) budget is available for enthalpic contacts (the Asp147<sup>3.32</sup> salt bridge,
+          the phenolic hydroxyl H-bond, aromatic stacking) rather than being spent paying an entropy tax.
+        </p>
+        <p>
+          The interesting part is the <strong>receptor's</strong> entropy. An agonist collapses the MOR conformational
+          ensemble <em>and</em> pays it forward — the closed→open TM6 transition opens a new, ordered G-protein interface,
+          propagating the entropy collapse into the transducer. An <strong>antagonist collapses the ensemble and stops there</strong>:
+          naltrexone reduces <code>H_pocket</code> by locking the orthosteric site, but it stabilizes the <em>inactive</em>
+          TM6 arrangement, so no downstream ordering (no G-protein cavity, no coupled ensemble) ever forms. The entropy
+          collapse is real and local; it just never gets transduced into signal. That is the thermodynamic signature of
+          antagonism — high-affinity ordering with zero efficacy.
+        </p>
+        <p>
+          Rough thermodynamics: K<sub>i</sub> ≈ 0.2 nM at MOR corresponds to ΔG ≈ −RT·ln(K<sub>a</sub>) ≈
+          <strong>−13.2 kcal/mol</strong> at 298 K — a very tight binder, consistent with the FlexAID∆S expectation for a
+          rigid, pre-organized morphinan making an ionic anchor plus aromatic contacts. The near-equal MOR (0.2 nM) and
+          KOR (0.4 nM) affinities, with δ ~50× weaker (10.8 nM), reflect how conserved the orthosteric anchoring is across
+          the µ/κ pair versus the more divergent δ pocket — a selectivity pattern that falls out of the differential
+          rigidity and electrostatics of the three binding sites, not of the ligand.
+        </p>
+      </div>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">08 · Harm Reduction</div>
+      <h2>No Moralizing. Just the Physics of Not Dying.</h2>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Before You Start (induction)
+          </h4>
+          <ul>
+            <li><strong>Be opioid-free first.</strong> ~7–10 days off long-acting (methadone), ~3–7 days off short-acting (heroin, oxy) — or you get precipitated withdrawal</li>
+            <li>Naloxone challenge or negative window confirms readiness — don't guess</li>
+            <li>Precipitated withdrawal is NOT reversed by taking opioids (they're outcompeted); manage supportively</li>
+            <li>Tramadol, loperamide, dextromethorphan, some antidiarrheals also count as opioids for timing</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            After / During Blockade (overdose risk)
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Tolerance is gone.</strong> Relapsing at your old dose after treatment can be lethal — start much lower if you use again</li>
+            <li>Depot risk window: the tail end of the ~28-day cycle as blockade wanes</li>
+            <li>Carry <strong>naloxone</strong> and tell people around you the plan</li>
+            <li>"Overriding" the block with massive opioid doses to feel something = high overdose + non-cardiogenic pulmonary edema risk</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Medical / Interaction Notes
+          </h4>
+          <ul>
+            <li>Blocks <strong>therapeutic opioids too</strong> — surgery, acute trauma, and palliative pain need a plan (regional anesthesia, non-opioids); tell every provider you're on it</li>
+            <li>Depot lingers ~a month — an ID card / bracelet matters for emergencies</li>
+            <li>Hepatotoxicity: black-box at high doses; caution/monitoring in liver disease, avoid in acute hepatitis/failure</li>
+            <li>Metabolism is largely non-CYP → few classic CYP interactions</li>
+            <li>LDN (1.5–4.5 mg) is experimental, not a proven therapy — treat claims skeptically</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            This Is Not an Antidote
+          </h4>
+          <ul>
+            <li>Naltrexone does <strong>not</strong> reverse an overdose in progress — that is <strong style="color:var(--rose)">naloxone</strong> (Narcan)</li>
+            <li>If someone is unresponsive / not breathing: naloxone + rescue breathing + emergency services — do not reach for naltrexone</li>
+            <li>Free resources: <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a> · <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> Starting naltrexone with any opioid still on board → severe precipitated
+        withdrawal. Relapsing to opioids at a pre-treatment dose after blockade ends (missed oral dose or waning depot)
+        → <strong>lethal respiratory depression</strong> in a now-tolerance-depleted body. Attempting to "override" the
+        block with escalating opioid doses → overdose, pulmonary edema, death. Naltrexone protects only while it is on
+        the receptor — the danger is at both edges of that window. This is a maintenance blocker, <strong>not</strong> a
+        rescue drug: acute reversal is naloxone.
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D · Inactive-State MOR + Antagonist</span>
+          <span class="ngl-pdb-tag">PDB: 4DKL</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="4DKL"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#1a3a5c;border:1px solid rgba(232,213,183,0.15)"></div>
+            µ-opioid receptor (7TM cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#4a7a9b"></div>
+            Orthosteric pocket residues
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#FBBF24;box-shadow:0 0 4px #FBBF24"></div>
+            β-FNA antagonist (BF0)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">4DKL</strong> — "Crystal structure of the µ-opioid
+          receptor bound to a morphinan antagonist" (<em>Mus musculus</em> MOR, X-ray 2.8 Å; Manglik et al. 2012,
+          <em>Nature</em> 485). The bound ligand is <strong>β-funaltrexamine (β-FNA, component BF0)</strong> — an
+          <em>irreversible</em> morphinan antagonist built on the naltrexone scaffold (naltrexamine + fumarate ester).
+          <strong>No naltrexone co-crystal with MOR exists;</strong> this is the closest real, honestly-labeled
+          picture — the same 4,5-epoxymorphinan cage, in the same inactive-state orthosteric pocket, with TM6 in the
+          closed (uncoupled) arrangement naltrexone stabilizes.
+          <br><a href="https://www.rcsb.org/structure/4DKL" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Naltrexone</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold-bright)">MOR (µ)</div>
+                <span class="target-full">µ-opioid receptor · OPRM1</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold-bright)">K<sub>i</sub> = 0.2 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Primary target</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--gold-bright)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">KOR (κ)</div>
+                <span class="target-full">κ-opioid receptor · OPRK1</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> = 0.4 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Near-equal to MOR</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:50%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">DOR (δ)</div>
+                <span class="target-full">δ-opioid receptor · OPRD1</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> = 10.8 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">~50× weaker</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:2%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">TLR4</div>
+                <span class="target-full">Toll-like receptor 4 (glial)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--fg-muted)">µM range</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Non-opioid · LDN</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:1%;background:var(--fg-muted)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-channel">Antagonist</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          K<sub>i</sub> (MOR 0.2 · KOR 0.4 · DOR 10.8 nM): human recombinant receptors on CHO membranes,
+          [³H]DAMGO / [³H]U-69,593 / [³H]Cl-DPDPE displacement — ChEMBL CHEMBL19019, doc CHEMBL1144921
+          (J. Med. Chem. 2003). MoA: ChEMBL "opioid receptors µ/κ/δ antagonist" (DailyMed). TLR4 µM antagonism:
+          Hutchinson et al. (2008/2010); stereochemistry-independent. Rel. bars normalized to MOR (lower K<sub>i</sub> = higher affinity).
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #070 · Naltrexone · Le Bonhomme Pharma · Montréal ·
+    <a href="/drug-of-the-day/">Series index</a> ·
+    <a href="/drug-of-the-day/fentanyl/">Fentanyl #007</a> ·
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <br>
+    Affinity &amp; mechanism: ChEMBL CHEMBL19019 (doc CHEMBL1144921, J Med Chem 2003); DailyMed.
+    Structure: Manglik et al. (2012) Nature 485 (<a href="https://www.rcsb.org/structure/4DKL" target="_blank" rel="noopener noreferrer">PDB 4DKL</a>, MOR + β-FNA / BF0).
+    AUD efficacy: COMBINE Study (2006) JAMA; Sinclair (2001) Alcohol Alcohol. TLR4/LDN: Hutchinson et al. (2008);
+    Younger et al. — fibromyalgia LDN pilots (Stanford). Overdose-after-blockade: documented antagonist-maintenance risk.
+    <br>
+    Harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> ·
+    <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> ·
+    <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '4DKL',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

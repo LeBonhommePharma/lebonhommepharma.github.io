@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oxycodone — Drug of the Day #018 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of oxycodone: µ-opioid receptor agonism, real ChEMBL Ki at MOR/KOR/DOR, CYP2D6 activation to oxymorphone and CYP3A4 clearance to noroxycodone, OxyContin reformulation history, respiratory-depression physiology, naloxone reversal, fatal depressant combinations, and interactive 3D active-state MOR binding-site visualization via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(232,213,183,0.10);
+  --border-h:    rgba(232,213,183,0.28);
+  --teal:        #22D3EE;
+  --gold:        #E8D5B7;
+  --gold-bright: #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-gold:   0 0 24px rgba(232,213,183,0.20);
+  --glow-teal:   0 0 20px rgba(34,211,238,0.18);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(232,213,183,0.55);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.88);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(232,213,183,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,213,183,0.06) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(232,213,183,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,213,183,0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--gold-bright); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--gold-bright); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gold-bright);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold   { color: var(--gold-bright); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.08); }
+.pill-teal   { color: var(--teal);        border-color: rgba(34,211,238,0.30);  background: rgba(34,211,238,0.06); }
+.pill-terra  { color: var(--terra);       border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose   { color: var(--rose);        border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim    { color: var(--fg-muted);    border-color: var(--border);          background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.4rem;
+}
+.hero-name .accent { color: var(--gold-bright); }
+
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(232,213,183,0.55);
+  margin-bottom: 0.9rem;
+}
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold   { color: var(--gold-bright); }
+.fact-value.teal   { color: var(--teal); }
+.fact-value.terra  { color: var(--terra); }
+.fact-value.rose   { color: var(--rose); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--gold-bright); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.mor   { color: var(--gold-bright); }
+.mech-card-title.kor   { color: var(--terra); }
+.mech-card-title.dor   { color: var(--teal); }
+.mech-card-title.resp  { color: var(--rose); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway Box ────────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-bright);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step   { color: var(--gold-bright); font-weight: 600; }
+.pathway-box .arrow  { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--teal); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolite Flow ────────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary  { color: var(--gold-bright); border-color: rgba(251,191,36,0.3);   background: rgba(251,191,36,0.08); font-weight: 600; }
+.meta-node.active   { color: var(--teal);         border-color: rgba(34,211,238,0.3);   background: rgba(34,211,238,0.07); }
+.meta-node.inactive { color: var(--fg-muted);     border-color: var(--border);          background: var(--bg-alt); }
+.meta-node.danger   { color: var(--rose);          border-color: rgba(244,63,94,0.3);   background: rgba(244,63,94,0.07); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Circuit Cards ──────────────────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.dopamine  { background: var(--gold-bright); }
+.circuit-bar.analgesia { background: var(--teal); }
+.circuit-bar.resp      { background: var(--rose); }
+.circuit-bar.gut       { background: var(--terra); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Entropy Box ────────────────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+.naloxone-box {
+  background: rgba(74,222,128,0.05);
+  border: 1px solid rgba(74,222,128,0.28);
+  border-left: 3px solid var(--green);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.1rem;
+  margin-top: 0.75rem;
+  font-size: 12.5px;
+  color: var(--fg-muted);
+}
+.naloxone-box strong { color: var(--green); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gold-bright);
+  background: rgba(251,191,36,0.08);
+  border: 1px solid rgba(251,191,36,0.22);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--gold-bright); border-color: rgba(251,191,36,0.30); background: rgba(251,191,36,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold-bright);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(232,213,183,0.05);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--gold-bright);
+  transition: width 0.5s ease;
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-agonist { color: var(--gold-bright); background: rgba(251,191,36,0.08);   border: 1px solid rgba(251,191,36,0.22); }
+.ab-weak    { color: var(--terra);        background: rgba(167,139,250,0.08);  border: 1px solid rgba(167,139,250,0.22); }
+.ab-none    { color: var(--fg-muted);      background: rgba(138,147,168,0.08);  border: 1px solid rgba(138,147,168,0.22); }
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── History / Alert Box ────────────────────────────────── */
+.history-box {
+  background: rgba(167,139,250,0.04);
+  border: 1px solid rgba(167,139,250,0.22);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.history-box .hist-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+}
+.history-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  max-width: none;
+}
+.history-box p:last-child { margin-bottom: 0; }
+.history-box strong { color: var(--fg); }
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; color: var(--gold-bright); }
+
+/* ── NGL Error ──────────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1;
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/drug-of-the-day/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Drug of the Day
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/fentanyl/">Fentanyl #007</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#018 · Drug of the Day</span>
+    <span class="pill pill-terra">Semisynthetic opioid</span>
+    <span class="pill pill-rose">Schedule II (US) · Schedule I (CA)</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Oxycodone</span>
+  </h1>
+  <p class="hero-tagline">The pill that opened the epidemic</p>
+  <p class="hero-iupac">IUPAC: (5R,9R,13S,14S)-4,5α-epoxy-14-hydroxy-3-methoxy-17-methylmorphinan-6-one · C<sub>18</sub>H<sub>21</sub>NO<sub>4</sub> · MW 315.37 g/mol · CAS 76-42-6 · usually the HCl salt</p>
+  <p class="hero-class">
+    <strong>Oxycodone.</strong>
+    A semisynthetic morphinan opioid — synthesized from <em>thebaine</em>, a minor poppy alkaloid — and a
+    full <strong>µ-opioid receptor (MOR) agonist</strong>. Where morphine is the natural template,
+    oxycodone is the engineered, orally reliable version: the 14-hydroxy and 6-keto modifications hand it
+    higher oral bioavailability and roughly 1.5× the oral potency of morphine. Brand/context names:
+    OxyContin, Percocet (with acetaminophen), Percodan, Roxicodone, "oxy", "OC", "hillbilly heroin", "percs".
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value gold">MOR</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Full agonist</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">MOR K<sub style="font-size:0.7em">i</sub> (human)</span>
+      <span class="fact-value gold">~12 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Oral F</span>
+      <span class="fact-value">~60–87%</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub> (IR)</span>
+      <span class="fact-value">~3–4.5 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CYP3A4 / CYP2D6</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Active metabolite</span>
+      <span class="fact-value terra">Oxymorphone</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Overdose risk</span>
+      <span class="fact-value rose">Respiratory ↓</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>µ-Opioid Receptor Agonism &amp; G<sub>i/o</sub> Signaling</h2>
+
+      <p>
+        Oxycodone is a <strong>full agonist at the µ-opioid receptor (MOR)</strong>, a class-A GPCR coupled
+        to inhibitory G<sub>i/o</sub> proteins. Binding the orthosteric pocket in the receptor's active state,
+        it triggers Gα<sub>i/o</sub> dissociation that <em>inhibits adenylyl cyclase</em> (cAMP ↓),
+        while the Gβγ subunit opens <strong>GIRK potassium channels</strong> (hyperpolarization) and
+        closes <strong>voltage-gated Ca²⁺ channels</strong> (reduced neurotransmitter release). The net effect
+        is presynaptic and postsynaptic silencing of nociceptive and other circuits — analgesia, euphoria,
+        sedation, and, critically, brainstem respiratory suppression.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title mor">① MOR Orthosteric Agonism</div>
+          <p>Oxycodone occupies the same pocket resolved in active-state MOR structures (PDB 5C1M, MOR + agonist BU72). The protonated tertiary amine forms the conserved salt bridge to Asp147<sup>3.32</sup>; the phenol/methyl-ether and 6-keto groups anchor the morphinan scaffold. Human MOR K<sub>i</sub> ≈ 12 nM (ChEMBL).</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title mor">② G<sub>i/o</sub> &gt; β-arrestin</div>
+          <p>Like most classical morphinans, oxycodone couples primarily through G<sub>i/o</sub>. cAMP ↓, GIRK ↑, Ca<sub>V</sub> ↓. β-arrestin2 recruitment and receptor internalization are modest relative to enkephalins — a determinant of tolerance kinetics rather than a "biased" selling point.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dor">③ DOR / KOR (weak)</div>
+          <p>Oxycodone is MOR-selective. Real binding: δ-opioid (DOR) K<sub>i</sub> ≈ 490–1,090 nM and κ-opioid (KOR) K<sub>i</sub> ≈ 325–2,660 nM — roughly 40–200× weaker than MOR. At therapeutic exposure the DOR/KOR contribution is minor; the analgesia and the danger are MOR.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title resp">④ Respiratory Depression</div>
+          <p>MOR agonism in the pre-Bötzinger complex and parabrachial/Kölliker-Fuse nuclei of the brainstem blunts CO₂ chemosensitivity and respiratory rhythm. This is the mechanism of opioid death: breathing slows and stops. It is dose-dependent and additive with any other CNS depressant.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dor">⑤ Active Metabolite: Oxymorphone</div>
+          <p>CYP2D6 O-demethylates a fraction of oxycodone to <strong>oxymorphone</strong>, itself a marketed opioid with much higher MOR affinity (sub-nM–low-nM). Its systemic contribution to analgesia is debated (small fraction, ~11%), but it is genuinely a potent MOR agonist — relevant in CYP2D6 ultrarapid metabolizers.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ No Ceiling</div>
+          <p>As a full agonist, oxycodone has no analgesic or respiratory ceiling (unlike partial agonist buprenorphine). Increasing dose increases effect until the brainstem stops driving respiration — which is why tolerance loss after abstinence is lethal.</p>
+        </div>
+      </div>
+
+      <div class="pathway-box">
+        <span class="step">Oxycodone</span>
+        <span class="arrow">→ binds active-state MOR (Asp147<sup>3.32</sup> salt bridge) →</span>
+        <span class="step">Gα<sub>i/o</sub> · adenylyl cyclase ↓ (cAMP ↓)</span>
+        <br>
+        <span class="step">Gβγ</span>
+        <span class="arrow">→ GIRK K⁺ ↑ (hyperpolarize) · Ca<sub>V</sub> ↓ (transmitter release ↓) →</span>
+        <span class="effect">nociception ↓ · analgesia · euphoria</span>
+        <br>
+        <span class="step">MOR in brainstem (pre-Bötzinger / K-F)</span>
+        <span class="arrow">→ CO₂ drive ↓ →</span>
+        <span class="danger">respiratory rate ↓↓ → hypoxia → death</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Orally Reliable — the Whole Point of the Molecule</h2>
+
+      <p>
+        Oxycodone's defining pharmacokinetic feature is <strong>high, predictable oral bioavailability</strong>
+        (~60–87%), far better than morphine (~25%), because it escapes the heavy first-pass glucuronidation
+        that cripples morphine. Absorption is rapid; onset for immediate-release (IR) is ~10–30 min with
+        analgesia lasting 3–6 h. The <strong>controlled-release OxyContin</strong> formulation was engineered to
+        give a biphasic release over ~12 h — the same total drug, delivered slowly. That "slowly" was defeated
+        by simply crushing the tablet.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~60 – 87%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (IR)</span><span class="pk-val">~1 – 1.5 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (OxyContin ER)</span><span class="pk-val">~3 – 4 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (IR)</span><span class="pk-val">~3 – 4.5 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (ER)</span><span class="pk-val">~4.5 – 5.5 h</span></div>
+        <div class="pk-row"><span class="pk-key">Volume of distribution</span><span class="pk-val">~2.6 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~45%</span></div>
+        <div class="pk-row"><span class="pk-key">Primary metabolism</span><span class="pk-val">CYP3A4 &gt; CYP2D6</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> Two hepatic CYP routes dominate. The <em>major</em> pathway is
+        CYP3A4 N-demethylation to <strong>noroxycodone</strong> (weak MOR activity, ~45% of a dose). The
+        pharmacologically interesting <em>minor</em> pathway is CYP2D6 O-demethylation to <strong>oxymorphone</strong>
+        — low-yield (~11%) but a genuinely potent MOR agonist. Both feed into <strong>noroxymorphone</strong>.
+        Terminal glucuronidation and renal excretion clear the rest.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Oxycodone</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP3A4
+          <span style="font-size:10px;color:var(--fg-dim)">N-demethyl. (major)</span>
+        </div>
+        <div class="meta-node inactive">Noroxycodone (weak)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2D6
+        </div>
+        <div class="meta-node inactive">Noroxymorphone</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Oxycodone</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2D6
+          <span style="font-size:10px;color:var(--fg-dim)">O-demethyl. (minor)</span>
+        </div>
+        <div class="meta-node active">Oxymorphone ★ (potent)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP3A4 / UGT
+        </div>
+        <div class="meta-node inactive">Noroxymorphone / glucuronides</div>
+      </div>
+
+      <p>
+        <strong>Oxymorphone</strong> (marked ★) is a full MOR agonist in its own right and roughly an order of
+        magnitude more potent than oxycodone at the receptor. In <strong>CYP2D6 ultrarapid metabolizers</strong>
+        more oxymorphone is generated per dose (heightened effect and risk); in <strong>poor metabolizers</strong>
+        or on CYP2D6 inhibitors (fluoxetine, paroxetine, bupropion) that route is throttled. The clinically
+        larger interaction lever is <strong>CYP3A4</strong>: strong inhibitors (ritonavir, clarithromycin,
+        ketoconazole, grapefruit) raise parent-drug exposure substantially, while inducers (rifampin,
+        carbamazepine, St John's wort) drop it. The danger of these interactions is invisible until it isn't.
+      </p>
+    </div>
+
+    <!-- CLINICAL / PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology &amp; Clinical Context</div>
+      <h2>Analgesia, Reward, and the Body That Adapts</h2>
+
+      <p>
+        Oxycodone's effects are the textbook µ-opioid syndrome, mapped onto distinct circuits. Analgesia and
+        euphoria are the sought effects; sedation, constipation, and respiratory depression are the inseparable
+        rest of the package. Because it is a full agonist with clean oral kinetics, it produces a fast, reliable
+        reward signal — which is exactly what makes it reinforcing.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar analgesia"></div>
+        <div class="circuit-inner">
+          <h4>Analgesia — Ascending &amp; Descending Pathways</h4>
+          <p>MOR agonism in the dorsal horn (presynaptic Ca²⁺ block on primary afferents + postsynaptic hyperpolarization) attenuates nociceptive transmission, while MOR in the periaqueductal grey (PAG) and rostral ventromedial medulla (RVM) engages descending inhibition. The result is potent, dose-scalable pain relief across nociceptive and visceral pain.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Reward — Disinhibition of the VTA</h4>
+          <p>MOR on GABAergic interneurons in the ventral tegmental area (VTA) silences them; the loss of inhibition <em>disinhibits</em> dopaminergic projections to the nucleus accumbens, raising accumbal dopamine and generating euphoria and reinforcement. Repeated activation drives ΔFosB accumulation, incentive sensitization, and the neuroadaptations of dependence and craving.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar resp"></div>
+        <div class="circuit-inner">
+          <h4>Respiratory &amp; Autonomic Depression</h4>
+          <p>Brainstem MOR blunts hypercapnic and hypoxic ventilatory drive (pre-Bötzinger complex, Kölliker-Fuse). Add miosis (Edinger-Westphal nucleus — the "pinpoint pupils" overdose sign), bradycardia, and hypotension. This is the lethal axis, and it is steeply dose-dependent and additive with other depressants.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar gut"></div>
+        <div class="circuit-inner">
+          <h4>Tolerance, Dependence &amp; Withdrawal</h4>
+          <p>Chronic MOR agonism drives cellular tolerance (cAMP superactivation, receptor desensitization) and physical dependence. Peripheral MOR in the enteric nervous system produces near-universal constipation with minimal tolerance. Abrupt cessation yields the classic withdrawal syndrome — dysphoria, sweating, myalgia, GI cramping, piloerection — deeply unpleasant but rarely fatal, unlike alcohol or benzodiazepine withdrawal.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OXYCONTIN HISTORY -->
+    <div class="section">
+      <div class="section-eyebrow">04 · OxyContin &amp; the Reformulation</div>
+      <h2>The Formulation That Became a Public-Health Catastrophe</h2>
+
+      <p>
+        Oxycodone itself dates to <strong>1917</strong> (Germany) and had been in clinical use for decades. What
+        changed history was a <em>delivery system</em>: <strong>OxyContin</strong>, launched by Purdue Pharma in
+        <strong>1996</strong>, packed large oxycodone doses into a controlled-release tablet marketed — on thin
+        evidence — as carrying a <strong>low addiction risk</strong> because of its slow release. That claim was
+        false, and it was promoted aggressively.
+      </p>
+
+      <div class="history-box">
+        <div class="hist-label">Formulation Timeline</div>
+        <p>
+          <strong>The crushable flaw (1996–2010):</strong> The original controlled-release matrix could be defeated
+          by crushing, chewing, or dissolving the tablet — converting a 12-hour dose into an immediate bolus for
+          insufflation or injection. High unit doses (up to 80 mg, once 160 mg) made this especially dangerous.
+          Non-medical use, addiction, and overdose climbed through the 2000s.
+        </p>
+        <p>
+          <strong>The 2010 reformulation (OP):</strong> Purdue replaced OxyContin with an abuse-deterrent version
+          that turns into a viscous gel when wetted and resists crushing. Non-medical use of the reformulated pill
+          fell — but demand did not vanish. Many users <strong>migrated to heroin</strong>, which was cheaper and
+          available, and subsequently into the <strong>illicit fentanyl</strong> supply. The reformulation is a
+          case study in how supply-side tweaks displace rather than dissolve dependence.
+        </p>
+        <p>
+          <strong>The lesson, honestly stated:</strong> the molecule was never the whole story. Prescribing
+          culture, marketing, dose, and formulation were. Oxycodone is a legitimate, effective analgesic; the
+          harm came from how it was sold and used, and abstinence-only responses pushed people toward deadlier drugs.
+        </p>
+      </div>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">05 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>A Rigid Morphinan Cage Collapsing a Flexible Receptor</h2>
+
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+          <strong>Oxycodone is a pre-organized ligand.</strong> The fused morphinan ring system — five rings
+          locked by the 4,5-epoxy bridge — is conformationally rigid, with only the N-methyl and 3-methoxy groups
+          offering rotational freedom. In FlexAID∆S terms this means a <em>small</em> ligand conformational-entropy
+          penalty on binding (<code>−TΔS_conf,ligand</code> is modest): the drug does not pay much entropy to
+          adopt its bound pose because it barely has alternative poses to give up.
+        </p>
+        <p>
+          The receptor is the flexible partner. Apo MOR samples an ensemble of inactive/intermediate conformations —
+          high pocket Shannon entropy, <code>H_pocket</code> spread across many microstates. Agonist binding
+          (captured in the active-state PDB 5C1M with BU72) selects and stabilizes <em>one</em> active conformation,
+          collapsing that distribution: <code>ΔH_pocket &lt; 0</code>. This <strong>entropy collapse</strong> — a
+          rigid morphinan snapping a soft receptor into a single transducer-competent state — is the thermodynamic
+          fingerprint that distinguishes a genuine full agonist from a loose binder.
+        </p>
+        <p>
+          The measured human MOR K<sub>i</sub> ≈ 12 nM implies ΔG<sub>bind</sub> ≈ −RT·ln(1/K<sub>i</sub>) ≈
+          <strong>−10.8 kcal/mol</strong> at 310 K. In an enthalpy–entropy decomposition, the conserved
+          Asp147<sup>3.32</sup> salt bridge and epoxy/keto hydrogen-bond contacts supply the enthalpy, while the
+          rigid scaffold keeps the ligand's own entropic cost low — the FlexAID∆S ΔS separation of the two partners
+          is what a docking score should be reporting, not a single lumped number.
+        </p>
+      </div>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">06 · Harm Reduction</div>
+      <h2>No Moralizing. The Physics of Breathing.</h2>
+
+      <p style="max-width:none;">Evidence-based, non-moralistic. Opioid death is a respiratory event — it is slow, it is predictable, and it is reversible if someone is there with naloxone. Almost everything below is about not being alone and not stacking depressants.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> <strong>Benzodiazepines</strong> (alprazolam, diazepam, etizolam) · <strong>alcohol</strong> · <strong>other opioids</strong> (incl. unknowingly fentanyl-adulterated supply) · gabapentinoids (pregabalin/gabapentin) · barbiturates · Z-drugs. Every one adds independent respiratory depression — the combination, not the oxycodone alone, is what stops breathing. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="naloxone-box">
+        <strong>NALOXONE reverses this.</strong> Naloxone (Narcan) is a competitive MOR antagonist that displaces
+        oxycodone and restores breathing within 2–5 min. Carry it; it is intranasal, idiot-proof, and harmless if
+        given to someone who turns out not to be overdosing. Because oxycodone (especially ER) outlasts a single
+        naloxone dose, <strong>call emergency services and re-dose</strong> — the person can re-narcotize as naloxone
+        wears off. Recovery position, rescue breaths, stay until help arrives.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Overdose Signs
+          </h4>
+          <ul>
+            <li>Respiratory rate &lt; 8–10/min, shallow or stopped breathing</li>
+            <li>Pinpoint pupils (miosis); unresponsive to voice or sternal rub</li>
+            <li>Blue/grey lips and fingertips (cyanosis); gurgling or "death rattle"</li>
+            <li>Limp body, cold clammy skin</li>
+            <li>Any of these = give naloxone + call emergency services immediately</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Highest-Risk Scenarios
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Lost tolerance</strong> — after detox, jail, or a break, a previously "normal" dose can kill. Restart low.</li>
+            <li>Crushing/snorting/injecting ER tablets — defeats slow release, delivers a bolus</li>
+            <li>Using alone — nobody to give naloxone or call for help</li>
+            <li>Illicit pressed "oxy" pills — frequently counterfeit and contain fentanyl</li>
+            <li>CYP3A4 inhibitors (some antibiotics/antifungals, grapefruit) raising blood levels</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Test &amp; Reduce Risk
+          </h4>
+          <ul>
+            <li><strong>Fentanyl test strips</strong> — counterfeit oxycodone pills are a leading cause of overdose death; test before use</li>
+            <li>Start with a fraction if the source or tolerance is uncertain; go slow, wait before redosing</li>
+            <li>Never mix with benzodiazepines or alcohol — the single most common lethal error</li>
+            <li>Keep naloxone within reach and make sure someone knows how to use it</li>
+            <li>Consider drug-checking services (FTIR/GC-MS) where available</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Dependence &amp; Treatment
+          </h4>
+          <ul>
+            <li>Physical dependence develops within weeks of regular use — this is expected pharmacology, not moral failure</li>
+            <li>Withdrawal is miserable but not usually dangerous (contrast alcohol/benzos)</li>
+            <li>Opioid agonist therapy (buprenorphine, methadone) is the evidence-based standard — hugely reduces overdose death</li>
+            <li>Do not attempt rapid abstinence then relapse at old dose — the highest-mortality pattern</li>
+            <li>Acetaminophen-combo products (Percocet) add hepatotoxicity risk — mind total paracetamol</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Binding Pose · Active MOR orthosteric pocket</span>
+          <span class="ngl-pdb-tag">PDB: 5C1M</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="5C1M"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#1a3a5c;border:1px solid rgba(232,213,183,0.15)"></div>
+            Receptor (refined cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#4a7a9b"></div>
+            Contact residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#FBBF24;box-shadow:0 0 4px #FBBF24"></div>
+            Agonist BU72 (ball-and-stick)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">5C1M</strong> — "Crystal structure of active mu-opioid
+          receptor bound to the agonist BU72" (<em>Mus musculus</em> MOR + ligand BU72, comp. id VF1; 2.07 Å;
+          Huang et al. 2015, <em>Nature</em> 524). <strong>No oxycodone co-crystal exists</strong> — this is the
+          canonical <em>active-state</em> µ-opioid receptor shown with the agonist BU72; oxycodone binds the same
+          orthosteric pocket (Asp147<sup>3.32</sup> anchor). Shown as the receptor + agonist template, not oxycodone itself.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/5C1M" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Oxycodone</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity (K<sub>i</sub>)</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold-bright)">MOR</div>
+                <span class="target-full">µ-opioid receptor (OPRM1)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold-bright)">≈ 12 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">human; rat 8.9–43.6 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--gold-bright)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Full agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">DOR</div>
+                <span class="target-full">δ-opioid receptor (OPRD1)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">≈ 490–1,090 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">rat brain</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:58%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-weak">Weak</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">KOR</div>
+                <span class="target-full">κ-opioid receptor (OPRK1)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">≈ 325–2,660 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">guinea pig / rat</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:42%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-weak">Weak</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">Oxymorphone</div>
+                <span class="target-full">CYP2D6 metabolite · at MOR</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold-bright)">sub-nM – low nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">~10× more potent than parent</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:linear-gradient(90deg,var(--gold-bright),var(--teal))"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Full agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">σ1R</div>
+                <span class="target-full">Sigma-1 receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--fg-muted)">&gt; 10,000 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">inactive</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:6%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-none">None</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          K<sub>i</sub> values from ChEMBL (CHEMBL656): human MOR 12 nM (pK<sub>i</sub> 7.92, J Med Chem 2020);
+          rat MOR 8.9 nM (Eur J Med Chem 2019) &amp; 43.6 nM (J Med Chem 2005); rat DOR 487–1,087 nM; KOR 325 nM
+          (guinea pig, Eur J Med Chem 2019) &amp; 2,658 nM (rat, J Med Chem 2005); σ1R &gt;10,000 nM (J Med Chem 2020).
+          Oxymorphone potency: well-established higher-affinity MOR agonist (marketed opioid). Rel. bars scaled on
+          pK<sub>i</sub> for visibility; lower K<sub>i</sub> = higher affinity.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #018 · Oxycodone · Le Bonhomme Pharma · Montréal ·
+    <a href="/drug-of-the-day/">Series index</a> ·
+    <a href="/drug-of-the-day/fentanyl/">Fentanyl #007</a> ·
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <br>
+    Data: ChEMBL CHEMBL656 (compound, mechanism, K<sub>i</sub> bioactivity); Huang et al. (2015) Nature 524, 315 (PDB 5C1M, active MOR + BU72);
+    Lalovic et al. (2006) Clin Pharmacol Ther (oxycodone metabolism/PK); Kalso (2005) J Pain Symptom Manage.
+    <a href="https://www.rcsb.org/structure/5C1M" target="_blank" rel="noopener noreferrer">PDB 5C1M</a>
+    <br>
+    Harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> ·
+    <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> ·
+    <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a> ·
+    carry naloxone.
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '5C1M',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

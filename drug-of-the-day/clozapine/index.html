@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clozapine — Drug of the Day #057 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of clozapine (Clozaril): the uniquely effective antipsychotic for treatment-resistant schizophrenia. Promiscuous receptor profile (D4 > D2, 5-HT2A, muscarinic, H1, alpha-1), fast-off D2 kinetics, CYP1A2 metabolism, agranulocytosis and ANC monitoring, myocarditis, ileus, real ChEMBL binding affinities, and an interactive 3D clozapine-bound H4R/Gi cryo-EM structure via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-block   { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/mdma/">MDMA #002</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#057 · Drug of the Day</span>
+    <span class="pill pill-terra">Dibenzodiazepine · Atypical antipsychotic</span>
+    <span class="pill pill-rose">Rx · Black-box · REMS · ANC monitoring</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Clozapine</span>
+  </h1>
+  <p class="hero-iupac">IUPAC: 8-chloro-11-(4-methylpiperazin-1-yl)-5H-dibenzo[b,e][1,4]diazepine · C<sub>18</sub>H<sub>19</sub>ClN<sub>4</sub> · MW 326.83 g/mol · CAS 5786-21-0 · ChEMBL42</p>
+  <p class="hero-class">
+    <strong>Clozapine (Clozaril, Leponex, FazaClo, Versacloz).</strong>
+    The tricyclic dibenzodiazepine that broke the dopamine dogma — the <strong>only</strong> antipsychotic with
+    demonstrated superiority in <em>treatment-resistant schizophrenia</em> and reduced suicidality, yet held as
+    last-line because it can silently kill the bone marrow. A deliberately <em>promiscuous</em> molecule:
+    D<sub>4</sub> &gt; D<sub>2</sub>, 5-HT<sub>2A</sub>, muscarinic (mixed), H<sub>1</sub>, α<sub>1</sub>.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Class</span>
+      <span class="fact-value teal">Atypical (dibenzo­diazepine)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value terra">D<sub>4</sub> / 5-HT<sub>2A</sub> (multi)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">D<sub>4</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~16 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">D<sub>2</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value">~130 nM · fast-off</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">5-HT<sub>2A</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~10 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub></span>
+      <span class="fact-value">~12 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CYP1A2 &gt; 3A4/2D6</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Signature toxicity</span>
+      <span class="fact-value gold">Agranulocytosis</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>Promiscuous GPCR Antagonism &amp; the Fast-Off D<sub>2</sub> Paradox</h2>
+
+      <p>
+        Clozapine is a <strong>"dirty" drug by design</strong> — a broad-spectrum G-protein-coupled receptor
+        antagonist/inverse agonist that hits dozens of aminergic targets with meaningful affinity. Its therapeutic
+        magic does <em>not</em> come from potent dopamine D<sub>2</sub> blockade; at D<sub>2</sub> it is actually
+        <strong>weak</strong> (K<sub>i</sub> ~130 nM) and, critically, <strong>dissociates fast</strong>. It binds
+        D<sub>4</sub> ~8× more tightly than D<sub>2</sub>, and 5-HT<sub>2A</sub> more tightly still. This is the
+        pharmacological inverse of a butyrophenone like haloperidol, which locks onto D<sub>2</sub> with sub-nanomolar,
+        slow-dissociating grip and pays for it with extrapyramidal symptoms (EPS) and prolactin elevation.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title dat">① Fast-Off D<sub>2</sub> (Kapur–Seeman)</div>
+          <p>Loose, rapidly-dissociating D<sub>2</sub> occupancy (~40–65% at clinical dose vs &gt;80% for typicals). Transient blockade is enough to blunt mesolimbic hyperdopaminergia while releasing quickly enough to spare nigrostriatal and tuberoinfundibular pathways — hence <strong>near-zero EPS, no hyperprolactinemia, no tardive dyskinesia</strong>.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">② D<sub>4</sub> Preference</div>
+          <p>Highest dopamine-family affinity is at D<sub>4</sub> (K<sub>i</sub> ~16 nM), a receptor enriched in prefrontal cortex and limbic regions. The D<sub>4</sub> hypothesis of clozapine's efficacy drove a wave of selective D<sub>4</sub> antagonist trials — which <em>failed</em>, proving D<sub>4</sub> alone is not sufficient. Polypharmacology is the point.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">③ 5-HT<sub>2A</sub> Inverse Agonism</div>
+          <p>Potent 5-HT<sub>2A</sub> antagonism/inverse agonism (K<sub>i</sub> ~10 nM). Meltzer's high 5-HT<sub>2A</sub>:D<sub>2</sub> ratio defines "atypicality" — cortical 5-HT<sub>2A</sub> blockade disinhibits mesocortical dopamine, improving negative/cognitive symptoms and further protecting against EPS.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">④ Muscarinic — Mixed Agonist/Antagonist</div>
+          <p>Complex, subtype-dependent muscarinic pharmacology (M<sub>1</sub>–M<sub>5</sub>). Clozapine antagonizes M<sub>1</sub>/M<sub>3</sub> (anticholinergic load, constipation) yet the active metabolite <strong>N-desmethylclozapine is an M<sub>1</sub>/M<sub>4</sub> partial agonist</strong> — a pro-cognitive, pro-cholinergic signal now being chased directly by muscarinic drugs (xanomeline).</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">⑤ H<sub>1</sub> / α<sub>1</sub> / 5-HT<sub>6-7</sub></div>
+          <p>Strong histamine H<sub>1</sub> (K<sub>i</sub> ~14 nM → sedation, weight gain) and α<sub>1</sub>-adrenergic (K<sub>i</sub> ~14 nM → orthostatic hypotension) blockade, plus 5-HT<sub>6</sub>/5-HT<sub>7</sub>/5-HT<sub>1A</sub>/5-HT<sub>2C</sub> engagement. This receptor sprawl drives both the tolerability profile and much of the toxicity.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ Glutamatergic / GABAergic Modulation</div>
+          <p>Downstream, clozapine potentiates NMDA-receptor signaling (glycine-site modulation, reduced glutamate hypofunction), enhances cortical GABAergic tone and BDNF. The <strong>glutamatergic hypothesis</strong> is a leading explanation for why it works in patients who fail pure dopamine blockers.</p>
+        </div>
+      </div>
+
+      <p>
+        No single receptor explains clozapine. Every attempt to distill it into a clean, selective ligand
+        (selective D<sub>4</sub> antagonists; pure 5-HT<sub>2A</sub> agents) has <strong>failed to reproduce its
+        efficacy</strong>. The working consensus: the therapeutic effect is an emergent property of
+        <em>simultaneous, low-affinity, fast-dissociating action across a dopaminergic–serotonergic–
+        cholinergic–glutamatergic network</em>. It is the canonical argument for polypharmacology in psychiatry.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">Mesolimbic DA hyperactivity</span>
+        <span class="arrow">→ transient/fast-off D<sub>2</sub> blockade →</span>
+        <span class="effect">positive symptoms ↓ (no striatal EPS)</span>
+        <br>
+        <span class="step">Cortical 5-HT<sub>2A</sub> block</span>
+        <span class="arrow">→ mesocortical DA disinhibition + NMDA facilitation →</span>
+        <span class="effect">negative / cognitive symptoms ↓</span>
+        <br>
+        <span class="step">N-desmethylclozapine</span>
+        <span class="arrow">→ M<sub>1</sub>/M<sub>4</sub> partial agonism →</span>
+        <span class="effect">pro-cognitive cholinergic tone ↑</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>CYP1A2-Dominated Clearance &amp; the Smoking Trap</h2>
+
+      <p>
+        Clozapine is well absorbed orally but heavily first-pass metabolized, giving <strong>~50–60%
+        bioavailability</strong>. It is <strong>~95% protein-bound</strong> with a large volume of distribution.
+        Clearance is dominated by <strong>CYP1A2</strong>, with secondary contributions from CYP3A4 and CYP2D6.
+        Because CYP1A2 is <em>induced by the polycyclic aromatic hydrocarbons in tobacco smoke</em> (not nicotine),
+        plasma clozapine is a moving target tethered to a patient's smoking status — the single most important and
+        most-missed PK fact in clozapine care.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~50–60%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub></span><span class="pk-val">~1.5 – 2.5 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (steady state)</span><span class="pk-val">~12 h (6–26)</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~4 – 5 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~95%</span></div>
+        <div class="pk-row"><span class="pk-key">Primary CYP</span><span class="pk-val">CYP1A2 (&gt;3A4/2D6)</span></div>
+        <div class="pk-row"><span class="pk-key">Target trough level</span><span class="pk-val">&gt;350 ng/mL</span></div>
+        <div class="pk-row"><span class="pk-key">Active metabolite</span><span class="pk-val">N-desmethylclozapine</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> two principal routes off the parent — N-demethylation to the
+        pharmacologically active <em>norclozapine</em>, and N-oxidation to the inactive N-oxide (famous separately
+        as CNO, the DREADD actuator).
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Clozapine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP1A2
+          <span style="font-size:10px;color:var(--fg-dim)">N-demethyl.</span>
+        </div>
+        <div class="meta-node active">N-desmethyl­clozapine ★</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          further
+        </div>
+        <div class="meta-node inactive">glucuronides</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Clozapine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          FMO / CYP3A4
+          <span style="font-size:10px;color:var(--fg-dim)">N-oxidation</span>
+        </div>
+        <div class="meta-node inactive">Clozapine-N-oxide (CNO)</div>
+      </div>
+
+      <p>
+        <strong>N-desmethylclozapine</strong> (norclozapine, marked ★) is active — a partial M<sub>1</sub>/M<sub>4</sub>
+        muscarinic agonist and δ-opioid ligand thought to contribute to procognitive effects and to sialorrhea.
+        Clinicians track the clozapine:norclozapine ratio to infer adherence and metabolic status.
+      </p>
+      <p>
+        <strong>The smoking trap:</strong> starting or heavily smoking induces CYP1A2 and can cut clozapine levels
+        ~50%; <strong>abruptly quitting or being hospitalized on a no-smoking ward removes the inducer and levels
+        can double within days</strong>, precipitating sedation, seizures, and toxicity. <strong>Fluvoxamine</strong>
+        (a strong CYP1A2 inhibitor) can multiply levels several-fold — a classic, dangerous interaction. Caffeine,
+        oral contraceptives, and ciprofloxacin also inhibit CYP1A2. Any change in smoking, caffeine, or an
+        interacting drug warrants a level check and often a dose adjustment.
+      </p>
+    </div>
+
+    <!-- CLINICAL CONTEXT / PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Clinical Context</div>
+      <h2>Why It Works When Everything Else Fails</h2>
+
+      <p>
+        Roughly <strong>one-third of schizophrenia is treatment-resistant</strong> — no adequate response to two or
+        more antipsychotics. In this population clozapine is not merely another option; the landmark
+        <strong>Kane et al. (1988)</strong> trial and decades of real-world data show it is <em>categorically
+        superior</em>, with response rates around 30–60% in patients who had failed everything. It is the only
+        antipsychotic with an FDA indication for <strong>reducing recurrent suicidal behavior</strong> in
+        schizophrenia/schizoaffective disorder (InterSePT). No other agent replicates this. The tragedy of clozapine
+        is that it is simultaneously the most effective and the most under-prescribed drug in psychiatry.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Fast-Off D<sub>2</sub> → Efficacy Without Motor Cost</h4>
+          <p>Loose, rapidly-reversible D<sub>2</sub> occupancy transiently dampens mesolimbic dopamine (positive symptoms) while releasing quickly enough that nigrostriatal and tuberoinfundibular systems recover between doses. Result: antipsychotic effect with minimal EPS, no tardive dyskinesia, and no hyperprolactinemia — the defining "atypical" signature, most extreme in clozapine.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>High 5-HT<sub>2A</sub>:D<sub>2</sub> Ratio → Negative &amp; Cognitive Symptoms</h4>
+          <p>Meltzer's serotonin–dopamine hypothesis: potent cortical 5-HT<sub>2A</sub> inverse agonism relative to weak D<sub>2</sub> blockade disinhibits mesocortical dopamine and enhances prefrontal signaling — the domains (blunted affect, avolition, cognition) that classical antipsychotics barely touch. Combined 5-HT<sub>2C</sub>, 5-HT<sub>6</sub>, and 5-HT<sub>7</sub> actions add to the mood and cognitive profile.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Glutamatergic Repair → The Resistance-Breaker</h4>
+          <p>The leading modern account of clozapine's unique efficacy is glutamatergic. Schizophrenia involves NMDA-receptor hypofunction; clozapine enhances NMDA/glutamatergic signaling (glycine-site modulation, altered AMPA trafficking), raises cortical GABAergic tone and BDNF, and normalizes network dynamics beyond what dopamine blockade alone achieves. This is the mechanistic candidate for why it reaches patients pure dopamine antagonists cannot.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>Muscarinic M<sub>4</sub>/M<sub>1</sub> → The New Frontier</h4>
+          <p>N-desmethylclozapine's M<sub>1</sub>/M<sub>4</sub> partial agonism validated muscarinic modulation as an antipsychotic mechanism independent of dopamine — the pharmacological lineage that led to xanomeline–trospium (KarXT), the first non-dopaminergic antipsychotic approved in decades. Clozapine got there first, accidentally, inside a promiscuous scaffold.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        The uncomfortable truth is that <strong>we still do not fully know why clozapine is special</strong>. Every
+        clean, single-target rewrite has failed. Its efficacy appears to be an emergent, network-level property of
+        controlled promiscuity — which is exactly why it cannot be cleanly copied, and why its toxicity cannot be
+        cleanly engineered away.
+      </p>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">04 · Harm Reduction &amp; Safety</div>
+      <h2>The Last-Line Drug: Monitoring Is the Medicine</h2>
+      <p style="max-width:none;">Clinical, non-moralistic. Clozapine's risks are real and several are potentially fatal — but they are <strong>predictable, monitorable, and largely preventable</strong>. The bloodwork is not bureaucracy; it is what makes the drug survivable. Never trade the drug for the monitoring.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL / HIGH-RISK COMBINATIONS:</strong> other bone-marrow suppressants (<strong>carbamazepine</strong>, cytotoxics, co-trimoxazole) · <strong>benzodiazepines / CNS depressants</strong>, esp. parenteral (cardiorespiratory collapse, reported deaths) · strong <strong>CYP1A2 inhibitors</strong> (fluvoxamine, ciprofloxacin → clozapine toxicity, seizures) · anticholinergics / opioids (additive → <strong>ileus</strong>) · QT-prolonging agents (torsades). Abrupt smoking cessation can double levels. Check interactions before every co-prescription.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Agranulocytosis (the reason for REMS)
+          </h4>
+          <ul>
+            <li>Idiosyncratic, potentially fatal drop in neutrophils; cumulative incidence ~0.8%, highest in first 6 months but never zero</li>
+            <li><strong>Mandatory ANC monitoring</strong>: weekly ×6 months, then biweekly ×6 months, then monthly for life of treatment (US REMS / Clozapine REMS)</li>
+            <li>Dose-independent — a normal count last week does not protect you this week; never skip a draw</li>
+            <li>Fever, sore throat, or infection = urgent ANC check, hold dose until cleared</li>
+            <li>Do not co-prescribe other marrow-suppressants; benign ethnic neutropenia has a modified threshold</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Cardiac &amp; Metabolic
+          </h4>
+          <ul>
+            <li><strong>Myocarditis</strong> — highest risk in the first 4–8 weeks; monitor troponin, CRP, HR, temperature during titration; chest pain/dyspnea/tachycardia = stop and investigate</li>
+            <li>Cardiomyopathy and (rarely) QT prolongation / torsades with later use</li>
+            <li>Severe metabolic burden: weight gain, insulin resistance, new-onset type-2 diabetes, dyslipidemia — baseline + periodic metabolic panel</li>
+            <li>Orthostatic hypotension &amp; tachycardia (α<sub>1</sub> + antimuscarinic) — titrate slowly</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            GI Hypomotility &amp; Seizures
+          </h4>
+          <ul>
+            <li><strong>Constipation → ileus is a leading cause of clozapine death</strong> (antimuscarinic + antiserotonergic gut paralysis, often silent); a <strong>prophylactic bowel regimen is standard of care</strong>, not optional</li>
+            <li>Ask about bowel movements at every visit; new abdominal distension/pain/vomiting is an emergency</li>
+            <li><strong>Dose-dependent seizures</strong> (risk rises &gt;600 mg/day or with fast titration / level spikes); consider EEG and valproate cover at high dose</li>
+            <li><strong>Sialorrhea</strong> — paradoxical drooling (M<sub>4</sub> agonism), worse at night; treat, don't ignore (aspiration risk)</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Adherence, NMS &amp; Discontinuation
+          </h4>
+          <ul>
+            <li><strong>Never miss bloodwork</strong> — no ANC, no dispense; this is the deal that keeps the drug on the market and keeps you alive</li>
+            <li><strong>NMS</strong> (rare): rigidity, hyperthermia, autonomic instability, ↑CK — medical emergency, stop drug</li>
+            <li>Report any change in smoking, caffeine, or new meds — check a level (CYP1A2)</li>
+            <li><strong>Missing ≥48 h requires re-titration from a low dose</strong> — do not restart at the old dose (orthostasis/seizure risk)</li>
+            <li>Avoid abrupt cessation: cholinergic rebound and rapid rebound psychosis; taper when possible</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENTROPY / DOCKING COMMENTARY -->
+    <div class="section">
+      <div class="section-eyebrow">05 · Entropy &amp; Docking · FlexAID∆S</div>
+      <h2>Promiscuity as an Entropic Trade</h2>
+
+      <p>
+        Clozapine is a natural stress-test for a <strong>Shannon-entropy / conformational-entropy</strong> view of
+        binding. A slow-off, high-affinity antagonist like haloperidol wins by <em>enthalpy</em>: it drops into a
+        single deep, complementary D<sub>2</sub> pocket, forming a tightly-defined ionic + aromatic contact set. That
+        deep well collapses the receptor's local conformational entropy — the complex is rigid, low-microstate,
+        long-lived (small k<sub>off</sub>). Clinically, that same entropic collapse is the EPS.
+      </p>
+
+      <p>
+        Clozapine does the opposite. Its <strong>dibenzodiazepine "butterfly" core is conformationally floppy</strong>
+        — the two fused rings hinge, and the N-methylpiperazine samples multiple rotamers. Rather than pay a large
+        ordering penalty to lock one deep pose, it makes <em>shallow, adaptable, induced-fit contacts</em> across many
+        pockets: D<sub>4</sub>, 5-HT<sub>2A</sub>, muscarinic, H<sub>1</sub>, α<sub>1</sub>. At D<sub>2</sub> the well
+        is shallow and the bound ensemble retains residual configurational entropy — so the receptor is only
+        <strong>partially ordered</strong>, dissociation is fast, and occupancy is transient. In free-energy terms,
+        <em>ΔG = ΔH − TΔS</em>: clozapine trades enthalpic specificity for a smaller <strong>−TΔS ordering
+        penalty</strong>, buying breadth and reversibility instead of depth.
+      </p>
+
+      <p>
+        This is exactly the regime a differential-entropy docking engine like <strong>FlexAID∆S</strong> is built to
+        expose. A rigid-lock binder shows a large negative ΔS<sub>conf</sub> on complex formation and a single sharp
+        pose; a promiscuous fast-off binder like clozapine should register a <em>smaller entropy collapse</em>, a
+        <em>broader, multi-basin pose distribution</em>, and comparable ΔG spread across several unrelated targets —
+        the quantitative fingerprint of polypharmacology. The lesson clozapine teaches medicinal chemistry is
+        uncomfortable but real: sometimes the therapeutically indispensable property is not a clean enthalpic key,
+        but a <strong>tolerable amount of entropic promiscuity</strong> that no clean molecule has yet reproduced.
+      </p>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D · Clozapine-bound receptor (cryo-EM)</span>
+          <span class="ngl-pdb-tag">PDB: 8JXV</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="8JXV"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            Receptor + G<sub>i</sub> (cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Contact residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Clozapine (VBU · ball-and-stick)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          <strong style="color:var(--fg-muted)">Honest label:</strong> <strong>8JXV</strong> is the
+          <em>only</em> PDB entry containing clozapine (ligand code <strong>VBU</strong>) — a cryo-EM
+          <strong>clozapine-bound histamine H<sub>4</sub> receptor / G<sub>i</sub> complex</strong>
+          (Xia et al., <em>Nat Commun</em> 2024). H<sub>4</sub> is a genuine clozapine target but <em>not</em> its
+          primary therapeutic one; <strong>no co-crystal of clozapine with D<sub>4</sub>, D<sub>2</sub>,
+          5-HT<sub>2A</sub>, or a muscarinic receptor exists.</strong> Shown as a real, verified clozapine binding
+          pose in a class-A aminergic GPCR. Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/8JXV" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Clozapine · CHEMBL42</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">5-HT<sub>2A</sub></div>
+                <span class="target-full">Serotonin 2A receptor (HTR2A)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 10 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist / inv.</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">H<sub>1</sub></div>
+                <span class="target-full">Histamine H1 receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 14 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:71%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">α<sub>1</sub></div>
+                <span class="target-full">α1-adrenergic receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 14 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">range 4–56 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:71%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">D<sub>4</sub></div>
+                <span class="target-full">Dopamine D4 receptor (DRD4)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">K<sub>i</sub> ≈ 16 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">range 9–71 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:63%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">M<sub>1</sub></div>
+                <span class="target-full">Muscarinic ACh receptor M1</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 55 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">M-subtypes mixed</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:44%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Mixed ago/antag</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">D<sub>2</sub></div>
+                <span class="target-full">Dopamine D2 receptor (DRD2)</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 130 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">range 30–430 · fast-off</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:22%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">5-HT<sub>1A</sub></div>
+                <span class="target-full">Serotonin 1A receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 39 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:48%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Partial agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">σ<sub>1</sub></div>
+                <span class="target-full">Sigma-1 receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 8,500 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:8%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Weak</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          K<sub>i</sub> values: clozapine (CHEMBL42) from ChEMBL v34 aggregated binding assays; representative values
+          with ranges where multiple assays disagree. Rel. bars normalized to 5-HT<sub>2A</sub> (highest affinity).
+          Lower K<sub>i</sub> = higher affinity. Note D<sub>4</sub> &gt; D<sub>2</sub> and the fast dissociation at
+          D<sub>2</sub> — pharmacology, not just affinity, defines atypicality.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #057 · Clozapine · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/mdma/">MDMA #002</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Binding data: ChEMBL v34 (CHEMBL42). Structure: Xia R., Shi S., Xu Z. et al. (2024) <em>Nat Commun</em> —
+    "Structural basis of ligand recognition and design of antihistamines targeting histamine H4 receptor." ·
+    <a href="https://www.rcsb.org/structure/8JXV" target="_blank" rel="noopener noreferrer">PDB 8JXV</a>
+    · Kane et al. (1988) Arch Gen Psychiatry; Kapur &amp; Seeman (2001) Am J Psychiatry; Meltzer (1989); InterSePT (Meltzer et al. 2003).
+    <br>
+    Prescription drug. Not medical advice. Never alter clozapine dosing or skip ANC monitoring without your prescriber ·
+    <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> ·
+    <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '8JXV',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

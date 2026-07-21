@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methylphenidate — Drug of the Day #023 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of Methylphenidate (Ritalin/Concerta): a piperidine stimulant and pure DAT/NET reuptake blocker — the mechanistic inverse of amphetamine's substrate-release. Real ChEMBL Ki data, threo-(R,R) dexmethylphenidate eutomer, CES1 hydrolysis to ritalinic acid, cardiovascular and IV-talc harm reduction, receptor binding table, and interactive 3D dDAT binding-site visualization via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-block { color: var(--rose); background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/amphetamine/">Amphetamine #006</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#023 · Drug of the Day</span>
+    <span class="pill pill-teal">Piperidine stimulant</span>
+    <span class="pill pill-terra">Schedule II · ADHD / Narcolepsy</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Methylphenidate</span>
+  </h1>
+  <p class="hero-iupac">IUPAC: methyl 2-phenyl-2-(piperidin-2-yl)acetate · MW 233.31 g/mol (freebase) · CAS 113-45-1 · HCl CAS 298-59-9</p>
+  <p class="hero-class">
+    <strong>threo-Methylphenidate.</strong>
+    Piperidine-ring phenylacetate ester · a <em>pure catecholamine reuptake blocker</em>, not a releaser.
+    Brand/context names: Ritalin, Concerta, Focalin (d-isomer), Daytrana (patch), "kiddie coke", "vitamin R".
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value teal">DAT &gt; NET</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Reuptake blocker</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">DAT K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value teal">34–110 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">NET K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">340–660 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub> (IR)</span>
+      <span class="fact-value">2–3 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CES1 → ritalinic acid</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Eutomer</span>
+      <span class="fact-value gold">d-threo (R,R)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Class</span>
+      <span class="fact-value teal">Stimulant</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>Competitive Reuptake Blockade — the Inverse of Amphetamine</h2>
+
+      <p>
+        This is the single most important distinction on this page. <strong>Methylphenidate is a pure
+        reuptake blocker — it is not a substrate and not a releaser.</strong> Amphetamine
+        (<a href="/drug-of-the-day/amphetamine/">#006</a>) is transported <em>into</em> the terminal, collapses
+        vesicular storage, and reverses DAT to pump dopamine <em>out</em> — carrier-mediated efflux with no
+        upper ceiling. Methylphenidate does the opposite: it sits in the <em>S1 central binding site</em> and
+        occludes the pore from the outside, like cocaine. It never enters the cell, never touches VMAT2, and
+        never forces release. It simply stops the transporter from clearing dopamine and norepinephrine that
+        neurons have <strong>already fired out on their own</strong>.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title dat">① DAT Pore Occlusion</div>
+          <p>Methylphenidate binds the DAT S1 orthosteric site and locks the transporter in an outward-open, occluded conformation — the same pocket cocaine and WIN 35,428 occupy. Dopamine can no longer dock and be pulled back in.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">② NET Blockade</div>
+          <p>The identical mechanism at NET (K<sub>i</sub> 340–660 nM) raises synaptic and cortical norepinephrine. NET blockade in prefrontal cortex, where NET also clears dopamine, underlies much of the pro-cognitive ADHD effect.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">③ Firing-Dependent Ceiling</div>
+          <p>Because reuptake blockade can only preserve dopamine that tonic/phasic firing already released, the synaptic rise is <strong>self-limiting</strong>. Amphetamine's releaser mechanism has no such brake — a key reason methylphenidate's dose–response is flatter.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">④ No VMAT2 / No Efflux</div>
+          <p>Unlike amphetamines, methylphenidate does not deplete vesicles, does not generate cytoplasmic free dopamine, and does not drive reverse transport. This removes the oxidative/efflux limb thought to contribute to amphetamine neurotoxicity.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">⑤ Cocaine-Like Pharmacophore</div>
+          <p>Mechanistically methylphenidate is a cocaine congener at DAT. What differs is kinetics: oral dosing gives slow striatal uptake and slow washout, blunting the euphoric spike. Insufflated or IV, that separation collapses and the profile becomes cocaine-like.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title gold">⑥ SERT-Sparing</div>
+          <p>Serotonin is essentially untouched (SERT K<sub>i</sub> ≈ 65 µM, &gt;1000× weaker than DAT). Methylphenidate is a clean catecholaminergic agent — no direct serotonergic contribution, so classic serotonin syndrome is not its signature toxidrome.</p>
+        </div>
+      </div>
+
+      <p>
+        The stereochemistry is not a footnote. Methylphenidate has two stereocentres; the marketed drug is the
+        <strong>threo</strong> pair only (the erythro diastereomer is inactive and was removed). Within the threo pair,
+        the <strong>d-threo (2R,2′R) enantiomer — dexmethylphenidate</strong> — is the eutomer, carrying essentially all
+        the DAT activity (d-threo DAT K<sub>i</sub> 16–25 nM), while l-threo (2S,2′S) is largely inert and is preferentially
+        stripped out by first-pass hydrolysis. Racemic "Ritalin" is, pharmacodynamically, mostly its d-enantiomer by the
+        time it reaches the brain.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">Methylphenidate (BLOCKER)</span>
+        <span class="arrow">→ occupies DAT/NET S1 site from outside →</span>
+        <span class="step">pore occlusion</span>
+        <span class="arrow">→ reuptake of fired DA/NE halted →</span>
+        <span class="effect">[DA]<sub>synapse</sub> ↑ (ceiling = firing rate)</span>
+        <br>
+        <span class="step">Amphetamine (RELEASER)</span>
+        <span class="arrow">→ DAT substrate + VMAT2 collapse →</span>
+        <span class="step">reverse transport</span>
+        <span class="arrow">→</span>
+        <span class="effect">[DA]<sub>synapse</sub> ↑↑↑ (no ceiling, firing-independent)</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>CES1 Ester Hydrolysis, Not CYP</h2>
+
+      <p>
+        Methylphenidate breaks the usual stimulant PK mold: it is <strong>not</strong> primarily a CYP substrate.
+        Roughly 80% of a dose is cleared by <strong>carboxylesterase 1 (CES1)</strong>, a high-capacity hepatic
+        esterase that hydrolyses the methyl ester to <strong>ritalinic acid</strong> (α-phenyl-2-piperidineacetic
+        acid) — a pharmacologically inactive, water-soluble carboxylic acid that is renally excreted. Oral
+        bioavailability is low and highly variable (~11–52%) because of this extensive first-pass hydrolysis.
+      </p>
+
+      <p>
+        CES1 is <strong>stereoselective</strong>: it hydrolyses l-threo faster than d-threo, so the pharmacologically
+        active d-enantiomer is enriched in plasma after oral dosing. Genetic CES1 variants (e.g. the loss-of-function
+        <code>G143E</code>) sharply reduce clearance and raise exposure — a real source of interindividual response
+        and side-effect variability.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~11–52% (variable)</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (IR)</span><span class="pk-val">1 – 3 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (IR, d-threo)</span><span class="pk-val">2 – 3 h</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~2.65 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~15% (low)</span></div>
+        <div class="pk-row"><span class="pk-key">Primary enzyme</span><span class="pk-val">CES1 (carboxylesterase)</span></div>
+        <div class="pk-row"><span class="pk-key">Main metabolite</span><span class="pk-val">Ritalinic acid (inactive)</span></div>
+        <div class="pk-row"><span class="pk-key">Duration (OROS/XR)</span><span class="pk-val">8 – 12 h</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> A single dominant hydrolytic step accounts for the bulk of clearance —
+        no active metabolites, minimal oxidative metabolism.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Methylphenidate (d/l-threo)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CES1
+          <span style="font-size:10px;color:var(--fg-dim)">ester hydrolysis</span>
+        </div>
+        <div class="meta-node inactive">Ritalinic acid</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          renal
+        </div>
+        <div class="meta-node inactive">Urine (~80% of dose)</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Methylphenidate</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          minor CYP / oxidation
+        </div>
+        <div class="meta-node inactive">p-hydroxy-MPH · oxo-MPH</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          conjugation
+        </div>
+        <div class="meta-node inactive">minor urinary metabolites</div>
+      </div>
+
+      <p>
+        Because clearance runs through an esterase rather than CYP2D6/3A4, the classic amphetamine-type
+        CYP interaction web (and the CYP2D6 poor-metabolizer risk) largely <strong>does not apply</strong> to
+        methylphenidate. The relevant hepatic hazard is different: CES1 also hydrolyses ethyl esters, and when
+        methylphenidate is taken <strong>with ethanol</strong>, CES1 catalyses transesterification to
+        <strong>ethylphenidate</strong>, a longer-acting active metabolite, while raising d-methylphenidate
+        levels — a real, common, and under-appreciated interaction.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology</div>
+      <h2>Circuit-Level Translation</h2>
+
+      <p>
+        Methylphenidate's DAT-preferring, NET-secondary blockade (DAT:NET K<sub>i</sub> ≈ 34:340, roughly
+        10-fold DAT-selective) maps cleanly onto its catecholaminergic clinical profile: prefrontal signal-to-noise
+        gains at therapeutic exposure, striatal reward engagement as dose and rate of rise climb. There is no direct
+        serotonergic limb, so this section is dopamine and norepinephrine only.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Prefrontal DA/NE Tone → Attention &amp; Executive Control</h4>
+          <p>At therapeutic oral doses, methylphenidate raises catecholamine tone in dorsolateral prefrontal cortex, strengthening D1 and α2A signaling that sharpens the signal-to-noise of working-memory and top-down attention circuits (the Arnsten "inverted-U"). This — not euphoria — is the substrate of its ADHD efficacy. In PFC, NET is the main clearance route for BOTH NE and DA, so NET blockade there boosts prefrontal dopamine even though the drug is DAT-preferring elsewhere.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar gold" style="background:var(--gold)"></div>
+        <div class="circuit-inner">
+          <h4>Striatal DAT Occupancy → Reinforcement &amp; Abuse Liability</h4>
+          <p>In the nucleus accumbens and dorsal striatum, DAT blockade elevates extracellular dopamine. Clinically meaningful ADHD doses already occupy a large fraction of striatal DAT (PET shows &gt;50% occupancy). What separates therapy from a high is the <em>rate of rise</em>: slow oral uptake produces a gentle plateau, while insufflated or IV routes produce a fast dopamine spike that is subjectively cocaine-like and strongly reinforcing.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Peripheral Noradrenergic Drive → Sympathomimetic Load</h4>
+          <p>NET blockade outside the CNS raises circulating and synaptic norepinephrine, driving the autonomic profile: tachycardia, raised blood pressure, appetite suppression, mydriasis, and reduced sleep. These are on-target consequences of the same reuptake blockade, and they are the basis of the cardiovascular cautions below rather than an idiosyncratic toxicity.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        At supratherapeutic doses the firing-dependent ceiling is progressively overwhelmed by near-complete DAT
+        occupancy plus behavioral arousal, and the profile shifts toward the classic high-dose stimulant syndrome:
+        stereotypy/punding, anxiety, and — with sustained heavy use — stimulant psychosis. This is a quantitative
+        escalation of the same blockade, not a new mechanism.
+      </p>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">04 · Harm Reduction</div>
+      <h2>Clinical Risk Profile</h2>
+      <p style="max-width:none;">Evidence-based, non-moralistic. Risks are dose-, route-, and rate-dependent. Oral therapeutic use and crushed-for-insufflation/IV use are pharmacologically different animals.</p>
+
+      <div class="fatal-box">
+        <strong>DANGEROUS COMBINATIONS:</strong> MAOIs (incl. within 14 days) — <strong>hypertensive crisis</strong>, the one classically fatal interaction for this NET-blocking sympathomimetic · other stimulants (cocaine, amphetamine) — additive cardiotoxicity · high-dose alcohol — CES1 transesterification to active ethylphenidate + raised d-MPH. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Cardiovascular (Primary)
+          </h4>
+          <ul>
+            <li>Sympathomimetic: tachycardia, raised BP, vasoconstriction — dose-dependent</li>
+            <li>FDA black-box: sudden cardiac events; avoid with structural cardiac disease, arrhythmia, or uncontrolled hypertension</li>
+            <li>High-dose / IV: risk of arrhythmia, MI, hypertensive emergency, cerebral haemorrhage</li>
+            <li>Hyperthermia possible at overdose, but far less prominent than with MDMA/amphetamine</li>
+            <li>Screen for palpitations, syncope, chest pain, family history of sudden death</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Diversion · Insufflation · IV
+          </h4>
+          <ul>
+            <li>Crushing extended-release tablets defeats the delivery system and delivers the full dose as a rapid spike — cocaine-like reinforcement</li>
+            <li><strong style="color:var(--rose)">IV injection of crushed tablets</strong>: insoluble talc/cellulose fillers embolise to the lungs</li>
+            <li>Pulmonary talcosis ("Ritalin lung"): granulomatosis, panlobular emphysema, pulmonary hypertension — often irreversible</li>
+            <li>Insufflation damages nasal mucosa/septum; excipients are not made to cross that route</li>
+            <li>Never inject formulations designed for oral use</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Therapeutic vs High-Dose
+          </h4>
+          <ul>
+            <li><strong>Therapeutic (oral):</strong> slow striatal uptake, firing-capped DA rise, low euphoria, low abuse rate in treated ADHD</li>
+            <li><strong>High-dose / non-oral:</strong> fast spike, euphoria, compulsive redosing, cocaine-like liability</li>
+            <li>Appetite suppression, insomnia, bruxism, irritability, headache at higher exposure</li>
+            <li>Chronic heavy use: stimulant psychosis, stereotypy/punding, weight loss</li>
+            <li>Abrupt discontinuation after heavy use: fatigue, dysphoria, hypersomnia ("crash")</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Safer-Use &amp; Testing
+          </h4>
+          <ul>
+            <li>Oral only; swallow XR/OROS whole — do not crush, snort, or inject</li>
+            <li>Lowest effective dose; respect the ceiling — more does not scale the wanted effect linearly</li>
+            <li>Space from alcohol (ethylphenidate formation) and never combine with MAOIs</li>
+            <li>Test unknown "study drug" powders — reagent kit + fentanyl test strips (<a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer" style="color:var(--teal)">DanceSafe</a>)</li>
+            <li>Hydrate, eat, and protect sleep; monitor resting heart rate and BP with regular use</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Binding Pose · dDAT S1 Central Site</span>
+          <span class="ngl-pdb-tag">PDB: 4XP4</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="4XP4"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            Transporter (refined cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            S1 contact residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Bound blocker (ball-and-stick)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">4XP4</strong> — <em>Drosophila</em> dopamine transporter (dDAT) in complex with <strong>cocaine</strong> (ligand Y01), outward-open blocked state, 2.80 Å (Wang, Penmatsa &amp; Gouaux, <em>Nature</em> 2015). <strong>No methylphenidate co-crystal exists</strong>; cocaine is shown as a representative competitive blocker occupying the same S1 central site that methylphenidate binds. The dDAT scaffold is the standard structural surrogate for human DAT/NET.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/4XP4" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Transporter Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">threo-methylphenidate</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity (K<sub>i</sub>)</th>
+              <th>Rel.</th>
+              <th>Mechanism</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">DAT</div>
+                <span class="target-full">Dopamine transporter (SLC6A3)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">34 – 110 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">d-threo: 16–25 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Reuptake blocker</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">NET</div>
+                <span class="target-full">Norepinephrine transporter (SLC6A2)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">340 – 660 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">~10× weaker than DAT</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:12%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Reuptake blocker</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">SERT</div>
+                <span class="target-full">Serotonin transporter (SLC6A4)</span>
+              </td>
+              <td>
+                <div class="affinity-val">~65,000 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">&gt;1000× weaker · negligible</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:2%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Inactive</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          Human transporter K<sub>i</sub>, radioligand displacement (ChEMBL): DAT 34 nM [<sup>3</sup>H]WIN 35,428 — Schmitt et al. <em>ACS Med Chem Lett</em> 2014; DAT 110 nM &amp; NET 660 nM &amp; SERT 65,000 nM — <em>J Med Chem</em> 2007; NET 340 nM [<sup>3</sup>H]nisoxetine — 2014. d-threo (dexmethylphenidate) DAT 16–25 nM [<sup>3</sup>H]WIN 35,428 — <em>ACS Med Chem Lett</em> 2012 / <em>Bioorg Med Chem</em> 2011. Rel. bars normalized to DAT. Lower K<sub>i</sub> = higher affinity.
+        </div>
+      </div>
+
+      <!-- Entropy-docking commentary -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>ΔS · Entropy-Docking Note</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">FlexAID∆S</span>
+        </div>
+        <div class="binding-note" style="border-top:none;">
+          A blocker and a substrate leave opposite entropy signatures on the transporter. As methylphenidate
+          seats into the S1 pocket, the flexible outer-gate residues (aromatic lid Phe/Tyr, TM1/TM6 unwound
+          segments, the Na<sup>+</sup>/Cl<sup>−</sup> coordination shell) are frozen into a single outward-open
+          occluded microstate — a sharp <strong>collapse of conformational (Shannon) entropy</strong> in the
+          protein ensemble, ΔS<sub>conf</sub> &lt; 0. That configurational penalty is paid for by enthalpic contacts
+          and desolvation of the hydrophobic ligand (−TΔS<sub>solv</sub> favourable), the classic entropy–enthalpy
+          split FlexAID∆S scores explicitly. A substrate/releaser like amphetamine, by contrast, must keep the
+          gate <em>mobile</em> to ride the alternating-access cycle — it cannot afford to quench that entropy — so
+          in the ∆S picture the blocker's binding is precisely the act of <strong>silencing the transporter's
+          conformational manifold</strong>, which is why occlusion, not translocation, is the endpoint.
+          <br><br>ΔG<sub>bind</sub> = ΔH − TΔS<sub>conf</sub> − TΔS<sub>solv</sub> — occlusion maximizes the first
+          two terms while accepting a conformational-entropy cost.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #023 · Methylphenidate · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/amphetamine/">Amphetamine #006</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    K<sub>i</sub> data: ChEMBL v34 (CHEMBL796 / CHEMBL827) — Schmitt et al. (2014) ACS Med Chem Lett; J Med Chem (2007); Bioorg Med Chem (2011). Structure: Wang, Penmatsa &amp; Gouaux (2015) Nature 521:322 ·
+    <a href="https://www.rcsb.org/structure/4XP4" target="_blank" rel="noopener noreferrer">PDB 4XP4</a>
+    <br>
+    For harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '4XP4',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

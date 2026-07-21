@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethanol — Drug of the Day #036 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of ethanol (alcohol): a low-affinity, millimolar multi-target CNS depressant — GABA-A positive allosteric modulation, non-competitive NMDA-receptor antagonism, plus glycine-receptor, nAChR and GIRK/Kir3 actions at diffuse membrane sites not resolved in any co-crystal. ADH/ALDH metabolism, acetaldehyde toxicity, disulfiram, zero-order (Michaelis–Menten) kinetics, the kindling/delirium-tremens withdrawal syndrome and benzodiazepine treatment, the fatal respiratory synergy with opioids and benzodiazepines, and why aggregate-harm analyses rank it the single most harmful common drug — with an interactive 3D human GluN1-GluN2A NMDA-receptor view (PDB 7EU7, S-ketamine in the pore) via Mol*.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-value.rose { color: var(--rose); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 600; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.danger  { color: var(--rose); border-color: rgba(244,63,94,0.35); background: rgba(244,63,94,0.08); font-weight: 600; }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+  line-height: 1.6;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-pam     { color: var(--green); background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.20); }
+.ab-weak    { color: var(--fg-muted); background: var(--bg-alt); border: 1px solid var(--border); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/drug-of-the-day/diazepam/">Diazepam #015</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#036 · Drug of the Day</span>
+    <span class="pill pill-terra">Simple alcohol · C₂H₆O</span>
+    <span class="pill pill-teal">Multi-target CNS depressant</span>
+    <span class="pill pill-rose">Most harmful common drug (aggregate)</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Ethanol</span>
+  </h1>
+  <p class="hero-iupac">IUPAC: ethanol · CH₃CH₂OH · C₂H₆O · MW 46.07 g/mol · CAS 64-17-5 · ATC V03AB16 / D08AX08 · ChEMBL CHEMBL545 · the oldest and most-consumed psychoactive drug on Earth</p>
+  <p class="hero-class">
+    <strong>Ethanol (ethyl alcohol, "alcohol," "booze").</strong>
+    A two-carbon amphipathic solvent that happens to be psychoactive. It is <strong>not a lock-and-key ligand</strong>: too small, too weak, and too promiscuous
+    for a single high-affinity pocket. Instead it perturbs several ion channels at once at <strong>millimolar</strong> concentrations — a
+    <em>positive allosteric modulator of GABA<sub>A</sub></em> receptors and a <em>non-competitive NMDA-receptor antagonist</em>, with additional actions on
+    glycine receptors, neuronal nicotinic receptors, and GIRK/Kir3 potassium channels. That dual "brake-on, accelerator-off" profile — enhancing inhibition
+    while suppressing excitation — is the whole story: the intoxication, the tolerance, and a withdrawal syndrome that can kill.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary targets</span>
+      <span class="fact-value terra">GABA<sub>A</sub> PAM + NMDA antag.</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Affinity regime</span>
+      <span class="fact-value rose">mM (low-affinity)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">NMDA inhibition</span>
+      <span class="fact-value terra">~IC₅₀ 30–60 mM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Legal-limit BAC</span>
+      <span class="fact-value gold">0.08% ≈ 17 mM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">ADH → ALDH (+CYP2E1)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Kinetics</span>
+      <span class="fact-value teal">Zero-order (saturated)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Elimination rate</span>
+      <span class="fact-value">~0.015 g/dL/h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Dependence</span>
+      <span class="fact-value rose">High · lethal withdrawal</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>A Weak, Promiscuous Drug That Works Because It Is Everywhere</h2>
+
+      <p>
+        The single most important fact about ethanol pharmacology is the <strong>concentration scale</strong>. A cocaine or a fentanyl molecule works at
+        <em>nanomolar</em> occupancy — one drug molecule per receptor, held by a shaped pocket. Ethanol has no such pocket. Behaviorally relevant blood
+        concentrations run from roughly <strong>10 mM (mild intoxication) to 100 mM (coma / respiratory arrest)</strong> — six orders of magnitude weaker
+        than a classical drug. At those concentrations there are literally billions of ethanol molecules per neuron, transiently occupying <strong>shallow,
+        low-affinity, water-accessible cavities</strong> at protein–protein and protein–lipid interfaces of several membrane proteins at once. Ethanol is not
+        selective because it <em>cannot</em> be selective. Its pharmacology is the summed perturbation of many weakly coupled targets.
+      </p>
+
+      <p>
+        Two of those targets dominate the clinical picture and pull in opposite directions on the glutamate/GABA balance that sets cortical excitability:
+        it <strong>potentiates GABA<sub>A</sub></strong> (the brain's main inhibitory chloride channel) and it <strong>blocks the NMDA receptor</strong>
+        (the main excitatory, calcium-permeable glutamate channel). Turn inhibition up and excitation down simultaneously and you get the classic depressant
+        arc — anxiolysis, disinhibition, sedation, ataxia, amnesia, then anaesthesia and death — plus the exact adaptations that make stopping dangerous.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title sert">① GABA<sub>A</sub> Positive Modulation</div>
+          <p>Ethanol enhances GABA-gated Cl⁻ current, deepening inhibition. The clearest, low-millimolar sensitivity is at <strong>extrasynaptic α4/α6-βδ receptors</strong> mediating tonic inhibition (Wallner/Hanchar/Olsen, <em>PNAS</em> 2003) — though this low-dose effect is genuinely contested (Borghese et al.). Synaptic γ2 receptors respond at higher (≳ 40–100 mM) concentrations. Ethanol shares residues in the TM2/TM3 cavity with volatile anaesthetics (Mihic et al., <em>Nature</em> 1997).</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">② NMDA-Receptor Antagonism</div>
+          <p>Ethanol <strong>non-competitively inhibits</strong> NMDA-activated current (Lovinger, White &amp; Weight, <em>Science</em> 1989) — ~50% block near 50 mM, dose-dependent from ~5 mM. It does not occupy the glutamate or glycine sites; it acts at hydrophobic residues near the TM3/TM4 channel domain. GluN2B-containing receptors are the most ethanol-sensitive. This is the excitatory arm of intoxication and the seed of withdrawal.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">③ Glycine Receptors</div>
+          <p>The other inhibitory Cl⁻ channel: ethanol <strong>potentiates α1 glycine receptors</strong> at 10–100 mM, contributing to brainstem and spinal-cord depression (motor incoordination, respiratory drive). The Mihic 1997 alcohol-cavity residues sit in the same TM2/TM3 region as GABA<sub>A</sub> — one structural motif, two inhibitory channels.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">④ GIRK / Kir3 K⁺ Channels</div>
+          <p>Ethanol directly <strong>activates G-protein-gated inwardly-rectifying K⁺ channels (GIRK2/Kir3.2)</strong> at behaviorally relevant concentrations, hyperpolarizing neurons independently of GABA (Kobayashi et al., Lewohl et al., <em>Nat. Neurosci.</em> 1999). A hydrophobic pocket in the cytoplasmic domain was later resolved — one of the few actual "alcohol pockets" known.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ nAChR &amp; 5-HT₃</div>
+          <p>Ethanol modulates <strong>neuronal nicotinic acetylcholine receptors</strong> (subtype-dependent potentiation/inhibition) and <strong>potentiates 5-HT₃</strong> receptors — both feed dopaminergic reward signalling in the VTA/nucleus accumbens, part of why ethanol is reinforcing despite being a depressant.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ Indirect Dopamine / Opioid</div>
+          <p>Ethanol raises mesolimbic dopamine indirectly and triggers <strong>endogenous opioid (β-endorphin) release</strong>; this is the rationale for <strong>naltrexone</strong> in alcohol-use disorder — blunting the µ-opioid-mediated reward blunts craving. The reward circuitry is downstream of the ion-channel actions, not a direct ethanol receptor.</p>
+        </div>
+      </div>
+
+      <p>
+        Because every one of these actions is <strong>low-affinity and reversible</strong>, ethanol's effect tracks its concentration almost in real time — there is
+        no reservoir of tightly bound drug. That is why intoxication rises and falls with the blood-alcohol curve, and why the brain, chronically bathed in a drug it
+        cannot escape, remodels its glutamate and GABA machinery to compensate (see §03).
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">Ethanol (10–100 mM)</span>
+        <span class="arrow">→</span>
+        <span class="step">↑ GABA<sub>A</sub> Cl⁻ influx</span>
+        <span class="arrow">+</span>
+        <span class="step">↓ NMDA Ca²⁺/cation influx</span>
+        <span class="arrow">+</span>
+        <span class="step">↑ GIRK K⁺ efflux</span>
+        <span class="arrow">→</span>
+        <span class="effect">net inhibition ↑↑ → anxiolysis · disinhibition · sedation · ataxia · amnesia</span>
+        <br>
+        <span class="step">Chronic exposure</span>
+        <span class="arrow">→ compensatory ↑ NMDA / ↓ GABA<sub>A</sub> →</span>
+        <span class="danger">remove ethanol → glutamatergic storm → seizures · delirium tremens</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics &amp; Metabolism</div>
+      <h2>Zero-Order Kinetics and the Acetaldehyde Bottleneck</h2>
+
+      <p>
+        Ethanol is small, water-soluble, and freely miscible; it needs no transporter and distributes into <strong>total body water</strong> (V<sub>d</sub> ≈ 0.5–0.6 L/kg),
+        which is why body composition and sex change the blood level for the same dose. Absorption is rapid from stomach and (mainly) proximal small intestine; food slows
+        gastric emptying and blunts the peak. Protein binding is negligible. The defining feature is <strong>elimination</strong>: ~90–98% of a dose is metabolized in the liver,
+        with only 2–10% excreted unchanged in breath, urine, and sweat (the basis of the breathalyzer).
+      </p>
+
+      <p>
+        The metabolic enzymes saturate at very low blood concentrations. Hepatic <strong>alcohol dehydrogenase (ADH)</strong> has a low K<sub>m</sub> (~1 mM), so at any
+        intoxicating level it is running flat-out. The consequence is <strong>zero-order (Michaelis–Menten-saturated) kinetics</strong>: ethanol is cleared at a roughly
+        <em>constant amount per unit time</em>, not a constant fraction. Typical adult clearance is ~<strong>0.015–0.02 g/dL per hour</strong> (≈ 7–10 g, roughly one standard
+        drink, per hour). Double the dose and you double the <em>time to sober</em>, not the rate — there is no way to speed it up, and "sobering" tricks do nothing.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Distribution</span><span class="pk-val">Total body water</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~0.5 – 0.6 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">Negligible</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (fasting)</span><span class="pk-val">30 – 90 min</span></div>
+        <div class="pk-row"><span class="pk-key">Kinetics</span><span class="pk-val">Zero-order (saturated)</span></div>
+        <div class="pk-row"><span class="pk-key">Clearance rate</span><span class="pk-val">~0.015–0.02 g/dL/h</span></div>
+        <div class="pk-row"><span class="pk-key">ADH K<sub>m</sub></span><span class="pk-val">~1 mM (low)</span></div>
+        <div class="pk-row"><span class="pk-key">Metabolized / excreted</span><span class="pk-val">~90–98% / 2–10%</span></div>
+        <div class="pk-row"><span class="pk-key">Primary enzymes</span><span class="pk-val">ADH · ALDH2 · CYP2E1</span></div>
+        <div class="pk-row"><span class="pk-key">BAC → mM</span><span class="pk-val">0.1% ≈ 21.7 mM</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>The oxidation cascade:</strong> ADH oxidizes ethanol to <strong>acetaldehyde</strong> (using NAD⁺ → NADH). Acetaldehyde is a reactive, protein- and
+        DNA-adducting <strong>Group 1 carcinogen</strong> — the actual toxic and carcinogenic principle of drinking. Mitochondrial <strong>aldehyde dehydrogenase-2 (ALDH2)</strong>
+        then rapidly converts it to harmless <strong>acetate</strong>, cleared as acetyl-CoA → CO₂ + H₂O. A second, <strong>inducible</strong> route — microsomal <strong>CYP2E1</strong>
+        (the MEOS) — becomes significant at high concentrations and in chronic drinkers, contributing to metabolic tolerance and to oxidative stress.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Ethanol</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          ADH / CYP2E1
+          <span style="font-size:10px;color:var(--fg-dim)">NAD⁺→NADH</span>
+        </div>
+        <div class="meta-node danger">Acetaldehyde ☠</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          ALDH2
+          <span style="font-size:10px;color:var(--fg-dim)">mitochondrial</span>
+        </div>
+        <div class="meta-node active">Acetate</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          acetyl-CoA
+        </div>
+        <div class="meta-node inactive">CO₂ + H₂O</div>
+      </div>
+
+      <p>
+        <strong>The ALDH2 bottleneck is where genetics and drugs act.</strong> Roughly <strong>540 million East Asians</strong> carry the loss-of-function <strong>ALDH2*2 (Glu504Lys)</strong>
+        allele: acetaldehyde accumulates after a single drink, producing the "Asian flush" — facial flushing, tachycardia, nausea. It is protective against alcoholism and
+        simultaneously raises esophageal-cancer risk from the same acetaldehyde load. <strong>Disulfiram (Antabuse)</strong> is a drug that <em>deliberately</em> inhibits ALDH2:
+        drink on it and acetaldehyde spikes, causing a violently aversive reaction. Metronidazole, some cephalosporins, and coprine (inky-cap mushrooms) do the same accidentally.
+      </p>
+
+      <p>
+        The <strong>NAD⁺ → NADH shift</strong> from ADH/ALDH is itself a metabolic drug effect: the reduced redox state drives <strong>lactic acidosis, hypoglycaemia</strong>
+        (blocked gluconeogenesis — dangerous in fasting or diabetic drinkers), <strong>hyperuricaemia</strong> (gout), and <strong>fatty liver</strong> (steatosis). Ethanol's
+        harm is not only neuronal; it hijacks the cell's central redox currency.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY / TOLERANCE / WITHDRAWAL -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Tolerance, Dependence &amp; Withdrawal</div>
+      <h2>Kindling, Delirium Tremens, and Why Withdrawal — Not the Drug — Kills</h2>
+
+      <p>
+        Ethanol's acute effect is <strong>net inhibition</strong>. Sustain that for weeks and the brain fights back: it <strong>up-regulates NMDA/glutamatergic drive</strong>
+        and <strong>down-regulates GABA<sub>A</sub> tone</strong> to restore normal excitability while the drug is present. As long as ethanol is on board, the system is balanced.
+        Remove it, and the compensations are unmasked — a brain now wired for hyperexcitability, flooded with unopposed glutamate. This is the mechanistic mirror image of
+        benzodiazepine withdrawal (§ Diazepam), and it is why the two are cross-tolerant and why one treats the other.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>Tolerance → Metabolic + Pharmacodynamic + Behavioral</h4>
+          <p>Three layers stack: <strong>metabolic</strong> (CYP2E1 induction speeds clearance), <strong>pharmacodynamic</strong> (NMDA up-regulation, GABA<sub>A</sub> subunit remodeling and uncoupling), and <strong>behavioral/learned</strong> tolerance. The same blood level delivers progressively less effect, driving escalation — while the lethal-dose ceiling barely moves, so the therapeutic window narrows.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Kindling → Each Withdrawal Is Worse Than the Last</h4>
+          <p>Repeated cycles of intoxication and withdrawal progressively <strong>lower the seizure threshold</strong> — an electrophysiological "kindling" of limbic circuits. Someone on their fifth detox is at far higher risk of seizures and delirium tremens than a first-timer at the same intake. Every unmanaged withdrawal sensitizes the brain for the next one. This is a core argument against repeated abrupt "cold-turkey" attempts.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Withdrawal Timeline → Seizures → Delirium Tremens</h4>
+          <p><strong>6–24 h:</strong> tremor, anxiety, sweating, tachycardia, insomnia. <strong>12–48 h:</strong> generalized tonic-clonic <strong>withdrawal seizures</strong>; alcoholic hallucinosis. <strong>48–96 h:</strong> <strong style="color:var(--rose)">delirium tremens</strong> — clouded consciousness, disorientation, hallucinations, and autonomic storm (fever, hypertension, tachycardia). Untreated DTs historically killed ~15–35%; even treated, mortality is ~1–5%. Unlike opioid withdrawal, <strong>alcohol withdrawal is directly lethal</strong>.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Treatment → Benzodiazepines, Thiamine, Symptom-Triggered Dosing</h4>
+          <p><strong>Benzodiazepines are first-line</strong> (long-acting chlordiazepoxide or diazepam; lorazepam/oxazepam in liver failure): being GABA<sub>A</sub> PAMs, they are cross-tolerant with ethanol and restore inhibitory tone while the brain re-equilibrates. <strong>Symptom-triggered dosing to a CIWA-Ar scale</strong> outperforms fixed schedules. <strong>Phenobarbital</strong> is an increasingly used alternative/adjunct. <strong>Parenteral thiamine before glucose</strong> prevents Wernicke encephalopathy. Managed withdrawal is a medical procedure — not willpower.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        This is the central asymmetry: acute ethanol has a comparatively wide single-drug therapeutic window (lethal BAC ~0.4–0.5%, ~5× the legal driving limit), yet chronic use
+        builds a dependence in which <em>stopping</em> is a medical emergency, and the drug becomes acutely lethal the instant it is stacked with another respiratory depressant.
+        The molecule is weak. The adaptation and the combinations are what kill.
+      </p>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">04 · Harm Reduction</div>
+      <h2>The Most Harmful Common Drug — Handled Honestly</h2>
+      <p style="max-width:none;">
+        No moralizing, just the pharmacology of staying alive. Ethanol is legal, normalized, and — by aggregate harm — the most damaging recreational drug in wide use. In the
+        Nutt et al. multicriteria analysis (<em>Lancet</em> 2010), summing harm-to-user and harm-to-others, <strong>alcohol scored highest (72/100), above heroin (55) and crack (54)</strong>.
+        That ranking is driven mostly by harm to others (violence, collisions, fetal harm, social cost) plus organ toxicity — not acute overdose. The risks below are the ones you can actually manage.
+      </p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> <strong>OPIOIDS</strong> (heroin, fentanyl, oxycodone, methadone) — additive/synergistic brainstem respiratory depression; alcohol is a co-intoxicant in a large share of opioid deaths. · <strong>BENZODIAZEPINES / Z-DRUGS</strong> (diazepam, alprazolam, zolpidem) — same GABA<sub>A</sub> potentiation stacked on ethanol's; loss of airway reflexes plus vomiting → aspiration. · <strong>GHB/GBL</strong> — steep, unpredictable synergy; a recreational GHB dose plus alcohol can stop breathing. · Other sedatives — barbiturates, gabapentinoids (pregabalin/gabapentin), sedating antihistamines, ketamine — all deepen the same depression. Snoring/gurgling after drinking + downers is <strong>airway obstruction, not sleep</strong>: put them in the recovery position, do not leave them alone, call emergency services. If any opioid may be involved, <strong>carry and use naloxone</strong> (it reverses the opioid, not the alcohol — but the opioid is what stops breathing). Check every mix at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Acute Alcohol Poisoning
+          </h4>
+          <ul>
+            <li>BAC ~0.3–0.4%+ risks <strong style="color:var(--rose)">coma, respiratory depression, and death</strong> from ethanol alone</li>
+            <li>Because absorption continues after the last drink, BAC keeps <strong>rising while someone sleeps</strong> — an unconscious drinker can worsen</li>
+            <li>Aspiration of vomit is a leading killer: gag reflex is suppressed. Recovery position, on their side, always</li>
+            <li>Hypothermia and hypoglycaemia (especially in the young, thin, or fasting) compound the danger</li>
+            <li>Cold showers, coffee, and "walking it off" do nothing — clearance is fixed. Only time (or a hospital) helps</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Never Detox Cold-Turkey Alone
+          </h4>
+          <ul>
+            <li>After sustained heavy use, abrupt cessation can cause <strong style="color:var(--rose)">seizures and delirium tremens</strong> — genuinely lethal</li>
+            <li>Warning signs: morning shakes, sweats, anxiety, needing a drink to function — these signal physical dependence</li>
+            <li><strong>Kindling</strong>: each prior withdrawal makes the next more dangerous — this is not a willpower test</li>
+            <li>Medically supervised taper with benzodiazepines + thiamine is the safe route; ask a clinician, not the internet</li>
+            <li>If you can't get help, do not stop abruptly from a high daily intake — reduce gradually and seek care</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Chronic &amp; Special-Risk Harms
+          </h4>
+          <ul>
+            <li>Group 1 carcinogen (via acetaldehyde): breast, liver, colorectal, esophageal, head &amp; neck — <strong>no risk-free dose</strong> for cancer</li>
+            <li>Cirrhosis, pancreatitis, cardiomyopathy, hypertension, Wernicke–Korsakoff (thiamine deficiency)</li>
+            <li><strong>Pregnancy:</strong> no established safe amount — fetal alcohol spectrum disorder is preventable and lifelong</li>
+            <li><strong>Never mix with paracetamol/acetaminophen</strong> in high or chronic doses — CYP2E1 induction raises hepatotoxic-metabolite formation</li>
+            <li>Do not drink on disulfiram, metronidazole, or certain cephalosporins — acetaldehyde-flush reaction</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Lower-Risk Use
+          </h4>
+          <ul>
+            <li>Eat first and hydrate — food slows absorption and blunts the peak; alcohol is a diuretic</li>
+            <li>Pace to your ~1-drink-per-hour clearance; count standard drinks, not glasses (pours vary wildly)</li>
+            <li>Never combine with other depressants (see the fatal-combinations box) — this is where alcohol becomes acutely deadly</li>
+            <li>Medication-assisted treatment works: <strong>naltrexone</strong> (blunts reward), <strong>acamprosate</strong> (restores glutamate/GABA balance), <strong>disulfiram</strong> (aversive)</li>
+            <li>Don't drive, and don't let a heavy sleeper "sleep it off" unattended after mixing — check breathing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D · Human NMDA receptor (a target of ethanol)</span>
+          <span class="ngl-pdb-tag">PDB: 7EU7</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="7EU7"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            GluN1–GluN2A tetramer (cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            S-ketamine (JC9) in the channel pore
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#FBBF24"></div>
+            Glutamate (GLU) + glycine (GLY) sites
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">7EU7</strong> — cryo-EM (3.5 Å) of the human <strong>GluN1–GluN2A NMDA receptor</strong> with
+          <strong>S-ketamine (JC9)</strong> lodged in the open channel pore, plus glycine (GLY) and glutamate (GLU) at the agonist sites (Zhang et al.,
+          <em>Nature</em> 2021, "Structural basis of ketamine action on human NMDA receptors").
+          <strong style="color:var(--rose)">No ethanol is present in this structure — and none exists.</strong> Ethanol is a low-affinity, non-competitive
+          NMDA antagonist that acts at shallow hydrophobic residues near the TM3/TM4 channel domain, sites that no crystallographic or cryo-EM density has
+          resolved. Ketamine marks the pore that ethanol also inhibits — by a different, weaker mechanism. Shown as the honest, best-available picture of
+          one of ethanol's two principal targets. Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/7EU7" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Functional Potency (millimolar)</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Ethanol</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Potency</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">GABA<sub>A</sub> α4/6βδ</div>
+                <span class="target-full">extrasynaptic · tonic inhibition</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">EC ~1–10 mM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">low-dose; contested</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:100%;background:var(--terra)"></div></div>
+              </td>
+              <td><span class="action-badge ab-pam">PAM</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">GIRK2 / Kir3.2</div>
+                <span class="target-full">G-protein-gated K⁺ channel</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">act. ~10–40 mM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:62%;background:var(--teal)"></div></div>
+              </td>
+              <td><span class="action-badge ab-agonist">Activator</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--green)">Glycine R (α1)</div>
+                <span class="target-full">inhibitory Cl⁻ channel</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--green)">EC ~10–100 mM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:45%;background:var(--green)"></div></div>
+              </td>
+              <td><span class="action-badge ab-pam">PAM</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">NMDA (GluN2B)</div>
+                <span class="target-full">excitatory glutamate channel</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">IC₅₀ ~30–60 mM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">non-competitive</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:22%;background:var(--gold)"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">GABA<sub>A</sub> γ2 (synaptic)</div>
+                <span class="target-full">phasic inhibition</span>
+              </td>
+              <td>
+                <div class="affinity-val">EC ≳ 40–100 mM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:15%;background:#64748b"></div></div>
+              </td>
+              <td><span class="action-badge ab-pam">weak PAM</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">5-HT₃ / nAChR</div>
+                <span class="target-full">ligand-gated cation channels</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--fg-muted)">~mM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">subtype-dependent</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:12%;background:#64748b"></div></div>
+              </td>
+              <td><span class="action-badge ab-weak">Modulator</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          Values are <strong>functional EC/IC concentrations, not binding K<sub>i</sub></strong> — ethanol has no measurable nanomolar affinity and no
+          single orthosteric site, so a classical K<sub>i</sub> is not defined. Sources: NMDA — Lovinger, White &amp; Weight, <em>Science</em> 245:1721 (1989);
+          GABA<sub>A</sub>/glycine cavity — Mihic et al., <em>Nature</em> 389:385 (1997); extrasynaptic δ-GABA<sub>A</sub> low-dose — Wallner, Hanchar &amp; Olsen,
+          <em>PNAS</em> 100:15218 (2003) (effect disputed by Borghese et al.); GIRK — Kobayashi et al. / Lewohl et al., <em>Nat. Neurosci.</em> 2:1091/1084 (1999).
+          Bars scale inversely with the mM concentration (higher bar = more potent). Reference BAC: 0.1% ≈ 21.7 mM.
+        </div>
+      </div>
+
+      <!-- Entropy-docking commentary -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>ΔS · Entropy-Docking Note</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">FlexAID∆S</span>
+        </div>
+        <div class="binding-note" style="border-top:none;color:var(--fg-muted);font-size:11px;">
+          Ethanol is the pathological edge case for any docking model — and a clean stress-test for an entropy-aware one. With <strong style="color:var(--fg)">three heavy atoms,
+          one rotatable bond, and essentially zero shape complementarity</strong>, it forfeits the enthalpic handles (ΔH) that scoring functions reward: there is no deep pocket,
+          no salt bridge, no π-stack. What little binding free energy it has is <strong style="color:var(--fg)">dominated by the entropy term</strong>. Ethanol is small enough to
+          slip into transient, water-lined cavities at subunit and lipid–protein interfaces; when it does, it <strong style="color:var(--fg)">displaces a few ordered water molecules
+          and pays almost no conformational-entropy penalty of its own</strong> (RTB = 1), so the favorable −TΔS of released solvent can offset the near-absent ΔH. That is the physical
+          meaning of a "diffuse, low-affinity" site: an interaction whose whole ledger is <strong style="color:var(--fg)">ΔS<sub>solvent</sub></strong>, not ΔH. In the FlexAID∆S framework,
+          modelling ethanol correctly means resolving the Shannon-entropy bookkeeping of a handful of waters at a shallow cavity — the term conventional rigid-receptor docking simply
+          throws away, and precisely why no crystallographic "ethanol pose" exists to dock against in the first place.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #036 · Ethanol · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/drug-of-the-day/diazepam/">Diazepam #015</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Data: ChEMBL CHEMBL545 (ethanol) · functional pharmacology from primary literature — Lovinger et al. <em>Science</em> 1989 (NMDA) · Mihic et al. <em>Nature</em> 1997 (GABA<sub>A</sub>/glycine cavity) · Wallner et al. <em>PNAS</em> 2003 (δ-GABA<sub>A</sub>) · Kobayashi/Lewohl <em>Nat. Neurosci.</em> 1999 (GIRK) · Nutt et al. <em>Lancet</em> 2010 (aggregate harm). ·
+    Structure: Zhang et al. (2021) <em>Nature</em> 596:301 · <a href="https://www.rcsb.org/structure/7EU7" target="_blank" rel="noopener noreferrer">PDB 7EU7</a> (human GluN1–GluN2A NMDAR + S-ketamine; no ethanol co-crystal exists)
+    <br>
+    Harm reduction: <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a> · <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> · Never mix with opioids or benzodiazepines. If opioids may be present, carry naloxone.
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '7EU7',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

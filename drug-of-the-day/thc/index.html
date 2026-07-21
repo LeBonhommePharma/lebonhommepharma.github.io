@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Δ9-THC — Drug of the Day #012 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of Δ9-tetrahydrocannabinol (THC / dronabinol): CB1 receptor partial agonism, Gi/o signaling and retrograde endocannabinoid mimicry, CYP2C9/CYP3A4 metabolism to active 11-OH-THC, smoked vs oral pharmacokinetics, real ChEMBL CB1/CB2 Ki values, harm reduction (cannabinoid hyperemesis, tachycardia, driving impairment) and the contrasting lethality of synthetic full-agonist 'spice', with an interactive 3D CB1 binding-site view via Mol*.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-block { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Entropy commentary ─────────────────────────────────── */
+.entropy-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0 0;
+}
+.entropy-box h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+.entropy-box p { font-size: 12.5px; color: var(--fg-muted); max-width: none; margin-bottom: 0.6rem; }
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box em { color: var(--gold); font-style: normal; }
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/mdma/">MDMA #002</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#012 · Drug of the Day</span>
+    <span class="pill pill-terra">Phytocannabinoid</span>
+    <span class="pill pill-teal">Schedule I (US) · dronabinol = Schedule III</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Δ9-THC</span>
+  </h1>
+  <p class="hero-iupac">(−)-trans-Δ⁹-tetrahydrocannabinol · dronabinol · MW 314.47 g/mol · C₂₁H₃₀O₂ · CAS 1972-08-3 · ChEMBL465</p>
+  <p class="hero-class">
+    <strong>Δ⁹-Tetrahydrocannabinol.</strong>
+    The principal psychoactive constituent of <em>Cannabis sativa</em> · a lipophilic classical cannabinoid
+    that mimics the endocannabinoids anandamide and 2-AG · a <strong>low-efficacy partial agonist</strong> at CB1.
+    Context names: weed, hash, dabs, dronabinol (Marinol/Syndros, the isolated FDA-approved isomer).
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value terra">CB<sub>1</sub></span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Partial agonist</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">CB<sub>1</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~40 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">CB<sub>2</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value gold">~36 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Onset (smoked)</span>
+      <span class="fact-value">&lt;5 min</span>
+    </div>
+    <div class="hero-fact">
+      <span class="fact-label">Onset (oral)</span>
+      <span class="fact-value">30–120 min</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CYP2C9 / 3A4</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Active metabolite</span>
+      <span class="fact-value gold">11-OH-THC</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Lethal OD (alone)</span>
+      <span class="fact-value teal">None known</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>CB<sub>1</sub> Partial Agonism &amp; G<sub>i/o</sub> Signaling</h2>
+
+      <p>
+        THC is a <strong>classical cannabinoid</strong> that hijacks the body's own retrograde signaling system.
+        Its primary pharmacology is <strong>partial agonism at the CB<sub>1</sub> receptor</strong> — a G<sub>i/o</sub>-coupled
+        GPCR concentrated presynaptically on axon terminals throughout the CNS (highest density of any GPCR in the brain:
+        basal ganglia, hippocampus, cerebellum, cortex). Unlike cocaine (DAT blockade) or DMT (5-HT<sub>2A</sub> agonism),
+        THC does not flood a synapse with a monoamine — it <em>silences</em> neurotransmitter release by mimicking the
+        endocannabinoids anandamide and 2-arachidonoylglycerol (2-AG).
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title sert">① CB<sub>1</sub> Orthosteric Binding</div>
+          <p>THC's tricyclic ring and pentyl tail insert into the long, lipid-facing orthosteric pocket of CB<sub>1</sub>, reaching in laterally from the membrane. Engagement rotates the "twin-toggle" Phe200<sup>3.36</sup>/Trp356<sup>6.48</sup> switch, opening the intracellular G-protein cavity.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">② G<sub>i/o</sub> → cAMP ↓</div>
+          <p>Active CB<sub>1</sub> couples to G<sub>i/o</sub>: adenylyl cyclase is inhibited, cytosolic cAMP and PKA tone fall. This is the canonical brake — the opposite of the G<sub>s</sub> stimulation many stimulants drive downstream.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">③ Ion-Channel Coupling</div>
+          <p>Liberated Gβγ subunits <strong>inhibit N/P/Q-type voltage-gated Ca²⁺ channels</strong> and <strong>activate GIRK K⁺ channels</strong>. Presynaptic Ca²⁺ influx drops → vesicle fusion is suppressed → neurotransmitter release falls.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">④ Retrograde Mimicry</div>
+          <p>Endocannabinoids are made on demand postsynaptically and travel backward to presynaptic CB<sub>1</sub> (DSI/DSE). THC bypasses this "on-demand" control, tonically dampening both GABAergic and glutamatergic terminals — hence its diffuse, state-dependent effects.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">⑤ Partial Agonism / Low Efficacy</div>
+          <p>THC binds well (~40 nM) but activates <strong>submaximally</strong>: intrinsic efficacy is far below full agonists like CP-55940, WIN-55212 or synthetic "spice" cannabinoids. In high-CB<sub>1</sub>-reserve tissue it behaves near-full; in low-reserve tissue it can act as a partial antagonist.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ CB<sub>2</sub> &amp; Beyond</div>
+          <p>THC is a partial agonist at <strong>CB<sub>2</sub></strong> (~36 nM, immune/microglial), with weaker actions at TRPV/TRPA channels, PPARγ, GPR55 and 5-HT<sub>3A</sub>. CBD (non-intoxicating) modulates this profile — a negative allosteric CB<sub>1</sub> modulator that blunts THC anxiety.</p>
+        </div>
+      </div>
+
+      <p>
+        The behavioral signature — the <strong>tetrad</strong> of hypolocomotion, catalepsy, hypothermia and analgesia in
+        rodents — is entirely CB<sub>1</sub>-dependent and abolished in CB<sub>1</sub> knockouts or by the antagonist rimonabant.
+        Critically, <strong>CB<sub>1</sub> is essentially absent from the brainstem respiratory nuclei</strong>. This single anatomical
+        fact is why THC — unlike opioids at the µ-receptor — has <em>no ceiling-breaking respiratory depression</em> and no
+        documented lethal overdose on its own.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">Postsynaptic depolarization</span>
+        <span class="arrow">→ on-demand 2-AG / anandamide synthesis →</span>
+        <span class="step">retrograde diffusion</span>
+        <span class="arrow">→ presynaptic CB<sub>1</sub> →</span>
+        <span class="effect">Ca²⁺ ↓ · GIRK ↑ · transmitter release ↓</span>
+        <br>
+        <span class="step">THC (exogenous)</span>
+        <span class="arrow">→ bypasses on-demand control, tonic CB<sub>1</sub> occupancy →</span>
+        <span class="effect">diffuse GABA + glutamate suppression → circuit disinhibition &amp; distortion</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Lipophilicity, First-Pass &amp; the Active 11-OH Metabolite</h2>
+
+      <p>
+        THC is extremely <strong>lipophilic</strong> (logP ≈ 5.7), which dominates its PK. <strong>Inhalation</strong> delivers it to
+        arterial blood within seconds — peak plasma during the act of smoking, effects in minutes — with bioavailability
+        of roughly <strong>10–35%</strong> (heavily technique-dependent). <strong>Oral</strong> dosing is the opposite animal:
+        slow, erratic absorption plus heavy hepatic first-pass drop bioavailability to <strong>~4–12%</strong>, and onset lags
+        30–120 minutes. That delay is why edible over-consumption ("I don't feel anything, I'll take more") is the classic
+        route to a bad time.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Bioavailability (smoked)</span><span class="pk-val">~10–35%</span></div>
+        <div class="pk-row"><span class="pk-key">Bioavailability (oral)</span><span class="pk-val">~4–12%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (smoked)</span><span class="pk-val">~3–10 min</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (oral)</span><span class="pk-val">1–3 h (to ~4 h)</span></div>
+        <div class="pk-row"><span class="pk-key">Plasma protein binding</span><span class="pk-val">~95–99%</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~10 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Terminal t<sub>½</sub> (occasional)</span><span class="pk-val">~1.3 days</span></div>
+        <div class="pk-row"><span class="pk-key">Terminal t<sub>½</sub> (chronic)</span><span class="pk-val">5–13 days</span></div>
+        <div class="pk-row"><span class="pk-key">Primary CYPs</span><span class="pk-val">CYP2C9, CYP3A4</span></div>
+        <div class="pk-row"><span class="pk-key">Urine detection (heavy)</span><span class="pk-val">up to ~30 days</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> hepatic CYPs hydroxylate THC at C11 to an <strong>active</strong> metabolite,
+        which is then oxidized to an inactive acid that anchors every drug test.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Δ9-THC</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2C9<span style="font-size:9px;color:var(--fg-dim)">(&gt;CYP3A4)</span>
+          <span style="font-size:10px;color:var(--fg-dim)">C11 hydroxyl.</span>
+        </div>
+        <div class="meta-node active">11-OH-THC ★</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP / ADH
+          <span style="font-size:10px;color:var(--fg-dim)">oxidation</span>
+        </div>
+        <div class="meta-node inactive">11-nor-9-COOH-THC</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          UGT
+          <span style="font-size:10px;color:var(--fg-dim)">glucuronide</span>
+        </div>
+        <div class="meta-node inactive">THC-COOH-glucuronide (urine)</div>
+      </div>
+
+      <p>
+        <strong>11-hydroxy-THC</strong> (11-OH-THC, marked ★) is the crux of the oral-vs-smoked difference. It is
+        <strong>fully psychoactive — roughly equipotent with THC at CB<sub>1</sub></strong> and crosses the blood–brain barrier
+        readily. After <em>oral</em> dosing, hepatic first-pass generates 11-OH-THC in near 1:1 ratio with parent THC, so
+        edibles deliver a stronger, longer, more body-heavy and sometimes more hallucinatory experience than the plasma-THC
+        numbers alone predict. Smoked THC largely skips first-pass, so the 11-OH-THC contribution is smaller.
+      </p>
+      <p>
+        <strong>11-nor-9-carboxy-THC</strong> (THC-COOH) is pharmacologically inactive but lingers for weeks in lipid stores
+        and is the analyte immunoassays and GC-MS detect (as the glucuronide). <strong>CYP2C9 poor metabolizers</strong>
+        (e.g. <em>CYP2C9*3/*3</em>) clear THC more slowly and show markedly higher exposure — relevant when THC is co-taken with
+        CYP2C9 substrates such as warfarin, where competition can raise INR and bleeding risk.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology</div>
+      <h2>Circuit-Level Translation</h2>
+
+      <p>
+        Because CB<sub>1</sub> sits presynaptically on nearly every neuron class, THC's effect is not a single-transmitter
+        surge but a <strong>region-specific modulation of release probability</strong>. The subjective experience is the sum of
+        disinhibition and suppression across distinct circuits.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Mesolimbic Disinhibition → Euphoria &amp; Reward</h4>
+          <p>THC does not bind dopamine machinery directly. Instead, CB<sub>1</sub> on GABAergic interneurons in the VTA suppresses their firing, <strong>disinhibiting</strong> dopaminergic projections to the nucleus accumbens. The resulting DA rise is modest and slow compared with stimulants — which is why cannabis reward is real but its addiction liability is lower (cannabis use disorder ~9% lifetime, higher with adolescent/daily use).</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Hippocampal / Cortical Suppression → Memory &amp; Time Distortion</h4>
+          <p>Dense CB<sub>1</sub> expression in hippocampus and neocortex dampens glutamatergic and GABAergic transmission, degrading working memory encoding and the sense of temporal flow ("time dilation"). This is the mechanistic basis of acute short-term memory impairment and the divergent, associative "stoned" cognition.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Amygdala / Insular Tuning → Anxiety Is Biphasic</h4>
+          <p>THC's effect on anxiety is <strong>dose-dependent and inverted-U</strong>: low doses are anxiolytic (CB<sub>1</sub> dampening of amygdala threat circuits), high doses are anxiogenic and can trigger panic, paranoia and transient psychotomimetic states, especially in naïve users and with high-THC / low-CBD product. Set, setting, dose and CBD content all move the inflection point.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>Hypothalamus &amp; Brainstem → Appetite, Antiemesis, Autonomics</h4>
+          <p>CB<sub>1</sub> in the hypothalamus and mesolimbic feeding circuits drives the hyperphagic "munchies"; CB<sub>1</sub> in the dorsal vagal complex underlies THC's acute <strong>antiemetic</strong> action (exploited by dronabinol/nabilone in chemotherapy). Autonomic effects — tachycardia, conjunctival vasodilation ("red eyes"), orthostatic hypotension, dry mouth — are CB<sub>1</sub>-mediated peripheral and central sympathetic/baroreflex shifts.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        The through-line is <strong>efficacy, not just affinity</strong>. THC's low intrinsic activity gives it a soft ceiling:
+        past a point, more receptor occupancy yields diminishing additional effect. This is exactly what a full agonist lacks —
+        and the reason synthetic full-agonist cannabinoids (next section) are a categorically different, far more dangerous drug
+        class despite sharing THC's target.
+      </p>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">04 · Harm Reduction</div>
+      <h2>Clinical Risk Profile</h2>
+      <p style="max-width:none;">Evidence-based, non-moralistic. THC has no known lethal dose on its own — the real dangers are impairment, acute distress, specific chronic syndromes, and above all <strong>mistaking THC for the synthetic full agonists that do kill.</strong></p>
+
+      <div class="fatal-box">
+        <strong>THE ACTUAL LETHAL HAZARD IS NOT THC:</strong> Synthetic cannabinoid receptor agonists ("spice", "K2", JWH-018, AB-FUBINACA, 5F-MDMB-PINACA) are <strong>high-efficacy FULL agonists</strong> — no ceiling — and have caused seizures, hyperthermia, cardiotoxicity, acute kidney injury, agitated delirium and <strong>deaths</strong>. High-dose THC + CNS depressants (alcohol, benzodiazepines, opioids) adds sedation/aspiration risk; THC + warfarin (CYP2C9) can raise bleeding risk. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Acute Risks
+          </h4>
+          <ul>
+            <li>Acute anxiety / panic / paranoia — most common ER presentation, especially edibles &amp; naïve users</li>
+            <li>Tachycardia &amp; transient BP shifts; orthostatic hypotension and vasovagal syncope ("greening out")</li>
+            <li>Transient psychosis / dissociation at high doses; impaired judgment</li>
+            <li>Small transient ↑ myocardial-infarction risk in the first ~1 h — caution with cardiac disease</li>
+            <li>No respiratory depression, no known fatal overdose from THC alone</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Chronic / Repeated Use
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Cannabinoid hyperemesis syndrome (CHS)</strong> — cyclic severe vomiting in heavy chronic users; paradoxically relieved by hot showers/baths and topical capsaicin; only definitive fix is cessation</li>
+            <li>Cannabis use disorder &amp; withdrawal (irritability, insomnia, appetite loss, ~1–2 weeks)</li>
+            <li>Psychosis: dose-dependent association with earlier/worse psychotic illness in the vulnerable, driven by high-potency low-CBD product</li>
+            <li>Adolescent exposure &amp; pregnancy: developing-brain and fetal-exposure concerns</li>
+            <li>Chronic bronchitis from smoke (route harm, not THC per se)</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Driving &amp; Interactions
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Do not drive</strong> — dose-dependent reaction-time, tracking &amp; divided-attention impairment, worst in the first 1–4 h smoked (longer for edibles)</li>
+            <li>THC + alcohol is strongly synergistic for impairment and nausea — avoid</li>
+            <li>CNS depressants (benzos, opioids, alcohol) — additive sedation</li>
+            <li>Warfarin &amp; other CYP2C9/3A4 substrates — altered levels (↑ INR reported)</li>
+            <li>CBD present in the product blunts anxiety &amp; is a CB<sub>1</sub> negative allosteric modulator</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Dosing &amp; Testing
+          </h4>
+          <ul>
+            <li>Edibles: <strong>start 2.5–5 mg, wait a full 2 h</strong> before redosing — the delayed onset is the trap</li>
+            <li>A panic reaction is self-limiting: calm setting, hydration, reassurance; it is not dangerous and will pass</li>
+            <li>Avoid unregulated "spice"/"K2" and unlabeled vape carts — full-agonist adulterants are the real killers</li>
+            <li>Prefer lab-tested product with known THC:CBD; higher CBD generally softens anxiety</li>
+            <li>Store away from children &amp; pets — pediatric edible ingestions are rising</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Binding Pose · CB1 orthosteric pocket</span>
+          <span class="ngl-pdb-tag">PDB: 5XRA</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="5XRA"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            CB1 receptor (refined cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Contact residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Agonist AM11542 (ball-and-stick)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">5XRA</strong> — human CB1 receptor in complex with the
+          agonist <strong style="color:var(--fg-muted)">AM11542</strong> (X-ray, 2.8 Å; Hua et al., <em>Nature</em> 2017).
+          <strong style="color:var(--fg-muted)">No Δ9-THC co-crystal structure exists</strong>; AM11542 is a synthetic
+          THC-derived classical cannabinoid (a brominated/gem-dimethyl analog) that occupies the same lateral orthosteric
+          pocket and reveals the residues THC engages. Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/5XRA" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Δ9-THC</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Mechanism</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">CB<sub>1</sub></div>
+                <span class="target-full">Cannabinoid receptor 1 (CNR1)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 40 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">range 2.9–41 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:90%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Partial agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">CB<sub>2</sub></div>
+                <span class="target-full">Cannabinoid receptor 2 (CNR2)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">K<sub>i</sub> ≈ 36 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">range 3.3–72 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Partial agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">GPR55</div>
+                <span class="target-full">Putative cannabinoid receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val">agonist (µM)</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">low potency</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:24%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">TRPV / TRPA</div>
+                <span class="target-full">Thermo-TRP channels</span>
+              </td>
+              <td>
+                <div class="affinity-val">EC₅₀ µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">weak modulator</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:16%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Modulator</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">5-HT<sub>3A</sub></div>
+                <span class="target-full">Serotonin 3A ionotropic receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val">µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">allosteric</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:12%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Neg. modulator</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          CB<sub>1</sub>/CB<sub>2</sub> K<sub>i</sub>: dronabinol (CHEMBL465) radioligand-displacement values from ChEMBL v34
+          ([³H]CP-55940 binding). CB<sub>1</sub> most-replicated ≈ 40.7/41 nM (full range 2.9–41 nM across 23 assays);
+          CB<sub>2</sub> most-replicated ≈ 36 nM (range 3.3–72 nM across 26 assays). Sub-µM off-targets are qualitative
+          (Pertwee 2008 <em>Br J Pharmacol</em>). Lower K<sub>i</sub> = higher affinity.
+        </div>
+      </div>
+
+      <!-- Entropy-docking commentary -->
+      <div class="entropy-box">
+        <h4>ΔS · Conformational Entropy &amp; Partial Agonism</h4>
+        <p>
+          THC's binding is a textbook <strong>hydrophobic-effect</strong> event: a near-desolvated, greasy ligand slides
+          laterally out of the membrane into a lipid-facing groove. Burying that surface <em>releases</em> ordered water,
+          a favorable solvent-entropy gain (positive ΔS<sub>solv</sub>) that offsets the enthalpic modesty of a pocket lined
+          with aromatics and few polar contacts — hence high affinity from a small, flexible molecule.
+        </p>
+        <p>
+          The pentyl tail and the receptor's Phe200/Trp356 "twin-toggle" pay the price on the other side of the ledger:
+          agonist engagement <strong>collapses part of the receptor's conformational microstate distribution</strong> toward
+          the active, G-protein-coupled ensemble — a negative ΔS<sub>conf</sub> the FlexAID∆S tENCoM term captures as
+          vibrational-mode rigidification on binding.
+        </p>
+        <p>
+          <strong>Partial vs full agonism is an entropy story.</strong> A full agonist (AM11542, CP-55940, "spice") drives a
+          <em>deeper</em> Shannon-entropy collapse — a tighter, more fully ordered active state and stronger transducer coupling.
+          THC only partially narrows that ensemble: residual conformational entropy is retained, the receptor samples active and
+          inactive-leaning states, and the readout is <em>submaximal efficacy with a soft ceiling</em> — the molecular reason
+          THC is safe where its full-agonist cousins are not.
+        </p>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #012 · Δ9-THC (dronabinol) · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/mdma/">MDMA #002</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Data: CB1/CB2 K<sub>i</sub> from ChEMBL v34 (CHEMBL465, [³H]CP-55940 displacement) · Hua et al. (2017) <em>Nature</em> 547:468 (CB1–AM11542, PDB 5XRA) · Pertwee (2008) <em>Br J Pharmacol</em> 153:199 · Grotenhermen (2003) <em>Clin Pharmacokinet</em> 42:327 (THC PK). ·
+    <a href="https://www.rcsb.org/structure/5XRA" target="_blank" rel="noopener noreferrer">PDB 5XRA</a>
+    <br>
+    For harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '5XRA',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venlafaxine — Drug of the Day #048 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of venlafaxine (Effexor): dose-dependent SNRI mechanism (SERT first, NET added at higher doses), real ChEMBL Ki at SERT/NET, the active CYP2D6 metabolite desvenlafaxine, notoriously severe short-half-life discontinuation ('brain zaps'), dose-dependent hypertension and QT, serotonin-syndrome harm reduction, and interactive 3D human SERT structure via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(34,211,238,0.55);
+  margin-bottom: 0.9rem;
+}
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+.hero-class em { color: var(--teal); font-style: normal; }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-value.rose { color: var(--rose); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Entropy Box ────────────────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-block   { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/drug-of-the-day/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Drug of the Day
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#048 · Drug of the Day</span>
+    <span class="pill pill-terra">SNRI · Phenethylamine</span>
+    <span class="pill pill-teal">Rx antidepressant · FDA 1993</span>
+    <span class="pill pill-rose">Black-box: suicidality (&lt;25 y)</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Venlafaxine</span>
+  </h1>
+  <p class="hero-tagline">A Dose-Dependent SSRI That Grows a Second Head</p>
+  <p class="hero-iupac">IUPAC: 1-[2-(dimethylamino)-1-(4-methoxyphenyl)ethyl]cyclohexan-1-ol · C₁₇H₂₇NO₂ · MW 277.40 g/mol (freebase; HCl salt 313.87) · CAS 93413-69-5</p>
+  <p class="hero-class">
+    <strong>Venlafaxine (Effexor / Effexor XR, Wyeth WY-45030).</strong>
+    A <em>serotonin–norepinephrine reuptake inhibitor</em> whose personality is set by the dose. At low doses it
+    behaves like a plain SSRI — <strong>SERT only</strong>. Push the dose and <strong>NET reuptake blockade switches on</strong>,
+    layering a noradrenergic drive on top. Add its active CYP2D6 metabolite <strong>desvenlafaxine</strong> and a
+    notoriously vicious short-half-life withdrawal, and you have one of psychiatry's most effective — and most
+    ungraceful-to-quit — antidepressants.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value teal">SERT</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Second target (↑dose)</span>
+      <span class="fact-value terra">NET</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">SERT K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value teal">≈ 39 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">NET K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">≈ 210 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub> (parent)</span>
+      <span class="fact-value rose">≈ 5 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Active metabolite</span>
+      <span class="fact-value gold">Desvenlafaxine</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">CYP2D6 / 3A4</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">ATC</span>
+      <span class="fact-value teal">N06AX16</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>Dose-Dependent Dual Reuptake Block: SERT First, NET Second</h2>
+
+      <p>
+        Venlafaxine is a <strong>competitive reuptake inhibitor</strong> at the monoamine transporters —
+        mechanistically the same class as cocaine (it occupies the orthosteric S1 pocket and locks the transporter
+        outward-open), but pharmacologically clean: it has <strong>negligible affinity for muscarinic, histaminergic,
+        and α-adrenergic receptors</strong>. That receptor silence is why it lacks the anticholinergic/sedative
+        baggage of the tricyclics it was designed to replace — the entire effect profile flows through the transporters.
+      </p>
+
+      <p>
+        The defining feature is <strong>dose-dependent selectivity</strong>. In human transporter assays venlafaxine
+        is roughly an order of magnitude more potent at <em>SERT</em> (K<sub>i</sub> ≈ 39 nM) than at
+        <em>NET</em> (K<sub>i</sub> ≈ 210 nM; assay-dependent, spanning ~5- to 30-fold across labs). Because SERT
+        saturates at lower plasma concentrations, <strong>low-dose venlafaxine (≈75 mg/day) is functionally an SSRI</strong> —
+        it occupies SERT while barely touching NET. Only as the dose climbs (≥150 mg, and clearly by 225–375 mg/day)
+        does occupancy at the lower-affinity NET become clinically meaningful, adding the noradrenergic component.
+        A faint dopaminergic (DAT) contribution appears only at the top of the range and is not clinically relevant.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title sert">① SERT Occlusion (all doses)</div>
+          <p>Venlafaxine binds the central S1 site of the serotonin transporter (K<sub>i</sub> ≈ 39 nM; range 3.8–113 nM across assays), blocking 5-HT reuptake and raising synaptic serotonin. This is the primary and lowest-threshold action — the SSRI-like backbone of the drug.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">② NET Blockade (higher doses)</div>
+          <p>At the ~5–10× weaker NET (K<sub>i</sub> ≈ 210 nM), meaningful occupancy requires higher plasma levels. This is the "second head": noradrenergic reuptake block that emerges at ≥150 mg and drives both added antidepressant efficacy and the sympathomimetic side-effect profile.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">③ DAT (top of range only)</div>
+          <p>Venlafaxine's affinity for the dopamine transporter is very weak (K<sub>i</sub> in the low-µM range, ≫ SERT/NET). Any dopaminergic contribution is confined to the highest doses and is not considered a clinically relevant mechanism.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">④ Desvenlafaxine (ODV)</div>
+          <p>The major CYP2D6 metabolite O-desmethylvenlafaxine is itself an active SNRI (SERT K<sub>i</sub> ≈ 4–15 nM, NET K<sub>i</sub> ≈ 650–670 nM) and circulates at higher concentrations than the parent — so "venlafaxine" pharmacology is really a parent+metabolite composite.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ Receptor-Silent Scaffold</div>
+          <p>Unlike TCAs, venlafaxine essentially does not bind M₁ muscarinic, H₁ histamine, or α₁-adrenergic receptors. Fewer "dirty" off-target effects — but it also strips away the incidental antihistamine sedation, so insomnia and activation are common early on.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ Downstream Adaptation</div>
+          <p>As with all reuptake inhibitors, acute transporter block is immediate but mood response lags 2–6 weeks, reflecting 5-HT₁A autoreceptor desensitization, BDNF/TrkB signaling, and receptor-level neuroadaptation rather than the transporter block itself.</p>
+        </div>
+      </div>
+
+      <div class="pathway-box">
+        <span class="step">Low dose (≈75 mg)</span>
+        <span class="arrow">→ SERT occupied (K<sub>i</sub> ≈ 39 nM), NET spared →</span>
+        <span class="effect">[5-HT]<sub>synapse</sub> ↑ · functionally an SSRI</span>
+        <br>
+        <span class="step">Higher dose (≥150–375 mg)</span>
+        <span class="arrow">→ NET occupancy climbs (K<sub>i</sub> ≈ 210 nM) →</span>
+        <span class="effect">[5-HT]↑ + [NE]↑ · true SNRI</span>
+        <span class="arrow">→</span>
+        <span class="danger">BP ↑, HR ↑, sweating (noradrenergic)</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Short Half-Life, CYP2D6 Bottleneck, and an Active Metabolite That Does the Heavy Lifting</h2>
+
+      <p>
+        Venlafaxine is well absorbed (~92%) but heavily first-pass metabolized, giving an absolute
+        oral bioavailability near <strong>45%</strong>. Its most consequential PK feature is a
+        <strong>short elimination half-life (~5 h for parent, ~11 h for desvenlafaxine)</strong> combined with
+        <strong>very low protein binding (~27%)</strong>. There is no long-acting metabolite to cushion missed doses —
+        which is the direct pharmacokinetic reason its discontinuation syndrome is so abrupt and severe (see §04).
+        The XR (extended-release) formulation exists largely to smooth these peaks and troughs.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~45% (92% absorbed)</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (IR / XR)</span><span class="pk-val">~2 h / ~5.5 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (venlafaxine)</span><span class="pk-val">5 ± 2 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (desvenlafaxine)</span><span class="pk-val">11 ± 2 h</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~27% / ODV ~30%</span></div>
+        <div class="pk-row"><span class="pk-key">Volume of distribution</span><span class="pk-val">~7.5 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Primary enzyme</span><span class="pk-val">CYP2D6 → ODV</span></div>
+        <div class="pk-row"><span class="pk-key">Excretion</span><span class="pk-val">Renal (~87%)</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> CYP2D6 O-demethylates venlafaxine to the major active metabolite
+        <strong>O-desmethylvenlafaxine (desvenlafaxine, ODV)</strong>; a minor CYP3A4 route yields the largely
+        inactive N-desmethylvenlafaxine. ODV is a marketed drug in its own right (Pristiq).
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Venlafaxine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP2D6
+          <span style="font-size:10px;color:var(--fg-dim)">O-demethyl.</span>
+        </div>
+        <div class="meta-node active">Desvenlafaxine (ODV) ★</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          UGT / renal
+        </div>
+        <div class="meta-node inactive">ODV-glucuronide → urine</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Venlafaxine</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP3A4
+          <span style="font-size:10px;color:var(--fg-dim)">N-demethyl.</span>
+        </div>
+        <div class="meta-node inactive">N-desmethylvenlafaxine (minor)</div>
+      </div>
+
+      <p>
+        <strong>Desvenlafaxine (★)</strong> is the pharmacological workhorse: it is itself an SNRI (SERT K<sub>i</sub> ≈ 4–15 nM,
+        NET K<sub>i</sub> ≈ 650–670 nM) and circulates at concentrations exceeding the parent. Critically, its
+        <strong>SERT:NET balance is shifted relative to venlafaxine</strong> — the parent is the more strongly
+        SERT-preferring molecule, while ODV carries proportionally more of the noradrenergic load (Deecher et al. 2006).
+        Because ODV formation depends on CYP2D6, <strong>CYP2D6 poor metabolizers</strong> (~7% of Europeans) accumulate
+        parent drug and shift the parent:metabolite ratio, altering both effect and side-effect balance; strong
+        CYP2D6 inhibitors (paroxetine, fluoxetine, bupropion) do the same pharmacologically.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology</div>
+      <h2>Circuit-Level Translation of a Dose-Titrated Transmitter Mix</h2>
+
+      <p>
+        Because the serotonergic and noradrenergic components come online at different doses, venlafaxine's clinical
+        signature literally changes as it is titrated. The serotonergic backbone treats depression and the anxiety
+        disorders (GAD, panic, social anxiety) at low-to-moderate doses; the noradrenergic layer that emerges at
+        higher doses adds efficacy in treatment-resistant and melancholic depression — and simultaneously drives
+        the autonomic side-effect burden.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Serotonergic Backbone → Mood, Anxiety, Obsessionality</h4>
+          <p>SERT blockade raises 5-HT across cortico-limbic circuits (raphé → amygdala, hippocampus, prefrontal cortex). This underlies the antidepressant and broad anxiolytic action, and — via 5-HT₃/enteric receptors early in treatment — the classic nausea, and via spinal/central 5-HT the sexual dysfunction and sweating. Present at all therapeutic doses.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Noradrenergic Layer → Energy, Focus, Autonomic Drive</h4>
+          <p>At higher doses NET blockade in locus-coeruleus projection fields and the periphery elevates norepinephrine, adding activation, improved concentration, and analgesic effects (part of why SNRIs help neuropathic pain) — but also dose-dependent hypertension, tachycardia, diaphoresis, and mydriasis. This is the mechanistic reason the drug's "personality" hardens as the dose rises.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Prefrontal Dopamine (indirect) → Cognition</h4>
+          <p>The prefrontal cortex lacks dense DAT; there, norepinephrine transporters clear dopamine. So NET blockade at higher doses indirectly raises prefrontal dopamine as well — a shared SNRI/NRI feature that contributes to pro-cognitive and activating effects without meaningful striatal dopamine reward signaling (hence low abuse potential).</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>Delayed Neuroadaptation → Therapeutic Lag</h4>
+          <p>Transporter block is immediate; symptomatic response takes 2–6 weeks. The lag reflects presynaptic 5-HT₁A / α₂ autoreceptor desensitization restoring firing, plus downstream BDNF–TrkB and synaptic remodeling. The gap between instant pharmacology and delayed benefit is also the window of highest activation-related risk, underpinning the young-adult suicidality black-box warning.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DISCONTINUATION -->
+    <div class="section">
+      <div class="section-eyebrow">04 · Discontinuation Syndrome</div>
+      <h2>"Brain Zaps": The Price of a Short Half-Life</h2>
+
+      <p>
+        Venlafaxine has one of the <strong>most severe and reliably reproduced antidepressant discontinuation
+        syndromes</strong> of any drug in wide use. The mechanism is pharmacokinetic, not mysterious:
+        a <strong>~5 h parent half-life plus a ~11 h active metabolite and low protein binding</strong> means plasma
+        levels collapse within a day of a missed or stopped dose. There is no long-tailed reservoir (contrast
+        fluoxetine, whose weeks-long norfluoxetine tail makes it nearly self-tapering). Abrupt cessation — even
+        being a few hours late — produces a sharp serotonergic/noradrenergic rebound.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">Stop / miss dose</span>
+        <span class="arrow">→ plasma [venlafaxine] falls fast (T½ ~5 h, PB ~27%) →</span>
+        <span class="step">rapid transporter un-blocking</span>
+        <span class="arrow">→ 5-HT / NE rebound →</span>
+        <span class="danger">"brain zaps," dizziness, nausea, flu-like sx</span>
+      </div>
+
+      <p>
+        The syndrome is characterized by <strong>"brain zaps"</strong> — brief electric-shock-like paresthesias, often
+        triggered by lateral eye movement — alongside dizziness/vertigo, nausea, headache, diaphoresis, insomnia and
+        vivid dreams, irritability, anxiety, and flu-like malaise. It typically begins within 24–72 h and, while not
+        life-threatening, can be genuinely disabling. Management is a <strong>slow, hyperbolic taper</strong> (weeks to
+        months, smaller and smaller decrements near the end); switching to a longer-half-life agent such as fluoxetine
+        to "bridge" the taper is an established strategy. This is a physiological withdrawal, <strong>not</strong>
+        evidence of addiction — venlafaxine is not rewarding or craved.
+      </p>
+    </div>
+
+    <!-- CARDIOVASCULAR -->
+    <div class="section">
+      <div class="section-eyebrow">05 · Cardiovascular &amp; Overdose Toxicology</div>
+      <h2>Dose-Dependent Hypertension, QT, and Why It Is More Dangerous in Overdose Than an SSRI</h2>
+
+      <p>
+        The noradrenergic half of the molecule has cardiovascular consequences that scale with dose.
+        <strong>Sustained hypertension</strong> — chiefly a rise in supine diastolic blood pressure — is a recognized,
+        dose-related effect that becomes clinically important above ~225 mg/day and is directly attributable to NET
+        blockade elevating peripheral norepinephrine. Baseline and on-treatment <strong>BP monitoring is standard</strong>,
+        and pre-existing uncontrolled hypertension is a relative caution.
+      </p>
+
+      <p>
+        Venlafaxine also carries a <strong>dose-dependent QT-prolongation</strong> signal and, in overdose, is
+        <strong>substantially more toxic than the SSRIs</strong> — its fatal-toxicity index sits closer to the tricyclics
+        than to the SSRI class. Overdose can produce <strong>seizures, serotonin syndrome, QRS/QT prolongation and
+        ventricular arrhythmia, and cardiogenic shock</strong>. This matters clinically because the population taking it
+        (depression, high suicidality risk, black-box warning) overlaps precisely with the population most likely to
+        overdose. Any large ingestion warrants ECG monitoring and observation for delayed cardiotoxicity and seizures.
+      </p>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">06 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>A Flexible Ligand Buying Its Affinity Back Through Enthalpy</h2>
+
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+          Venlafaxine is <strong>conformationally flexible</strong> — five rotatable bonds tethering a
+          4-methoxyphenyl ring, a dimethylaminoethyl arm, and a hydroxy-cyclohexyl group. Unlike cocaine's rigid,
+          pre-organized tropane cage, venlafaxine samples many solution conformers. In FlexAID∆S modeling this
+          predicts a <strong>larger conformational-entropy penalty</strong> (<code>−TΔS_conf &gt; 0</code>) on binding SERT:
+          the ligand must freeze out rotational freedom to fit the central S1 pocket, paying an entropic cost that
+          its enthalpic contacts (a salt bridge from the protonated amine to Asp98, aromatic contacts in subsites A/B/C)
+          must overcome. The net still lands at K<sub>i</sub> ≈ 39 nM — theoretical
+          <code>ΔG = −RT·ln(K<sub>a</sub>) ≈ −10.1 kcal/mol</code> at 298 K.
+        </p>
+        <p>
+          The SERT protein contributes the other half of the entropy ledger. As an alternating-access transporter,
+          SERT oscillates between outward-open, occluded, and inward-open states — a high-<code>H_pocket</code> ensemble.
+          A reuptake inhibitor works precisely by <em>collapsing that Shannon entropy</em>: lodging in the central site
+          traps SERT outward-open, exactly as visualized for paroxetine in PDB 5I6X. The dose-dependent SERT-vs-NET
+          selectivity is, in this framing, a <strong>selectivity of entropy collapse</strong> — venlafaxine's flexible
+          scaffold pays the conformational toll more cheaply at SERT's pocket than at NET's, so SERT's entropy collapses
+          at lower occupancy first, and NET's only once concentration rises.
+        </p>
+        <p>
+          The takeaway matches the clinic: a floppy molecule with a modest but real affinity gap between two nearly
+          identical transporters yields a drug whose target engagement — and therefore its <em>mechanism</em> — is
+          literally titratable by dose. Entropy, not just enthalpy, sets the SNRI's split personality.
+        </p>
+      </div>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">07 · Harm Reduction</div>
+      <h2>No Moralizing — the Physics of Taking It, and Stopping It, Safely</h2>
+      <p style="max-width:none;">Venlafaxine is a legitimate, effective prescription antidepressant. The risks below are clinical, dose-dependent, and manageable with accurate information — the two that actually hurt people are serotonin syndrome from combinations and the discontinuation syndrome from stopping too fast.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> MAOIs — phenelzine, tranylcypromine, isocarboxazid, moclobemide, and
+        also linezolid &amp; IV methylene blue (serotonin syndrome, potentially lethal). Never co-administer;
+        allow <strong>≥14 days off an MAOI before starting venlafaxine, and ≥7 days off venlafaxine before starting an MAOI</strong>.
+        Additive serotonin-syndrome risk with tramadol, meperidine, triptans, other SSRIs/SNRIs, MDMA/stimulants, St John's Wort, lithium.
+        Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Serotonin Syndrome
+          </h4>
+          <ul>
+            <li>Triad: neuromuscular (clonus, hyperreflexia, tremor) + autonomic (fever, tachycardia, sweating) + altered mental status</li>
+            <li>Onset usually within hours of a serotonergic addition or dose increase</li>
+            <li>Highest risk with MAOIs, tramadol, linezolid, methylene blue, triptans, other serotonergics</li>
+            <li>Clonus + hyperthermia &gt;38.5°C = medical emergency; stop drug, cool, benzodiazepines, cyproheptadine</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Discontinuation / Taper
+          </h4>
+          <ul>
+            <li>Short half-life → severe withdrawal ("brain zaps," dizziness, nausea) within 24–72 h of stopping</li>
+            <li>Never stop abruptly; taper slowly (weeks–months), hyperbolic dose steps near the end</li>
+            <li>Bridging to fluoxetine (long half-life) can ease a difficult taper</li>
+            <li>This is physiological rebound, not addiction — but it is genuinely debilitating</li>
+            <li>Do not run out of supply; treat missed doses seriously</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Cardiovascular &amp; Overdose
+          </h4>
+          <ul>
+            <li>Dose-dependent hypertension (esp. &gt;225 mg/day) — monitor BP at baseline and on treatment</li>
+            <li>Dose-dependent QT prolongation; caution with other QT-prolonging drugs / hypokalemia</li>
+            <li>Overdose more toxic than SSRIs: seizures, arrhythmia, cardiogenic shock — ECG monitor, observe for delayed effects</li>
+            <li>Higher fatal-toxicity index than the SSRI class, closer to TCAs</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Practical Notes
+          </h4>
+          <ul>
+            <li>Black-box: increased suicidality in patients &lt;25 y, esp. first weeks / dose changes — watch activation</li>
+            <li>CYP2D6 inhibitors (paroxetine, fluoxetine, bupropion) raise parent levels; poor metabolizers accumulate parent</li>
+            <li>Bleeding risk ↑ with NSAIDs/anticoagulants (serotonergic platelet effect); hyponatremia/SIADH in elderly</li>
+            <li>Take with food to blunt nausea; XR form smooths peaks/troughs and eases both nausea and withdrawal</li>
+            <li>Alcohol adds CNS depression and impairs judgement around adherence — no acute reagent-testing role here</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Structure · Human SERT central site</span>
+          <span class="ngl-pdb-tag">PDB: 5I6X</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="5I6X"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            SERT (refined cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Central-site residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Ligand: paroxetine (ball-and-stick)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">5I6X</strong> — ts3 <em>human</em> serotonin transporter (SLC6A4)
+          complexed with <strong>paroxetine</strong> at the central binding site, with 8B6 Fab (Coleman, Green &amp; Gouaux 2016, Nature 532:334).
+          <strong>SERT shown with paroxetine — no venlafaxine co-crystal structure exists;</strong> venlafaxine occupies the same
+          central S1 pocket. Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/5I6X" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Transporter Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Venlafaxine · ODV</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Mechanism</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">SERT</div>
+                <span class="target-full">5-HT transporter (SLC6A4) · venlafaxine</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 39 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Primary · range 3.8–113 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Reuptake inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">NET</div>
+                <span class="target-full">NE transporter (SLC6A2) · venlafaxine</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 210 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">↑dose · range 210–2685 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:19%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Reuptake inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">SERT</div>
+                <span class="target-full">Desvenlafaxine (ODV, active metabolite)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 4–15 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">CYP2D6 product</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Reuptake inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">NET</div>
+                <span class="target-full">Desvenlafaxine (ODV) · more balanced</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 650–670 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Shifted SERT:NET vs parent</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:6%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Reuptake inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">DAT</div>
+                <span class="target-full">Dopamine transporter (SLC6A3)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">K<sub>i</sub> ≫ 1 µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Negligible / top-of-range only</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:3%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Weak</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          K<sub>i</sub> values (human SERT/NET, radioligand binding &amp; uptake): venlafaxine SERT/NET and desvenlafaxine SERT/NET
+          from ChEMBL (CHEMBL637, CHEMBL1118): SERT 3.8/11/39/113 nM, NET 210/385/1623/2685 nM;
+          ODV SERT 4.1/15 nM, NET 650/668 nM. Headline values J Med Chem 2018 &amp; ACS Med Chem Lett 2013.
+          SERT:NET balance shift (parent vs ODV): Deecher et al. (2006) J Pharmacol Exp Ther 318:657.
+          Rel. bars normalized to venlafaxine SERT. Lower K<sub>i</sub> = higher affinity.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #048 · Venlafaxine (Effexor) · Le Bonhomme Pharma · Montréal ·
+    <a href="/drug-of-the-day/">Series index</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a> ·
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <br>
+    Binding data: ChEMBL v34 (CHEMBL637 venlafaxine, CHEMBL1118 desvenlafaxine); Deecher et al. (2006) J Pharmacol Exp Ther 318:657;
+    Coleman, Green &amp; Gouaux (2016) Nature 532:334 (PDB 5I6X · human SERT + paroxetine). ·
+    <a href="https://www.rcsb.org/structure/5I6X" target="_blank" rel="noopener noreferrer">PDB 5I6X</a>
+    <br>
+    Harm reduction resources: <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> ·
+    <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a> ·
+    <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '5I6X',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

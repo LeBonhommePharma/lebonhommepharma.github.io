@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GHB — Drug of the Day #037 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of γ-hydroxybutyrate (GHB / sodium oxybate / Xyrem): endogenous short-chain fatty acid, low-affinity GABA-B agonism (mM) versus the high-affinity μM GHB binding site (now assigned to CaMKIIα), capacity-limited nonlinear PK, the near-vertical dose–response from euphoria to coma, narcolepsy therapy, benzodiazepine/baclofen-refractory withdrawal, and the fatal synergy with alcohol and other depressants. Interactive 3D GABA-B receptor structure via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-value.rose { color: var(--rose); }
+.fact-value.green { color: var(--green); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-pam { color: var(--green); background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.20); }
+.ab-weak { color: var(--fg-muted); background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/diazepam/">Diazepam #015</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#037 · Drug of the Day</span>
+    <span class="pill pill-terra">Endogenous short-chain fatty acid</span>
+    <span class="pill pill-rose">Schedule I (illicit) · Schedule III as Xyrem</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">GHB</span>
+  </h1>
+  <p class="hero-iupac">IUPAC: 4-hydroxybutanoic acid · γ-hydroxybutyrate · C₄H₈O₃ · MW 104.10 g/mol · CAS 591-81-1 (acid) / 502-85-2 (sodium oxybate) · ATC N01AX11 · ChEMBL CHEMBL1342</p>
+  <p class="hero-class">
+    <strong>γ-Hydroxybutyrate (sodium oxybate / Xyrem).</strong>
+    A four-carbon endogenous short-chain fatty acid — a native GABA metabolite and putative neuromodulator present in mammalian brain — that is also
+    a licensed narcolepsy drug and a recreational depressant with one of the steepest dose–response curves in all of pharmacology. Context names:
+    G, Gina, liquid ecstasy, GBL (prodrug), 1,4-BD (prodrug), Xyrem, Xywav, Alcover.
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value terra">GABA<sub>B</sub> receptor</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Low-affinity agonist</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">GABA<sub>B</sub> EC<sub style="font-size:0.7em">50</sub></span>
+      <span class="fact-value terra">~5 mM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">GHB site K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value teal">~4 µM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub></span>
+      <span class="fact-value">~20–60 min</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Kinetics</span>
+      <span class="fact-value gold">Capacity-limited</span>
+    </div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">SSADH → TCA cycle</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Margin</span>
+      <span class="fact-value rose">Recreational→coma &lt;2×</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>Two Sites, Three Orders of Magnitude Apart</h2>
+
+      <p>
+        GHB is pharmacologically strange: it is an <strong>endogenous molecule</strong> — synthesised in neurons from GABA and present in brain at
+        low micromolar concentrations — that acts on <em>two distinct classes of site with affinities separated by roughly a thousand-fold</em>.
+        At the physiological, nanomolar–micromolar concentrations reached by endogenous GHB, it engages a <strong>high-affinity "GHB binding site"</strong>
+        (K<sub>i</sub> ≈ 4 µM by [³H]NCS-382 displacement). At the millimolar concentrations reached only by an <strong>exogenous recreational or
+        therapeutic dose</strong>, it becomes a <strong>weak agonist of the metabotropic GABA<sub>B</sub> receptor</strong> (EC<sub>50</sub> ≈ 5 mM).
+        The GABA<sub>B</sub> action is what sedates, anaesthetises, and — at a slightly higher dose — stops your breathing. The affinity gap
+        <em>is</em> the danger: because the sedating target is only recruited across a narrow, steep band of the concentration curve, small changes
+        in dose produce enormous changes in effect.
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title net">① GABA<sub>B</sub> — Low-Affinity Agonist</div>
+          <p>GHB directly activates the GABA<sub>B</sub> G<sub>i/o</sub>-coupled GPCR in the Venus-flytrap orthosteric pocket that normally binds GABA/baclofen — but with ~1000× lower affinity (EC<sub>50</sub> ≈ 5 mM). G<sub>i/o</sub> coupling opens GIRK K⁺ channels, closes Ca<sub>V</sub> channels, and lowers cAMP → presynaptic and postsynaptic inhibition. This is the sedative/hypnotic/anaesthetic mechanism.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">② High-Affinity GHB Site</div>
+          <p>A distinct saturable, high-affinity site (K<sub>i</sub> ≈ 4 µM) was described in 1982 and long treated as an orphan "GHB receptor." Recent radioligand work assigns the bulk of specific [³H]NCS-382 / [³H]HOCPCA binding to the <strong>CaMKIIα hub domain</strong> (K<sub>i</sub> 3–4 µM). Its contribution to intoxication is modest; it is likely relevant to endogenous signalling.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">③ Extrasynaptic GABA<sub>A</sub> (α4βδ)</div>
+          <p>At high (mM) concentrations GHB is a weak agonist at extrasynaptic <strong>δ-subunit GABA<sub>A</sub></strong> receptors (α4β1δ / α4β3δ), mediating tonic inhibition. It does <em>not</em> touch the synaptic orthosteric GABA<sub>A</sub> site — [³H]muscimol displacement K<sub>i</sub> &gt; 1 mM — so it is mechanistically unlike benzodiazepines or muscimol.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">④ Endogenous Metabolite &harr; Ligand</div>
+          <p>GHB is not a xenobiotic. It is made from GABA (GABA → succinic semialdehyde → GHB via SSA reductase) and cleared back to succinic semialdehyde by <strong>SSADH</strong>. The same molecule is substrate, product, and signalling ligand — its own supply and clearance are enzymatically buffered, which shapes its nonlinear kinetics.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">⑤ Dopamine Biphasic Effect</div>
+          <p>Via GABA<sub>B</sub> on nigrostriatal terminals GHB first <em>suppresses</em> then <em>rebound-increases</em> dopamine release — the biphasic profile behind an early stimulant/pro-social "come-up" giving way to deep sedation. GABA<sub>B</sub> antagonists blunt most behavioural effects of GHB in animals.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ Slow-Wave Sleep Architecture</div>
+          <p>GABA<sub>B</sub>-driven inhibition of thalamocortical and hypothalamic arousal circuits <strong>consolidates delta / slow-wave sleep</strong> and increases growth-hormone release. This is the therapeutically exploited action in narcolepsy — the drug rebuilds the fragmented nocturnal sleep that drives daytime cataplexy and sleepiness.</p>
+        </div>
+      </div>
+
+      <p>
+        The clinically decisive fact sits in the numbers above. A GABA<sub>B</sub> agonist with an EC<sub>50</sub> in the <strong>millimolar</strong>
+        range only produces meaningful receptor occupancy when brain concentration climbs into that same range — and because GHB's own metabolism
+        and absorption <em>saturate</em> (see §02), the brain concentration does not rise smoothly with dose. A gram that lands you pleasantly
+        disinhibited and a gram-and-a-half that lands you unconscious sit on the near-vertical portion of the same mass-action curve.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">GHB (low dose, ~µM)</span>
+        <span class="arrow">→ high-affinity site (CaMKIIα) →</span>
+        <span class="effect">endogenous-type neuromodulation · subtle</span>
+        <br>
+        <span class="step">GHB (recreational, ~mM)</span>
+        <span class="arrow">→ GABA<sub>B</sub> orthosteric agonism →</span>
+        <span class="step">G<sub>i/o</sub> · GIRK ↑ · Ca<sub>V</sub> ↓ · cAMP ↓</span>
+        <span class="arrow">→</span>
+        <span class="effect">euphoria → sedation → anaesthesia → respiratory arrest</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Saturable Everything — Why the Curve Is Vertical</h2>
+
+      <p>
+        GHB's pharmacokinetics are <strong>nonlinear (capacity-limited / Michaelis–Menten)</strong> at every step, and this — more than any
+        receptor property — is why the drug is so unforgiving. Oral absorption is saturable, first-pass metabolism is saturable, and renal
+        reabsorption is saturable. The practical consequence is that <strong>exposure rises faster than dose</strong>: as each capacity fills,
+        a proportionally larger fraction of the next increment reaches the brain. The apparent half-life <em>lengthens</em> with dose (from
+        ~20 min at low dose toward ~50–60 min at intoxicating dose) because clearance enzymes are running flat-out. There is no linear "twice
+        the dose, twice the level" intuition to fall back on.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~25% (saturable)</span></div>
+        <div class="pk-row"><span class="pk-key">Onset (oral)</span><span class="pk-val">10 – 20 min</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub></span><span class="pk-val">20 – 45 min</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (dose-dependent)</span><span class="pk-val">~20 – 60 min</span></div>
+        <div class="pk-row"><span class="pk-key">Duration of effect</span><span class="pk-val">1.5 – 3 h</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~0.4 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Plasma protein binding</span><span class="pk-val">Negligible</span></div>
+        <div class="pk-row"><span class="pk-key">Renal (unchanged)</span><span class="pk-val">&lt;2–5%</span></div>
+        <div class="pk-row"><span class="pk-key">Kinetics</span><span class="pk-val">Zero-order at dose</span></div>
+        <div class="pk-row"><span class="pk-key">Clearance</span><span class="pk-val">Hepatic, TCA cycle</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolic fate:</strong> GHB is not excreted; it is <em>burned</em>. It is oxidised to succinic semialdehyde (chiefly by
+        cytosolic GHB dehydrogenase and mitochondrial SSA reductase running in reverse), then by <strong>SSADH</strong> to succinate, which
+        enters the <strong>TCA (Krebs) cycle</strong> and is oxidised to CO₂ and water. Because clearance is metabolic and enzyme-limited,
+        alcohol — which competes for the same NAD⁺-dependent dehydrogenase capacity — both slows GHB elimination and adds its own depression.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node inactive">GABA</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          GABA-T
+          <span style="font-size:10px;color:var(--fg-dim)">transaminase</span>
+        </div>
+        <div class="meta-node inactive">Succinic semialdehyde</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          SSA reductase
+          <span style="font-size:10px;color:var(--fg-dim)">synthesis</span>
+        </div>
+        <div class="meta-node primary">GHB ★</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">GHB</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          GHB-DH / SSADH
+          <span style="font-size:10px;color:var(--fg-dim)">oxidation</span>
+        </div>
+        <div class="meta-node active">Succinic semialdehyde</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          SSADH
+        </div>
+        <div class="meta-node inactive">Succinate → TCA cycle → CO₂</div>
+      </div>
+
+      <p>
+        <strong>Prodrugs make it worse.</strong> <em>GBL</em> (γ-butyrolactone, an industrial solvent) is rapidly hydrolysed to GHB by serum
+        lactonases and is <strong>more bioavailable and faster-onset</strong> than GHB itself; <em>1,4-butanediol</em> (1,4-BD) is oxidised to
+        GHB by alcohol dehydrogenase and aldehyde dehydrogenase — the very enzymes ethanol competes for, so co-ingested alcohol delays and then
+        unpredictably prolongs the conversion. Gram-for-gram these prodrugs are <strong>more potent than GHB</strong>, so a dose calibrated for
+        one is an overdose of another. In <strong>SSADH deficiency</strong> (a rare inborn error), GHB accumulates endogenously — the human proof
+        that this molecule is a native metabolite whose disposal is a bottleneck.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Clinical Context · Therapy, Tolerance &amp; Withdrawal</div>
+      <h2>Licensed Medicine, Steep Recreational Curve, Brutal Withdrawal</h2>
+
+      <p>
+        The same GABA<sub>B</sub>-driven inhibition that makes GHB dangerous makes it a genuinely effective medicine at controlled, divided doses —
+        and a fast, physically dependence-forming drug when taken around the clock. GHB compresses the full arc of a sedative-hypnotic into a
+        narrow dose window and a short time course, which is exactly what turns a pleasant effect into an emergency.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar oxt"></div>
+        <div class="circuit-inner">
+          <h4>Therapeutic Use → Narcolepsy Type 1</h4>
+          <p>Sodium oxybate (<strong>Xyrem</strong>) and the low-sodium mixed salt (<strong>Xywav</strong>) are FDA/EMA-approved for cataplexy and excessive daytime sleepiness in narcolepsy. Dosed <em>twice per night</em> — at bedtime and again 2.5–4 h later — because the half-life is too short to cover a night on one dose. It consolidates slow-wave sleep and, over weeks, reduces cataplexy attacks. Sodium oxybate (Alcover) is also used in some countries for alcohol-withdrawal and dependence.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>The Steep Dose–Response → Euphoria to Coma over &lt;1 g</h4>
+          <p>Typical recreational doses run ~1–2.5 g; the difference between a sociable, disinhibited "sweet spot" and sudden unconsciousness with vomiting can be <strong>0.5–1 g</strong> — a fraction of a teaspoon of solution. Because PK is saturable and GABA<sub>B</sub> occupancy climbs steeply through the millimolar band, there is no gentle plateau: users "go under" abruptly, often mid-sentence. Overdose presents as deep coma with preserved-then-failing airway reflexes, bradycardia, and myoclonic jerks that mimic seizures.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Rapid Tolerance → Round-the-Clock Dosing</h4>
+          <p>With frequent use, tolerance develops quickly and the short duration drives <strong>compulsive re-dosing every 2–4 hours, including through the night</strong>. Dependent users often dose 24/7. This dosing pattern — not a single binge — is what produces severe physiological dependence within weeks and sets up a withdrawal syndrome disproportionate to the drug's reputation as a "party" substance.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Withdrawal → Benzodiazepine- &amp; Baclofen-Refractory Delirium</h4>
+          <p>Because the short half-life means levels crash within hours, withdrawal can begin <strong>1–6 h after the last dose</strong>. It resembles severe alcohol/benzodiazepine withdrawal — anxiety, tremor, tachycardia, hypertension, insomnia, diaphoresis — escalating to <strong>delirium, psychosis, and seizures</strong>. Critically, it is frequently <strong style="color:var(--rose)">refractory to benzodiazepines</strong>: GHB withdrawal is a GABA<sub>B</sub> (and δ-GABA<sub>A</sub>) phenomenon, while benzodiazepines act at the synaptic GABA<sub>A</sub> benzodiazepine site. Management often requires very high benzodiazepine doses <em>plus</em> baclofen (a GABA<sub>B</sub> agonist that substitutes at the withdrawn target), and refractory cases escalate to barbiturates or propofol in an ICU. This is a medical detox, not a taper you attempt alone.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        The through-line of GHB is <strong>narrowness</strong>: a narrow dose window, a narrow time course, a narrow affinity band that separates
+        pleasant from lethal. It is a real endogenous signalling molecule and a real medicine — and, taken recreationally without precise
+        measurement, one of the least forgiving drugs a person can put in their body.
+      </p>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">04 · Harm Reduction</div>
+      <h2>Milliliters Matter. Never Mix It With a Drink.</h2>
+      <p style="max-width:none;">Non-moralising and specific. GHB kills two ways: by stacking with another depressant, and by imprecise dosing on a vertical curve. Both are addressable with a scale, a syringe, and a sober friend.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> <strong>ALCOHOL</strong> — the single most common fatal GHB mix: synergistic (not merely additive) CNS and respiratory depression at the brainstem, plus vomiting with a suppressed gag reflex → aspiration; alcohol also competes for the dehydrogenase that clears GHB, prolonging it. · <strong>OPIOIDS</strong> (heroin, fentanyl, oxycodone, methadone) — additive respiratory depression; if opioids may be present, <strong>carry naloxone</strong> (it will not reverse GHB, but it reverses the opioid that stops your breathing). · <strong>BENZODIAZEPINES, KETAMINE, BARBITURATES, other sedatives</strong> — all deepen the same respiratory depression. GHB alone at a modest overdose can cause coma and respiratory arrest; with any second depressant the lethal dose drops sharply. There is <strong>no reliable pharmacological antidote</strong> — care is airway, breathing, recovery position, and emergency services. Check every combination at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Precise Dosing = Survival
+          </h4>
+          <ul>
+            <li>Dose by <strong>weight/volume, never by "capfuls" or eyeballed pours</strong> — the margin between a good dose and coma is often &lt;0.5–1 g</li>
+            <li>Know your solution's concentration (g per mL); measure each dose with an oral syringe or a scale, not a bottle cap</li>
+            <li>Start low and wait <strong>at least 2 hours</strong> before considering a top-up — onset is 10–20 min but full effect stacks</li>
+            <li>GBL and 1,4-BD are <strong>more potent by mass and faster</strong> than GHB — never carry over a GHB dose to them</li>
+            <li>Homemade/converted batches vary wildly in concentration; assume every new batch is different and re-titrate</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            If Someone Goes Under
+          </h4>
+          <ul>
+            <li>Put them in the <strong>recovery position immediately</strong> — vomiting into an unprotected airway is a leading cause of GHB death</li>
+            <li>Deep unrousable sedation with vomiting or slow/irregular breathing is a <strong style="color:var(--rose)">medical emergency — call for help</strong></li>
+            <li>Never leave an unconscious person alone or "to sleep it off"; monitor breathing continuously</li>
+            <li>Myoclonic jerking can look like a seizure; the real threats are airway and respiration</li>
+            <li>Tell responders it is GHB/GBL and list every other substance — honesty changes the management</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Dependence &amp; Withdrawal
+          </h4>
+          <ul>
+            <li>Round-the-clock dosing (every 2–4 h, including overnight) causes <strong>physical dependence within weeks</strong></li>
+            <li>Withdrawal can start <strong>1–6 h after the last dose</strong> and escalate to delirium, psychosis, and seizures</li>
+            <li>It is often <strong style="color:var(--rose)">refractory to benzodiazepines</strong> — needs medically supervised detox, high-dose benzos + baclofen, sometimes ICU</li>
+            <li>Do <strong>not</strong> attempt abrupt cessation from heavy daily use at home — GHB withdrawal can be fatal</li>
+            <li>Baclofen substitution is used clinically because it hits the same GABA<sub>B</sub> target the body is withdrawing from</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Practical Rules
+          </h4>
+          <ul>
+            <li>Absolutely <strong>no alcohol</strong> in the same session — this is the mix that fills emergency departments and morgues</li>
+            <li>Never dose again "because it isn't working yet" — delayed absorption means the first dose is still arriving</li>
+            <li>Use with a sober, informed person present who knows it is GHB and can position/monitor you</li>
+            <li>Space doses, label bottles clearly (GHB is a colourless liquid easily confused with water), and keep a written log of what/when</li>
+            <li>Resources: <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer" style="color:var(--rose)">TripSit</a> · <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer" style="color:var(--rose)">DanceSafe</a> — read the GHB dosing guides before you use</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Structure · GABA-B receptor (active state)</span>
+          <span class="ngl-pdb-tag">PDB: 7C7Q</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="7C7Q"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            GB1 / GB2 heterodimer (cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Venus-flytrap orthosteric pocket
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Baclofen + BHFF (ligands)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">7C7Q</strong> — cryo-EM of the human GABA<sub>B</sub> receptor (GB1–GB2 heterodimer)
+          in the active state, bound to the agonist <strong>baclofen</strong> and the positive allosteric modulator <strong>BHFF</strong>
+          (Mao et al., <em>Cell Research</em> 30:564–573, 2020). <strong style="color:var(--gold)">No GHB co-crystal exists</strong> — this is
+          GHB's primary target shown with the canonical GABA<sub>B</sub> agonist baclofen occupying the same Venus-flytrap orthosteric pocket
+          that GHB binds with ~1000× lower (mM) affinity. Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/7C7Q" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Binding &amp; Functional Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">GHB · oxybate</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">GHB site</div>
+                <span class="target-full">high-affinity [³H]NCS-382 site</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 4 µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">3.6–4.3 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-release">Binder</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">GHB site</div>
+                <span class="target-full">[³H]HOCPCA displacement</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">IC<sub>50</sub> ≈ 1.1 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:96%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-release">Binder</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">CaMKIIα</div>
+                <span class="target-full">hub domain · GHB-site identity</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 3–4 µM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:92%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Modulator</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">GABA<sub>B</sub></div>
+                <span class="target-full">metabotropic · primary effect</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">EC<sub>50</sub> ≈ 5 mM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">~1000× weaker</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:8%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">δ-GABA<sub>A</sub></div>
+                <span class="target-full">extrasynaptic α4βδ · tonic</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--fg-muted)">mM (weak)</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:6%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-agonist">Agonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">GABA<sub>A</sub> orthosteric</div>
+                <span class="target-full">[³H]muscimol site</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--fg-muted)">K<sub>i</sub> &gt; 1 mM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">essentially inactive</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:3%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-weak">≈ none</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          GHB = oxybate, ChEMBL CHEMBL1342. GHB-site K<sub>i</sub>/IC<sub>50</sub> from [³H]NCS-382 and [³H]HOCPCA displacement
+          (J Med Chem 2008/2010/2013/2017; CaMKIIα-hub identity assigned in J Med Chem 2019–2022). GABA<sub>B</sub> agonist
+          EC<sub>50</sub> ≈ 5 mM and GABA<sub>A</sub>-orthosteric K<sub>i</sub> &gt; 1 mM from J Med Chem 2019. Rel. bars are −log(affinity),
+          normalised to the high-affinity GHB site. The ~1000× gap between the µM GHB site and the mM GABA<sub>B</sub> effect is the whole story.
+        </div>
+      </div>
+
+      <!-- Entropy-docking commentary -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>ΔS · Entropy-Docking Note</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">FlexAID∆S</span>
+        </div>
+        <div class="binding-note" style="border-top:none;color:var(--fg-muted);font-size:11px;">
+          GHB is a tiny, highly flexible endogenous acid — seven heavy atoms, <strong style="color:var(--fg)">three rotatable bonds (RTB = 3)</strong>,
+          a carboxylate and a hydroxyl and nothing else. That flexibility is the thermodynamic root of its millimolar GABA<sub>B</sub> affinity. To
+          bind the deep Venus-flytrap orthosteric pocket it must surrender most of its backbone conformational entropy while burying almost no
+          hydrophobic surface, so the <strong style="color:var(--fg)">−TΔS<sub>conf</sub></strong> penalty on freezing the chain nearly cancels the
+          modest enthalpic reward of two polar contacts. In the FlexAID∆S ledger this is the archetypal <em>bad</em> binder: high configurational-entropy
+          cost, low enthalpic payoff, ΔG barely negative — a molecule that only occupies the receptor when driven there by sheer mass action at mM
+          concentration. Baclofen (shown in 7C7Q) wins where GHB loses: a rigidifying chlorophenyl ring and a conformationally biased β-carbon pay a
+          far smaller entropy penalty and add van-der-Waals enthalpy, buying the µM affinity GHB never reaches. The pharmacology follows straight from
+          the entropy: because occupancy of a mM-EC<sub>50</sub> target rises steeply and near-linearly with free-drug concentration far below
+          saturation, and because GHB's saturable PK makes that concentration jump nonlinearly with dose, a Shannon-entropy docking model predicts
+          exactly the clinical signature — a near-vertical dose–response with no safe plateau between euphoria and apnoea.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #037 · GHB (γ-hydroxybutyrate / sodium oxybate) · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/diazepam/">Diazepam #015</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Data: ChEMBL CHEMBL1342 (mechanism: GABA-B receptor agonist; GHB-site K<sub>i</sub>/IC<sub>50</sub> and GABA<sub>B</sub> EC<sub>50</sub> from J Med Chem 1988–2022). ·
+    Structure: Mao et al. (2020) <em>Cell Research</em> 30:564–573 ·
+    <a href="https://www.rcsb.org/structure/7C7Q" target="_blank" rel="noopener noreferrer">PDB 7C7Q</a> (GABA-B + baclofen/BHFF; no GHB co-crystal exists)
+    <br>
+    Harm reduction: <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a> · <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> · Never combine with alcohol. If opioids may be present, carry naloxone.
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '7C7Q',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

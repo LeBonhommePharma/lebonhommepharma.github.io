@@ -5,6 +5,8 @@
   'use strict';
 
   var BUILD = '20260622-publication';
+  var IOS_MAX_DPR = 2;      // effective device-pixel-ratio ceiling on iOS
+  var BOOT_TIMEOUT_MS = 20000;  // hang -> visible error instead of an endless spinner
   var viewers = new WeakMap();
   var surfaceReprs = new WeakMap();
   var spinOn = new WeakMap();
@@ -26,7 +28,7 @@
     };
     global.addEventListener('unhandledrejection', function (e) {
       var msg = e.reason && (e.reason.message || String(e.reason)) || '';
-      if (/molstarvolseg|multiScale|is not iterable|Load failed/i.test(msg)) {
+      if (/molstarvolseg|multiScale|is not iterable/i.test(msg)) {
         e.preventDefault();
         log('warn', 'suppressed non-fatal Mol* rejection', e.reason);
       }
@@ -106,7 +108,9 @@
   function setPublicationView(viewer, interactive) {
     if (!viewer || !viewer.plugin || !viewer.plugin.canvas3d) return;
     var canvas3d = viewer.plugin.canvas3d;
-    var tiers = ['outline', 'basic'];
+    // iOS: skip the 'outline' tier — the screen-space outline pass is a full extra
+    // pass and one of the most expensive effects on the iOS GPU.
+    var tiers = isIOSLike() ? ['basic'] : ['outline', 'basic'];
     function applyTier(i) {
       if (i >= tiers.length) return;
       try {
@@ -331,6 +335,54 @@
       '<a href="https://www.rcsb.org/structure/' + pdbId.toUpperCase() + '" target="_blank" rel="noopener noreferrer" style="font-family:JetBrains Mono,monospace;font-size:10px;color:#22D3EE;">View on RCSB →</a>';
   }
 
+  function resolvePdb(opts) {
+    if (opts && opts.pdb) return opts.pdb;
+    var c = document.getElementById((opts && opts.containerId) || 'molstar-viewer');
+    return (c && c.getAttribute('data-pdb')) || '';
+  }
+
+  function disposeViewer(container) {
+    var viewer = container && viewers.get(container);
+    if (!viewer) return;
+    try {
+      if (viewer.plugin && viewer.plugin.dispose) viewer.plugin.dispose();
+      else if (viewer.dispose) viewer.dispose();
+    } catch (e) {
+      log('warn', 'viewer dispose failed', e);
+    }
+    viewers.delete(container);
+  }
+
+  // iOS Safari caps concurrent WebGL contexts and reclaims them under memory
+  // pressure. Surface the loss instead of leaving a dead canvas, and release the
+  // context so a later Viewer.create isn't starved.
+  function bindContextLoss(viewer, container, opts, pdb) {
+    var canvas = container.querySelector('canvas');
+    if (!canvas) return;
+    canvas.addEventListener('webglcontextlost', function (e) {
+      e.preventDefault();
+      log('error', 'WebGL context lost', pdb);
+      container.classList.remove('molstar-ready');
+      showLoadError(opts.loadingId || 'molstar-loading', pdb);
+      disposeViewer(container);
+    });
+    global.addEventListener('pagehide', function () { disposeViewer(container); });
+  }
+
+  // Guarantees the loading overlay always resolves: if the viewer never reaches
+  // .molstar-ready, flip the overlay to the error state.
+  function armBootWatchdog(opts) {
+    var containerId = opts.containerId || 'molstar-viewer';
+    var timer = global.setTimeout(function () {
+      var c = document.getElementById(containerId);
+      if (c && c.classList.contains('molstar-ready')) return;
+      log('error', 'viewer boot timed out after ' + BOOT_TIMEOUT_MS + 'ms');
+      showLoadError(opts.loadingId || 'molstar-loading', resolvePdb(opts));
+      if (c) disposeViewer(c);
+    }, BOOT_TIMEOUT_MS);
+    return function cancel() { global.clearTimeout(timer); };
+  }
+
   function bindResize(viewer, container) {
     function refresh() {
       try {
@@ -439,7 +491,17 @@
     var pal = palette();
     var ios = isIOSLike();
 
+    // Mol* renders at devicePixelRatio * pixelScale, so capping the effective DPR
+    // means scaling *down* by cap/dpr. On a 3x iPhone this cuts fragment work ~2.2x.
+    // Desktop keeps Mol*'s default (pixelScale 1) so its output is unchanged.
+    var dpr = global.devicePixelRatio || 1;
+    var pixelScale = ios ? Math.min(dpr, IOS_MAX_DPR) / dpr : 1;
+
+    // Release any previous context for this container rather than leaking it.
+    disposeViewer(container);
+
     return global.molstar.Viewer.create(containerId, {
+      pixelScale: pixelScale,
       layoutIsExpanded: false,
       layoutShowControls: false,
       layoutShowRemoteState: false,
@@ -459,10 +521,9 @@
         renderer: {
           backgroundColor: pal.backgroundColor,
           backgroundAlpha: 1,
-          pixelRatio: ios ? Math.min(global.devicePixelRatio || 1, 2) : (global.devicePixelRatio || 1),
         },
         camera: { fog: 0, clipFar: false },
-        postprocessing: safePostprocessing(true),
+        postprocessing: safePostprocessing(!ios),
         trackball: {
           noScroll: false,
           noRotate: false,
@@ -473,6 +534,7 @@
     }).then(function (viewer) {
       viewers.set(container, viewer);
       spinOn.set(viewer, false);
+      bindContextLoss(viewer, container, opts, pdb);
       bindResize(viewer, container);
       bindThemeSync(viewer, interactive);
       bindControls(viewer, opts);
@@ -495,18 +557,29 @@
   function boot(opts) {
     opts = opts || {};
     function start() {
+      var cancelWatchdog = armBootWatchdog(opts);
+      function fail(e) {
+        cancelWatchdog();
+        log('error', 'viewer boot failed', e);
+        showLoadError(opts.loadingId || 'molstar-loading', resolvePdb(opts));
+      }
+      function launch() {
+        // Any rejection in the create/load chain now clears the overlay.
+        createViewer(opts).then(function () { cancelWatchdog(); }, fail);
+      }
       if (!global.molstar) {
         loadMolstarScript(function (err) {
           if (err) {
+            cancelWatchdog();
             var c = document.getElementById(opts.containerId || 'molstar-viewer');
             if (c) c.outerHTML = '<div class="molstar-error">Mol* viewer unavailable</div>';
             return;
           }
-          createViewer(opts).catch(function (e) { log('error', 'viewer boot failed', e); });
+          launch();
         });
         return;
       }
-      createViewer(opts).catch(function (e) { log('error', 'viewer boot failed', e); });
+      launch();
     }
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', start);

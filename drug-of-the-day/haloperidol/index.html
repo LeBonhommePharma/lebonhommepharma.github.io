@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haloperidol — Drug of the Day #052 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of haloperidol (Haldol): high-affinity dopamine D2 antagonism/inverse agonism (Ki ~1.4 nM), D3, sigma-1 and 5-HT2A binding, hERG blockade and QT prolongation, extrapyramidal side effects, tardive dyskinesia, hyperprolactinemia and neuroleptic malignant syndrome, glucuronidation/CYP metabolism, receptor binding affinity table, and interactive 3D D2 orthosteric-pocket visualization (PDB 6LUQ) via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-value.rose { color: var(--rose); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.d2 { color: var(--terra); }
+.mech-card-title.sig  { color: var(--teal); }
+.mech-card-title.qt  { color: var(--rose); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 600; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-node.toxic{ color: var(--rose); border-color: rgba(244,63,94,0.35); background: rgba(244,63,94,0.08); font-weight: 600; }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-bar.motor     { background: var(--rose); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Entropy / FlexAID∆S box ────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-antag  { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-block  { color: var(--rose); background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.22); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Le Bonhomme Pharma
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/periodic/">Periodic Table</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#052 · Drug of the Day</span>
+    <span class="pill pill-terra">Butyrophenone · Typical antipsychotic</span>
+    <span class="pill pill-rose">High-potency D2 blocker · Black-box warning</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Haloperidol</span>
+  </h1>
+  <p class="hero-iupac">IUPAC: 4-[4-(4-chlorophenyl)-4-hydroxypiperidin-1-yl]-1-(4-fluorophenyl)butan-1-one · C<sub>21</sub>H<sub>23</sub>ClFNO<sub>2</sub> · MW 375.87 g/mol · CAS 52-86-8 · ATC N05AD01</p>
+  <p class="hero-class">
+    <strong>Haloperidol (Haldol).</strong>
+    The prototypical high-potency <strong>butyrophenone typical antipsychotic</strong> — Janssen's R-1625,
+    approved 1967. A near-pure dopamine D<sub>2</sub> antagonist/inverse agonist: minimal anticholinergic or
+    sedating "atypical" polypharmacology, maximal on-target D<sub>2</sub> blockade. The reference compound for
+    the dopamine hypothesis of psychosis — and the reference compound for extrapyramidal harm.
+    Trade/context names: Haldol, Serenace, Haldol Decanoate (long-acting depot).
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value terra">D<sub>2</sub> receptor</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Antagonist / inverse agonist</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">D<sub>2</sub> K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value terra">~1.4 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">hERG IC<sub style="font-size:0.7em">50</sub></span>
+      <span class="fact-value rose">~27 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub> (oral)</span>
+      <span class="fact-value">~14–26 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value">UGT / CYP3A4 / CYP2D6</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Depot T<sub style="font-size:0.7em">½</sub></span>
+      <span class="fact-value gold">~3 weeks</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Class</span>
+      <span class="fact-value teal">Neuroleptic</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>High-Affinity D<sub>2</sub> Blockade &amp; G<sub>i/o</sub> Signaling</h2>
+
+      <p>
+        Haloperidol is a <strong>competitive antagonist / inverse agonist at the dopamine D<sub>2</sub>
+        receptor</strong> (D<sub>2</sub>-like family: D<sub>2</sub>, D<sub>3</sub>, D<sub>4</sub>), binding the
+        orthosteric aminergic pocket with sub-nanomolar-to-nanomolar affinity (K<sub>i</sub> ≈ 1.4 nM at human
+        D<sub>2</sub>). D<sub>2</sub> is a G<sub>i/o</sub>-coupled GPCR: its normal job is to <em>lower</em> cAMP
+        and gate downstream signaling to dopamine tone. By occupying that pocket, haloperidol removes dopaminergic
+        drive — de-repressing adenylyl cyclase, restoring cAMP/PKA/DARPP-32 signaling, and silencing the
+        D<sub>2</sub>-mediated inhibition of neuronal firing. This is the pharmacological <em>inverse</em> of
+        cocaine: instead of flooding synapses with dopamine, haloperidol clamps the receptor that reads it.
+      </p>
+
+      <p>
+        Antipsychotic efficacy tracks tightly with <strong>D<sub>2</sub> occupancy</strong>. PET studies place
+        the therapeutic window at roughly <strong>65–78% striatal D<sub>2</sub> occupancy</strong>; extrapyramidal
+        side effects (EPS) climb steeply above <strong>~80%</strong>, and prolactin elevation above ~72%. Because
+        haloperidol is so potent and so selective for D<sub>2</sub>, it pushes into the EPS zone at clinically
+        ordinary doses — it has essentially no built-in anticholinergic or 5-HT<sub>2A</sub>-dominant buffer to
+        soften striatal blockade, which is exactly what distinguishes a "typical" from an "atypical."
+      </p>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title d2">① D<sub>2</sub> Orthosteric Antagonism</div>
+          <p>Haloperidol's protonated piperidine amine forms the conserved salt bridge to Asp3.32 (D114); the chlorophenyl and fluorophenyl arms fill the hydrophobic subpockets. It stabilizes the inactive receptor state, blocking G<sub>i</sub> coupling (K<sub>i</sub> ≈ 1.4 nM).</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title d2">② D<sub>3</sub> Cross-Reactivity</div>
+          <p>Nearly equipotent at D<sub>3</sub> (K<sub>i</sub> ≈ 6 nM), the D<sub>2</sub>-like autoreceptor enriched in limbic striatum. Contributes to antipsychotic action and to blunted reward/motivation seen with chronic dosing.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sig">③ Sigma-1 Receptor</div>
+          <p>Haloperidol is a classic high-affinity σ<sub>1</sub> ligand (K<sub>i</sub> ≈ 3 nM) — historically it defined the "haloperidol-sensitive" sigma site. Modulates ER-mitochondrial Ca²⁺ and NMDA tone; pharmacological role in humans still debated.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sig">④ 5-HT<sub>2A</sub> (weak)</div>
+          <p>Modest 5-HT<sub>2A</sub> antagonism (K<sub>i</sub> ≈ 120 nM), ~85× weaker than D<sub>2</sub>. Too weak to confer an atypical 5-HT<sub>2A</sub>:D<sub>2</sub> ratio — the mechanistic reason haloperidol carries the high EPS burden of a typical agent.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title qt">⑤ hERG / K<sub>v</sub>11.1 Blockade</div>
+          <p>Potent block of the cardiac rapid delayed-rectifier K⁺ current I<sub>Kr</sub> (hERG IC<sub>50</sub> ≈ 27 nM). Delays ventricular repolarization → dose-dependent QTc prolongation and torsades-de-pointes risk, especially IV.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ α<sub>1</sub>-Adrenergic Block</div>
+          <p>α<sub>1A</sub> antagonism (K<sub>i</sub> ≈ 11 nM) causes orthostatic hypotension and reflex tachycardia. Negligible H<sub>1</sub> and muscarinic affinity — why haloperidol is far less sedating and less anticholinergic than low-potency phenothiazines.</p>
+        </div>
+      </div>
+
+      <p>
+        The signature of a high-potency typical: <strong>one dominant target, dose-limited by that same target
+        in the wrong brain region.</strong> The dopamine circuit haloperidol needs to quiet (mesolimbic) and the
+        one it must not quiet (nigrostriatal) share the same receptor. There is no molecular way for the drug to
+        tell them apart — the selectivity problem is anatomical, not chemical.
+      </p>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Lipophilic, Long-Acting, Hepatically Cleared</h2>
+
+      <p>
+        Haloperidol is highly lipophilic (logP ≈ 4.4) and extensively tissue-distributed
+        (V<sub>d</sub> ≈ 8–30 L/kg — brain and fat concentrations far exceed plasma). Oral bioavailability is
+        <strong>~60–70%</strong> due to first-pass metabolism; IM and IV bypass it. The elimination half-life is
+        long (~14–26 h oral) and highly variable between individuals — a major reason serum levels track dose so
+        poorly. The <strong>decanoate ester depot</strong> is hydrolyzed slowly in muscle, giving an apparent
+        half-life of ~3 weeks and monthly dosing.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">~60–70%</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (oral / IM)</span><span class="pk-val">2–6 h / ~20 min</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (oral)</span><span class="pk-val">14 – 26 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (decanoate depot)</span><span class="pk-val">~3 weeks</span></div>
+        <div class="pk-row"><span class="pk-key">V<sub>d</sub></span><span class="pk-val">~8–30 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~90%</span></div>
+        <div class="pk-row"><span class="pk-key">Primary clearance</span><span class="pk-val">Hepatic (UGT / CYP)</span></div>
+        <div class="pk-row"><span class="pk-key">Active metabolite</span><span class="pk-val">Reduced haloperidol</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>Metabolism cascade:</strong> three parallel hepatic routes. Glucuronidation is quantitatively
+        dominant; ketone reduction gives a weakly active metabolite that can be re-oxidized back to parent; and
+        oxidative N-dealkylation via CYP3A4 (with CYP2D6) can also generate a pyridinium species.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Haloperidol</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          UGT
+          <span style="font-size:10px;color:var(--fg-dim)">glucuronid.</span>
+        </div>
+        <div class="meta-node inactive">Haloperidol glucuronide</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Haloperidol</div>
+        <div class="meta-enzyme">
+          <span>⇌</span>
+          carbonyl reductase
+          <span style="font-size:10px;color:var(--fg-dim)">CYP2D6 back-ox.</span>
+        </div>
+        <div class="meta-node active">Reduced haloperidol</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Haloperidol</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          CYP3A4
+          <span style="font-size:10px;color:var(--fg-dim)">oxid. dealkyl.</span>
+        </div>
+        <div class="meta-node toxic">HPP⁺ pyridinium ★</div>
+      </div>
+
+      <p>
+        <strong>Reduced haloperidol</strong> (ketone → secondary alcohol, via carbonyl reductase) retains only a
+        fraction of D<sub>2</sub> affinity but forms a large, slowly interconverting reservoir — it back-oxidizes
+        to active parent, buffering plasma levels. <strong>HPP⁺</strong> (a haloperidol pyridinium metabolite,
+        marked ★) is structurally analogous to <strong>MPP⁺</strong>, the neurotoxin generated from MPTP that
+        kills nigral dopamine neurons; whether HPP⁺ contributes to long-term motor toxicity in humans is an open,
+        biologically plausible question, not a settled fact.
+      </p>
+      <p>
+        <strong>CYP3A4 is the pivotal interaction node.</strong> Strong 3A4 inhibitors (ketoconazole, ritonavir,
+        clarithromycin) and 2D6 inhibitors raise haloperidol exposure and QT risk; strong inducers (carbamazepine,
+        rifampin, smoking-induced pathways) can drop levels and precipitate relapse. Haloperidol is also a
+        substrate/weak modulator that compounds QT risk when stacked with other I<sub>Kr</sub> blockers.
+      </p>
+    </div>
+
+    <!-- PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Psychopharmacology</div>
+      <h2>Four Dopamine Pathways, One Receptor</h2>
+
+      <p>
+        Haloperidol's entire clinical profile — therapeutic and adverse — is the story of blocking D<sub>2</sub>
+        in four anatomically distinct dopamine tracts simultaneously. The drug cannot choose; occupancy is
+        roughly uniform. What differs is what each circuit <em>does</em> when its dopaminergic tone is removed.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar dopamine"></div>
+        <div class="circuit-inner">
+          <h4>Mesolimbic → Antipsychotic Effect (the intended one)</h4>
+          <p>VTA → nucleus accumbens / ventral striatum. Hyperdopaminergia here is the leading correlate of positive psychotic symptoms (hallucinations, delusions). D<sub>2</sub> blockade dampens aberrant salience assignment. This is the therapeutic pathway — and the only one where blockade is wanted. Onset of behavioral calming is fast; full antipsychotic response takes 1–3 weeks (depolarization block of dopamine neurons).</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar motor"></div>
+        <div class="circuit-inner">
+          <h4>Nigrostriatal → Extrapyramidal Symptoms &amp; Tardive Dyskinesia</h4>
+          <p>SNc → dorsal striatum, the motor-control loop. Blocking D<sub>2</sub> here mimics Parkinson's disease: acute dystonia (hours–days), drug-induced parkinsonism and akathisia (days–weeks). With chronic blockade, striatal D<sub>2</sub> receptors up-regulate and become supersensitive → <strong>tardive dyskinesia</strong>, involuntary orofacial/limb movements that can be irreversible. Haloperidol carries one of the highest TD risks of any antipsychotic precisely because its D<sub>2</sub> blockade is so pure and so complete.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar norepi"></div>
+        <div class="circuit-inner">
+          <h4>Tuberoinfundibular → Hyperprolactinemia</h4>
+          <p>Hypothalamus → anterior pituitary. Dopamine is the tonic <em>brake</em> on prolactin release (via lactotroph D<sub>2</sub>). Remove the brake and prolactin surges: galactorrhea, gynecomastia, amenorrhea, sexual dysfunction, and — over years — reduced bone density. Haloperidol is a robust, dose-dependent prolactin elevator because the pituitary sits outside the blood–brain barrier and sees high drug concentrations.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar serotonin"></div>
+        <div class="circuit-inner">
+          <h4>Mesocortical → Negative &amp; Cognitive Symptoms (worsened)</h4>
+          <p>VTA → prefrontal cortex. This pathway is thought to be <em>hypo</em>dopaminergic in schizophrenia, and is already driving negative symptoms (avolition, flat affect) and cognitive deficits. Non-selective D<sub>2</sub> blockade here can worsen them — the reason haloperidol does little for negative symptoms and can produce a subjective "neuroleptic dysphoria" and anhedonia. Atypicals partly spare this pathway via 5-HT<sub>2A</sub> antagonism; haloperidol does not.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 0.75rem;">
+        Haloperidol remains clinically indispensable: rapid tranquilization of acute agitation, schizophrenia,
+        acute mania, Tourette syndrome and severe tics, delirium (used cautiously), and Huntington's chorea.
+        Its problem was never efficacy at D<sub>2</sub> — it was that D<sub>2</sub> is everywhere dopamine is.
+      </p>
+    </div>
+
+    <!-- MOTOR & CARDIAC TOXICITY -->
+    <div class="section">
+      <div class="section-eyebrow">04 · Motor, Endocrine &amp; Cardiac Toxicity</div>
+      <h2>The Predictable Cost of Pure D<sub>2</sub> Blockade</h2>
+
+      <p>
+        Four syndromes account for most of haloperidol's serious harm, and each maps cleanly onto a mechanism
+        already described. None is idiosyncratic magic — they are the on-target and off-target pharmacology
+        of the molecule made clinical.
+      </p>
+
+      <div class="pathway-box">
+        <span class="step">D<sub>2</sub> block · nigrostriatal</span>
+        <span class="arrow">→ acute (hrs–days) →</span>
+        <span class="danger">dystonia · oculogyric crisis · laryngospasm</span>
+        <br>
+        <span class="step">D<sub>2</sub> block · chronic</span>
+        <span class="arrow">→ receptor supersensitivity →</span>
+        <span class="danger">tardive dyskinesia (may be irreversible)</span>
+        <br>
+        <span class="step">D<sub>2</sub> block · hypothalamic + massive</span>
+        <span class="arrow">→ dysautonomia →</span>
+        <span class="danger">NMS: hyperthermia · rigidity · ↑CK · autonomic instability</span>
+        <br>
+        <span class="step">hERG / I<sub>Kr</sub> block</span>
+        <span class="arrow">→ repolarization delay →</span>
+        <span class="danger">QTc ↑ → torsades de pointes → sudden cardiac death</span>
+      </div>
+
+      <p>
+        <strong>Extrapyramidal symptoms (EPS)</strong> are a spectrum: acute dystonia (sustained muscle spasms —
+        neck, eyes, jaw, rarely larynx; a medical emergency, treated with IM anticholinergics like
+        benztropine or diphenhydramine), akathisia (an agonizing motor restlessness that is frequently
+        mistaken for worsening psychosis and mis-treated by <em>raising</em> the dose), and drug-induced
+        parkinsonism. <strong>Tardive dyskinesia</strong> emerges after months–years and may persist after the
+        drug is stopped; VMAT2 inhibitors (valbenazine, deutetrabenazine) are the modern treatment.
+      </p>
+
+      <p>
+        <strong>Neuroleptic malignant syndrome (NMS)</strong> is the feared idiosyncratic reaction: a
+        life-threatening dysautonomic crisis from central D<sub>2</sub> hypofunction — <em>hyperthermia,
+        lead-pipe rigidity, altered mental status, and autonomic instability</em>, with grossly elevated
+        creatine kinase from muscle breakdown (rhabdomyolysis → acute kidney injury). It is more likely with
+        high-potency agents like haloperidol, rapid dose escalation, and parenteral use. NMS is a
+        <strong>stop-the-drug, cool-the-patient, call-ICU emergency</strong> (supportive care ± dantrolene,
+        bromocriptine); mortality is significant if missed. <strong>QT prolongation</strong> from hERG blockade
+        is dose-dependent and worst with IV administration — IV haloperidol carries an FDA warning for torsades
+        and requires ECG/electrolyte monitoring.
+      </p>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">05 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>Haloperidol at D<sub>2</sub>: A Semi-Rigid Butyrophenone Freezing the Aminergic Pocket</h2>
+
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+          Haloperidol is a <strong>moderately flexible ligand</strong> — the butyrophenone spacer contributes
+          six rotatable bonds linking a 4-fluorophenyl ketone to the 4-(4-chlorophenyl)-4-hydroxypiperidine
+          headgroup. Unlike cocaine's pre-organized tropane cage, haloperidol pays a real
+          <strong>conformational entropy penalty</strong> (<code>ΔS_conf</code> &lt; 0) on binding: the flexible
+          C4 chain must fold into a single bound rotamer, and the protonated piperidine nitrogen must dock
+          precisely onto Asp3.32 (D114) to satisfy the conserved aminergic salt bridge. That enthalpic anchor
+          is what pays for freezing the chain.
+        </p>
+        <p>
+          The D<sub>2</sub> orthosteric pocket (resolved in <strong>PDB 6LUQ</strong>, the haloperidol-bound
+          receptor) is a deep, largely hydrophobic aminergic cavity flanked by the extracellular vestibule.
+          In its apo state the pocket samples multiple side-chain conformers — high <code>H_pocket</code>
+          Shannon entropy. Haloperidol's two halogenated aromatic arms clamp the transmembrane bundle into the
+          inactive conformation, and the pocket's conformational ensemble <em>collapses</em> onto a single
+          state. This <em>entropy collapse</em> is the thermodynamic fingerprint of a high-affinity antagonist
+          locking a GPCR — the same signature FlexAID∆S resolves for competitive inhibitors that trap flexible
+          proteins, distinct from agonists that permit residual active-state breathing.
+        </p>
+        <p>
+          Observed human D<sub>2</sub> affinity K<sub>i</sub> ≈ 1.4 nM corresponds to
+          ΔG<sub>bind</sub> = −RT·ln(K<sub>a</sub>) ≈ <strong>−12.1 kcal/mol at 310 K</strong>. A tENCoM-informed
+          FlexAID∆S decomposition would attribute this to a strong enthalpic core (salt bridge + halogen/aromatic
+          contacts) partly offset by the <code>−TΔS_conf</code> cost of the folded butyrophenone chain — a
+          rigidification signature at the receptor that, on the tissue scale, is mirrored by the striatal
+          rigidity the drug is infamous for.
+        </p>
+      </div>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">06 · Harm Reduction</div>
+      <h2>No Moralizing. This Is a Serious Drug — Treat It Like One.</h2>
+      <p style="max-width:none;">Haloperidol is a prescription neuroleptic, not a recreational or PRN "knockout" agent. Most harm is mechanistic and predictable — and much of it is preventable with the right monitoring and a low index of suspicion for the emergencies below.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL / DANGEROUS COMBINATIONS:</strong> other QT-prolonging drugs (methadone, other antipsychotics, ondansetron, macrolides, quinolones, citalopram, cocaine, tricyclics) → additive torsades risk · CNS depressants + haloperidol → the "<strong>DRE</strong>"/benzo–haloperidol stacking used for agitation can cause oversedation and respiratory compromise · strong CYP3A4 inhibitors → toxic levels + QT · anything that lowers K⁺/Mg²⁺ (diuretics, vomiting) → torsades. This is prescriber territory — verify interactions and check an ECG/electrolytes. General references: <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Acute Emergencies — Know These
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Acute dystonia</strong>: sudden neck/jaw/eye spasm, tongue protrusion, oculogyric crisis; laryngeal dystonia can obstruct the airway. Treat fast with IM benztropine or diphenhydramine — it reverses in minutes.</li>
+            <li><strong style="color:var(--rose)">NMS</strong>: fever + rigidity + confusion + autonomic swings + ↑CK. STOP the drug, cool aggressively, get to an ED/ICU. Can be fatal.</li>
+            <li><strong style="color:var(--rose)">QT / torsades</strong>: palpitations, syncope, especially after IV dosing or with low K⁺/Mg²⁺. Needs ECG.</li>
+            <li>Akathisia mimics worsening psychosis — do not reflexively raise the dose.</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Chronic / Cumulative Risks
+          </h4>
+          <ul>
+            <li><strong>Tardive dyskinesia</strong> — risk rises with cumulative dose &amp; duration; may be irreversible. Screen with AIMS exams.</li>
+            <li>Hyperprolactinemia → galactorrhea, amenorrhea, sexual dysfunction, long-term bone loss.</li>
+            <li>Parkinsonism &amp; chronic akathisia; cognitive/affective blunting ("neuroleptic dysphoria").</li>
+            <li><strong style="color:var(--rose)">Black-box:</strong> increased mortality in elderly patients with dementia-related psychosis — not approved for that use.</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Drug Interactions
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">QT-prolongers</strong> (methadone, other antipsychotics, ondansetron, citalopram, macrolides, fluoroquinolones) — additive torsades risk.</li>
+            <li><strong style="color:var(--rose)">Strong CYP3A4 inhibitors</strong> (azoles, ritonavir, clarithromycin) — ↑ levels + QT.</li>
+            <li>CYP3A4 inducers (carbamazepine, rifampin) — ↓ levels, relapse risk.</li>
+            <li>CNS depressants / benzodiazepines — additive sedation &amp; respiratory depression at high combined load.</li>
+            <li>Anticholinergics — used to treat EPS but worsen constipation, delirium, urinary retention.</li>
+            <li>Lithium — rare reports of severe neurotoxicity with high-dose combination.</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Monitoring &amp; Discontinuation
+          </h4>
+          <ul>
+            <li>Baseline &amp; periodic <strong>ECG</strong> (QTc) and electrolytes — correct K⁺/Mg²⁺ before IV use.</li>
+            <li>Start low, titrate slowly; lowest effective dose limits EPS/TD. IV route: continuous cardiac monitoring.</li>
+            <li>Do not stop abruptly after long-term use — withdrawal dyskinesia and cholinergic rebound (nausea, insomnia) can occur; taper.</li>
+            <li>Regular AIMS screening for tardive dyskinesia; prolactin, weight, and movement review.</li>
+            <li>Not a substitute for treating the cause of agitation; avoid as a routine PRN sedative.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Binding Pose · D2 orthosteric pocket</span>
+          <span class="ngl-pdb-tag">PDB: 6LUQ</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="6LUQ"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            D<sub>2</sub> receptor (cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            Contact residues (&lt;4 Å)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Haloperidol (ligand GMJ)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">6LUQ</strong> — the human dopamine D<sub>2</sub>
+          receptor (DRD2–T4-lysozyme chimera) in complex with <strong>haloperidol</strong> (chemical component
+          <strong>GMJ</strong>), the inactive-state antagonist structure from Fan, Tan, Xu et&nbsp;al., <em>Nat
+          Commun</em> 2020. A genuine haloperidol co-crystal — the ligand you see bound in the orthosteric
+          aminergic pocket is the drug itself.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/6LUQ" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Haloperidol</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">D<sub>2</sub></div>
+                <span class="target-full">Dopamine D2 receptor (DRD2)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 1.4 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">primary target</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">σ<sub>1</sub></div>
+                <span class="target-full">Sigma-1 receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> ≈ 3 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:88%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Ligand</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--terra)">D<sub>3</sub></div>
+                <span class="target-full">Dopamine D3 receptor (DRD3)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--terra)">K<sub>i</sub> ≈ 6 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:78%;background:var(--terra)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">α<sub>1A</sub></div>
+                <span class="target-full">Alpha-1A adrenergic receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 11 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:66%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Antagonist</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--rose)">hERG</div>
+                <span class="target-full">K<sub>v</sub>11.1 / KCNH2 channel</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--rose)">IC<sub>50</sub> ≈ 27 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">QT liability</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:55%;background:var(--rose)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-block">Blocker</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">5-HT<sub>2A</sub></div>
+                <span class="target-full">Serotonin 2A receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val">K<sub>i</sub> ≈ 120 nM</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:33%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-antag">Antagonist</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          Values: haloperidol (ChEMBL CHEMBL54), median of curated human binding assays — D<sub>2</sub>,
+          D<sub>3</sub>, σ<sub>1</sub>, α<sub>1A</sub>, 5-HT<sub>2A</sub> K<sub>i</sub>; hERG functional
+          IC<sub>50</sub>. Rel. bars scaled on a pK<sub>i</sub>/pIC<sub>50</sub> log axis. Lower K<sub>i</sub>
+          = higher affinity. Note the ~85× D<sub>2</sub>:5-HT<sub>2A</sub> ratio — the hallmark of a typical antipsychotic.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #052 · Haloperidol (Haldol) · Le Bonhomme Pharma · Montréal ·
+    <a href="/">FlexAID∆S</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/periodic/">Periodic Table</a>
+    <br>
+    Affinities: ChEMBL v34 (CHEMBL54) curated human binding/functional assays. Structure: Fan L, Tan L, Xu Z, et al.,
+    "Haloperidol bound D2 dopamine receptor structure inspired the discovery of subtype selective ligands," Nat Commun 2020 ·
+    <a href="https://www.rcsb.org/structure/6LUQ" target="_blank" rel="noopener noreferrer">PDB 6LUQ</a>
+    <br>
+    Harm-reduction / interaction resources: <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> · <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a> · <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a>. This page is pharmacology education, not medical advice.
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '6LUQ',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

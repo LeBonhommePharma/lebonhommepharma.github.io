@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pregabalin — Drug of the Day #040 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of pregabalin (Lyrica): binding to the α2δ-1 auxiliary subunit of voltage-gated calcium channels, why it is NOT a GABA receptor ligand despite the name, reduced excitatory neurotransmitter release, neuropathic-pain and anxiety use, euphoria and misuse potential, the fatal pregabalin–opioid respiratory-depression interaction, dependence/withdrawal, renal clearance, real ChEMBL binding data, and an interactive 3D Cav2.2/α2δ-1 structure via Mol* Viewer.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0e14;
+  --bg-card:     rgba(16, 20, 28, 0.85);
+  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --border:      rgba(34,211,238,0.12);
+  --border-h:    rgba(34,211,238,0.30);
+  --teal:        #22D3EE;
+  --gold:        #FBBF24;
+  --terra:       #A78BFA;
+  --rose:        #f43f5e;
+  --green:       #4ade80;
+  --fg:          #d4dced;
+  --fg-muted:    #8a93a8;
+  --fg-dim:      rgba(138,147,168,0.5);
+  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --nav-h:       52px;
+  --r-sm:        6px;
+  --r-md:        10px;
+  --r-lg:        14px;
+  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
+  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
+  --nav-bg:      rgba(10,14,20,0.92);
+  --harm-bg:           rgba(244,63,94,0.06);
+  --harm-eyebrow-line: rgba(244,63,94,0.18);
+  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-border:  rgba(244,63,94,0.24);
+  --harm-fatal-bg:     rgba(244,63,94,0.10);
+  --harm-fatal-border: rgba(244,63,94,0.40);
+  --harm-fatal-strong: #ff6b7d;
+  --viewer-panel:      rgba(10,14,20,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f6fb;
+  --bg-card:     #ffffff;
+  --bg-alt:      #eef2f8;
+  --border:      rgba(0,0,0,0.10);
+  --border-h:    rgba(34,211,238,0.45);
+  --fg:          #1e293b;
+  --fg-muted:    #5a6478;
+  --fg-dim:      rgba(90,100,120,0.55);
+  --nav-bg:      rgba(255,255,255,0.85);
+  --harm-bg:           rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(220,38,38,0.28);
+  --harm-card-bg:      #ffffff;
+  --harm-card-border:  rgba(220,38,38,0.32);
+  --harm-fatal-bg:     rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(185,28,28,0.48);
+  --harm-fatal-strong: #be123c;
+  --viewer-panel:      rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { opacity: 0.75; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.4rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-tagline {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 2.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(34,211,238,0.55);
+  margin-bottom: 0.9rem;
+}
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+.hero-class em { color: var(--teal); font-style: normal; }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-value.rose { color: var(--rose); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.a2d  { color: var(--teal); }
+.mech-card-title.ca   { color: var(--gold); }
+.mech-card-title.myth { color: var(--rose); }
+.mech-card-title.other { color: var(--terra); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+.pathway-box .danger { color: var(--rose); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-node.danger  { color: var(--rose); border-color: rgba(244,63,94,0.3); background: rgba(244,63,94,0.07); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.pain    { background: var(--teal); }
+.circuit-bar.anxiety { background: var(--terra); }
+.circuit-bar.euphoria{ background: var(--gold); }
+.circuit-bar.depend  { background: var(--rose); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Myth / callout box ─────────────────────────────────── */
+.myth-box {
+  background: rgba(244,63,94,0.04);
+  border: 1px solid rgba(244,63,94,0.22);
+  border-left: 3px solid var(--rose);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.myth-box .myth-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 0.5rem;
+}
+.myth-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  max-width: none;
+}
+.myth-box p:last-child { margin-bottom: 0; }
+.myth-box strong { color: var(--fg); }
+
+/* ── Entropy Box ────────────────────────────────────────── */
+.entropy-box {
+  background: rgba(34,211,238,0.03);
+  border: 1px solid rgba(34,211,238,0.18);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+.entropy-box .entropy-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.5rem;
+}
+.entropy-box p {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-bottom: 0.6rem;
+  max-width: none;
+}
+.entropy-box p:last-child { margin-bottom: 0; }
+.entropy-box strong { color: var(--fg); }
+.entropy-box code { color: var(--teal); }
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(34,211,238,0.08);
+  border: 1px solid rgba(34,211,238,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(34,211,238,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s ease;
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-bind    { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
+.ab-mod     { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
+.ab-none    { color: var(--fg-muted); background: rgba(138,147,168,0.08); border: 1px solid rgba(138,147,168,0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────────────── -->
+<nav class="nav">
+  <a href="/drug-of-the-day/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Drug of the Day
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a>
+    <a href="/drug-of-the-day/dmt/">DMT #003</a>
+    <a href="/drug-of-the-day/">Series index</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#040 · Drug of the Day</span>
+    <span class="pill pill-teal">Gabapentinoid</span>
+    <span class="pill pill-terra">Schedule V (US) · Class C (UK)</span>
+    <span class="pill pill-rose">α2δ ligand — NOT a GABA drug</span>
+    <span class="pill pill-dim">2026-07-21</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Pregabalin</span>
+  </h1>
+  <p class="hero-tagline">The GABA That Isn't</p>
+  <p class="hero-iupac">IUPAC: (3S)-3-(aminomethyl)-5-methylhexanoic acid · a.k.a. (S)-3-isobutyl-GABA · C₈H₁₇NO₂ · MW 159.23 g/mol · CAS 148553-50-8</p>
+  <p class="hero-class">
+    <strong>Pregabalin (Lyrica).</strong>
+    A gabapentinoid — the more potent, better-absorbed successor to gabapentin. It was <em>designed</em> to look like GABA
+    and named to invoke it, but its therapeutic target is the <strong>α2δ-1 auxiliary subunit of voltage-gated calcium channels</strong>,
+    not any GABA receptor. It has <strong>no measurable activity at GABA<sub>A</sub>, GABA<sub>B</sub>, the benzodiazepine site, GABA transporters, or GABA-metabolizing enzymes.</strong>
+    Brand names: Lyrica, Alzain, Lecaent, Rewisca. Clinic/street: "pregabs", "buds", "Budweisers".
+  </p>
+
+  <div class="hero-facts">
+    <div class="hero-fact">
+      <span class="fact-label">Primary target</span>
+      <span class="fact-value teal">α2δ-1</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Mechanism</span>
+      <span class="fact-value">Ca<sub>V</sub> subunit ligand</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">α2δ-1 K<sub style="font-size:0.7em">i</sub></span>
+      <span class="fact-value teal">19 nM</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Bioavailability</span>
+      <span class="fact-value">≥ 90%</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">T<sub style="font-size:0.7em">½</sub></span>
+      <span class="fact-value">~6.3 h</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Metabolism</span>
+      <span class="fact-value gold">None (~90% renal)</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">Protein binding</span>
+      <span class="fact-value">0%</span>
+    </div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact">
+      <span class="fact-label">GABA activity</span>
+      <span class="fact-value rose">None</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main Two-Column Body ──────────────────────────────────── -->
+<div class="page-body">
+
+  <!-- ═══ LEFT: CONTENT ═══ -->
+  <div class="content-col">
+
+    <!-- MECHANISM OF ACTION -->
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>α2δ-1 Binding — Turning Down Calcium, Not Turning Up GABA</h2>
+
+      <p>
+        Pregabalin binds with high affinity to the <strong>α2δ-1 subunit</strong> (gene <em>CACNA2D1</em>), an extracellular
+        auxiliary subunit that clamps onto pore-forming Ca<sub>V</sub>1 and Ca<sub>V</sub>2 (N-, P/Q-, R-type) voltage-gated calcium
+        channels. The drug slots into an <strong>amino-acid recognition pocket in the α2δ von Willebrand factor-A (VWA) domain</strong> —
+        the same pocket that reads L-leucine and other branched-chain amino acids — because pregabalin <em>is</em> a lipophilic
+        amino acid. An arginine residue (R217 in the human "RRR" locus) is essential for binding; mutating it abolishes both
+        drug binding and analgesic effect.
+      </p>
+
+      <p>
+        Occupying that pocket does not slam the channel shut like a pore blocker. Instead it acts over hours-to-days:
+        pregabalin <strong>impairs the trafficking of α2δ-1 (and therefore the Ca<sub>V</sub> complex) to the presynaptic active zone</strong>,
+        and blunts activity-dependent channel recruitment. The net result is <em>less presynaptic Ca²⁺ influx in pathologically
+        hyperexcitable neurons</em>, and thus reduced release of excitatory neurotransmitters — glutamate, noradrenaline,
+        substance P, and calcitonin gene-related peptide (CGRP). It is a dampener on synapses that are firing too hard, which
+        is why it is state-dependent and does not paralyze normal transmission.
+      </p>
+
+      <div class="myth-box">
+        <div class="myth-label">The Misconception</div>
+        <p>
+          <strong>Pregabalin does not touch the GABA system.</strong> Despite being a 3-substituted analog of γ-aminobutyric acid
+          (and the USAN "-gab-" stem meaning "gabamimetic"), pregabalin is <strong>inactive at GABA<sub>A</sub> and GABA<sub>B</sub> receptors,
+          does not bind the benzodiazepine site, is not a substrate or inhibitor of GABA transporters (GAT), and does not alter
+          GABA synthesis (GAD), degradation (GABA-T), or reuptake.</strong> It is not converted into GABA or a GABA agonist in vivo.
+          The GABA resemblance is purely structural mimicry that lets the molecule ride the same L-amino-acid machinery; the
+          pharmacology lives entirely at α2δ. Anyone describing it as "a GABA drug" or "like a benzo at the receptor level"
+          is wrong about the mechanism — even though the <em>felt</em> effects can overlap with depressants downstream.
+        </p>
+      </div>
+
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title a2d">① α2δ-1 VWA Pocket</div>
+          <p>Binds the amino-acid recognition site in the α2δ-1 VWA domain (K<sub>i</sub> ~19 nM, [³H]-gabapentin displacement). The R217 "RRR" arginine is obligatory — mutation kills binding and analgesia. Highest affinity of any marketed gabapentinoid at this site.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title ca">② ↓ Ca<sub>V</sub> Trafficking</div>
+          <p>Chronic binding reduces forward trafficking of the α2δ-1/Ca<sub>V</sub> complex to the presynaptic membrane and impairs activity-dependent channel recruitment. Onset of full effect over days matches this trafficking mechanism, not an acute channel block.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title ca">③ ↓ Excitatory Release</div>
+          <p>Less presynaptic Ca²⁺ entry → reduced vesicular release of glutamate, noradrenaline, substance P, and CGRP — selectively where neurons are hyperexcited (injured dorsal-horn afferents, epileptic foci). Normal transmission is largely spared.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title myth">④ Zero GABA Activity</div>
+          <p>No agonism, antagonism, or modulation at GABA<sub>A</sub>/GABA<sub>B</sub>; no benzodiazepine-site binding; no effect on GABA uptake, synthesis, or catabolism. The "GABA" in the shared lineage is a design motif, not a mechanism.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ System-L Transport</div>
+          <p>Because it is an amino acid, pregabalin crosses the gut wall and blood–brain barrier on the L-type amino-acid transporter (LAT1/system L). Unlike gabapentin, its intestinal uptake is <strong>not saturable</strong> at clinical doses — hence dose-proportional, near-complete absorption.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑥ α2δ-1 &amp; Synaptogenesis</div>
+          <p>α2δ-1 is also a thrombospondin receptor driving excitatory synapse formation. Blocking this contributes to pregabalin's slow effects on neuropathic sensitization and may underlie its efficacy in central pain states, distinct from acute antinociception.</p>
+        </div>
+      </div>
+
+      <div class="pathway-box">
+        <span class="step">Pregabalin</span>
+        <span class="arrow">→ binds α2δ-1 VWA amino-acid pocket (R217) →</span>
+        <span class="step">↓ Ca<sub>V</sub> trafficking to active zone</span>
+        <span class="arrow">→ ↓ presynaptic Ca²⁺ influx →</span>
+        <span class="effect">↓ glutamate / NA / substance P / CGRP release</span>
+        <br>
+        <span class="step">Net effect</span>
+        <span class="arrow">→ dampens hyperexcitable circuits only →</span>
+        <span class="effect">analgesia · anticonvulsant · anxiolysis</span>
+        <br>
+        <span class="step">NOT involved:</span>
+        <span class="danger">GABA<sub>A</sub> · GABA<sub>B</sub> · BZD site · GAT · GAD · GABA-T — all untouched</span>
+      </div>
+    </div>
+
+    <!-- PHARMACOKINETICS -->
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>The Cleanest PK in the Formulary — and Why the Kidney Runs the Show</h2>
+
+      <p>
+        Pregabalin's pharmacokinetics are almost boringly clean, and that is the point. Oral bioavailability is
+        <strong>≥ 90% and dose-independent</strong> — the crucial improvement over gabapentin, whose saturable gut transporter
+        makes its absorption fall off at higher doses. Pregabalin is <strong>not bound to plasma proteins (0%)</strong>,
+        is <strong>essentially not metabolized</strong> (&lt; 2% recovered as the N-methyl metabolite; no meaningful CYP involvement),
+        and is <strong>eliminated ~90% unchanged in the urine</strong> by glomerular filtration.
+      </p>
+
+      <p>
+        That makes it the mirror image of most drugs in this series: no first-pass metabolism to speak of, no CYP-mediated
+        interactions, no active metabolites. The entire clearance story is <em>renal</em>. Elimination is directly proportional
+        to creatinine clearance, so in renal impairment or the elderly the drug <strong>accumulates</strong> unless the dose is cut —
+        and unmanaged accumulation is a common route to sedation, confusion, and (with opioids on board) respiratory depression.
+        Pregabalin is efficiently removed by hemodialysis, which requires supplemental dosing after each session.
+      </p>
+
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">≥ 90% (dose-indep.)</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub> (fasted)</span><span class="pk-val">~1 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (elimination)</span><span class="pk-val">~6.3 h</span></div>
+        <div class="pk-row"><span class="pk-key">Plasma protein binding</span><span class="pk-val">0%</span></div>
+        <div class="pk-row"><span class="pk-key">Volume of distribution</span><span class="pk-val">~0.5 L/kg</span></div>
+        <div class="pk-row"><span class="pk-key">Metabolism</span><span class="pk-val">Negligible (&lt;2%)</span></div>
+        <div class="pk-row"><span class="pk-key">Renal excretion (unchanged)</span><span class="pk-val">~90%</span></div>
+        <div class="pk-row"><span class="pk-key">Dialyzable</span><span class="pk-val">Yes (dose after HD)</span></div>
+      </div>
+
+      <p style="margin-top:1rem">
+        <strong>"Metabolism" cascade:</strong> there almost isn't one. The molecule that goes in is the molecule that comes out.
+      </p>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Pregabalin (oral)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          LAT1 / system-L
+          <span style="font-size:10px;color:var(--fg-dim)">gut + BBB</span>
+        </div>
+        <div class="meta-node active">Pregabalin (plasma / CNS)</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          glomerular filtration
+        </div>
+        <div class="meta-node inactive">~90% unchanged in urine</div>
+      </div>
+
+      <div class="metabolite-flow">
+        <div class="meta-node primary">Pregabalin</div>
+        <div class="meta-enzyme">
+          <span>→</span>
+          minor (non-CYP)
+        </div>
+        <div class="meta-node inactive">N-methyl-pregabalin (&lt;2%)</div>
+        <div class="meta-enzyme">
+          <span>✕</span>
+          no active metabolite
+        </div>
+        <div class="meta-node inactive">renal excretion</div>
+      </div>
+
+      <p>
+        <strong>Clinical consequence:</strong> because clearance ∝ CrCl, dosing is banded by renal function
+        (e.g., full dose at CrCl ≥ 60 mL/min, roughly halved at 30–60, and reduced further below that). The lack of protein
+        binding and hepatic metabolism means pharmacokinetic drug–drug interactions are minimal — the danger from combinations
+        is <em>pharmacodynamic</em> (additive CNS/respiratory depression), not metabolic.
+      </p>
+    </div>
+
+    <!-- CLINICAL / PSYCHOPHARMACOLOGY -->
+    <div class="section">
+      <div class="section-eyebrow">03 · Clinical Pharmacology &amp; Psychopharmacology</div>
+      <h2>From Neuropathic Pain to Euphoria — the Same Subunit, Different Circuits</h2>
+
+      <p>
+        Pregabalin is FDA-approved for <strong>neuropathic pain</strong> (diabetic peripheral neuropathy, postherpetic neuralgia,
+        spinal-cord-injury pain), <strong>fibromyalgia</strong>, and as <strong>adjunctive therapy for partial-onset seizures</strong>;
+        in the EU it is also licensed for <strong>generalized anxiety disorder (GAD)</strong>. All of these trace to the same
+        α2δ-1 mechanism expressed in different hyperexcitable circuits — dorsal-horn afferents, cortical epileptic networks, and
+        limbic anxiety loops respectively.
+      </p>
+
+      <div class="circuit-card">
+        <div class="circuit-bar pain"></div>
+        <div class="circuit-inner">
+          <h4>Neuropathic Pain &amp; Fibromyalgia (Dorsal Horn)</h4>
+          <p>Nerve injury upregulates α2δ-1 in primary afferents, amplifying presynaptic Ca²⁺-dependent glutamate/substance-P release onto dorsal-horn neurons — central sensitization. Pregabalin binds this upregulated α2δ-1 preferentially, reducing wind-up and allodynia. Efficacy builds over days-to-weeks, consistent with a trafficking mechanism rather than an acute analgesic.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar anxiety"></div>
+        <div class="circuit-inner">
+          <h4>Anxiolysis &amp; Anticonvulsant Action (Limbic / Cortex)</h4>
+          <p>By trimming excitatory drive in overactive amygdalar and cortical circuits, pregabalin produces anxiolysis (fast onset in GAD relative to SSRIs) and raises seizure threshold as an add-on anticonvulsant. Because it does not act at GABA<sub>A</sub>, it lacks the classic benzodiazepine receptor profile — yet the subjective calm can feel benzo-like, which fuels both clinical utility and misuse.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar euphoria"></div>
+        <div class="circuit-inner">
+          <h4>Euphoria &amp; Misuse Potential (Supratherapeutic)</h4>
+          <p>At doses well above therapeutic (often &gt;300–450 mg, sometimes grams), users report euphoria, relaxation, sociability, dissociation, and an "alcohol-like" or "opioid-like" disinhibition — likely via reduced excitatory tone plus indirect effects on mesolimbic circuits. Rapid dose escalation and the fast, reliable absorption sharpen the reinforcement. Misuse is concentrated among people who use opioids, in prisons, and in polydrug settings; it is a controlled substance (US Schedule V; UK Class C since 2019) for exactly this reason.</p>
+        </div>
+      </div>
+
+      <div class="circuit-card">
+        <div class="circuit-bar depend"></div>
+        <div class="circuit-inner">
+          <h4>Dependence &amp; Withdrawal</h4>
+          <p>Regular use produces physiological dependence. Abrupt discontinuation — especially after high-dose or long-term use — causes a withdrawal syndrome resembling benzodiazepine/alcohol withdrawal: anxiety, insomnia, sweating, nausea, tremor, tachycardia, and, rarely, seizures. Taper slowly (over ≥ 1 week, longer for high doses). Dependence can develop even at therapeutic doses in susceptible individuals.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENTROPY / FLEXAIDDS -->
+    <div class="section">
+      <div class="section-eyebrow">04 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>A Floppy Zwitterion in an Amino-Acid Pocket</h2>
+
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+          Pregabalin is the pharmacological opposite of a rigid, pre-organized ligand like cocaine's tropane cage.
+          It is a small (MW 159), highly flexible <strong>zwitterion</strong> — a protonated amine and a deprotonated
+          carboxylate joined by a chain with <strong>five rotatable bonds</strong> and a floppy isobutyl tail. In FlexAID∆S
+          modeling this predicts a <em>substantial</em> conformational-entropy penalty on binding: the free ligand samples a
+          broad ensemble of backbone and side-chain rotamers (high <code>S_conf</code>), and the α2δ-1 VWA pocket freezes it into
+          a single bound rotamer. That is a large negative <code>ΔS_conf</code> — an entropy cost the enthalpy of binding must
+          overpay for.
+        </p>
+        <p>
+          The compensation comes from a tight electrostatic network: the carboxylate and ammonium groups make salt-bridge/H-bond
+          contacts to the pocket's arginine (R217) and neighboring residues, the same recognition chemistry the site evolved to
+          read L-amino acids. In Shannon-entropy terms, the <strong>unbound pocket carries appreciable <code>H_pocket</code></strong>
+          (an amino-acid sensor that must accommodate several natural ligands) that <em>collapses</em> when pregabalin's charged
+          termini pin down the arginine — a clean entropy-collapse fingerprint of high-affinity recognition, even for a small ligand.
+        </p>
+        <p>
+          Consistency check: an observed K<sub>i</sub> ≈ 19 nM corresponds to
+          <code>ΔG_bind = −RT·ln(K<sub>a</sub>) ≈ −10.5 kcal/mol</code> at 310 K. The FlexAID∆S read is an
+          <strong>enthalpy-dominated</strong> binding event — strong ionic/H-bond enthalpy paying down a stiff conformational-entropy
+          tax from freezing a flexible amino acid. This is mechanistically distinct from an orthosteric channel blocker plugging a
+          pore; pregabalin is a recognition ligand for an auxiliary subunit, and its thermodynamic signature says so.
+        </p>
+      </div>
+    </div>
+
+    <!-- HARM REDUCTION -->
+    <div class="section harm-section">
+      <div class="section-eyebrow">05 · Harm Reduction</div>
+      <h2>Not Benign. The Danger Is Additive, and It Is Respiratory.</h2>
+      <p style="max-width:none;">Evidence-based, non-moralistic. Pregabalin alone rarely kills; pregabalin plus a second CNS depressant does. The physics is additive respiratory depression, and the kidney sets the ceiling.</p>
+
+      <div class="fatal-box">
+        <strong>FATAL COMBINATIONS:</strong> <strong>OPIOIDS</strong> (heroin, methadone, oxycodone, fentanyl) — pregabalin markedly potentiates opioid-induced respiratory depression and is implicated in a large and rising share of opioid overdose deaths (FDA warning 2019; UK ONS data). Also dangerous: benzodiazepines · alcohol · gabapentin · other sedatives — all additive CNS/respiratory depression. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+      </div>
+
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Opioid Interaction (the killer)
+          </h4>
+          <ul>
+            <li>Pregabalin + opioid = synergistic respiratory depression, not merely additive sedation</li>
+            <li>Present in a large fraction of gabapentinoid-associated deaths — almost always alongside opioids</li>
+            <li>Risk spikes after a tolerance break, dose increase, or when renal function drops (drug accumulates)</li>
+            <li>If using with opioids anyway: keep pregabalin low, never redose blindly, carry <strong>naloxone</strong>, never use alone</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Other Dangerous Combinations
+          </h4>
+          <ul>
+            <li><strong style="color:var(--rose)">Alcohol</strong> — additive sedation, respiratory depression, blackout risk</li>
+            <li><strong style="color:var(--rose)">Benzodiazepines</strong> — stacked CNS depression, memory loss</li>
+            <li><strong style="color:var(--rose)">Gabapentin</strong> — same mechanism; no benefit, doubled depressant load</li>
+            <li>Sedating antihistamines, muscle relaxants, Z-drugs — additive impairment</li>
+            <li>Interactions here are pharmacodynamic, not metabolic — "no CYP interaction" ≠ "safe to combine"</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Dependence &amp; Withdrawal
+          </h4>
+          <ul>
+            <li>Physiological dependence develops with regular use, sometimes at therapeutic doses</li>
+            <li>Abrupt stop → benzo/alcohol-like withdrawal: anxiety, insomnia, sweating, tremor, nausea, tachycardia</li>
+            <li><strong>Seizures</strong> can occur on abrupt high-dose discontinuation — taper, don't quit cold</li>
+            <li>Taper over ≥ 1 week (longer for high doses / long duration); reinstate and slow down if withdrawal is severe</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Renal &amp; Practical Cautions
+          </h4>
+          <ul>
+            <li>Clearance ∝ kidney function — reduced CrCl, dehydration, or age → accumulation → oversedation</li>
+            <li>Dose-adjust in renal impairment; supplement after hemodialysis</li>
+            <li>Common effects: dizziness, somnolence, peripheral edema, weight gain, blurred vision, ataxia</li>
+            <li>Mood/behavior: monitor for suicidal ideation (class anticonvulsant warning); don't drive until effects known</li>
+            <li>Tolerance to euphoria climbs fast; escalating dose to chase it is the path into dependence and OD risk</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fatal-box">
+        <strong>If someone is unresponsive with slow/shallow breathing after pregabalin + an opioid or other depressant:</strong>
+        this is an overdose. Call emergency services, give <strong>naloxone</strong> (it reverses the opioid component and buys time; it will not reverse pregabalin itself), and put them in the recovery position. Test opioids for fentanyl with strips from <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">DanceSafe</a>.
+      </div>
+    </div>
+
+  </div><!-- /content-col -->
+
+  <!-- ═══ RIGHT: VIEWER + TABLE ═══ -->
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+
+      <!-- Mol* Viewer -->
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D Target · Ca<sub>V</sub>2.2 + α2δ-1 complex</span>
+          <span class="ngl-pdb-tag">PDB: 7VFS</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="7VFS"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            Ca<sub>V</sub>2.2 α1B pore (cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6a9fcf"></div>
+            α2δ-1 auxiliary subunit
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            Ca²⁺ / N-glycans (het)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">7VFS</strong> — human N-type voltage-gated calcium channel Ca<sub>V</sub>2.2 in complex with the <strong>α2δ-1</strong> (CACNA2D1) and β1 auxiliary subunits, <em>apo state</em> (Gao, Yao &amp; Yan, 2021, <em>Nature</em> 596). This is pregabalin's real molecular target — the α2δ-1 subunit is fully resolved here.
+          <strong>No pregabalin is present:</strong> no gabapentinoid co-crystal / cryo-EM structure of the α2δ drug pocket exists in the PDB, so the drug-in-pocket is shown by none of these coordinates — the bound heteroatoms are Ca²⁺ ions and N-linked glycans (NAG), not the drug. The α2δ-1 VWA amino-acid pocket (R217 locus) is where pregabalin binds.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/7VFS" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <!-- Receptor Binding Affinity Table -->
+      <div class="binding-table-wrap" style="margin-top:1rem;">
+        <div class="binding-table-header">
+          <h3>Target Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">Pregabalin</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">α2δ-1</div>
+                <span class="target-full">Ca<sub>V</sub> subunit (CACNA2D1)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">K<sub>i</sub> = 19 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Primary target</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:100%;background:var(--teal)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-bind">Ligand / modulator</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">α2δ-2</div>
+                <span class="target-full">Ca<sub>V</sub> subunit (CACNA2D2)</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">K<sub>i</sub> = 99 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">Secondary</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:19%;background:var(--gold)"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-bind">Ligand / modulator</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">GABA<sub>A</sub></div>
+                <span class="target-full">GABA-A receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--fg-muted)">No activity</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">inactive</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:0%;"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-none">No binding</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">GABA<sub>B</sub></div>
+                <span class="target-full">GABA-B receptor</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--fg-muted)">No activity</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">inactive</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:0%;"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-none">No binding</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name">NET</div>
+                <span class="target-full">Noradrenaline transporter</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--fg-muted)">K<sub>i</sub> &gt; 10,000 nM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">no monoamine activity</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap">
+                  <div class="affinity-bar" style="width:2%;background:#64748b"></div>
+                </div>
+              </td>
+              <td><span class="action-badge ab-none">Negligible</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">
+          α2δ-1 / α2δ-2 K<sub>i</sub>: [³H]-gabapentin displacement, human Ca<sub>V</sub> α2δ (ChEMBL CHEMBL1919 / CHEMBL3896; J Med Chem 2005 &amp; 2021; ACS Med Chem Lett 2021). NET K<sub>i</sub> &gt; 10 µM: [³H]-nisoxetine displacement (J Med Chem 2021). GABA<sub>A</sub>/GABA<sub>B</sub> inactivity per Lyrica FDA label &amp; Taylor et al. (2007). Rel. bars normalized to α2δ-1; lower K<sub>i</sub> = higher affinity.
+        </div>
+      </div>
+
+    </div><!-- /viewer-sticky -->
+  </div><!-- /viewer-col -->
+
+</div><!-- /page-body -->
+
+<!-- ── Footer ───────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>
+    Drug of the Day #040 · Pregabalin (Lyrica) · Le Bonhomme Pharma · Montréal ·
+    <a href="/drug-of-the-day/">Series index</a> ·
+    <a href="/drug-of-the-day/cocaine/">Cocaine #001</a> ·
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <br>
+    References: Gao, Yao &amp; Yan (2021) Nature 596 (PDB 7VFS); Field et al. (2006) PNAS 103 (α2δ-1 / R217 binding);
+    Taylor et al. (2007) Epilepsy Res 73; Bockbrader et al. (2010) Clin Pharmacokinet 49 (PK); Lyrica FDA label (021446);
+    binding K<sub>i</sub> from ChEMBL (CHEMBL1059). ·
+    <a href="https://www.rcsb.org/structure/7VFS" target="_blank" rel="noopener noreferrer">PDB 7VFS</a>
+    <br>
+    Harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> ·
+    <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> ·
+    <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>
+  </p>
+</footer>
+
+<!-- ── Mol* Viewer Initialization ─────────────────────────────── -->
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '7VFS',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>
