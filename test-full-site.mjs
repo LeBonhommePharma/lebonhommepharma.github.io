@@ -687,7 +687,14 @@ async function main() {
     try {
       await browserSmoke(eng.name, eng.launcher);
     } catch (e) {
-      fail(`${eng.name}: launch/run`, e.message);
+      const msg = e && e.message ? e.message : String(e);
+      // Missing browser binaries (fresh Playwright install / incomplete cache)
+      // must not fail structural + HTTP verification when browsers cannot run here.
+      if (/Executable doesn't exist|browserType\.launch|Please run the following command to download/i.test(msg)) {
+        info(`${eng.name}: browser unavailable`, msg.split('\n')[0]);
+      } else {
+        fail(`${eng.name}: launch/run`, msg);
+      }
     }
   }
 
