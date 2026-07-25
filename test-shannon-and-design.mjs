@@ -95,6 +95,23 @@ for (const rel of ['cv.html', 'resume.html', 'entropy-driven/index.html', 'FlexA
   }
 }
 
+// FlexAIDdS must ship handoff hover tokens in styles.css (not legacy #2a9aa8)
+const flexCss = readFileSync(join(__dirname, 'FlexAIDdS/styles.css'), 'utf8');
+const flexHtml = readFileSync(join(__dirname, 'FlexAIDdS/index.html'), 'utf8');
+if (flexHtml.includes('interaction.css') || flexHtml.includes('href="/interaction.css"')) {
+  ok('FlexAIDdS index links interaction.css');
+} else {
+  fail('FlexAIDdS index links interaction.css');
+}
+if (flexCss.includes('brightness(1.06)')) ok('FlexAIDdS styles brightness(1.06)');
+else fail('FlexAIDdS styles brightness(1.06)');
+if (flexCss.includes('translateY(-1px)')) ok('FlexAIDdS styles translateY(-1px)');
+else fail('FlexAIDdS styles translateY(-1px)');
+if (flexCss.includes('translateY(-4px)')) ok('FlexAIDdS styles translateY(-4px)');
+else fail('FlexAIDdS styles translateY(-4px)');
+if (!/#2a9aa8/i.test(flexCss) && !/#2a9aa8/i.test(flexHtml)) ok('FlexAIDdS has no legacy #2a9aa8');
+else fail('FlexAIDdS has no legacy #2a9aa8');
+
 // CNAME
 const cname = readFileSync(join(__dirname, 'CNAME'), 'utf8').trim();
 if (cname === 'thebonhomme.com') ok('CNAME thebonhomme.com');

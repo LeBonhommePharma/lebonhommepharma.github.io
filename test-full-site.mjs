@@ -200,6 +200,18 @@ function validateInteractionAndShannon() {
       fail(`surface has interaction treatment: ${rel}`);
     }
   }
+
+  const flexHtml = readFileSync(join(__dirname, 'FlexAIDdS/index.html'), 'utf8');
+  const flexCss = readFileSync(join(__dirname, 'FlexAIDdS/styles.css'), 'utf8');
+  if (flexHtml.includes('/interaction.css') || flexHtml.includes('interaction.css')) {
+    ok('FlexAIDdS index links interaction.css');
+  } else {
+    fail('FlexAIDdS index links interaction.css');
+  }
+  if (flexCss.includes('brightness(1.06)')) ok('FlexAIDdS styles.css brightness(1.06)');
+  else fail('FlexAIDdS styles.css brightness(1.06)');
+  if (!/#2a9aa8/i.test(flexCss)) ok('FlexAIDdS styles.css has no #2a9aa8');
+  else fail('FlexAIDdS styles.css has no #2a9aa8');
 }
 
 function validateStaticAssets() {
