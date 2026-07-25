@@ -134,6 +134,74 @@ function validateDrugLibrary() {
   else ok('sample drug pages include theme.js');
 }
 
+function validateInteractionAndShannon() {
+  section('Interaction handoff + Shannon surface');
+
+  const ixPath = join(__dirname, 'interaction.css');
+  if (!existsSync(ixPath)) {
+    fail('interaction.css exists');
+    return;
+  }
+  const ix = readFileSync(ixPath, 'utf8');
+  const checks = [
+    ['token teal', /--ix-teal:\s*#22D3EE/i],
+    ['token violet', /--ix-violet:\s*#A78BFA/i],
+    ['token gold', /--ix-gold:\s*#FBBF24/i],
+    ['primary hover lift -1px', /translateY\(\s*-1px\s*\)/],
+    ['primary hover brightness 1.06', /brightness\(\s*1\.06\s*\)/],
+    ['card hover lift -4px', /translateY\(\s*-4px\s*\)/],
+    ['focus-visible 2px teal', /outline:\s*2px\s+solid\s+var\(--ix-teal\)/],
+  ];
+  for (const [name, re] of checks) {
+    if (re.test(ix)) ok(`interaction.css: ${name}`);
+    else fail(`interaction.css: ${name}`);
+  }
+
+  const home = readFileSync(join(__dirname, 'index.html'), 'utf8');
+  if (home.includes('href: \\"/shannon/\\"') || home.includes('href="/shannon/"') || home.includes('/shannon/')) {
+    ok('homepage references /shannon/');
+  } else {
+    fail('homepage references /shannon/');
+  }
+  if (/Explore Shannon/.test(home)) ok('homepage Shannon CTA Explore Shannon');
+  else fail('homepage Shannon CTA Explore Shannon');
+
+  const shannonPath = join(__dirname, 'shannon/index.html');
+  if (!existsSync(shannonPath)) {
+    fail('shannon/index.html exists');
+    return;
+  }
+  const sh = readFileSync(shannonPath, 'utf8');
+  if (/Shannon/i.test(sh) && sh.length > 2000) ok('shannon page body present', `${sh.length} bytes`);
+  else fail('shannon page body present', `len=${sh.length}`);
+  if (/interaction\.css/.test(sh)) ok('shannon loads interaction.css');
+  else fail('shannon loads interaction.css');
+  if (/thebonhomme\.com\/shannon/.test(sh)) ok('shannon canonical URL');
+  else fail('shannon canonical URL');
+  if (/#22D3EE/i.test(sh) && /#A78BFA/i.test(sh) && /#FBBF24/i.test(sh)) {
+    ok('shannon uses triad tokens');
+  } else {
+    fail('shannon uses triad tokens');
+  }
+
+  // Named surfaces load interaction treatment (link or inlined ix-canonical)
+  const surfaces = [
+    'cv.html',
+    'resume.html',
+    'entropy-driven/index.html',
+    'FlexAIDdS/index.html',
+    'index.html',
+  ];
+  for (const rel of surfaces) {
+    const html = readFileSync(join(__dirname, rel), 'utf8');
+    if (html.includes('interaction.css') || html.includes('ix-canonical') || html.includes('--ix-teal')) {
+      ok(`surface has interaction treatment: ${rel}`);
+    } else {
+      fail(`surface has interaction treatment: ${rel}`);
+    }
+  }
+}
+
 function validateStaticAssets() {
   section('Static asset presence');
   const required = [
@@ -170,6 +238,8 @@ function validateStaticAssets() {
     'resume.html',
     'resume.pdf',
     'index.html',
+    'interaction.css',
+    'shannon/index.html',
   ];
   let missing = 0;
   for (const rel of required) {
@@ -227,6 +297,9 @@ async function validateHttpRoutes() {
     'cv.pdf',
     'resume.html',
     'resume.pdf',
+    'interaction.css',
+    'shannon/',
+    'shannon/index.html',
   ];
 
   let bad = 0;
@@ -535,6 +608,33 @@ async function browserSmoke(engineName, launcher) {
     } else {
       info(`${engineName}: cv.html`, JSON.stringify(cv));
     }
+
+    // Shannon product page
+    pageErrors.length = 0;
+    await page.goto(BASE + 'shannon/', { waitUntil: 'domcontentloaded', timeout: TIMEOUT });
+    await page.waitForTimeout(1500);
+    const shannon = await page.evaluate(() => ({
+      title: document.title,
+      text: document.body?.innerText || '',
+      hasHero: !!document.getElementById('hero'),
+      hasInstall: !!document.getElementById('install'),
+      homeLink: !!document.querySelector('a[href="/"], a[href="/index.html"]'),
+    }));
+    if (/Shannon/i.test(shannon.title) && shannon.text.length > 200 && shannon.hasHero) {
+      ok(`${engineName}: shannon page`, `title="${shannon.title}" chars=${shannon.text.length}`);
+    } else {
+      fail(`${engineName}: shannon page`, JSON.stringify({
+        title: shannon.title,
+        len: shannon.text.length,
+        hasHero: shannon.hasHero,
+        errors: pageErrors.slice(0, 2),
+      }));
+    }
+    if (/entropy|collapse|H\s*=/i.test(shannon.text)) {
+      ok(`${engineName}: shannon distinctive content`);
+    } else {
+      fail(`${engineName}: shannon distinctive content`);
+    }
   } catch (e) {
     fail(`${engineName}: browser suite exception`, e.message);
   } finally {
@@ -572,6 +672,7 @@ async function main() {
 
   validateStaticAssets();
   validateDrugLibrary();
+  validateInteractionAndShannon();
   await validateJsSyntax();
   await validateHttpRoutes();
 

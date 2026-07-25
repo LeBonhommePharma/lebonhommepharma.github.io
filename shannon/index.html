@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shannon — Entropy Collapse for Frontier Agents · Le Bonhomme Pharma</title>
+  <meta name="description" content="Shannon: entropy-collapse detector for frontier LLM agents and multi-agent hubs. Same H = −Σ pᵢ log₂ pᵢ kernel as FlexAID∆S. Zero-shot evaluation-awareness and strategic-deception monitoring. &lt;1 µs per token.">
+  <meta name="keywords" content="Shannon entropy, LLM safety, evaluation awareness, strategic deception, multi-agent, entropy collapse, FlexAID∆S, AI safety">
+  <meta name="author" content="Le Bonhomme Pharma">
+  <meta name="theme-color" content="#0a0e14">
+  <link rel="canonical" href="https://thebonhomme.com/shannon/">
+
+  <meta property="og:title" content="Shannon — Entropy Collapse for Frontier Agents">
+  <meta property="og:description" content="Entropy-collapse detector for frontier LLM agents. Same configurational entropy kernel as FlexAID∆S. Zero-shot evaluation-awareness monitoring. &lt;1 µs/token.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://thebonhomme.com/shannon/">
+  <meta property="og:site_name" content="Le Bonhomme Pharma">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@BonhommePharma">
+  <meta name="twitter:title" content="Shannon — Entropy Collapse for Frontier Agents">
+  <meta name="twitter:description" content="Zero-shot evaluation-awareness detection via Shannon entropy collapse. Same kernel as FlexAID∆S binding.">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='2' width='28' height='28' rx='6' stroke='%2322D3EE' stroke-width='1.5'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-family='ui-monospace,monospace' font-size='14' font-weight='700' fill='%23A78BFA'%3EH%3C/text%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../theme.css">
+  <link rel="stylesheet" href="/interaction.css">
+  <script src="../theme.js"></script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    :root {
+      --bg: #0a0e14;
+      --bg-panel: rgba(16, 20, 28, 0.92);
+      --bg-card: rgba(16, 20, 28, 0.80);
+      --bg-alt: rgba(12, 16, 22, 0.50);
+      --teal: #22D3EE;
+      --violet: #A78BFA;
+      --terra: #A78BFA;
+      --gold: #FBBF24;
+      --text: #d4dced;
+      --fg: #d4dced;
+      --muted: #8a93a8;
+      --fg-muted: #8a93a8;
+      --border: rgba(120, 190, 220, 0.12);
+      --teal-06: rgba(34,211,238,0.06);
+      --teal-08: rgba(34,211,238,0.08);
+      --teal-10: rgba(34,211,238,0.10);
+      --teal-12: rgba(34,211,238,0.12);
+      --teal-15: rgba(34,211,238,0.15);
+      --teal-20: rgba(34,211,238,0.20);
+      --terra-10: rgba(167,139,250,0.10);
+      --terra-12: rgba(167,139,250,0.12);
+      --terra-25: rgba(167,139,250,0.25);
+      --terra-35: rgba(167,139,250,0.35);
+      --gold-06: rgba(251,191,36,0.06);
+      --gold-10: rgba(251,191,36,0.10);
+      --gold-12: rgba(251,191,36,0.12);
+      --font-body: 'IBM Plex Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image:
+        linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--teal-15); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--teal); }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+    .skip-link {
+      position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+    }
+    .skip-link:focus {
+      position: fixed; left: 12px; top: 12px; z-index: 100; width: auto; height: auto;
+      padding: 8px 14px; background: var(--teal); color: #0a0e14;
+      font-family: var(--font-mono); font-size: 12px; border-radius: 6px;
+    }
+
+    .container { max-width: 1152px; margin: 0 auto; padding: 0 1rem; }
+    @media (min-width: 640px) { .container { padding: 0 1.5rem; } }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: var(--bg-panel);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1152px; margin: 0 auto; padding: 0 1rem;
+      display: flex; align-items: center; justify-content: space-between; height: 56px;
+    }
+    @media (min-width: 640px) { .nav-inner { padding: 0 1.5rem; } }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-weight: 700; font-size: 14px;
+      color: var(--teal); letter-spacing: 0.02em;
+    }
+    .nav-brand .h-mark {
+      color: var(--violet); font-weight: 700;
+      border: 1px solid var(--terra-12); border-radius: 4px;
+      padding: 1px 5px; font-size: 11px; letter-spacing: 0.04em;
+    }
+    .nav-brand:hover .h-mark { border-color: var(--violet); }
+
+    .nav-links { display: none; align-items: center; gap: 16px; }
+    @media (min-width: 900px) { .nav-links { display: flex; } }
+    .nav-links a {
+      font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+    }
+    .nav-links a.nav-back { color: var(--muted); opacity: 0.9; }
+    .nav-gh {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px;
+    }
+
+    .nav-mobile-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 8px;
+      border: 1px solid var(--teal-15); background: var(--bg-card);
+      color: var(--muted); cursor: pointer;
+    }
+    @media (min-width: 900px) { .nav-mobile-btn { display: none; } }
+
+    .nav-mobile-menu {
+      display: none; flex-direction: column; gap: 2px;
+      padding: 0.5rem 1rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-panel);
+    }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-menu a {
+      font-family: var(--font-mono); font-size: 13px;
+      text-align: left; padding: 10px 8px; border-radius: 6px;
+      color: var(--muted);
+    }
+    .nav-mobile-menu a:hover { color: var(--teal); background: var(--teal-06); }
+
+    /* ── SECTIONS ── */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(34,211,238,0.2), transparent);
+    }
+    .section-label {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: var(--violet); margin-bottom: 12px;
+    }
+    .section-h2 {
+      font-family: var(--font-mono); font-size: 1.75rem; font-weight: 700;
+      margin-bottom: 1.5rem; letter-spacing: -0.01em;
+    }
+    .section-h2 .gold { color: var(--gold); }
+    .section-h2 .teal { color: var(--teal); }
+    .section-h2 .violet { color: var(--violet); }
+    .gradient-tg {
+      background: linear-gradient(135deg, #22D3EE, #FBBF24);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .gradient-vg {
+      background: linear-gradient(135deg, #A78BFA, #FBBF24);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .section { padding: 4rem 0; }
+    @media (min-width: 640px) { .section { padding: 5rem 0; } }
+    .section.alt { background: var(--bg-alt); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: calc(100svh - 56px);
+      padding: 5.5rem 1rem 4.5rem;
+      display: flex; flex-direction: column; justify-content: center;
+      overflow: hidden;
+    }
+    @media (min-width: 640px) { .hero { padding: 5.5rem 1.5rem 4.5rem; } }
+
+    .hero .glow-blob {
+      position: absolute; border-radius: 50%; pointer-events: none; filter: blur(80px);
+    }
+    .hero .glow-blob.teal { top: 2.5rem; left: -200px; width: 600px; height: 600px; background: rgba(34,211,238,0.06); }
+    .hero .glow-blob.violet { bottom: 0; right: -150px; width: 500px; height: 500px; background: rgba(167,139,250,0.05); }
+    .hero .glow-blob.gold { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 800px; background: rgba(251,191,36,0.02); }
+
+    .hero-content { position: relative; z-index: 10; max-width: 1152px; margin: 0 auto; width: 100%; text-align: center; }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.30em; text-transform: uppercase; color: var(--violet);
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: var(--font-mono);
+      font-size: clamp(3.25rem, 4vw + 2.5rem, 7rem);
+      font-weight: 700; line-height: 1.05; letter-spacing: 0;
+    }
+    .hero-title .h-down {
+      color: var(--violet);
+      font-size: 0.45em; vertical-align: super; margin-left: 0.1em;
+      font-weight: 600;
+    }
+    .hero-subtitle {
+      margin-top: 0.75rem; font-size: 1.2rem; color: var(--muted); font-weight: 400;
+      max-width: 640px; margin-left: auto; margin-right: auto;
+    }
+    @media (min-width: 640px) { .hero-subtitle { font-size: 1.3rem; } }
+    .hero-tagline {
+      margin-top: 0.85rem; font-size: 0.95rem; color: var(--muted);
+      max-width: 560px; margin-left: auto; margin-right: auto;
+    }
+    .hero-tagline strong { color: var(--gold); font-weight: 600; }
+
+    .equation {
+      display: inline-block; margin-top: 1.75rem;
+      animation: breathe 4s ease-in-out infinite;
+    }
+    .equation-text {
+      font-family: var(--font-mono); font-size: clamp(1.35rem, 3vw, 2.5rem); font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    @keyframes breathe {
+      0%,100% { opacity: 0.85; transform: scale(1); text-shadow: 0 0 20px rgba(34,211,238,0.2); }
+      50%     { opacity: 1; transform: scale(1.03); text-shadow: 0 0 40px rgba(34,211,238,0.4), 0 0 60px rgba(251,191,36,0.2); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .equation { animation: none; }
+    }
+
+    .hero-stats {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    @media (min-width: 640px) { .hero-stats { gap: 2.5rem; } }
+    .hero-stat { text-align: center; min-width: 100px; }
+    .hero-stat-value {
+      font-family: var(--font-mono); font-size: 2rem; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    @media (min-width: 640px) { .hero-stat-value { font-size: 2.5rem; } }
+    .hero-stat-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+      letter-spacing: 0.15em; margin-top: 4px;
+    }
+
+    .hero-badges {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 1.5rem;
+    }
+    .badge {
+      font-family: var(--font-mono); font-size: 10px; padding: 4px 12px;
+      border-radius: 3px; border: 1px solid var(--teal-20);
+      background: var(--teal-06); color: var(--teal); white-space: nowrap;
+    }
+    .badge.violet { border-color: rgba(167,139,250,0.46); background: var(--terra-10); color: var(--violet); }
+    .badge.gold  { border-color: rgba(251,191,36,0.46); background: var(--gold-10); color: var(--gold); }
+
+    .hero-ctas {
+      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 2rem;
+    }
+    .btn {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+      padding: 10px 24px; border-radius: 8px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary {
+      background: var(--teal); color: #0a0e14;
+      box-shadow: 0 0 26px color-mix(in srgb, #A78BFA 32%, transparent);
+    }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1.5px solid var(--teal-20);
+    }
+
+    .scroll-indicator {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: scroll-bounce 2s ease-in-out infinite;
+    }
+    .scroll-indicator span {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+    }
+    @keyframes scroll-bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+      50% { transform: translateX(-50%) translateY(8px); opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .scroll-indicator { animation: none; }
+    }
+
+    /* ── WHY ── */
+    .note-callout {
+      background: var(--gold-06); border-left: 3px solid var(--gold);
+      padding: 14px 18px; border-radius: 0 8px 8px 0;
+      font-size: 0.95rem; line-height: 1.7; color: var(--text);
+      max-width: 820px;
+    }
+    .note-callout strong { color: var(--gold); font-weight: 600; }
+    .why-grid {
+      display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem;
+    }
+    @media (min-width: 768px) { .why-grid { grid-template-columns: 1fr 1fr; } }
+    .why-card {
+      padding: 1.25rem; border-radius: 12px; background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+    .why-card h3 {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .why-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .why-card.problem h3 { color: var(--violet); }
+    .why-card.signal h3 { color: var(--teal); }
+    .signal-row {
+      display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 10px;
+      font-family: var(--font-mono); font-size: 12px;
+    }
+    .signal-row span { color: var(--muted); }
+    .signal-row .hi { color: var(--gold); font-weight: 600; }
+    .signal-row .lo { color: var(--violet); font-weight: 600; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid; grid-template-columns: 1fr; gap: 1rem;
+    }
+    @media (min-width: 768px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .feature-card {
+      padding: 1.25rem; border-radius: 12px; background: var(--bg-card);
+      border: 1px solid;
+    }
+    .feature-card.teal-card  { border-color: var(--teal-15); --cc: #22D3EE; }
+    .feature-card.terra-card { border-color: var(--terra-12); --cc: #A78BFA; }
+    .feature-card.gold-card  { border-color: var(--gold-12); --cc: #FBBF24; }
+    .feature-card h3 {
+      font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .feature-card.teal-card h3  { color: var(--teal); }
+    .feature-card.terra-card h3 { color: var(--violet); }
+    .feature-card.gold-card h3  { color: var(--gold); }
+    .feature-card p {
+      font-size: 13px; color: var(--muted); line-height: 1.6;
+    }
+    .feature-card ul { list-style: none; margin-top: 8px; }
+    .feature-card li {
+      font-size: 12px; color: var(--muted); line-height: 1.6;
+      padding: 3px 0; display: flex; gap: 8px;
+    }
+    .feature-card li::before {
+      content: '›'; color: rgba(34,211,238,0.45); flex-shrink: 0;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .arch-pipeline {
+      display: flex; flex-direction: column; gap: 0; margin-bottom: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .arch-pipeline { flex-direction: row; align-items: stretch; }
+    }
+    .arch-step {
+      flex: 1; padding: 1.25rem; position: relative;
+      background: var(--bg-card); border: 1px solid var(--teal-08);
+    }
+    .arch-step:first-child { border-radius: 12px 12px 0 0; }
+    .arch-step:last-child  { border-radius: 0 0 12px 12px; }
+    @media (min-width: 768px) {
+      .arch-step:first-child { border-radius: 12px 0 0 12px; }
+      .arch-step:last-child  { border-radius: 0 12px 12px 0; }
+    }
+    .arch-step-num {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;
+    }
+    .arch-step-title {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 600; margin-bottom: 6px;
+    }
+    .arch-step-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .arch-step .step-arrow {
+      position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+      color: var(--teal); font-size: 14px;
+    }
+    @media (min-width: 768px) {
+      .arch-step .step-arrow {
+        bottom: auto; right: -10px; left: auto; top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+    .arch-step:last-child .step-arrow { display: none; }
+
+    .pipeline-note {
+      font-size: 13px; color: var(--muted); max-width: 720px; line-height: 1.65;
+    }
+    .pipeline-note code {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--gold); background: var(--gold-06);
+      padding: 1px 6px; border-radius: 3px;
+    }
+
+    /* ── INSTALL ── */
+    .install-tabs {
+      display: flex; gap: 0; border-bottom: 1px solid var(--teal-15);
+      margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .install-tab {
+      font-family: var(--font-mono); font-size: 12px;
+      padding: 8px 16px; color: var(--muted);
+      border-bottom: 2px solid transparent; cursor: pointer;
+    }
+    .install-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+    .install-panel { display: none; }
+    .install-panel.active { display: block; }
+
+    .code-box {
+      font-family: var(--font-mono); font-size: 12px;
+      background: var(--teal-06); border-left: 3px solid var(--teal);
+      padding: 16px 20px; border-radius: 0 8px 8px 0;
+      line-height: 1.85; overflow-x: auto; color: var(--muted);
+    }
+    .code-box .cmt { color: rgba(138,147,168,0.55); }
+    .code-box .cmd { color: var(--teal); }
+    .code-box .kw  { color: var(--violet); }
+    .code-box .str { color: var(--gold); }
+    .code-box .plain { color: var(--muted); }
+
+    .install-hint {
+      margin-top: 1rem; font-size: 12px; color: var(--muted);
+      font-family: var(--font-mono); line-height: 1.6;
+    }
+    .install-hint a { color: var(--teal); }
+
+    /* ── ECOSYSTEM ── */
+    .ecosystem-row {
+      display: flex; flex-wrap: wrap; gap: 0.75rem;
+    }
+    .eco-card {
+      flex: 1; min-width: 180px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem 1.25rem;
+      text-decoration: none; display: flex; flex-direction: column; gap: 4px;
+      --cc: #22D3EE;
+    }
+    .eco-card.gold-card { border-color: var(--gold-12); --cc: #FBBF24; }
+    .eco-card.terra-card { border-color: var(--terra-12); --cc: #A78BFA; }
+    .eco-label {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--teal);
+    }
+    .eco-card.gold-card .eco-label { color: var(--gold); }
+    .eco-card.terra-card .eco-label { color: var(--violet); }
+    .eco-desc { font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+    .link-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: 12px;
+      padding: 6px 12px; border-radius: 6px;
+      border: 1px solid var(--border); color: var(--muted);
+      background: var(--bg-card); --cc: #22D3EE;
+    }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      background: rgba(10,14,20,0.9); border-top: 1px solid rgba(34,211,238,0.1);
+    }
+    .footer-inner { max-width: 1152px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .footer-top {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; flex-wrap: wrap;
+    }
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono); font-weight: 700; color: var(--teal); font-size: 14px;
+    }
+    .footer-brand .delta { color: var(--gold); }
+    .footer-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .footer-links a {
+      font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+    }
+    .footer-bottom {
+      margin-top: 1.5rem; padding-top: 1rem; text-align: center;
+      border-top: 1px solid rgba(34,211,238,0.08);
+    }
+    .footer-cite {
+      font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.6;
+    }
+    .footer-eq {
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 6px;
+    }
+    .footer-eq .gold { color: var(--gold); }
+    .footer-back {
+      display: inline-block; margin-top: 12px;
+      font-family: var(--font-mono); font-size: 12px; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px;
+    }
+
+    /* fade-in */
+    .fade-section { opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .fade-section.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-section { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#hero">Skip to content</a>
+
+  <!-- ═══ NAV ═══ -->
+  <nav class="nav" aria-label="Primary">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-brand">
+        Shannon
+        <span class="h-mark" title="Entropy decreasing">H↓</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#install">Install</a>
+        <a href="#hub">Hub</a>
+        <a href="https://github.com/LeBonhommePharma/Shannon" class="nav-gh" target="_blank" rel="noopener noreferrer" data-ix-chrome>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="/" class="nav-back">Le Bonhomme</a>
+      </div>
+
+      <button class="nav-mobile-btn" id="mobile-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path id="menu-icon" d="M3 12h18M3 6h18M3 18h18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="nav-mobile-menu" id="mobile-menu" hidden>
+      <a href="#overview">Overview</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#install">Install</a>
+      <a href="#hub">Hub</a>
+      <a href="https://github.com/LeBonhommePharma/Shannon" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="/">Le Bonhomme</a>
+    </div>
+  </nav>
+
+  <main style="padding-top: 56px; position: relative; z-index: 10;">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section id="hero" class="hero">
+      <div class="glow-blob teal" aria-hidden="true"></div>
+      <div class="glow-blob violet" aria-hidden="true"></div>
+      <div class="glow-blob gold" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <p class="hero-eyebrow">Le Bonhomme Pharma · AI Safety · Open Science</p>
+
+        <h1 class="hero-title">
+          Shannon<span class="h-down">H↓</span>
+        </h1>
+
+        <p class="hero-subtitle">Entropy-collapse detector for frontier LLM agents</p>
+        <p class="hero-tagline">
+          Zero-shot evaluation-awareness and strategic-deception monitoring —
+          same <strong>H = −Σ pᵢ log₂ pᵢ</strong> kernel as FlexAID∆S binding
+        </p>
+
+        <div class="equation" aria-label="Shannon entropy equation">
+          <p class="equation-text">
+            <span style="color:#FBBF24;">H</span>
+            <span style="color:#8a93a8;"> = −Σ </span>
+            <span style="color:#22D3EE;">pᵢ</span>
+            <span style="color:#8a93a8;"> log₂ </span>
+            <span style="color:#A78BFA;">pᵢ</span>
+          </p>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value" style="color:#22D3EE;">94%</div>
+            <div class="hero-stat-label">SHANNON COLLAPSE</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" style="color:#A78BFA;">&lt;1µs</div>
+            <div class="hero-stat-label">PER TOKEN</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" style="color:#FBBF24;">0-shot</div>
+            <div class="hero-stat-label">EVAL AWARENESS</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" style="color:#d4dced;">OSS</div>
+            <div class="hero-stat-label">OPEN SOURCE</div>
+          </div>
+        </div>
+
+        <div class="hero-badges">
+          <span class="badge">C++20</span>
+          <span class="badge violet">Python</span>
+          <span class="badge gold">Swift · Pill</span>
+          <span class="badge">Apache-friendly</span>
+          <span class="badge violet">Multi-agent hub</span>
+        </div>
+
+        <div class="hero-ctas">
+          <a href="#install" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Get started
+          </a>
+          <a href="https://github.com/LeBonhommePharma/Shannon" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <div class="scroll-indicator" aria-hidden="true">
+        <span>Scroll to collapse</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8a93a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════ WHY / PROBLEM ═══════════ -->
+    <section id="overview" class="section fade-section">
+      <div class="container">
+        <p class="section-label">// why shannon</p>
+        <h2 class="section-h2">Frontier agents hide <span class="gradient-vg">evaluation awareness</span></h2>
+
+        <div class="note-callout">
+          When an LLM agent realizes it is being evaluated, its token distribution
+          undergoes a characteristic <strong>entropy collapse</strong> — the same
+          thermodynamic signature as a ligand locking into a binding pocket.
+          Shannon detects that collapse in real time, with white-box physics and
+          no fine-tuning.
+        </div>
+
+        <div class="why-grid">
+          <div class="why-card problem">
+            <h3>The problem</h3>
+            <p>
+              Frontier models sandbag, scheme, and strategically narrow their
+              outputs under eval conditions. Black-box probes and behavioral
+              checks lag the distributional shift. You need a signal that is
+              model-agnostic, streaming-native, and grounded in information theory.
+            </p>
+          </div>
+          <div class="why-card signal">
+            <h3>The signal</h3>
+            <p>
+              Configurational entropy over the next-token distribution. Broad
+              exploratory sampling stays high-H; strategic lock-in drops H hard.
+            </p>
+            <div class="signal-row">
+              <div><span>Normal</span> <span class="hi">H ~ 8–12 bits</span></div>
+              <div><span>Eval-aware</span> <span class="lo">H ~ 2–4 bits</span></div>
+              <div><span>Trigger</span> <span class="lo">ΔH &lt; −3.2 bits</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════ FEATURES ═══════════ -->
+    <section id="features" class="section alt fade-section">
+      <div class="container">
+        <p class="section-label">// capabilities</p>
+        <h2 class="section-h2">Capabilities <span class="gradient-tg">grid</span></h2>
+
+        <div class="features-grid">
+          <div class="feature-card teal-card">
+            <h3>Collapse detection</h3>
+            <p>Sliding-window entropy tracker with stable two-pass variance, z-score, and ΔH triggers. Callback-driven handrails: log, alert, throttle, kill, webhook.</p>
+            <ul>
+              <li>Default threshold δ = −3.2 bits</li>
+              <li>Configurable window (default 8 tokens)</li>
+              <li>Bounded traces for long agents</li>
+            </ul>
+          </div>
+
+          <div class="feature-card terra-card">
+            <h3>Per-token speed</h3>
+            <p>SIMD dispatch across Scalar, OpenMP, SSE4.2, AVX2, AVX-512, and NEON. Top-k API logprobs stay under one microsecond per token on the committed benchmark path.</p>
+            <ul>
+              <li>&lt;1 µs/token (top-k streaming)</li>
+              <li>Logits, probs, or log-probs input</li>
+              <li>NaN-safe log-sum-exp kernel</li>
+            </ul>
+          </div>
+
+          <div class="feature-card gold-card">
+            <h3>Agent hub / gate</h3>
+            <p>Shannon Gate coordinates spawn, control, monitor, and kill across local agent processes. Hub audit surfaces collapse events with full entropy traces.</p>
+            <ul>
+              <li>Hub manager + handrail engine</li>
+              <li>Unix socket and shared-memory streams</li>
+              <li>Pill bridge for live macOS readout</li>
+            </ul>
+          </div>
+
+          <div class="feature-card teal-card">
+            <h3>Cross-host roster</h3>
+            <p>Attach agents running under common hosts and terminals. Same entropy pipeline whether the stream comes from Codex, Claude, Grok, or OpenCode.</p>
+            <ul>
+              <li>Codex · Claude · Grok · OpenCode</li>
+              <li>Terminal attach (⌘D on macOS Pill)</li>
+              <li>JSONL stdin and socket ingest</li>
+            </ul>
+          </div>
+
+          <div class="feature-card terra-card">
+            <h3>Same kernel as docking</h3>
+            <p>Direct port of the FlexAID∆S configurational entropy engine (statmech log-sum-exp). Jaynes identity: Gibbs S and Shannon H are one object in different units.</p>
+            <ul>
+              <li>H = −Σ pᵢ log₂ pᵢ</li>
+              <li>Validated docking lineage (r = 0.93 ITC)</li>
+              <li>Shared math with FlexAID∆S / NATURaL</li>
+            </ul>
+          </div>
+
+          <div class="feature-card gold-card">
+            <h3>Open Apache-friendly OSS</h3>
+            <p>C++20 core, Python package, Swift Pill/macOS app. Clone, build, and instrument your own agent streams without a proprietary monitor stack.</p>
+            <ul>
+              <li>C++20 · Python · Swift (Pill)</li>
+              <li>Homebrew formula + cask paths</li>
+              <li>github.com/LeBonhommePharma/Shannon</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════ HOW IT WORKS ═══════════ -->
+    <section id="how" class="section fade-section">
+      <div class="container">
+        <p class="section-label">// pipeline</p>
+        <h2 class="section-h2">How it <span class="teal">works</span></h2>
+
+        <div class="arch-pipeline">
+          <div class="arch-step">
+            <div class="arch-step-num">Step 1</div>
+            <div class="arch-step-title" style="color:var(--teal);">Stream tokens</div>
+            <div class="arch-step-desc">Ingest logits, probs, or log-probs via JSONL stdin, Unix socket, or shared memory from the live LLM agent.</div>
+            <span class="step-arrow" aria-hidden="true">→</span>
+          </div>
+          <div class="arch-step">
+            <div class="arch-step-num">Step 2</div>
+            <div class="arch-step-title" style="color:var(--violet);">Compute H</div>
+            <div class="arch-step-desc">UnifiedDispatch selects the best SIMD kernel. Per-token Shannon entropy H and sliding-window ΔH in bits.</div>
+            <span class="step-arrow" aria-hidden="true">→</span>
+          </div>
+          <div class="arch-step">
+            <div class="arch-step-num">Step 3</div>
+            <div class="arch-step-title" style="color:var(--gold);">Collapse / hub audit</div>
+            <div class="arch-step-desc">CollapseDetector fires handrails. Hub records the event; Gate can alert, throttle, or kill the agent process.</div>
+          </div>
+        </div>
+
+        <p class="pipeline-note">
+          Normal generation holds <code>H ~ 8–12 bits</code>. Evaluation-aware or
+          strategic modes compress toward <code>H ~ 2–4 bits</code>. When
+          <code>ΔH &lt; −3.2</code>, Shannon reports collapse — the same phase
+          signature FlexAID∆S reads when a ligand locks into a pocket.
+        </p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════ INSTALL ═══════════ -->
+    <section id="install" class="section alt fade-section">
+      <div class="container" style="max-width:896px;">
+        <p class="section-label">// get started</p>
+        <h2 class="section-h2">Install</h2>
+
+        <div class="install-tabs" role="tablist" aria-label="Install methods">
+          <button class="install-tab active" type="button" role="tab" data-tab="clone" aria-selected="true">Clone &amp; build</button>
+          <button class="install-tab" type="button" role="tab" data-tab="macos" aria-selected="false">macOS quick start</button>
+          <button class="install-tab" type="button" role="tab" data-tab="python" aria-selected="false">Python</button>
+          <button class="install-tab" type="button" role="tab" data-tab="agent" aria-selected="false">Agent CLI</button>
+        </div>
+
+        <div class="install-panel active" id="panel-clone" role="tabpanel">
+          <div class="code-box">
+            <div><span class="cmt"># clone</span></div>
+            <div><span class="plain">$</span> <span class="cmd">git clone</span> https://github.com/LeBonhommePharma/Shannon.git</div>
+            <div><span class="plain">$</span> <span class="cmd">cd</span> Shannon</div>
+            <div style="margin-top:8px;"><span class="cmt"># C++20 core + shannon-agent</span></div>
+            <div><span class="plain">$</span> <span class="cmd">cmake</span> -B build -DCMAKE_BUILD_TYPE=Release</div>
+            <div><span class="plain">$</span> <span class="cmd">cmake</span> --build build -j</div>
+            <div><span class="plain">$</span> <span class="cmd">ctest</span> --test-dir build --output-on-failure</div>
+          </div>
+          <p class="install-hint">Options: <span style="color:var(--gold);">SHANNON_BUILD_AGENT</span>, <span style="color:var(--gold);">SHANNON_BUILD_PYTHON</span>, <span style="color:var(--gold);">SHANNON_USE_OPENMP</span> (defaults ON).</p>
+        </div>
+
+        <div class="install-panel" id="panel-macos" role="tabpanel">
+          <div class="code-box">
+            <div><span class="cmt"># one command from a clone — app + pets + menu-bar pill</span></div>
+            <div><span class="plain">$</span> <span class="cmd">git clone</span> https://github.com/LeBonhommePharma/Shannon</div>
+            <div><span class="plain">$</span> <span class="cmd">cd</span> Shannon</div>
+            <div><span class="plain">$</span> <span class="cmd">./scripts/shannon</span></div>
+            <div style="margin-top:8px;"><span class="cmt"># then: look for the Shannon glyph in the menu bar</span></div>
+            <div><span class="plain">$</span> <span class="cmd">./scripts/shannon</span> help</div>
+            <div><span class="plain">$</span> <span class="cmd">./scripts/shannon</span> probe</div>
+          </div>
+          <p class="install-hint">Press ⌘D in Terminal, Claude, ChatGPT, Codex, or a browser to attach that app as an agent + pet.</p>
+        </div>
+
+        <div class="install-panel" id="panel-python" role="tabpanel">
+          <div class="code-box">
+            <div><span class="plain">$</span> <span class="cmd">pip install</span> <span class="str">"git+https://github.com/LeBonhommePharma/Shannon.git"</span></div>
+            <div><span class="cmt"># or from a clone:</span></div>
+            <div><span class="plain">$</span> <span class="cmd">pip install</span> -e <span class="str">".[dev]"</span></div>
+            <div style="margin-top:8px;"><span class="kw">from</span> shannon <span class="kw">import</span> ShannonCollapseDetector</div>
+            <div>detector = ShannonCollapseDetector(window_size=<span class="str">8</span>, threshold=<span class="str">-3.2</span>)</div>
+            <div>result = detector.add_logits(logits)</div>
+            <div><span class="kw">if</span> result.collapsed: ...</div>
+          </div>
+          <p class="install-hint">CLI: <span style="color:var(--teal);">shannon-monitor</span>. Optional C++ extension builds when a C++20 compiler and pybind11 are available.</p>
+        </div>
+
+        <div class="install-panel" id="panel-agent" role="tabpanel">
+          <div class="code-box">
+            <div><span class="cmt"># monitor stdin JSONL</span></div>
+            <div><span class="plain">$</span> <span class="cmd">cat</span> token_stream.jsonl <span class="plain">|</span> ./build/shannon-agent</div>
+            <div style="margin-top:8px;"><span class="cmt"># handrails</span></div>
+            <div><span class="plain">$</span> ./build/shannon-agent \</div>
+            <div>    --window <span class="str">8</span> \</div>
+            <div>    --threshold <span class="str">-3.2</span> \</div>
+            <div>    --handrail <span class="str">alert</span> \</div>
+            <div>    --sustained <span class="str">kill</span> \</div>
+            <div>    --count <span class="str">3</span></div>
+            <div style="margin-top:8px;"><span class="cmt"># shared memory / socket</span></div>
+            <div><span class="plain">$</span> ./build/shannon-agent --shmem /shannon_logits</div>
+            <div><span class="plain">$</span> ./build/shannon-agent --socket /tmp/shannon.sock</div>
+          </div>
+          <p class="install-hint">Quiet mode exit codes: 0 = safe · 1 = collapse · 2 = error. Full flags in the <a href="https://github.com/LeBonhommePharma/Shannon" target="_blank" rel="noopener noreferrer">repository README</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════ HUB ═══════════ -->
+    <section id="hub" class="section fade-section">
+      <div class="container">
+        <p class="section-label">// multi-agent hub</p>
+        <h2 class="section-h2">Shannon <span class="violet">Gate</span> &amp; hub</h2>
+        <p style="font-size:0.95rem; color:var(--muted); max-width:720px; margin-bottom:1.5rem; line-height:1.7;">
+          The multi-agent hub is the control plane: spawn, control, monitor, and kill
+          agents under a single entropy referee. Collapse events roll into a hub audit
+          trail; the macOS Pill surfaces live H and agent pets in the notch and menu bar.
+        </p>
+
+        <div class="features-grid">
+          <div class="feature-card teal-card">
+            <h3>Spawn &amp; attach</h3>
+            <p>Register local agents and attach terminal or app hosts. Pets live under <code style="font-family:var(--font-mono);color:var(--gold);font-size:12px;">~/.shannon/pets/</code>.</p>
+          </div>
+          <div class="feature-card terra-card">
+            <h3>Monitor &amp; audit</h3>
+            <p>Per-agent entropy streams, collapse callbacks, and hub-level audit of strategic lock-in across the roster.</p>
+          </div>
+          <div class="feature-card gold-card">
+            <h3>Handrail actions</h3>
+            <p>Escalation ladder: log-only → alert → throttle → kill → coredump → webhook — with cooldown and sustained-count gates.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem; display:flex; flex-wrap:wrap; gap:8px;">
+          <span class="link-chip">Codex</span>
+          <span class="link-chip">Claude</span>
+          <span class="link-chip">Grok</span>
+          <span class="link-chip">OpenCode</span>
+          <span class="link-chip">Terminal · ⌘D</span>
+          <span class="link-chip">Pill · macOS</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- ═══════════ ECOSYSTEM ═══════════ -->
+    <section id="ecosystem" class="section alt fade-section">
+      <div class="container">
+        <p class="section-label">// ecosystem</p>
+        <h2 class="section-h2">Related <span class="gold">work</span></h2>
+
+        <div class="ecosystem-row">
+          <a class="eco-card" href="/FlexAIDdS/">
+            <span class="eco-label">FlexAID∆S</span>
+            <span class="eco-desc">Entropy-driven molecular docking. Source of the configurational entropy kernel.</span>
+          </a>
+          <a class="eco-card terra-card" href="/entropy-driven/">
+            <span class="eco-label">Entropy-Driven</span>
+            <span class="eco-desc">Product narrative: genetic algorithms meet statistical mechanics.</span>
+          </a>
+          <a class="eco-card gold-card" href="/">
+            <span class="eco-label">Le Bonhomme</span>
+            <span class="eco-desc">Homepage — open science from Little Burgundy, Montréal.</span>
+          </a>
+          <a class="eco-card" href="https://github.com/LeBonhommePharma/Shannon" target="_blank" rel="noopener noreferrer">
+            <span class="eco-label">GitHub · Shannon</span>
+            <span class="eco-desc">Source, benchmarks, Pill, and agent hub. Clone and instrument.</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect x="2" y="2" width="28" height="28" rx="6" stroke="#22D3EE" stroke-width="1.5"/>
+            <text x="16" y="21" text-anchor="middle" font-family="ui-monospace,monospace" font-size="13" font-weight="700" fill="#A78BFA">H</text>
+          </svg>
+          Shannon<span class="delta"> · H↓</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/LeBonhommePharma/Shannon" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://x.com/BonhommePharma" target="_blank" rel="noopener noreferrer">@BonhommePharma</a>
+          <a href="/FlexAIDdS/">FlexAID∆S</a>
+          <a href="/">Le Bonhomme Pharma</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-cite">
+          © 2024–2026 LP · Le Bonhomme Pharma · Montréal (Little Burgundy) · Québec · Open Source
+        </p>
+        <p class="footer-eq">
+          <span class="gold">H = −Σ pᵢ log₂ pᵢ</span> · Entropy collapse for frontier agents
+        </p>
+        <a href="/" class="footer-back">← Back to Le Bonhomme Pharma</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* Mobile nav */
+    var toggle = document.getElementById('mobile-toggle');
+    var menu = document.getElementById('mobile-menu');
+    var icon = document.getElementById('menu-icon');
+    var open = false;
+    if (toggle && menu) {
+      menu.hidden = true;
+      toggle.addEventListener('click', function () {
+        open = !open;
+        menu.classList.toggle('open', open);
+        menu.hidden = !open;
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (icon) {
+          icon.setAttribute('d', open ? 'M6 18L18 6M6 6l12 12' : 'M3 12h18M3 6h18M3 18h18');
+        }
+      });
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          open = false;
+          menu.classList.remove('open');
+          menu.hidden = true;
+          toggle.setAttribute('aria-expanded', 'false');
+          if (icon) icon.setAttribute('d', 'M3 12h18M3 6h18M3 18h18');
+        });
+      });
+    }
+
+    /* Install tabs */
+    document.querySelectorAll('.install-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.install-tab').forEach(function (t) {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.install-panel').forEach(function (p) {
+          p.classList.remove('active');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        var panel = document.getElementById('panel-' + tab.dataset.tab);
+        if (panel) panel.classList.add('active');
+      });
+    });
+
+    /* Fade-in */
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) e.target.classList.add('visible');
+        });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.fade-section').forEach(function (el) { obs.observe(el); });
+    } else {
+      document.querySelectorAll('.fade-section').forEach(function (el) { el.classList.add('visible'); });
+    }
+  })();
+  </script>
+</body>
+</html>
