@@ -64,7 +64,7 @@ if (sh.includes('id="hero"') && sh.includes('id="install"') && sh.includes('id="
 }
 if (sh.includes('LeBonhommePharma/Shannon')) ok('shannon github reference');
 else fail('shannon github reference');
-if (sh.includes('/FlexAIDdS/') && sh.includes('/')) ok('shannon ecosystem links');
+if ((sh.includes('/FlexAIDdS/') || sh.includes('/flexaid-ds/')) && sh.includes('/')) ok('shannon ecosystem links');
 else fail('shannon ecosystem links');
 
 // Homepage product + footer point on-site
