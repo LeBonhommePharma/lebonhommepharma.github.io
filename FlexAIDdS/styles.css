@@ -237,9 +237,12 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-primary { background: var(--teal); color: #0a0e14; box-shadow: 0 0 18px rgba(34,211,238,0.3); }
-.btn-primary:hover { background: #2a9aa8; box-shadow: 0 0 24px rgba(34,211,238,0.5); transform: translateY(-1px); }
+.btn-primary { box-shadow: 0 0 26px color-mix(in srgb, #A78BFA 32%, transparent); }
+.btn-primary:hover { filter: brightness(1.06); box-shadow: 0 0 24px color-mix(in srgb, #A78BFA 50%, transparent); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
 .btn-outline { background: transparent; color: var(--fg); border: 1px solid var(--teal-20); }
-.btn-outline:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-1px); }
+.btn-outline:hover { border-color: #22D3EE; color: #22D3EE; transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 0 18px color-mix(in srgb, #22D3EE 30%, transparent); }
+.btn-outline:active { transform: translateY(0); }
 
 /* ───── KEYWORD SPECTRUM ───── */
 .kw {
@@ -347,7 +350,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   padding: 8px 16px; color: var(--fg-muted);
   transition: all 0.2s; border-bottom: 2px solid transparent;
 }
-.install-tab:hover { color: var(--fg); }
+.install-tab:hover { color: #22D3EE; }
 .install-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
 .code-box {
   font-family: var(--font-mono); font-size: 12px;
@@ -477,7 +480,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   padding: 10px 14px; border-radius: 8px; background: var(--bg-card);
   border: 1px solid var(--teal-08); transition: all 0.2s;
 }
-.module-chip:hover { border-color: var(--teal-20); transform: translateY(-2px); }
+.module-chip:hover { border-color: #22D3EE; transform: translateX(4px); background: color-mix(in srgb, #22D3EE 8%, transparent); }
 .module-chip .module-name {
   font-family: var(--font-mono); font-size: 12px;
   font-weight: 600; color: var(--gold); margin-bottom: 2px;
