@@ -190,6 +190,8 @@ function validateInteractionAndShannon() {
     'resume.html',
     'entropy-driven/index.html',
     'FlexAIDdS/index.html',
+    'flexaid-ds/index.html',
+    'flexaid-ds/styles.css',
     'index.html',
   ];
   for (const rel of surfaces) {
@@ -230,6 +232,8 @@ function validateStaticAssets() {
     'assets/favicon-flexaid-ds.svg',
     'assets/logo-flexaid-ds.svg',
     'FlexAIDdS/index.html',
+    'flexaid-ds/index.html',
+    'flexaid-ds/styles.css',
     'FlexAIDdS/app.js',
     'FlexAIDdS/app.jsx',
     'FlexAIDdS/components.jsx',
@@ -295,6 +299,7 @@ async function validateHttpRoutes() {
     'drug-of-the-day/naltrexone/',
     'drug-of-the-day/lsd/',
     'FlexAIDdS/',
+    'flexaid-ds/',
     'FlexAIDdS/app.js',
     'FlexAIDdS/styles.css',
     'EntropyDocking.html',
