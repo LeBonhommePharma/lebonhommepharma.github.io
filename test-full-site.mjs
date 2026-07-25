@@ -191,7 +191,6 @@ function validateInteractionAndShannon() {
     'entropy-driven/index.html',
     'FlexAIDdS/index.html',
     'flexaid-ds/index.html',
-    'flexaid-ds/styles.css',
     'index.html',
   ];
   for (const rel of surfaces) {
@@ -203,17 +202,20 @@ function validateInteractionAndShannon() {
     }
   }
 
-  const flexHtml = readFileSync(join(__dirname, 'FlexAIDdS/index.html'), 'utf8');
-  const flexCss = readFileSync(join(__dirname, 'FlexAIDdS/styles.css'), 'utf8');
-  if (flexHtml.includes('/interaction.css') || flexHtml.includes('interaction.css')) {
-    ok('FlexAIDdS index links interaction.css');
-  } else {
-    fail('FlexAIDdS index links interaction.css');
+  // Both product trees must ship handoff tokens (live canonical path is /flexaid-ds/).
+  for (const dir of ['FlexAIDdS', 'flexaid-ds']) {
+    const flexHtml = readFileSync(join(__dirname, dir, 'index.html'), 'utf8');
+    const flexCss = readFileSync(join(__dirname, dir, 'styles.css'), 'utf8');
+    if (flexHtml.includes('/interaction.css') || flexHtml.includes('interaction.css')) {
+      ok(`${dir} index links interaction.css`);
+    } else {
+      fail(`${dir} index links interaction.css`);
+    }
+    if (flexCss.includes('brightness(1.06)')) ok(`${dir} styles.css brightness(1.06)`);
+    else fail(`${dir} styles.css brightness(1.06)`);
+    if (!/#2a9aa8/i.test(flexCss)) ok(`${dir} styles.css has no #2a9aa8`);
+    else fail(`${dir} styles.css has no #2a9aa8`);
   }
-  if (flexCss.includes('brightness(1.06)')) ok('FlexAIDdS styles.css brightness(1.06)');
-  else fail('FlexAIDdS styles.css brightness(1.06)');
-  if (!/#2a9aa8/i.test(flexCss)) ok('FlexAIDdS styles.css has no #2a9aa8');
-  else fail('FlexAIDdS styles.css has no #2a9aa8');
 }
 
 function validateStaticAssets() {
