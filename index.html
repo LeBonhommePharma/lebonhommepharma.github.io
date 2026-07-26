@@ -379,46 +379,46 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none;cursor:pointe
   </style>
   <script>
     /* Pre-paint theme resolution: avoids a flash of the wrong theme.
-       Order: saved choice -> OS preference -> night (site is dark-first). */
+       Dark-first by design (see the design system: "do not introduce a light
+       mode"). The OS preference is deliberately NOT consulted — day mode is
+       opt-in through the toggle only, which is what the original component did. */
     (function () {
       try {
         var saved = localStorage.getItem("lbp-theme");
-        var t = (saved === "day" || saved === "night") ? saved
-              : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "day" : "night");
-        document.documentElement.setAttribute("data-theme", t);
+        document.documentElement.setAttribute("data-theme", saved === "day" ? "day" : "night");
       } catch (e) { document.documentElement.setAttribute("data-theme", "night"); }
     })();
   </script>
 </head>
 <body style="background: rgb(10, 14, 20);">
 
-<div id="dc-root"><div class="sc-host" data-sc-name="index"><div style="position: relative; background-image: linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px); background-size: 40px 40px; min-height: 100vh; overflow-x: hidden; color: var(--text); transition: background-color .4s ease;">
+<div id="dc-root"><div class="sc-host" data-sc-name="index"><div style="position:relative;background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;min-height:100vh;overflow-x:hidden;color:var(--text);transition:background-color .4s ease">
 
-  <div style="position: fixed; top: 0px; left: 0px; right: 0px; height: 3px; z-index: 60; background-size: 300% 100%; animation: meter 12s linear infinite; opacity: 0.9;"></div>
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:linear-gradient(90deg,var(--teal),var(--violet),var(--gold),var(--green),var(--coral),var(--orange),var(--cyan),var(--teal));background-size:300% 100%;animation:meter 12s linear infinite;opacity:0.9"></div>
 
   
-  <nav style="position: sticky; top: 0px; z-index: 50; display: flex; justify-content: space-between; align-items: center; background: var(--nav); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);">
-    <a href="#top" style="display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; white-space: nowrap; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 15px; font-weight: 700; letter-spacing: 0.01em; color: var(--text);"><span>Le Bonhomme</span><span style="color: var(--gold); font-size: 17px;">∆</span></a>
-    <div style="display: flex; align-items: center; gap: clamp(12px,2vw,20px);">
-      <div class="nav-links" style="display: flex; align-items: center; gap: clamp(14px,1.7vw,22px); font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; letter-spacing: 0.01em;">
-        <a href="#products" style="color: var(--muted); transition: color .2s ease;" class="scp0">Products</a>
-        <a href="#manifesto" style="color: var(--muted); transition: color .2s ease;" class="scp0">Manifesto</a>
-        <a href="#about" style="color: var(--muted); transition: color .2s ease;" class="scp0">LP</a>
-        <a href="https://thebonhomme.com/flexaid-ds/" data-ix-accent="" style="color: var(--teal); transition: filter .2s ease;" class="scp1">FlexAID∆S</a>
-        <a href="https://thebonhomme.com/drug-of-the-day/" style="color: var(--muted); transition: color .2s ease;" class="scp0">Drug of Day</a>
-        <a href="resume.html" style="color: var(--muted); transition: color .2s ease;" class="scp0">Résumé</a>
-        <a href="resume.pdf" download="" style="color: var(--muted); transition: color .2s ease;" class="scp0">Résumé PDF</a>
-        <a href="cv.html" style="color: var(--muted); transition: color .2s ease;" class="scp0">CV</a>
-        <a href="cv.pdf" download="" style="color: var(--muted); transition: color .2s ease;" class="scp0">CV PDF</a>
+  <nav style="position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:13px clamp(16px,4vw,40px);background:var(--nav);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)">
+    <a style="display:inline-flex;align-items:center;gap:7px;flex-shrink:0;white-space:nowrap;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:15px;font-weight:700;letter-spacing:0.01em;color:var(--text)" href="#top"><span>Le Bonhomme</span><span style="color:var(--gold);font-size:17px">∆</span></a>
+    <div style="display:flex;align-items:center;gap:clamp(12px,2vw,20px)">
+      <div style="display:flex;align-items:center;gap:clamp(14px,1.7vw,22px);font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;letter-spacing:0.01em" class="nav-links">
+        <a style="color:var(--muted);transition:color .2s ease" href="#products" class="scp0">Products</a>
+        <a style="color:var(--muted);transition:color .2s ease" href="#manifesto" class="scp0">Manifesto</a>
+        <a style="color:var(--muted);transition:color .2s ease" href="#about" class="scp0">LP</a>
+        <a style="color:var(--teal);transition:filter .2s ease" href="https://thebonhomme.com/flexaid-ds/" data-ix-accent="" class="scp1">FlexAID∆S</a>
+        <a style="color:var(--muted);transition:color .2s ease" href="https://thebonhomme.com/drug-of-the-day/" class="scp0">Drug of Day</a>
+        <a style="color:var(--muted);transition:color .2s ease" href="resume.html" class="scp0">Résumé</a>
+        <a style="color:var(--muted);transition:color .2s ease" href="resume.pdf" download="" class="scp0">Résumé PDF</a>
+        <a style="color:var(--muted);transition:color .2s ease" href="cv.html" class="scp0">CV</a>
+        <a style="color:var(--muted);transition:color .2s ease" href="cv.pdf" download="" class="scp0">CV PDF</a>
       </div>
-      <div class="nav-div" style="width: 1px; height: 22px; background: var(--border);"></div>
-      <div class="nav-actions" style="display: flex; align-items: center; gap: 10px;">
-        <div class="theme-toggle" data-mode="night" role="group" aria-label="Theme" style="display: inline-flex; align-items: center; gap: 3px; padding: 3px; border: 1px solid var(--border2); border-radius: 9px; background: var(--surface);">
+      <div style="width:1px;height:22px;background:var(--border)" class="nav-div"></div>
+      <div style="display:flex;align-items:center;gap:10px" class="nav-actions">
+        <div style="display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border2);border-radius:9px;background:var(--surface)" class="theme-toggle" data-mode="night" role="group" aria-label="Theme">
           <button class="tg-btn tg-sun" aria-label="Day mode"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.6"></circle><path d="M12 2.8v1.8M12 19.4v1.8M4.6 4.6l1.3 1.3M18.1 18.1l1.3 1.3M2.8 12h1.8M19.4 12h1.8M4.6 19.4l1.3-1.3M18.1 5.9l1.3-1.3"></path></svg></button>
           <button class="tg-btn tg-moon" aria-label="Night mode"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 13.2A8.3 8.3 0 1 1 11.3 3.5 6.5 6.5 0 0 0 20.5 13.2z"></path></svg></button>
         </div>
-        <a class="nav-gh scp2" data-ix-chrome="" href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0px 13px; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: var(--text); border: 1px solid var(--border2); border-radius: 8px; transition: border-color .2s ease,color .2s ease;"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>GitHub</a>
-        <button class="nav-burger" id="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="nav-mobile-menu" style="align-items: center; justify-content: center; width: 40px; height: 38px; color: var(--text); background: var(--surface); border: 1px solid var(--border2); border-radius: 8px; font-size: 18px; line-height: 1;"><span class="sc-interp">≡</span></button>
+        <a style="display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;color:var(--text);border:1px solid var(--border2);border-radius:8px;transition:border-color .2s ease,color .2s ease" class="nav-gh scp2" data-ix-chrome="" href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>GitHub</a>
+        <button id="nav-burger" aria-expanded="false" aria-controls="nav-mobile-menu" style="align-items:center;justify-content:center;width:40px;height:38px;color:var(--text);background:var(--surface);border:1px solid var(--border2);border-radius:8px;font-size:18px;line-height:1" class="nav-burger" aria-label="Menu"><span class="sc-interp">≡</span></button>
       </div>
     </div>
 
@@ -435,268 +435,268 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none;cursor:pointe
     </nav>
 
   
-  <header id="top" style="position: relative; min-height: calc(100svh - 52px); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden;">
-    <canvas style="position: absolute; inset: 0px; width: 100%; height: 100%; z-index: 0; pointer-events: none;" width="0" height="0"></canvas>
-    <div style="position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; max-width: 940px; width: 100%;">
-      <div style="font-family: &quot;JetBrains Mono&quot;, monospace; letter-spacing: 0.28em; text-transform: uppercase; color: var(--violet); margin-bottom: 24px;">Little Burgundy · Montréal · Open Science</div>
-      <h1 style="margin: 0px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; line-height: 0.96; letter-spacing: -0.02em; color: var(--text);">Le <span style="background-size: 200%; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; animation: flow 8.5s linear infinite;">Bonhomme</span><br>Pharma</h1>
-      <p style="max-width: 60ch; margin: 26px 0px 0px; line-height: 1.55; color: var(--text); opacity: 0.86;">We've been told to say <span style="color: var(--coral); font-weight: 600;">NO</span> to drugs. Bonhomme disagrees. <span style="color: var(--green); font-weight: 600;">ALL IN</span> psychopharmacology — <span style="color: var(--green);">open-source</span>, <span style="color: var(--teal);">thermodynamically rigorous</span>, unapologetically pro-drug in the clinical sense that matters.</p>
+  <header style="position:relative;min-height:calc(100svh - 52px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:88px clamp(18px,5vw,40px) 76px;overflow:hidden" id="top">
+    <canvas style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none" width="0" height="0"></canvas>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;max-width:940px;width:100%">
+      <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(9px,2.4vw,11px);letter-spacing:0.28em;text-transform:uppercase;color:var(--violet);margin-bottom:24px">Little Burgundy · Montréal · Open Science</div>
+      <h1 style="margin:0;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-weight:700;font-size:clamp(40px,10vw,78px);line-height:0.96;letter-spacing:-0.02em;color:var(--text)">Le <span style="background:linear-gradient(90deg,var(--teal),var(--violet),var(--gold),var(--teal));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:flow 8.5s linear infinite">Bonhomme</span><br>Pharma</h1>
+      <p style="max-width:60ch;margin:26px 0 0;font-size:clamp(15px,2.6vw,19px);line-height:1.55;color:var(--text);opacity:0.86">We've been told to say <span style="color:var(--coral);font-weight:600">NO</span> to drugs. Bonhomme disagrees. <span style="color:var(--green);font-weight:600">ALL IN</span> psychopharmacology — <span style="color:var(--green)">open-source</span>, <span style="color:var(--teal)">thermodynamically rigorous</span>, unapologetically pro-drug in the clinical sense that matters.</p>
 
-      <div style="margin: 36px 0px 0px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; animation: eqglow 4s ease-in-out infinite;"><span style="color: var(--gold);">∆G</span><span style="color: var(--muted);"> = </span><span style="color: var(--teal);">∆H</span><span style="color: var(--muted);"> − </span><span style="color: var(--orange);">T</span><span style="color: var(--violet);">∆S</span></div>
+      <div style="margin:36px 0 0;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(28px,6.5vw,40px);font-weight:700;animation:eqglow 4s ease-in-out infinite"><span style="color:var(--gold)">∆G</span><span style="color:var(--muted)"> = </span><span style="color:var(--teal)">∆H</span><span style="color:var(--muted)"> − </span><span style="color:var(--orange)">T</span><span style="color:var(--violet)">∆S</span></div>
 
-      <div style="display: flex; align-items: center; gap: 6px; margin-top: 32px; flex-wrap: wrap; justify-content: center;">
+      <div style="display:flex;align-items:center;gap:6px;margin-top:32px;flex-wrap:wrap;justify-content:center">
         
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 12px 16px; border: 1px solid var(--border2); border-radius: 9px; background: var(--surface); min-width: 104px;">
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; color: var(--teal); letter-spacing: 0.12em;"><span class="sc-interp">01</span></span>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 13px; font-weight: 600; color: var(--text);"><span class="sc-interp">Target</span></span>
-            <span style="font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.35;"><span class="sc-interp">binding-site cleft</span></span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 16px;border:1px solid var(--border2);border-radius:9px;background:var(--surface);min-width:104px">
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.12em;color: var(--teal)"><span class="sc-interp">01</span></span>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:13px;font-weight:600;color:var(--text)"><span class="sc-interp">Target</span></span>
+            <span style="font-size:10.5px;color:var(--muted);text-align:center;line-height:1.35"><span class="sc-interp">binding-site cleft</span></span>
           </div>
-          <span style="color: var(--teal); font-size: 16px; animation: pulseArrow 2.4s ease-in-out infinite;">›</span>
+          <span style="color:var(--teal);font-size:16px;animation:pulseArrow 2.4s ease-in-out infinite">›</span>
         
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 12px 16px; border: 1px solid var(--border2); border-radius: 9px; background: var(--surface); min-width: 104px;">
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; color: var(--cyan); letter-spacing: 0.12em;"><span class="sc-interp">02</span></span>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 13px; font-weight: 600; color: var(--text);"><span class="sc-interp">Dock</span></span>
-            <span style="font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.35;"><span class="sc-interp">GA conformational search</span></span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 16px;border:1px solid var(--border2);border-radius:9px;background:var(--surface);min-width:104px">
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.12em;color: var(--cyan)"><span class="sc-interp">02</span></span>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:13px;font-weight:600;color:var(--text)"><span class="sc-interp">Dock</span></span>
+            <span style="font-size:10.5px;color:var(--muted);text-align:center;line-height:1.35"><span class="sc-interp">GA conformational search</span></span>
           </div>
-          <span style="color: var(--teal); font-size: 16px; animation: pulseArrow 2.4s ease-in-out infinite;">›</span>
+          <span style="color:var(--teal);font-size:16px;animation:pulseArrow 2.4s ease-in-out infinite">›</span>
         
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 12px 16px; border: 1px solid var(--border2); border-radius: 9px; background: var(--surface); min-width: 104px;">
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; color: var(--violet); letter-spacing: 0.12em;"><span class="sc-interp">03</span></span>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 13px; font-weight: 600; color: var(--text);"><span class="sc-interp">Score</span></span>
-            <span style="font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.35;"><span class="sc-interp">soft complementarity</span></span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 16px;border:1px solid var(--border2);border-radius:9px;background:var(--surface);min-width:104px">
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.12em;color: var(--violet)"><span class="sc-interp">03</span></span>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:13px;font-weight:600;color:var(--text)"><span class="sc-interp">Score</span></span>
+            <span style="font-size:10.5px;color:var(--muted);text-align:center;line-height:1.35"><span class="sc-interp">soft complementarity</span></span>
           </div>
-          <span style="color: var(--teal); font-size: 16px; animation: pulseArrow 2.4s ease-in-out infinite;">›</span>
+          <span style="color:var(--teal);font-size:16px;animation:pulseArrow 2.4s ease-in-out infinite">›</span>
         
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 12px 16px; border: 1px solid var(--border2); border-radius: 9px; background: var(--surface); min-width: 104px;">
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; color: var(--gold); letter-spacing: 0.12em;"><span class="sc-interp">04</span></span>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 13px; font-weight: 600; color: var(--text);"><span class="sc-interp">Rank</span></span>
-            <span style="font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.35;"><span class="sc-interp">top-scoring poses</span></span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 16px;border:1px solid var(--border2);border-radius:9px;background:var(--surface);min-width:104px">
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.12em;color: var(--gold)"><span class="sc-interp">04</span></span>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:13px;font-weight:600;color:var(--text)"><span class="sc-interp">Rank</span></span>
+            <span style="font-size:10.5px;color:var(--muted);text-align:center;line-height:1.35"><span class="sc-interp">top-scoring poses</span></span>
           </div>
-          <span style="color: var(--teal); font-size: 16px; animation: pulseArrow 2.4s ease-in-out infinite;">›</span>
+          <span style="color:var(--teal);font-size:16px;animation:pulseArrow 2.4s ease-in-out infinite">›</span>
         
-        <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 11px; color: var(--muted); padding-left: 2px;">pose &amp; affinity</span>
+        <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;color:var(--muted);padding-left:2px">pose &amp; affinity</span>
       </div>
 
-      <div style="display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; justify-content: center;">
-        <a href="https://thebonhomme.com/flexaid-ds/" style="display: inline-flex; align-items: center; gap: 9px; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 600; color: var(--bg); background: var(--teal); padding: 15px 24px; border-radius: 8px;" data-ix-btn="" class="scp3">Explore FlexAID∆S →</a>
-        <a href="#manifesto" style="display: inline-flex; align-items: center; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 600; color: var(--text); padding: 15px 24px; border-radius: 8px; border: 1.5px solid var(--border2);" data-ix-btn-secondary="" class="scp4">Read the Manifesto</a>
+      <div style="display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;justify-content:center">
+        <a style="display:inline-flex;align-items:center;gap:9px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:600;color:var(--bg);background:var(--teal);padding:15px 24px;border-radius:8px;box-shadow:0 0 26px color-mix(in srgb,var(--violet) 32%,transparent)" href="https://thebonhomme.com/flexaid-ds/" data-ix-btn="" class="scp3">Explore FlexAID∆S →</a>
+        <a style="display:inline-flex;align-items:center;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:600;color:var(--text);padding:15px 24px;border-radius:8px;border:1.5px solid var(--border2)" href="#manifesto" data-ix-btn-secondary="" class="scp4">Read the Manifesto</a>
       </div>
 
-      <div style="display: flex; gap: clamp(20px,5vw,34px); margin-top: 44px; flex-wrap: wrap; justify-content: center;">
-        <div style="display: flex; flex-direction: column; align-items: center;"><span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; color: var(--gold);">96.4%</span><span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 4px;">Astex · top pose</span></div>
-        <div style="display: flex; flex-direction: column; align-items: center;"><span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; color: var(--cyan);">&lt;1µs</span><span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 4px;">per token · Shannon</span></div>
-        <div style="display: flex; flex-direction: column; align-items: center;"><span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; color: var(--green);">7</span><span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 4px;">open-source works</span></div>
-        <div style="display: flex; flex-direction: column; align-items: center;"><span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; color: var(--violet);">Apache 2.0</span><span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 4px;">by construction</span></div>
+      <div style="display:flex;gap:clamp(20px,5vw,34px);margin-top:44px;flex-wrap:wrap;justify-content:center">
+        <div style="display:flex;flex-direction:column;align-items:center"><span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(22px,5vw,26px);font-weight:700;color:var(--gold)">96.4%</span><span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px">Astex · top pose</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center"><span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(22px,5vw,26px);font-weight:700;color:var(--cyan)">&lt;1µs</span><span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px">per token · Shannon</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center"><span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(22px,5vw,26px);font-weight:700;color:var(--green)">7</span><span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px">open-source works</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center"><span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(22px,5vw,26px);font-weight:700;color:var(--violet)">Apache 2.0</span><span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-top:4px">by construction</span></div>
       </div>
     </div>
   </header>
 
   <section id="demo"><div style="max-width: 760px; margin: 0px auto; opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);" data-reveal=""><div style="text-align: center; margin-bottom: 28px;"><div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--violet); margin-bottom: 14px;">See It Run</div><h2 style="margin: 0px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; letter-spacing: -0.02em; color: var(--text);">FlexAID∆S, From the Terminal</h2><p style="max-width: 56ch; margin: 14px auto 0px; font-size: 14px; line-height: 1.6; color: var(--muted);">A live look at a docking run — genetic-algorithm search, torsional entropy, and the full ΔG = ΔH − TΔS score, straight from the CLI.</p></div><div style="position: relative; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(16, 20, 28, 0.55); backdrop-filter: blur(18px) saturate(140%); box-shadow: 0 24px 60px -20px rgba(0,0,0,0.55),0 0 0 1px rgba(255,255,255,0.04) inset;"><div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.04);"><span style="width: 11px; height: 11px; border-radius: 50%; background: rgb(255, 95, 87); display: inline-block;"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: rgb(254, 188, 46); display: inline-block;"></span><span style="width: 11px; height: 11px; border-radius: 50%; background: rgb(40, 200, 64); display: inline-block;"></span><span style="margin-left: 8px; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 11px; color: var(--muted);">bash — flexaidds</span></div><div style="padding: 22px 24px; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12.5px; line-height: 1.75; color: rgb(212, 220, 237); min-height: 300px; white-space: pre-wrap; word-break: break-word;"></div></div></div></section>
-  <section id="manifesto" style="position: relative; border-top: 1px solid var(--border); background: var(--surface2);">
-    <div style="max-width: 900px; margin: 0px auto; opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);" data-reveal="">
-      <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--violet); margin-bottom: 20px;">Manifesto</div>
-      <p style="max-width: none; line-height: 1.5; color: var(--text); margin: 0px 0px 26px; font-weight: 500;">The psychiatric system isn't broken — it was built for a different century. We're building the tools for <span style="color: var(--teal);">this</span> one.</p>
-      <p style="max-width: 76ch; line-height: 1.7; color: var(--muted); margin: 0px 0px 18px;"><span style="color: var(--green);">Open-source. Thermodynamically rigorous. Unapologetically pro-drug</span> in the clinical sense that matters: every molecule is a hypothesis about biology, and the stigma attached to psychoactives has killed more people than the molecules themselves.</p>
-      <p style="max-width: 76ch; line-height: 1.7; color: var(--muted); margin: 0px;">From the <span style="color: var(--teal);">statistical mechanics of ligand binding</span> to the social mechanics of <span style="color: var(--green);">harm reduction</span>, the physics is the same: systems seek lower free energy. Our job is to lower the barrier — algorithmically, pharmacologically, politically.</p>
-      <blockquote style="margin: 40px 0px 0px; border-left: 3px solid var(--gold); border-radius: 0 10px 10px 0;">
-        <p style="max-width: none; margin: 0px; font-family: &quot;JetBrains Mono&quot;, monospace; line-height: 1.45; color: var(--text); font-weight: 500;">"Drug is <span style="color: var(--gold);">ALWAYS</span> an answer — sometimes the only one available."</p>
-        <div style="margin-top: 14px; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: var(--muted);">— @BonhommePharma</div>
+  <section style="position:relative;padding:clamp(64px,9vw,100px) clamp(18px,5vw,40px);border-top:1px solid var(--border);background:var(--surface2)" id="manifesto">
+    <div data-reveal="" style="max-width:900px;margin:0 auto;opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)">
+      <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--violet);margin-bottom:20px">Manifesto</div>
+      <p style="max-width:none;font-size:clamp(19px,3.4vw,24px);line-height:1.5;color:var(--text);margin:0 0 26px;font-weight:500">The psychiatric system isn't broken — it was built for a different century. We're building the tools for <span style="color:var(--teal)">this</span> one.</p>
+      <p style="max-width:76ch;font-size:clamp(14px,2.2vw,16px);line-height:1.7;color:var(--muted);margin:0 0 18px"><span style="color:var(--green)">Open-source. Thermodynamically rigorous. Unapologetically pro-drug</span> in the clinical sense that matters: every molecule is a hypothesis about biology, and the stigma attached to psychoactives has killed more people than the molecules themselves.</p>
+      <p style="max-width:76ch;font-size:clamp(14px,2.2vw,16px);line-height:1.7;color:var(--muted);margin:0">From the <span style="color:var(--teal)">statistical mechanics of ligand binding</span> to the social mechanics of <span style="color:var(--green)">harm reduction</span>, the physics is the same: systems seek lower free energy. Our job is to lower the barrier — algorithmically, pharmacologically, politically.</p>
+      <blockquote style="margin:40px 0 0;padding:26px clamp(20px,4vw,34px);border-left:3px solid var(--gold);background:color-mix(in srgb,var(--gold) 7%,transparent);border-radius:0 10px 10px 0">
+        <p style="max-width:none;margin:0;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(17px,3vw,22px);line-height:1.45;color:var(--text);font-weight:500">"Drug is <span style="color:var(--gold)">ALWAYS</span> an answer — sometimes the only one available."</p>
+        <div style="margin-top:14px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;color:var(--muted)">— @BonhommePharma</div>
       </blockquote>
     </div>
   </section>
 
   
-  <section id="products">
-    <div style="max-width: 1200px; margin: 0px auto;">
-      <div style="text-align: center; margin-bottom: 48px; opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);" data-reveal="">
-        <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--violet); margin-bottom: 14px;">Open-Source Arsenal</div>
-        <h2 style="margin: 0px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; letter-spacing: -0.02em; color: var(--text);">What We Build</h2>
+  <section style="padding:clamp(64px,9vw,100px) clamp(18px,5vw,40px)" id="products">
+    <div style="max-width:1200px;margin:0 auto">
+      <div data-reveal="" style="text-align:center;margin-bottom:48px;opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)">
+        <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--violet);margin-bottom:14px">Open-Source Arsenal</div>
+        <h2 style="margin:0;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-weight:700;font-size:clamp(30px,5.5vw,44px);letter-spacing:-0.02em;color:var(--text)">What We Build</h2>
       </div>
-      <div class="grid3" style="display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px" class="grid3">
         
-          <a href="/flexaid-ds/" data-reveal="" style="--cc: var(--gold); display: flex; flex-direction: column; gap: 10px; padding: 24px; border-top: 2px solid var(--cc); border-radius: 12px; background: var(--surface); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); opacity: 1; transform: none;" data-ix-card="" class="scp5">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cc);"><span class="sc-interp">Docking Engine</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 700; color: var(--cc);"><span class="sc-interp">∆G</span></span>
+          <a href="/flexaid-ds/" data-reveal="" style="display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--border);border-top:2px solid var(--cc);border-radius:12px;background:var(--surface);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),border-color .18s cubic-bezier(.16,1,.3,1);--cc: var(--gold); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)" data-ix-card="" class="scp5">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cc)"><span class="sc-interp">Docking Engine</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:700;color:var(--cc)"><span class="sc-interp">∆G</span></span>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 19px; font-weight: 700; color: var(--text);"><span class="sc-interp">FlexAID∆S</span></span>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:19px;font-weight:700;color:var(--text)"><span class="sc-interp">FlexAID∆S</span></span>
               
             </div>
-            <p style="max-width: none; margin: 0px; font-size: 13.5px; line-height: 1.55; color: var(--muted); flex: 1 1 0%;"><span class="sc-interp">Entropy-driven molecular docking. The full ΔG = ΔH − TΔS with Shannon entropy — torsional ENCoM, Voronoi contact function, GPU batch scoring. 96.4% on Astex Diverse 85.</span></p>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; font-weight: 600; color: var(--cc); margin-top: 4px;"><span class="sc-interp">Explore FlexAID∆S</span> →</span>
+            <p style="max-width:none;margin:0;font-size:13.5px;line-height:1.55;color:var(--muted);flex:1"><span class="sc-interp">Entropy-driven molecular docking. The full ΔG = ΔH − TΔS with Shannon entropy — torsional ENCoM, Voronoi contact function, GPU batch scoring. 96.4% on Astex Diverse 85.</span></p>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;font-weight:600;color:var(--cc);margin-top:4px"><span class="sc-interp">Explore FlexAID∆S</span> →</span>
           </a>
         
-          <a href="/shannon/" data-reveal="" style="--cc: var(--coral); display: flex; flex-direction: column; gap: 10px; padding: 24px; border-top: 2px solid var(--cc); border-radius: 12px; background: var(--surface); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); opacity: 1; transform: none;" data-ix-card="" class="scp5">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cc);"><span class="sc-interp">Entropy Toolkit</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 700; color: var(--cc);"><span class="sc-interp">H↓</span></span>
+          <a href="/shannon/" data-reveal="" style="display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--border);border-top:2px solid var(--cc);border-radius:12px;background:var(--surface);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),border-color .18s cubic-bezier(.16,1,.3,1);--cc: var(--coral); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)" data-ix-card="" class="scp5">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cc)"><span class="sc-interp">Entropy Toolkit</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:700;color:var(--cc)"><span class="sc-interp">H↓</span></span>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 19px; font-weight: 700; color: var(--text);"><span class="sc-interp">Shannon</span></span>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:19px;font-weight:700;color:var(--text)"><span class="sc-interp">Shannon</span></span>
               
             </div>
-            <p style="max-width: none; margin: 0px; font-size: 13.5px; line-height: 1.55; color: var(--muted); flex: 1 1 0%;"><span class="sc-interp">Entropy-collapse detector for frontier LLM agents. Zero-shot evaluation-awareness and strategic-deception monitoring via the same H = −Σ pᵢ log₂ pᵢ kernel that powers binding and HRV.</span></p>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; font-weight: 600; color: var(--cc); margin-top: 4px;"><span class="sc-interp">Explore Shannon</span> →</span>
+            <p style="max-width:none;margin:0;font-size:13.5px;line-height:1.55;color:var(--muted);flex:1"><span class="sc-interp">Entropy-collapse detector for frontier LLM agents. Zero-shot evaluation-awareness and strategic-deception monitoring via the same H = −Σ pᵢ log₂ pᵢ kernel that powers binding and HRV.</span></p>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;font-weight:600;color:var(--cc);margin-top:4px"><span class="sc-interp">Explore Shannon</span> →</span>
           </a>
         
-          <a href="https://thebonhomme.com/entropy-driven/" data-reveal="" style="--cc: var(--violet); display: flex; flex-direction: column; gap: 10px; padding: 24px; border-top: 2px solid var(--cc); border-radius: 12px; background: var(--surface); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); opacity: 1; transform: none;" data-ix-card="" class="scp5">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cc);"><span class="sc-interp">Product Docs</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 700; color: var(--cc);"><span class="sc-interp">T∆S</span></span>
+          <a href="https://thebonhomme.com/entropy-driven/" data-reveal="" style="display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--border);border-top:2px solid var(--cc);border-radius:12px;background:var(--surface);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),border-color .18s cubic-bezier(.16,1,.3,1);--cc: var(--violet); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)" data-ix-card="" class="scp5">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cc)"><span class="sc-interp">Product Docs</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:700;color:var(--cc)"><span class="sc-interp">T∆S</span></span>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 19px; font-weight: 700; color: var(--text);"><span class="sc-interp">Entropy-Driven</span></span>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:19px;font-weight:700;color:var(--text)"><span class="sc-interp">Entropy-Driven</span></span>
               
             </div>
-            <p style="max-width: none; margin: 0px; font-size: 13.5px; line-height: 1.55; color: var(--muted); flex: 1 1 0%;"><span class="sc-interp">The full FlexAID∆S entropy-driven docking landing — architecture, benchmarks, install, modules and live repository stats. One kernel, refracted into six works.</span></p>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; font-weight: 600; color: var(--cc); margin-top: 4px;"><span class="sc-interp">Read the docs</span> →</span>
+            <p style="max-width:none;margin:0;font-size:13.5px;line-height:1.55;color:var(--muted);flex:1"><span class="sc-interp">The full FlexAID∆S entropy-driven docking landing — architecture, benchmarks, install, modules and live repository stats. One kernel, refracted into six works.</span></p>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;font-weight:600;color:var(--cc);margin-top:4px"><span class="sc-interp">Read the docs</span> →</span>
           </a>
         
-          <a href="https://thebonhomme.com/entropy-docking/" data-reveal="" style="--cc: var(--cyan); display: flex; flex-direction: column; gap: 10px; padding: 24px; border-top: 2px solid var(--cc); border-radius: 12px; background: var(--surface); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); opacity: 1; transform: none;" data-ix-card="" class="scp5">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cc);"><span class="sc-interp">Interactive</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 700; color: var(--cc);"><span class="sc-interp">♪</span></span>
+          <a href="https://thebonhomme.com/entropy-docking/" data-reveal="" style="display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--border);border-top:2px solid var(--cc);border-radius:12px;background:var(--surface);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),border-color .18s cubic-bezier(.16,1,.3,1);--cc: var(--cyan); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)" data-ix-card="" class="scp5">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cc)"><span class="sc-interp">Interactive</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:700;color:var(--cc)"><span class="sc-interp">♪</span></span>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 19px; font-weight: 700; color: var(--text);"><span class="sc-interp">Entropy Docking</span></span>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:19px;font-weight:700;color:var(--text)"><span class="sc-interp">Entropy Docking</span></span>
               
             </div>
-            <p style="max-width: none; margin: 0px; font-size: 13.5px; line-height: 1.55; color: var(--muted); flex: 1 1 0%;"><span class="sc-interp">Shannon × Music × Molecular, in AR/VR. BPM drives temperature, Crooks cycles, HRV coupling and binding entropy collapse — click to play in-browser.</span></p>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; font-weight: 600; color: var(--cc); margin-top: 4px;"><span class="sc-interp">Launch experience</span> →</span>
+            <p style="max-width:none;margin:0;font-size:13.5px;line-height:1.55;color:var(--muted);flex:1"><span class="sc-interp">Shannon × Music × Molecular, in AR/VR. BPM drives temperature, Crooks cycles, HRV coupling and binding entropy collapse — click to play in-browser.</span></p>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;font-weight:600;color:var(--cc);margin-top:4px"><span class="sc-interp">Launch experience</span> →</span>
           </a>
         
-          <a href="https://github.com/LeBonhommePharma/NATURaL" data-reveal="" style="--cc: var(--orange); display: flex; flex-direction: column; gap: 10px; padding: 24px; border-top: 2px solid var(--cc); border-radius: 12px; background: var(--surface); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); opacity: 1; transform: none;" data-ix-card="" class="scp5">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cc);"><span class="sc-interp">Biofeedback</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 700; color: var(--cc);"><span class="sc-interp">T</span></span>
+          <a href="https://github.com/LeBonhommePharma/NATURaL" data-reveal="" style="display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--border);border-top:2px solid var(--cc);border-radius:12px;background:var(--surface);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),border-color .18s cubic-bezier(.16,1,.3,1);--cc: var(--orange); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)" data-ix-card="" class="scp5">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cc)"><span class="sc-interp">Biofeedback</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:700;color:var(--cc)"><span class="sc-interp">T</span></span>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 19px; font-weight: 700; color: var(--text);"><span class="sc-interp">ClusterFuck</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cc); border: 1px solid var(--cc); border-radius: 999px; padding: 2px 8px; animation: pulseArrow 2.6s ease-in-out infinite;"><span class="sc-interp">name pending · soon</span></span>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:19px;font-weight:700;color:var(--text)"><span class="sc-interp">ClusterFuck</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--cc);border:1px solid var(--cc);border-radius:999px;padding:2px 8px;animation:pulseArrow 2.6s ease-in-out infinite"><span class="sc-interp">name pending · soon</span></span>
             </div>
-            <p style="max-width: none; margin: 0px; font-size: 13.5px; line-height: 1.55; color: var(--muted); flex: 1 1 0%;"><span class="sc-interp">Multi-platform Apple biofeedback — name coming soon. Real-time HRV entropy → Shannon Collapse Index during guided chair yoga. Shared kernel with FlexAID∆S across Watch, iPhone, TV, Vision Pro.</span></p>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; font-weight: 600; color: var(--cc); margin-top: 4px;"><span class="sc-interp">View on GitHub</span> →</span>
+            <p style="max-width:none;margin:0;font-size:13.5px;line-height:1.55;color:var(--muted);flex:1"><span class="sc-interp">Multi-platform Apple biofeedback — name coming soon. Real-time HRV entropy → Shannon Collapse Index during guided chair yoga. Shared kernel with FlexAID∆S across Watch, iPhone, TV, Vision Pro.</span></p>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;font-weight:600;color:var(--cc);margin-top:4px"><span class="sc-interp">View on GitHub</span> →</span>
           </a>
         
-          <a id="dod-link" href="https://thebonhomme.com/drug-of-the-day/" data-reveal="" style="--cc: var(--green); display: flex; flex-direction: column; gap: 10px; padding: 24px; border-top: 2px solid var(--cc); border-radius: 12px; background: var(--surface); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); opacity: 1; transform: none;" data-ix-card="" class="scp5">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cc);"><span class="sc-interp">Harm Reduction</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 700; color: var(--cc);"><span class="sc-interp">℞</span></span>
+          <a id="dod-link" href="https://thebonhomme.com/drug-of-the-day/" data-reveal="" style="display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--border);border-top:2px solid var(--cc);border-radius:12px;background:var(--surface);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),border-color .18s cubic-bezier(.16,1,.3,1);--cc: var(--green); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)" data-ix-card="" class="scp5">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cc)"><span class="sc-interp">Harm Reduction</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:700;color:var(--cc)"><span class="sc-interp">℞</span></span>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 19px; font-weight: 700; color: var(--text);"><span class="sc-interp">Drug of the Day</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cc); border: 1px solid var(--cc); border-radius: 999px; padding: 2px 8px; animation: pulseArrow 2.6s ease-in-out infinite;"><span class="sc-interp" data-dod="tag">Today · Tramadol</span></span>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:19px;font-weight:700;color:var(--text)"><span class="sc-interp">Drug of the Day</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--cc);border:1px solid var(--cc);border-radius:999px;padding:2px 8px;animation:pulseArrow 2.6s ease-in-out infinite"><span class="sc-interp" data-dod="tag">Today · Methadone</span></span>
             </div>
-            <p style="max-width: none; margin: 0px; font-size: 13.5px; line-height: 1.55; color: var(--muted); flex: 1 1 0%;"><span class="sc-interp" data-dod="desc">Today: Tramadol — μ-opioid agonist + serotonin/NE reuptake inhibitor. Rotates every day. Rigorous pharmacology plus entropy-docking commentary. Mechanism over moralising.</span></p>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; font-weight: 600; color: var(--cc); margin-top: 4px;"><span class="sc-interp" data-dod="cta">Today's drug — Tramadol</span> →</span>
+            <p style="max-width:none;margin:0;font-size:13.5px;line-height:1.55;color:var(--muted);flex:1"><span class="sc-interp" data-dod="desc">Today: Methadone — μ-opioid agonist + NMDA antagonist · OUD maintenance. Rotates every day. Rigorous pharmacology plus entropy-docking commentary. Mechanism over moralising.</span></p>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;font-weight:600;color:var(--cc);margin-top:4px"><span class="sc-interp" data-dod="cta">Today's drug — Methadone</span> →</span>
           </a>
         
-          <a href="https://thebonhomme.com/periodic/" data-reveal="" style="--cc: var(--teal); display: flex; flex-direction: column; gap: 10px; padding: 24px; border-top: 2px solid var(--cc); border-radius: 12px; background: var(--surface); transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); opacity: 1; transform: none;" data-ix-card="" class="scp5">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cc);"><span class="sc-interp">Reference</span></span>
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 14px; font-weight: 700; color: var(--cc);"><span class="sc-interp">⊞</span></span>
+          <a href="https://thebonhomme.com/periodic/" data-reveal="" style="display:flex;flex-direction:column;gap:10px;padding:24px;border:1px solid var(--border);border-top:2px solid var(--cc);border-radius:12px;background:var(--surface);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s cubic-bezier(.16,1,.3,1),border-color .18s cubic-bezier(.16,1,.3,1);--cc: var(--teal); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)" data-ix-card="" class="scp5">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--cc)"><span class="sc-interp">Reference</span></span>
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:14px;font-weight:700;color:var(--cc)"><span class="sc-interp">⊞</span></span>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 19px; font-weight: 700; color: var(--text);"><span class="sc-interp">Periodic Table</span></span>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:19px;font-weight:700;color:var(--text)"><span class="sc-interp">Periodic Table</span></span>
               
             </div>
-            <p style="max-width: none; margin: 0px; font-size: 13.5px; line-height: 1.55; color: var(--muted); flex: 1 1 0%;"><span class="sc-interp">The periodic table of psychoactive compounds — pharmacological classes, receptor targets and structural families. The reference sheet your professor wouldn't give you.</span></p>
-            <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; font-weight: 600; color: var(--cc); margin-top: 4px;"><span class="sc-interp">Open table</span> →</span>
+            <p style="max-width:none;margin:0;font-size:13.5px;line-height:1.55;color:var(--muted);flex:1"><span class="sc-interp">The periodic table of psychoactive compounds — pharmacological classes, receptor targets and structural families. The reference sheet your professor wouldn't give you.</span></p>
+            <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;font-weight:600;color:var(--cc);margin-top:4px"><span class="sc-interp">Open table</span> →</span>
           </a>
-        
-      </div>
-    </div>
-  </section>
-
-  
-  <section style="border-top: 1px solid var(--border); background: var(--surface2);">
-    <div style="max-width: 1200px; margin: 0px auto;">
-      <div style="text-align: center; margin-bottom: 48px; opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);" data-reveal="">
-        <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--violet); margin-bottom: 14px;">Operating Principles</div>
-        <h2 style="margin: 0px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; letter-spacing: -0.02em; color: var(--text);">The Physics First</h2>
-      </div>
-      <div class="grid2" style="display: grid; grid-template-columns: repeat(2,1fr); gap: 16px;">
-        
-          <div data-reveal="" style="border: 1px solid var(--border); border-radius: 12px; background: var(--surface); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);">
-            <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px;"><span class="sc-interp">01 / Thermodynamics</span></div>
-            <h3 style="margin: 0px 0px 10px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; color: var(--gold);"><span class="sc-interp">∆G = ∆H − T∆S</span></h3>
-            <p style="max-width: none; margin: 0px; font-size: 14px; line-height: 1.62; color: var(--muted);"><span class="sc-interp">Every binding event is a thermodynamic equation. Ignoring the entropy term isn't a shortcut — it's a wrong answer. We compute the whole thing.</span></p>
-          </div>
-        
-          <div data-reveal="" style="border: 1px solid var(--border); border-radius: 12px; background: var(--surface); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);">
-            <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--green); margin-bottom: 14px;"><span class="sc-interp">02 / Open Science</span></div>
-            <h3 style="margin: 0px 0px 10px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; color: var(--green);"><span class="sc-interp">Apache 2.0, Full Stop</span></h3>
-            <p style="max-width: none; margin: 0px; font-size: 14px; line-height: 1.62; color: var(--muted);"><span class="sc-interp">Proprietary docking tools gatekeep science behind paywalls. Drug discovery belongs to everyone. Our code ships under Apache 2.0, reproducible by construction.</span></p>
-          </div>
-        
-          <div data-reveal="" style="border: 1px solid var(--border); border-radius: 12px; background: var(--surface); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);">
-            <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--coral); margin-bottom: 14px;"><span class="sc-interp">03 / Harm Reduction</span></div>
-            <h3 style="margin: 0px 0px 10px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; color: var(--coral);"><span class="sc-interp">Education Over Prohibition</span></h3>
-            <p style="max-width: none; margin: 0px; font-size: 14px; line-height: 1.62; color: var(--muted);"><span class="sc-interp">The war on drugs failed the pharmacology exam. Psychoactives are tools with mechanisms — understandable, predictable, teachable. We teach them.</span></p>
-          </div>
-        
-          <div data-reveal="" style="border: 1px solid var(--border); border-radius: 12px; background: var(--surface); opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);">
-            <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px;"><span class="sc-interp">04 / Mechanistic Rigor</span></div>
-            <h3 style="margin: 0px 0px 10px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; color: var(--cyan);"><span class="sc-interp">No Black Boxes</span></h3>
-            <p style="max-width: none; margin: 0px; font-size: 14px; line-height: 1.62; color: var(--muted);"><span class="sc-interp">ML correlation without mechanism is astrology with better marketing. We use neural networks as a last resort, not a first instinct. First principles, every time.</span></p>
-          </div>
         
       </div>
     </div>
   </section>
 
   
-  <section id="about">
-    <div class="founder" style="max-width: 900px; margin: 0px auto; display: grid; grid-template-columns: 180px 1fr; gap: 44px; align-items: start; opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);" data-reveal="">
-      <div class="fcol" style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
-        <div style="width: 150px; height: 150px; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--border2); animation: floatY 6s ease-in-out infinite;">
-          <img src="/assets/lp-portrait.jpg" alt="Louis-Philippe Morency" style="width: 100%; height: 100%; object-fit: cover; object-position: center 28%; display: block;">
+  <section style="padding:clamp(64px,9vw,100px) clamp(18px,5vw,40px);border-top:1px solid var(--border);background:var(--surface2)">
+    <div style="max-width:1200px;margin:0 auto">
+      <div data-reveal="" style="text-align:center;margin-bottom:48px;opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)">
+        <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--violet);margin-bottom:14px">Operating Principles</div>
+        <h2 style="margin:0;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-weight:700;font-size:clamp(30px,5.5vw,44px);letter-spacing:-0.02em;color:var(--text)">The Physics First</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px" class="grid2">
+        
+          <div data-reveal="" style="padding:clamp(24px,4vw,32px);border:1px solid var(--border);border-radius:12px;background:var(--surface);opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)">
+            <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;color: var(--gold)"><span class="sc-interp">01 / Thermodynamics</span></div>
+            <h3 style="margin:0 0 10px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(19px,3.4vw,22px);font-weight:700;color: var(--gold)"><span class="sc-interp">∆G = ∆H − T∆S</span></h3>
+            <p style="max-width:none;margin:0;font-size:14px;line-height:1.62;color:var(--muted)"><span class="sc-interp">Every binding event is a thermodynamic equation. Ignoring the entropy term isn't a shortcut — it's a wrong answer. We compute the whole thing.</span></p>
+          </div>
+        
+          <div data-reveal="" style="padding:clamp(24px,4vw,32px);border:1px solid var(--border);border-radius:12px;background:var(--surface);opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)">
+            <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;color: var(--green)"><span class="sc-interp">02 / Open Science</span></div>
+            <h3 style="margin:0 0 10px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(19px,3.4vw,22px);font-weight:700;color: var(--green)"><span class="sc-interp">Apache 2.0, Full Stop</span></h3>
+            <p style="max-width:none;margin:0;font-size:14px;line-height:1.62;color:var(--muted)"><span class="sc-interp">Proprietary docking tools gatekeep science behind paywalls. Drug discovery belongs to everyone. Our code ships under Apache 2.0, reproducible by construction.</span></p>
+          </div>
+        
+          <div data-reveal="" style="padding:clamp(24px,4vw,32px);border:1px solid var(--border);border-radius:12px;background:var(--surface);opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)">
+            <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;color: var(--coral)"><span class="sc-interp">03 / Harm Reduction</span></div>
+            <h3 style="margin:0 0 10px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(19px,3.4vw,22px);font-weight:700;color: var(--coral)"><span class="sc-interp">Education Over Prohibition</span></h3>
+            <p style="max-width:none;margin:0;font-size:14px;line-height:1.62;color:var(--muted)"><span class="sc-interp">The war on drugs failed the pharmacology exam. Psychoactives are tools with mechanisms — understandable, predictable, teachable. We teach them.</span></p>
+          </div>
+        
+          <div data-reveal="" style="padding:clamp(24px,4vw,32px);border:1px solid var(--border);border-radius:12px;background:var(--surface);opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)">
+            <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;color: var(--cyan)"><span class="sc-interp">04 / Mechanistic Rigor</span></div>
+            <h3 style="margin:0 0 10px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:clamp(19px,3.4vw,22px);font-weight:700;color: var(--cyan)"><span class="sc-interp">No Black Boxes</span></h3>
+            <p style="max-width:none;margin:0;font-size:14px;line-height:1.62;color:var(--muted)"><span class="sc-interp">ML correlation without mechanism is astrology with better marketing. We use neural networks as a last resort, not a first instinct. First principles, every time.</span></p>
+          </div>
+        
+      </div>
+    </div>
+  </section>
+
+  
+  <section style="padding:clamp(64px,9vw,100px) clamp(18px,5vw,40px)" id="about">
+    <div class="founder" data-reveal="" style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:180px 1fr;gap:44px;align-items:start;opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px" class="fcol">
+        <div style="width:150px;height:150px;flex-shrink:0;border-radius:14px;overflow:hidden;border:1px solid var(--border2);box-shadow:0 0 22px color-mix(in srgb,var(--teal) 14%,transparent);animation:floatY 6s ease-in-out infinite">
+          <img style="width:100%;height:100%;object-fit:cover;object-position:center 28%;display:block" src="/assets/lp-portrait.jpg" alt="Louis-Philippe Morency">
         </div>
-        <span style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);">Founder</span>
+        <span style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)">Founder</span>
       </div>
       <div>
-        <h2 style="margin: 0px; font-family: &quot;JetBrains Mono&quot;, monospace; font-weight: 700; letter-spacing: -0.01em; color: var(--text);">Louis-Philippe Morency</h2>
-        <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px; color: var(--teal); margin-top: 6px;">PhD Candidate · Psychopharmacology · Université de Montréal · NRGlab</div>
-        <p style="max-width: none; font-size: 15px; line-height: 1.68; color: var(--muted); margin: 18px 0px 0px;">Built <span style="color: var(--gold);">FlexAID∆S</span> because the field needed <span style="color: var(--teal);">thermodynamically honest docking</span> and nobody else was going to do it from a basement in Little Burgundy. Main coder on FlexAID∆S, Shannon, ClusterFuck and NRGsuite — <span style="color: var(--gold);">96.4%</span> on Astex Diverse 85, without crystal coordinates. Anti-prohibitionist. Writing a book on housing, organized crime, and <span style="color: var(--green);">harm reduction</span> in Montréal. Shannon entropy and cats.</p>
-        <div style="display: flex; gap: 18px; margin-top: 22px; flex-wrap: wrap; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12.5px;">
+        <h2 style="margin:0;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-weight:700;font-size:clamp(24px,5vw,32px);letter-spacing:-0.01em;color:var(--text)">Louis-Philippe Morency</h2>
+        <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px;color:var(--teal);margin-top:6px">PhD Candidate · Psychopharmacology · Université de Montréal · NRGlab</div>
+        <p style="max-width:none;font-size:15px;line-height:1.68;color:var(--muted);margin:18px 0 0">Built <span style="color:var(--gold)">FlexAID∆S</span> because the field needed <span style="color:var(--teal)">thermodynamically honest docking</span> and nobody else was going to do it from a basement in Little Burgundy. Main coder on FlexAID∆S, Shannon, ClusterFuck and NRGsuite — <span style="color:var(--gold)">96.4%</span> on Astex Diverse 85, without crystal coordinates. Anti-prohibitionist. Writing a book on housing, organized crime, and <span style="color:var(--green)">harm reduction</span> in Montréal. Shannon entropy and cats.</p>
+        <div style="display:flex;gap:18px;margin-top:22px;flex-wrap:wrap;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12.5px">
           <a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener">@LeBonhommePharma</a>
           <a href="mailto:lp@thebonhomme.com">lp@thebonhomme.com</a>
-          <a href="https://github.com/NRGlab" target="_blank" rel="noreferrer noopener" style="color: var(--muted);">NRGlab · UdeM</a>
-          <a href="resume.html" style="color: var(--muted);">Résumé</a>
-          <a href="resume.pdf" download="" style="color: var(--muted);">PDF</a>
-          <a href="cv.html" style="color: var(--muted);">Full CV</a>
-          <a href="cv.pdf" download="" style="color: var(--muted);">PDF</a>
+          <a style="color:var(--muted)" href="https://github.com/NRGlab" target="_blank" rel="noreferrer noopener">NRGlab · UdeM</a>
+          <a style="color:var(--muted)" href="resume.html">Résumé</a>
+          <a style="color:var(--muted)" href="resume.pdf" download="">PDF</a>
+          <a style="color:var(--muted)" href="cv.html">Full CV</a>
+          <a style="color:var(--muted)" href="cv.pdf" download="">PDF</a>
         </div>
       </div>
     </div>
   </section>
 
   
-  <footer style="border-top: 1px solid var(--border); background: var(--surface2);">
-    <div class="ftop" style="max-width: 1200px; margin: 0px auto; display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap;">
-      <div style="max-width: 320px;">
-        <div style="font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 18px; font-weight: 700; color: var(--text);">Le Bonhomme <span style="color: var(--gold);">Pharma</span></div>
-        <p style="max-width: none; font-size: 13px; line-height: 1.6; color: var(--muted); margin: 10px 0px 0px;">Radical open-source computational pharmacology. Little Burgundy · Montréal · Québec.</p>
+  <footer style="padding:60px clamp(18px,5vw,40px) 40px;border-top:1px solid var(--border);background:var(--surface2)">
+    <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap" class="ftop">
+      <div style="max-width:320px">
+        <div style="font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:18px;font-weight:700;color:var(--text)">Le Bonhomme <span style="color:var(--gold)">Pharma</span></div>
+        <p style="max-width:none;font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 0">Radical open-source computational pharmacology. Little Burgundy · Montréal · Québec.</p>
       </div>
-      <div class="flinks" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 40px; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 12px;">
-        <a href="https://thebonhomme.com/flexaid-ds/" style="color: var(--muted);">FlexAID∆S — docking engine</a>
-        <a href="https://thebonhomme.com/entropy-driven/" style="color: var(--muted);">Entropy-Driven — landing</a>
-        <a href="/shannon/" style="color: var(--muted);">Shannon — LLM entropy</a>
-        <a href="https://github.com/LeBonhommePharma/NATURaL" target="_blank" rel="noreferrer noopener" style="color: var(--muted);">ClusterFuck — biofeedback · <span style="color: var(--orange);">pending</span></a>
-        <a href="https://thebonhomme.com/entropy-docking/" style="color: var(--muted);">Entropy Docking — interactive</a>
-        <a href="https://thebonhomme.com/drug-of-the-day/" style="color: var(--muted);">Drug of the Day · <span style="color: var(--green);"><span class="sc-interp">Tramadol</span></span></a>
-        <a href="https://thebonhomme.com/periodic/" style="color: var(--muted);">Periodic Table</a>
-        <a href="resume.html" style="color: var(--muted);">Résumé — one page</a>
-        <a href="resume.pdf" download="" style="color: var(--muted);">Résumé — PDF</a>
-        <a href="cv.html" style="color: var(--muted);">Curriculum Vitæ — full</a>
-        <a href="cv.pdf" download="" style="color: var(--muted);">Curriculum Vitæ — PDF</a>
-        <a href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" rel="noreferrer noopener" style="color: var(--muted);">GitHub — FlexAID∆S</a>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 40px;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:12px" class="flinks">
+        <a style="color:var(--muted)" href="https://thebonhomme.com/flexaid-ds/">FlexAID∆S — docking engine</a>
+        <a style="color:var(--muted)" href="https://thebonhomme.com/entropy-driven/">Entropy-Driven — landing</a>
+        <a style="color:var(--muted)" href="/shannon/">Shannon — LLM entropy</a>
+        <a style="color:var(--muted)" href="https://github.com/LeBonhommePharma/NATURaL" target="_blank" rel="noreferrer noopener">ClusterFuck — biofeedback · <span style="color:var(--orange)">pending</span></a>
+        <a style="color:var(--muted)" href="https://thebonhomme.com/entropy-docking/">Entropy Docking — interactive</a>
+        <a style="color:var(--muted)" href="https://thebonhomme.com/drug-of-the-day/">Drug of the Day · <span style="color:var(--green)"><span class="sc-interp" data-dod="footer">Methadone</span></span></a>
+        <a style="color:var(--muted)" href="https://thebonhomme.com/periodic/">Periodic Table</a>
+        <a style="color:var(--muted)" href="resume.html">Résumé — one page</a>
+        <a style="color:var(--muted)" href="resume.pdf" download="">Résumé — PDF</a>
+        <a style="color:var(--muted)" href="cv.html">Curriculum Vitæ — full</a>
+        <a style="color:var(--muted)" href="cv.pdf" download="">Curriculum Vitæ — PDF</a>
+        <a style="color:var(--muted)" href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" rel="noreferrer noopener">GitHub — FlexAID∆S</a>
       </div>
     </div>
-    <div class="fbottom" style="max-width: 1200px; margin: 36px auto 0px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-family: &quot;JetBrains Mono&quot;, monospace; font-size: 10.5px; letter-spacing: 0.06em; color: var(--faint);">
+    <div style="max-width:1200px;margin:36px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:&#x27;JetBrains Mono&#x27;,monospace;font-size:10.5px;letter-spacing:0.06em;color:var(--faint)" class="fbottom">
       <span>© 2025–2026 Le Bonhomme Pharma · Apache 2.0 · Montréal, Québec</span>
-      <span><span style="color: var(--gold);">∆G</span> = <span style="color: var(--teal);">∆H</span> − <span style="color: var(--violet);">T∆S</span></span>
+      <span><span style="color:var(--gold)">∆G</span> = <span style="color:var(--teal)">∆H</span> − <span style="color:var(--violet)">T∆S</span></span>
     </div>
   </footer></div></div></div>
   <script src="/assets/home.js" defer></script>

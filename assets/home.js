@@ -80,17 +80,10 @@
   if (sun)  sun.addEventListener("click",  function () { applyTheme("day", true); });
   if (moon) moon.addEventListener("click", function () { applyTheme("night", true); });
 
-  // Follow the OS only while the visitor has made no explicit choice.
-  if (window.matchMedia) {
-    var mq = window.matchMedia("(prefers-color-scheme: light)");
-    var onScheme = function (ev) {
-      var saved = null;
-      try { saved = localStorage.getItem("lbp-theme"); } catch (e) {}
-      if (!saved) applyTheme(ev.matches ? "day" : "night", false);
-    };
-    if (mq.addEventListener) mq.addEventListener("change", onScheme);
-    else if (mq.addListener) mq.addListener(onScheme);
-  }
+  /* No prefers-color-scheme branch on purpose. The design system is explicit:
+     "Do not introduce a light mode. The site is dark-first by design." The
+     original component defaulted to night regardless of OS setting; day mode
+     is opt-in through the toggle and then remembered. */
 
   /* ---- 3. Drug of the Day ----------------------------------------------- */
   /* Compound list and selection rule lifted verbatim from the bundle:
@@ -175,12 +168,14 @@
     var tag  = document.querySelector('[data-dod="tag"]');
     var desc = document.querySelector('[data-dod="desc"]');
     var cta  = document.querySelector('[data-dod="cta"]');
+    var foot = document.querySelector('[data-dod="footer"]');
     var href = d.live
       ? "https://thebonhomme.com/drug-of-the-day/" + d.slug + "/"
       : "https://thebonhomme.com/drug-of-the-day/";
     if (link) link.setAttribute("href", href);
     if (tag)  tag.textContent  = "Today · " + d.name;
     if (cta)  cta.textContent  = "Today's drug — " + d.name;
+    if (foot) foot.textContent = d.name;
     if (desc) desc.textContent = "Today: " + d.name + " — " + d.note +
       ". Rotates every day. Rigorous pharmacology plus entropy-docking commentary. Mechanism over moralising.";
     return d;
