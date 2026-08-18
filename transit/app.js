@@ -1348,7 +1348,8 @@ function paintHeading() {
   const el = document.getElementById("heading");
   if (!el) return;
   const h = state.heading;
-  if (!h) {
+  const live = state.here && state.here.source === "gps";
+  if (!h || !live) {
     el.hidden = true;
     el.textContent = "";
     return;
@@ -1357,12 +1358,52 @@ function paintHeading() {
   el.textContent = `${h.cardinal} ${Math.round(h.degrees)}°`;
 }
 
-function applyHere(lon, lat, source, at) {
+function applyHeading(sample) {
+  if (!state.here || state.here.source !== "gps") return;
+  const compass = headingFromSample(sample);
+  if (!compass) return;
+  state.heading = compass;
+  paintHeading();
+  requestDraw();
+}
+
+let headingListen = false;
+function listenHeading() {
+  if (headingListen) return;
+  headingListen = true;
+  const apply = (event) => {
+    applyHeading({
+      webkitCompassHeading: event.webkitCompassHeading,
+      heading: event.webkitCompassHeading,
+      alpha: event.absolute ? event.alpha : undefined,
+    });
+  };
+  window.addEventListener("deviceorientationabsolute", apply, true);
+  window.addEventListener("deviceorientation", apply, true);
+}
+
+function askHeadingPermission() {
+  const DOE = typeof DeviceOrientationEvent !== "undefined" ? DeviceOrientationEvent : null;
+  if (DOE && typeof DOE.requestPermission === "function") {
+    Promise.resolve(DOE.requestPermission())
+      .then((status) => {
+        if (status === "granted") listenHeading();
+      })
+      .catch(() => listenHeading());
+    return;
+  }
+  listenHeading();
+}
+
+function applyHere(lon, lat, source, at, follow) {
   const stamp = source === "gps" ? Date.now() : at ?? Date.now();
+  const prev = state.here;
   const next = acceptRiderFix(state.rider, { lon, lat, at: stamp, source: source || "gps" }, Date.now());
   if (!next.here) return;
   state.rider = next;
   state.here = { lon: next.here.lon, lat: next.here.lat, source: next.here.source, at: next.here.at };
+  const moved = !prev || haversineMeters(prev, next.here) > 15;
+  const snap = follow || !prev || moved || state.navigating;
   if (state.routeId && isCrowdProbeSource(next.here.source)) {
     state.probes = ingestProbe(
       state.probes,
@@ -1378,9 +1419,11 @@ function applyHere(lon, lat, source, at) {
   }
   const city = cityForPoint(next.here.lon, next.here.lat);
   const go = () => {
-    state.camera.lon = next.here.lon;
-    state.camera.lat = next.here.lat;
-    state.camera.zoom = Math.max(state.camera.zoom, 14.2);
+    if (snap) {
+      state.camera.lon = next.here.lon;
+      state.camera.lat = next.here.lat;
+      state.camera.zoom = Math.max(state.camera.zoom, 14.2);
+    }
     renderNearby();
     renderLines();
     renderBikes();
@@ -1394,7 +1437,7 @@ function applyHere(lon, lat, source, at) {
     paintHeading();
     paintMapHud();
     requestDraw();
-    scheduleBuildings();
+    if (snap) scheduleBuildings();
   };
   if (city !== state.city) {
     document.getElementById("btn-quebec").classList.toggle("on", city === "quebec");
@@ -1430,43 +1473,24 @@ function locate() {
     fallback();
     return;
   }
-  const onFix = (pos) => {
+  askHeadingPermission();
+  const onFix = (pos, follow) => {
     paintGeoAsk(false);
-    applyHere(pos.coords.longitude, pos.coords.latitude, "gps", pos.timestamp || Date.now());
-    const compass = headingFromSample(pos.coords);
-    if (compass) {
-      state.heading = compass;
-      paintHeading();
-      requestDraw();
-    }
+    applyHere(pos.coords.longitude, pos.coords.latitude, "gps", pos.timestamp || Date.now(), follow);
+    applyHeading(pos.coords);
   };
-  navigator.geolocation.getCurrentPosition(onFix, fallback, {
+  navigator.geolocation.getCurrentPosition((pos) => onFix(pos, true), fallback, {
     enableHighAccuracy: true,
     maximumAge: 0,
     timeout: 20000,
   });
   if (state.watchId == null && typeof navigator.geolocation.watchPosition === "function") {
-    state.watchId = navigator.geolocation.watchPosition(onFix, () => paintGeoAsk(true), {
+    state.watchId = navigator.geolocation.watchPosition((pos) => onFix(pos, false), () => paintGeoAsk(true), {
       enableHighAccuracy: true,
       maximumAge: 3000,
       timeout: 20000,
     });
   }
-}
-
-function listenHeading() {
-  const apply = (event) => {
-    const compass = headingFromSample({
-      heading: event.webkitCompassHeading,
-      alpha: event.alpha,
-    });
-    if (!compass) return;
-    state.heading = compass;
-    paintHeading();
-    requestDraw();
-  };
-  window.addEventListener("deviceorientationabsolute", apply, true);
-  window.addEventListener("deviceorientation", apply, true);
 }
 
 function escapeHtml(value) {
@@ -2108,7 +2132,7 @@ function draw() {
     ctx.beginPath();
     ctx.arc(hx, hy, 5, 0, Math.PI * 2);
     ctx.fill();
-    if (state.heading && Number.isFinite(state.heading.degrees)) {
+    if (state.here.source === "gps" && state.heading && Number.isFinite(state.heading.degrees)) {
       const rad = ((state.heading.degrees - 90) * Math.PI) / 180;
       ctx.beginPath();
       ctx.moveTo(hx + Math.cos(rad) * 14, hy + Math.sin(rad) * 14);

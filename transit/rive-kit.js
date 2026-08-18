@@ -45,7 +45,7 @@ export function headingFromSample(sample) {
       asFiniteNumber(sample.webkitCompassHeading) ??
       asFiniteNumber(sample.alpha);
   }
-  if (raw == null) return null;
+  if (raw == null || raw < 0) return null;
   const degrees = ((raw % 360) + 360) % 360;
   return { degrees, cardinal: CARDINALS[Math.round(degrees / 45) % 8] };
 }
