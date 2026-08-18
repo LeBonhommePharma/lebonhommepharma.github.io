@@ -70,6 +70,16 @@ function haversineMeters(a, b) {
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
 }
 
+function pinHereForCity(here, center, maxMeters = 40000) {
+  if (here && here.source === "gps" && Number.isFinite(here.lon) && Number.isFinite(here.lat)) {
+    const meters = haversineMeters(here, center);
+    if (Number.isFinite(meters) && meters <= maxMeters) {
+      return { lon: here.lon, lat: here.lat, source: "gps" };
+    }
+  }
+  return { lon: center.lon, lat: center.lat, source: "map" };
+}
+
 function nearbyStops(stops, point, radiusM = 700, limit = 14) {
   if (!point || !Number.isFinite(point.lon) || !Number.isFinite(point.lat)) return [];
   const out = [];
@@ -499,8 +509,14 @@ async function loadCity(city) {
     lat: atlas.meta.center[1],
     zoom: atlas.meta.zoom,
   };
+  state.here = pinHereForCity(state.here, {
+    lon: atlas.meta.center[0],
+    lat: atlas.meta.center[1],
+  });
   document.getElementById("attr").textContent = atlas.meta.attribution;
   renderNearby();
+  renderLines();
+  if (state.routeId) renderDue();
   draw();
 }
 
