@@ -19,6 +19,8 @@ const state = {
   here: null,
   pois: [],
   vehicles: [],
+  tripUpdates: [],
+  shapePatches: {},
   theme: "day",
   camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4 },
 };
@@ -394,6 +396,118 @@ function shouldFetchZip(local, remote, opts = {}) {
   return feedIsStale(local, remote, opts);
 }
 
+function parseRealtimePayload(raw) {
+  const empty = { updates: [], vehicles: [], shapes: {} };
+  if (!raw || typeof raw !== "object") return empty;
+  const updates = [];
+  const vehicles = [];
+  const shapes = {};
+  if (Array.isArray(raw.updates)) {
+    for (const row of raw.updates) {
+      if (!row || typeof row !== "object") continue;
+      updates.push({
+        routeId: typeof row.routeId === "string" ? row.routeId : undefined,
+        stopId: typeof row.stopId === "string" ? row.stopId : undefined,
+        delaySec: Number.isFinite(Number(row.delaySec)) ? Number(row.delaySec) : undefined,
+        canceled: Boolean(row.canceled),
+        departure: Number.isFinite(Number(row.departure)) ? Number(row.departure) : undefined,
+      });
+    }
+  }
+  if (Array.isArray(raw.vehicles)) {
+    for (const row of raw.vehicles) {
+      if (!row || !Number.isFinite(Number(row.lon)) || !Number.isFinite(Number(row.lat))) continue;
+      vehicles.push({
+        routeId: typeof row.routeId === "string" ? row.routeId : undefined,
+        lon: Number(row.lon),
+        lat: Number(row.lat),
+      });
+    }
+  }
+  if (raw.shapes && typeof raw.shapes === "object") {
+    for (const [id, line] of Object.entries(raw.shapes)) {
+      if (typeof line === "string" && line) shapes[id] = line;
+    }
+  }
+  const entities = raw.entity || raw.entities;
+  if (Array.isArray(entities)) {
+    for (const entity of entities) {
+      if (!entity || typeof entity !== "object") continue;
+      const tripUpdate = entity.trip_update || entity.tripUpdate;
+      if (tripUpdate) {
+        const trip = tripUpdate.trip || {};
+        const routeId = trip.route_id || trip.routeId;
+        const canceled = tripUpdate.schedule_relationship === 3 || trip.schedule_relationship === 3;
+        const stus = tripUpdate.stop_time_update || tripUpdate.stopTimeUpdate || [];
+        if (stus.length) {
+          for (const stu of stus) {
+            const dep = stu.departure || stu.arrival || {};
+            updates.push({
+              routeId,
+              stopId: stu.stop_id || stu.stopId,
+              delaySec: Number.isFinite(Number(dep.delay)) ? Number(dep.delay) : undefined,
+              canceled: canceled || stu.schedule_relationship === 1,
+            });
+          }
+        } else {
+          updates.push({ routeId, canceled: Boolean(canceled) });
+        }
+      }
+      const vehicle = entity.vehicle;
+      if (vehicle && vehicle.position) {
+        const lon = Number(vehicle.position.longitude ?? vehicle.position.lon);
+        const lat = Number(vehicle.position.latitude ?? vehicle.position.lat);
+        if (Number.isFinite(lon) && Number.isFinite(lat)) {
+          vehicles.push({
+            routeId: vehicle.trip && (vehicle.trip.route_id || vehicle.trip.routeId),
+            lon,
+            lat,
+          });
+        }
+      }
+    }
+  }
+  return { updates, vehicles, shapes };
+}
+
+const RT_URLS = {
+  quebec: [],
+  montreal: [
+    "https://api.stm.info/pub/od/gtfs-rt/ic/v2/tripUpdates",
+    "https://api.stm.info/pub/od/gtfs-rt/ic/v2/vehiclePositions",
+  ],
+};
+
+async function loadRealtime() {
+  const localUrl = new URL(`./data/${state.city}/realtime.json`, import.meta.url).href;
+  const urls = [localUrl, ...(RT_URLS[state.city] || [])];
+  let updates = [];
+  let vehicles = [];
+  let shapes = {};
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) continue;
+      const type = res.headers.get("content-type") || "";
+      let payload = null;
+      if (type.includes("json") || url.endsWith(".json")) {
+        payload = await res.json();
+      } else {
+        continue;
+      }
+      const parsed = parseRealtimePayload(payload);
+      updates = updates.concat(parsed.updates);
+      vehicles = vehicles.concat(parsed.vehicles);
+      Object.assign(shapes, parsed.shapes);
+    } catch {
+      /* CORS or missing feed */
+    }
+  }
+  state.tripUpdates = updates;
+  state.vehicles = vehicles;
+  state.shapePatches = shapes;
+}
+
 function applyTripUpdatesToDue(due, updates, now) {
   if (!updates.length) return due;
   const out = [];
@@ -467,6 +581,7 @@ async function refreshFeeds(userDeclared) {
       await loadCity(state.city);
     }
     await loadPois();
+    await loadRealtime();
     if (state.dest) openPlan(state.dest);
     if (state.routeId) renderDue();
     renderNearby();
@@ -645,6 +760,7 @@ async function loadCity(city) {
   });
   document.getElementById("attr").textContent = atlas.meta.attribution;
   await loadPois();
+  await loadRealtime();
   renderNearby();
   renderLines();
   if (state.routeId) renderDue();
@@ -720,7 +836,8 @@ function renderDue() {
   }
   const now = clockMinutes();
   const active = activeServiceIndexes(state.atlas, new Date());
-  const due = nextDueOnLine(state.atlas, state.timetable, riderPoint(), state.routeId, now, active);
+  const scheduled = nextDueOnLine(state.atlas, state.timetable, riderPoint(), state.routeId, now, active);
+  const due = applyTripUpdatesToDue(scheduled, state.tripUpdates || [], now);
   box.hidden = false;
   if (!due.length) {
     box.innerHTML = `<h2>Prochains</h2><p class="lead">Aucun passage de cette ligne à ${formatClock(now)} près d'ici.</p>`;
@@ -964,8 +1081,12 @@ function draw() {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     for (const dir of route.dirs) {
-      const veh = state.vehicles.find((item) => item.routeId === route.id);
-      const line = veh ? trajectoryAfterRealtime(dir.line, { vehicle: veh }) : decodePolyline(dir.line);
+      const veh = (state.vehicles || []).find((item) => item.routeId === route.id);
+      const shape = state.shapePatches && state.shapePatches[route.id];
+      const line =
+        veh || shape
+          ? trajectoryAfterRealtime(dir.line, { vehicle: veh, shape })
+          : decodePolyline(dir.line);
       if (line.length < 2) continue;
       ctx.beginPath();
       line.forEach(([lon, lat], i) => {
