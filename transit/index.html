@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rive. Horaires RTC et STM, sans abonnement</title>
+    <title>Rive. Horaires RTC, STLévis, STM et STL, sans abonnement</title>
     <meta
       name="description"
       content="Lis l'horaire d'un arrêt à Québec ou Montréal même si tu n'y es pas. Gratuit. Apache 2.0."
@@ -41,6 +41,10 @@
       .hits { list-style: none; margin: 8px 0 0; padding: 0; }
       .hits button { width: 100%; text-align: left; border: 0; background: transparent; color: inherit; padding: 8px 2px; font: inherit; cursor: pointer; }
       .hits .meta { color: var(--muted); font-size: 12px; }
+      .lines { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
+      .lines button { border: 0; border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 700; font-size: 13px; cursor: pointer; }
+      .lines button.on { outline: 2px solid #1d1d1f; outline-offset: 2px; }
+      .due .wait { font-size: 20px; font-weight: 560; letter-spacing: -0.03em; }
       .board { margin-top: 14px; }
       .board h2 { margin: 0 0 4px; font-size: 20px; font-weight: 560; }
       .row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
@@ -72,6 +76,10 @@
           <input id="dest" type="search" autocomplete="off" placeholder="Université Laval, McGill…" />
         </label>
         <ul class="hits" id="dest-hits"></ul>
+        <h2 id="line-title">Ligne</h2>
+        <p class="lead" id="line-lead">Après la destination, choisis le numéro ou la couleur près d{"'"}ici.</p>
+        <div id="lines" class="lines" role="listbox" aria-label="Ligne"></div>
+        <div class="board due" id="due" hidden></div>
         <h2 id="else-title">Horaire ailleurs</h2>
         <p class="lead" id="else-lead">
           Un arrêt où tu n{"'"}es pas. Les passages viennent du GTFS officiel.
