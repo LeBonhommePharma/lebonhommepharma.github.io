@@ -262,6 +262,24 @@
       .times { font-family: "Rive Clock", "SF Mono", Menlo, ui-monospace, monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
       footer { position: absolute; right: 16px; bottom: 14px; max-width: 280px; text-align: right; font-size: 10px; color: #6e6e73; line-height: 1.45; }
       footer a { color: inherit; }
+      #geo-ask {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 56px;
+        z-index: 3;
+        border: 0;
+        border-radius: 999px;
+        background: var(--chip);
+        color: var(--chip-ink);
+        font: inherit;
+        font-size: 12px;
+        font-weight: 650;
+        padding: 8px 14px;
+        cursor: pointer;
+        max-width: min(420px, calc(100% - 24px));
+      }
+      #geo-ask[hidden] { display: none; }
       #heading {
         position: absolute;
         right: 16px;
@@ -300,6 +318,7 @@
                 <path d="M10.8 1.5v2.7h2.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
+            <button type="button" id="pitch" class="word" aria-pressed="false" title="Vue 3D">3D</button>
             <button type="button" id="theme" class="icon" aria-label="Nuit" title="Nuit">
               <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M12.8 10.1A5.3 5.3 0 0 1 6.2 3.1 5.3 5.3 0 1 0 12.8 10.1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
@@ -346,6 +365,7 @@
         <div class="board" id="board" hidden></div>
         </div>
       </section>
+      <button type="button" id="geo-ask" hidden></button>
       <div id="heading" hidden></div>
       <div id="nav" hidden></div>
       <div id="map-hud" hidden></div>

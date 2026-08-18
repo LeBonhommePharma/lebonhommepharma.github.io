@@ -1,7 +1,11 @@
 /* OSM 2.5D footprints. Apache-2.0. Fail-safe: junk → no buildings. */
 
-export const BUILDING_ZOOM = 14.2;
-export const BUILDING_CAP = 180;
+export const BUILDING_ZOOM = 13;
+export const BUILDING_CAP = 280;
+export const BUILDING_ENDPOINTS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+];
 
 export function buildingHeightMeters(tags) {
   if (!tags || typeof tags !== "object") return 10;

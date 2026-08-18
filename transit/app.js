@@ -20,6 +20,7 @@ import {
   snapToShape,
 } from "./rive-kit.js";
 import {
+  BUILDING_ENDPOINTS,
   BUILDING_ZOOM,
   extrudeOffsetPx,
   overpassQuery,
@@ -59,7 +60,7 @@ const state = {
   theme: "day",
   sheetOpen: true,
   clockMode: "os",
-  camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4 },
+  camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4, pitch: 0 },
 };
 
 function fold(value) {
@@ -224,7 +225,7 @@ function planFromHere(from, destStop, now, active) {
     const seed = state.atlas.stops.find((s) => s.id === from.stopId);
     if (seed) origins.unshift({ ...seed, meters: 0 });
   }
-  const dests = nearbyStops(state.atlas.stops, destStop, 900, 12).concat(nearbyStops(rapid, destStop, 1400, 8));
+  const dests = nearbyStops(state.atlas.stops, destStop, 1200, 40).concat(nearbyStops(rapid, destStop, 1600, 16));
   dests.unshift({ ...destStop, meters: 0 });
   const found = [];
   const seen = new Set();
@@ -1038,8 +1039,17 @@ function worldToScreen(lon, lat, cam, w, h) {
   const [x, y] = project(lon, lat);
   const [cx, cy] = project(cam.lon, cam.lat);
   const scale = (256 * 2 ** cam.zoom) / 256;
-  const px = (x - cx) * scale * 256 + w / 2;
-  const py = (y - cy) * scale * 256 + h / 2;
+  let px = (x - cx) * scale * 256 + w / 2;
+  let py = (y - cy) * scale * 256 + h / 2;
+  const pitch = cam.pitch || 0;
+  if (pitch > 0) {
+    const horizon = h * (0.16 + (1 - pitch) * 0.1);
+    const ground = h * 0.94;
+    const t = (py - horizon) / Math.max(1, ground - horizon);
+    const persp = 0.52 + Math.max(0, Math.min(1.4, t)) * (0.48 + pitch * 0.4);
+    px = w / 2 + (px - w / 2) * persp;
+    py = horizon + (py - horizon) * (1 - pitch * 0.44);
+  }
   return [px, py];
 }
 
@@ -1056,6 +1066,7 @@ async function loadCity(city) {
     lon: atlas.meta.center[0],
     lat: atlas.meta.center[1],
     zoom: atlas.meta.zoom,
+    pitch: state.camera.pitch || 0,
   };
   state.here = pinHereForCity(state.here, {
     lon: atlas.meta.center[0],
@@ -1277,8 +1288,22 @@ function applyHere(lon, lat, source, at) {
   go();
 }
 
+function paintGeoAsk(needed) {
+  const el = document.getElementById("geo-ask");
+  if (!el) return;
+  const gps = state.here && state.here.source === "gps";
+  el.hidden = Boolean(gps) && !needed;
+  if (!el.hidden) {
+    el.textContent = navigator.geolocation
+      ? "Autoriser la position — sinon le centre-ville est une fausse origine."
+      : "Pas de géolocalisation sur cet appareil.";
+  }
+}
+
 function locate() {
   const fallback = () => {
+    paintGeoAsk(true);
+    if (state.here && state.here.source === "gps") return;
     const center = state.atlas
       ? { lon: state.atlas.meta.center[0], lat: state.atlas.meta.center[1] }
       : state.camera;
@@ -1289,6 +1314,7 @@ function locate() {
     return;
   }
   const onFix = (pos) => {
+    paintGeoAsk(false);
     applyHere(pos.coords.longitude, pos.coords.latitude, "gps", pos.timestamp || Date.now());
     const compass = headingFromSample(pos.coords);
     if (compass) {
@@ -1299,14 +1325,14 @@ function locate() {
   };
   navigator.geolocation.getCurrentPosition(onFix, fallback, {
     enableHighAccuracy: true,
-    maximumAge: 5000,
-    timeout: 8000,
+    maximumAge: 0,
+    timeout: 20000,
   });
   if (state.watchId == null && typeof navigator.geolocation.watchPosition === "function") {
-    state.watchId = navigator.geolocation.watchPosition(onFix, () => {}, {
+    state.watchId = navigator.geolocation.watchPosition(onFix, () => paintGeoAsk(true), {
       enableHighAccuracy: true,
       maximumAge: 3000,
-      timeout: 12000,
+      timeout: 20000,
     });
   }
 }
@@ -1688,31 +1714,49 @@ function draw() {
   const h = innerHeight;
   ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--stage").trim() || "#d5dde4";
   ctx.fillRect(0, 0, w, h);
+  labelBoxes = [];
   if (!state.atlas) return;
-  drawBuildings(w, h);
   const selected = new Set(state.stop?.routes || []);
-  for (const route of state.atlas.routes) {
-    const frequent = route.type === 1 || /^80/.test(route.shortName);
-    if (!frequent && state.camera.zoom < 13 && !selected.has(route.id)) continue;
-    ctx.strokeStyle = lineStrokeColor(route);
-    ctx.globalAlpha = selected.size && !selected.has(route.id) ? 0.12 : frequent ? 0.9 : 0.35;
-    ctx.lineWidth = route.type === 1 ? 4.4 : /^80/.test(route.shortName) ? 2.8 : 1.4;
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    for (const dir of route.dirs) {
-      const detour = (state.detours || []).find((d) => !d.routeId || d.routeId === route.id);
-      const shape = (detour && detour.shape) || (state.shapePatches && state.shapePatches[route.id]);
-      const line = overlayWithVehicles(dir.line, state.vehicles || [], route.id, shape);
-      if (line.length < 2) continue;
-      ctx.beginPath();
-      line.forEach(([lon, lat], i) => {
-        const [x, y] = worldToScreen(lon, lat, state.camera, w, h);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
+  const pitch = state.camera.pitch || 0;
+  const drawRouteSet = (onlyMetro, underground) => {
+    for (const route of state.atlas.routes) {
+      const metro = route.type === 1;
+      if (onlyMetro && !metro) continue;
+      if (!onlyMetro && metro && pitch > 0.15) continue;
+      const frequent = metro || /^80/.test(route.shortName);
+      if (!frequent && state.camera.zoom < 13 && !selected.has(route.id)) continue;
+      ctx.strokeStyle = underground ? "#4b5563" : lineStrokeColor(route);
+      ctx.globalAlpha = underground
+        ? 0.38
+        : selected.size && !selected.has(route.id)
+          ? 0.12
+          : frequent
+            ? 0.9
+            : 0.35;
+      ctx.lineWidth = metro ? (underground ? 3.2 : 4.4) : /^80/.test(route.shortName) ? 2.8 : 1.4;
+      ctx.setLineDash(underground ? [5, 6] : []);
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      for (const dir of route.dirs) {
+        const detour = (state.detours || []).find((d) => !d.routeId || d.routeId === route.id);
+        const shape = (detour && detour.shape) || (state.shapePatches && state.shapePatches[route.id]);
+        const line = overlayWithVehicles(dir.line, state.vehicles || [], route.id, shape);
+        if (line.length < 2) continue;
+        ctx.beginPath();
+        line.forEach(([lon, lat], i) => {
+          const [x, y] = worldToScreen(lon, lat, state.camera, w, h);
+          const yy = underground ? y + 14 + pitch * 22 : y;
+          if (i === 0) ctx.moveTo(x, yy);
+          else ctx.lineTo(x, yy);
+        });
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
     }
-  }
+  };
+  if (pitch > 0.15) drawRouteSet(true, true);
+  drawBuildings(w, h);
+  drawRouteSet(false, false);
   const trip = currentTrip();
   if (trip) {
     for (const leg of trip.legs || []) {
@@ -1779,7 +1823,7 @@ function draw() {
     ctx.beginPath();
     ctx.arc(px, py, 3.2, 0, Math.PI * 2);
     ctx.fill();
-    if (state.camera.zoom >= 13) {
+    if (state.camera.zoom >= 12.4 && placeLabel(poi.name, px + 6, py + 3, 11)) {
       ctx.globalAlpha = 0.9;
       ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#2b2723";
       ctx.font = "11px \"Rive Text\", sans-serif";
@@ -1833,7 +1877,13 @@ function draw() {
       ctx.lineWidth = metro ? 2 : 1.5;
       ctx.strokeStyle = selected ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
       ctx.stroke();
-      if (state.camera.zoom >= 14.6 || (metro && state.camera.zoom >= 13.8) || !state.sheetOpen) {
+      const wantLabel =
+        selected ||
+        metro ||
+        (!state.sheetOpen && state.camera.zoom >= 13.2) ||
+        state.camera.zoom >= 14.6 ||
+        (metro && state.camera.zoom >= 13.4);
+      if (wantLabel && placeLabel(stop.name, x + r + 3, y + 3, metro ? 11 : 10)) {
         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#2b2723";
         ctx.font = `${metro ? 11 : 10}px "Rive Text", sans-serif`;
         ctx.fillText(stop.name, x + r + 3, y + 3);
@@ -1874,19 +1924,35 @@ async function loadBuildings() {
   if (key === buildingKey) return;
   if (buildingAbort) buildingAbort.abort();
   buildingAbort = new AbortController();
-  try {
-    const res = await fetch("https://overpass-api.de/api/interpreter", {
-      method: "POST",
-      body: overpassQuery(box),
-      signal: buildingAbort.signal,
-    });
-    if (!res.ok) return;
-    state.buildings = parseOverpassBuildings(await res.json());
-    buildingKey = key;
-    draw();
-  } catch {
-    /* official map still works without OSM */
+  const query = overpassQuery(box);
+  for (const url of BUILDING_ENDPOINTS) {
+    try {
+      const res = await fetch(url, { method: "POST", body: query, signal: buildingAbort.signal });
+      if (!res.ok) continue;
+      const parsed = parseOverpassBuildings(await res.json());
+      if (!parsed.length) continue;
+      state.buildings = parsed;
+      buildingKey = key;
+      draw();
+      return;
+    } catch {
+      /* try next mirror */
+    }
   }
+}
+
+let labelBoxes = [];
+
+function placeLabel(text, x, y, size) {
+  if (!text) return false;
+  const tw = String(text).length * size * 0.52;
+  const th = size + 4;
+  for (const box of labelBoxes) {
+    if (x < box.x + box.w && x + tw > box.x && y - th < box.y + box.h && y > box.y) return false;
+  }
+  if (state.camera.zoom < 13.1 && labelBoxes.length > 10) return false;
+  labelBoxes.push({ x, y: y - th, w: tw, h: th });
+  return true;
 }
 
 function drawBuildings(w, h) {
@@ -1895,9 +1961,12 @@ function drawBuildings(w, h) {
   const wall = night ? "#1c2630" : "#c5cdd4";
   const roof = night ? "#24303a" : "#dbe2e8";
   const edge = night ? "#141a20" : "#b0b8c0";
+  const pitch = state.camera.pitch || 0;
   const list = state.buildings.slice().sort((a, b) => a.ring[0][1] - b.ring[0][1]);
   for (const b of list) {
-    const { dx, dy } = extrudeOffsetPx(b.heightM, state.camera.zoom);
+    const off = extrudeOffsetPx(b.heightM, state.camera.zoom);
+    const dx = off.dx * (0.35 + pitch * 1.1);
+    const dy = off.dy * (1 + pitch * 2.6);
     const screen = b.ring.map(([lon, lat]) => worldToScreen(lon, lat, state.camera, w, h));
     ctx.fillStyle = wall;
     ctx.strokeStyle = edge;
@@ -2007,6 +2076,17 @@ fetch(new URL("l10n/rive.json", import.meta.url))
 document.getElementById("btn-quebec").onclick = () => switchCity("quebec");
 document.getElementById("btn-montreal").onclick = () => switchCity("montreal");
 document.getElementById("here").onclick = () => locate();
+document.getElementById("geo-ask").onclick = () => locate();
+document.getElementById("pitch").onclick = () => {
+  state.camera.pitch = (state.camera.pitch || 0) > 0.2 ? 0 : 0.62;
+  const btn = document.getElementById("pitch");
+  if (btn) {
+    btn.classList.toggle("on", state.camera.pitch > 0.2);
+    btn.setAttribute("aria-pressed", state.camera.pitch > 0.2 ? "true" : "false");
+  }
+  scheduleBuildings();
+  draw();
+};
 document.getElementById("refresh").onclick = () => refreshFeeds(true);
 document.getElementById("theme").onclick = () => applyTheme(state.theme === "night" ? "day" : "night");
 document.getElementById("fold").onclick = () => setSheetOpen(!state.sheetOpen);
