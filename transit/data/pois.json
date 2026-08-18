@@ -1,0 +1,19 @@
+{
+  "budget": 12,
+  "places": [
+    { "id": "plains", "name": "Plaines d'Abraham", "lon": -71.221, "lat": 46.801, "popularity": 96, "city": "quebec" },
+    { "id": "chateau", "name": "Château Frontenac", "lon": -71.205, "lat": 46.812, "popularity": 99, "city": "quebec" },
+    { "id": "youville", "name": "Place D'Youville", "lon": -71.214, "lat": 46.813, "popularity": 88, "city": "quebec" },
+    { "id": "laval-uni", "name": "Université Laval", "lon": -71.274, "lat": 46.781, "popularity": 84, "city": "quebec" },
+    { "id": "old-port", "name": "Vieux-Port de Québec", "lon": -71.203, "lat": 46.817, "popularity": 90, "city": "quebec" },
+    { "id": "levis-quai", "name": "Quai de Lévis", "lon": -71.178, "lat": 46.803, "popularity": 72, "city": "quebec" },
+    { "id": "old-mtl", "name": "Vieux-Montréal", "lon": -73.554, "lat": 45.505, "popularity": 97, "city": "montreal" },
+    { "id": "plateau", "name": "Mont-Royal / Plateau", "lon": -73.585, "lat": 45.519, "popularity": 93, "city": "montreal" },
+    { "id": "berri", "name": "Quartier Latin / Berri", "lon": -73.562, "lat": 45.515, "popularity": 86, "city": "montreal" },
+    { "id": "mcgill", "name": "McGill", "lon": -73.577, "lat": 45.504, "popularity": 91, "city": "montreal" },
+    { "id": "oratoire", "name": "Oratoire Saint-Joseph", "lon": -73.617, "lat": 45.492, "popularity": 80, "city": "montreal" },
+    { "id": "carrefour", "name": "Carrefour Laval", "lon": -73.742, "lat": 45.57, "popularity": 70, "city": "montreal" },
+    { "id": "obscure-qc", "name": "Dépôt municipal", "lon": -71.3, "lat": 46.85, "popularity": 8, "city": "quebec" },
+    { "id": "obscure-mtl", "name": "Entrepôt anonyme", "lon": -73.7, "lat": 45.6, "popularity": 6, "city": "montreal" }
+  ]
+}

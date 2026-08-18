@@ -17,6 +17,9 @@ const state = {
   routeId: null,
   stop: null,
   here: null,
+  pois: [],
+  vehicles: [],
+  theme: "day",
   camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4 },
 };
 
@@ -36,6 +39,7 @@ function searchStops(atlas, query, limit = 7) {
   const hits = [];
   for (const stop of atlas.stops) {
     if (stop.kind === 2) continue;
+    if (state.timetable && !stopHasService(stop, state.timetable)) continue;
     const name = fold(stop.name);
     const code = fold(stop.code || "");
     const nameTokens = name.split(/\s+/).filter(Boolean);
@@ -80,11 +84,18 @@ function pinHereForCity(here, center, maxMeters = 40000) {
   return { lon: center.lon, lat: center.lat, source: "map" };
 }
 
+function stopHasService(stop, timetable) {
+  if (!timetable) return true;
+  const ids = [stop.id, ...(stop.children || []), stop.parent].filter(Boolean);
+  return ids.some((id) => Array.isArray(timetable[id]) && timetable[id].length > 0);
+}
+
 function nearbyStops(stops, point, radiusM = 700, limit = 14) {
   if (!point || !Number.isFinite(point.lon) || !Number.isFinite(point.lat)) return [];
   const out = [];
   for (const stop of stops) {
     if (stop.kind === 2) continue;
+    if (state.timetable && !stopHasService(stop, state.timetable)) continue;
     if (!Number.isFinite(stop.lon) || !Number.isFinite(stop.lat)) continue;
     const meters = haversineMeters(point, { lon: stop.lon, lat: stop.lat });
     if (!Number.isFinite(meters) || meters > radiusM) continue;
@@ -347,6 +358,125 @@ function riderPoint() {
   );
 }
 
+function pickPois(candidates, budget) {
+  const n = Math.max(0, Math.floor(budget));
+  if (n === 0 || !candidates.length) return [];
+  return [...candidates]
+    .filter((poi) => Number.isFinite(poi.popularity) && Number.isFinite(poi.lon) && Number.isFinite(poi.lat))
+    .sort((a, b) => b.popularity - a.popularity || String(a.name).localeCompare(String(b.name), "fr"))
+    .slice(0, n);
+}
+
+function fingerprintFromMeta(meta) {
+  return {
+    city: String(meta.city || ""),
+    version: String(meta.version || ""),
+    updated: String(meta.updated || ""),
+    counts: meta.counts,
+  };
+}
+
+function feedIsStale(local, remote, opts = {}) {
+  if (opts.userDeclared) return true;
+  if (remote.version && remote.version !== local.version) return true;
+  if (remote.updated && remote.updated !== local.updated) return true;
+  if (
+    remote.counts &&
+    local.counts &&
+    (remote.counts.routes !== local.counts.routes || remote.counts.stops !== local.counts.stops)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function shouldFetchZip(local, remote, opts = {}) {
+  return feedIsStale(local, remote, opts);
+}
+
+function applyTripUpdatesToDue(due, updates, now) {
+  if (!updates.length) return due;
+  const out = [];
+  for (const row of due) {
+    const update = updates.find(
+      (item) =>
+        (!item.routeId || item.routeId === row.routeId) &&
+        (!item.stopId || item.stopId === row.stopId),
+    );
+    if (!update) {
+      out.push(row);
+      continue;
+    }
+    if (update.canceled) continue;
+    let depart = row.depart;
+    if (Number.isFinite(update.departure)) depart = update.departure;
+    else if (Number.isFinite(update.delaySec)) depart = row.depart + Math.round(update.delaySec / 60);
+    out.push({
+      ...row,
+      depart,
+      wait: depart - now,
+      clocks: [formatClock(depart), ...(row.clocks || []).slice(1)],
+    });
+  }
+  return out;
+}
+
+function trajectoryAfterRealtime(staticEncoded, patch) {
+  if (patch && patch.shape) return decodePolyline(patch.shape);
+  const base = decodePolyline(staticEncoded);
+  if (patch && patch.vehicle && Number.isFinite(patch.vehicle.lon)) {
+    return [[patch.vehicle.lon, patch.vehicle.lat], ...base];
+  }
+  return base;
+}
+
+function applyTheme(mode) {
+  const hour = new Date().getHours();
+  const auto = hour >= 7 && hour < 19 ? "day" : "night";
+  state.theme = mode || auto;
+  document.documentElement.classList.toggle("day", state.theme === "day");
+  document.documentElement.classList.toggle("night", state.theme === "night");
+  const btn = document.getElementById("theme");
+  if (btn) btn.textContent = state.theme === "night" ? "Jour" : "Nuit";
+  const color = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta && color) themeMeta.setAttribute("content", color);
+  draw();
+}
+
+async function loadPois() {
+  try {
+    const table = await fetch(new URL("../data/pois.json", import.meta.url)).then((r) => r.json());
+    const cityPlaces = (table.places || []).filter((poi) => !poi.city || poi.city === state.city);
+    state.pois = pickPois(cityPlaces, table.budget || 8);
+  } catch {
+    state.pois = [];
+  }
+}
+
+async function refreshFeeds(userDeclared) {
+  const btn = document.getElementById("refresh");
+  if (btn) btn.textContent = "…";
+  try {
+    const meta = await fetch(new URL(`../data/${state.city}/meta.json`, import.meta.url) + `?t=${Date.now()}`).then((r) =>
+      r.json(),
+    );
+    const local = fingerprintFromMeta(state.atlas?.meta || meta);
+    const remote = fingerprintFromMeta(meta);
+    if (shouldFetchZip(local, remote, { userDeclared: Boolean(userDeclared) })) {
+      await loadCity(state.city);
+    }
+    await loadPois();
+    if (state.dest) openPlan(state.dest);
+    if (state.routeId) renderDue();
+    renderNearby();
+    draw();
+    if (btn) btn.textContent = "À jour";
+  } catch {
+    if (btn) btn.textContent = "Actualiser";
+  }
+}
+
 function yyyymmdd(date) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: TZ,
@@ -514,6 +644,7 @@ async function loadCity(city) {
     lat: atlas.meta.center[1],
   });
   document.getElementById("attr").textContent = atlas.meta.attribution;
+  await loadPois();
   renderNearby();
   renderLines();
   if (state.routeId) renderDue();
@@ -820,7 +951,7 @@ function resize() {
 function draw() {
   const w = innerWidth;
   const h = innerHeight;
-  ctx.fillStyle = "#e8eaed";
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--stage").trim() || "#d4cfc6";
   ctx.fillRect(0, 0, w, h);
   if (!state.atlas) return;
   const selected = new Set(state.stop?.routes || []);
@@ -833,7 +964,8 @@ function draw() {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     for (const dir of route.dirs) {
-      const line = decodePolyline(dir.line);
+      const veh = state.vehicles.find((item) => item.routeId === route.id);
+      const line = veh ? trajectoryAfterRealtime(dir.line, { vehicle: veh }) : decodePolyline(dir.line);
       if (line.length < 2) continue;
       ctx.beginPath();
       line.forEach(([lon, lat], i) => {
@@ -842,6 +974,22 @@ function draw() {
         else ctx.lineTo(x, y);
       });
       ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 1;
+  for (const poi of state.pois) {
+    const [px, py] = worldToScreen(poi.lon, poi.lat, state.camera, w, h);
+    if (px < -12 || py < -12 || px > w + 12 || py > h + 12) continue;
+    ctx.fillStyle = state.theme === "night" ? "#c9b27a" : "#8a6a2f";
+    ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    ctx.arc(px, py, 3.2, 0, Math.PI * 2);
+    ctx.fill();
+    if (state.camera.zoom >= 13) {
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#2b2723";
+      ctx.font = "11px \"Rive Text\", sans-serif";
+      ctx.fillText(poi.name, px + 6, py + 3);
     }
   }
   ctx.globalAlpha = 1;
@@ -855,6 +1003,7 @@ function draw() {
   if (state.camera.zoom >= 13.4) {
     for (const stop of state.atlas.stops) {
       if (stop.kind === 2) continue;
+      if (state.timetable && !stopHasService(stop, state.timetable)) continue;
       if (state.camera.zoom < 14.2 && stop.kind !== 1) continue;
       const [x, y] = worldToScreen(stop.lon, stop.lat, state.camera, w, h);
       if (x < -8 || y < -8 || x > w + 8 || y > h + 8) continue;
@@ -943,6 +1092,8 @@ fetch(new URL("l10n/rive.json", import.meta.url))
 document.getElementById("btn-quebec").onclick = () => switchCity("quebec");
 document.getElementById("btn-montreal").onclick = () => switchCity("montreal");
 document.getElementById("here").onclick = () => locate();
+document.getElementById("refresh").onclick = () => refreshFeeds(true);
+document.getElementById("theme").onclick = () => applyTheme(state.theme === "night" ? "day" : "night");
 document.getElementById("at").addEventListener("change", () => {
   if (state.routeId) renderDue();
   if (state.dest) openPlan(state.dest);
@@ -997,6 +1148,7 @@ const bootStop = boot.get("stop");
 document.getElementById("btn-quebec").classList.toggle("on", bootCity === "quebec");
 document.getElementById("btn-montreal").classList.toggle("on", bootCity === "montreal");
 fillClockInput();
+applyTheme();
 loadCity(bootCity).then(() => {
   if (bootStop && state.atlas) {
     const hit = state.atlas.stops.find((s) => s.id === bootStop);
