@@ -8,6 +8,7 @@ import {
   fuseRouteProbes,
   headingFromSample,
   ingestProbe,
+  isCrowdProbeSource,
   rankByDoorToDoor,
   snapToShape,
 } from "./rive-kit.js";
@@ -1097,7 +1098,7 @@ function applyHere(lon, lat, source, at) {
   }
   state.rider = next;
   state.here = { lon: next.here.lon, lat: next.here.lat, source: next.here.source, at: next.here.at };
-  if (state.routeId) {
+  if (state.routeId && isCrowdProbeSource(next.here.source)) {
     state.probes = ingestProbe(
       state.probes,
       {

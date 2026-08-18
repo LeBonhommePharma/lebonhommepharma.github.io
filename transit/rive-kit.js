@@ -54,6 +54,21 @@ export function emptyRiderStore() {
   return { here: null };
 }
 
+export function isCrowdProbeSource(source) {
+  return source === "gps";
+}
+
+export function formatClock(minutes, hour12) {
+  const wrap = ((minutes % 1440) + 1440) % 1440;
+  const h = Math.floor(wrap / 60);
+  const m = wrap % 60;
+  const mm = String(m).padStart(2, "0");
+  if (!hour12) return `${String(h).padStart(2, "0")}:${mm}`;
+  const suffix = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${mm} ${suffix}`;
+}
+
 export function acceptRiderFix(store, sample, now) {
   const lon = finiteCoord(sample.lon, 180);
   const lat = finiteCoord(sample.lat, 90);
@@ -232,7 +247,13 @@ export function applyFusedEtaToDue(due, fused, now) {
   return due.map((row) => {
     if (row.routeId !== fused.routeId) return row;
     const depart = row.depart + fused.etaShiftMinutes;
-    return { ...row, depart, wait: depart - now };
+    const clocks = Array.isArray(row.clocks) ? row.clocks : [];
+    return {
+      ...row,
+      depart,
+      wait: depart - now,
+      clocks: [formatClock(depart), ...clocks.slice(1)],
+    };
   });
 }
 
