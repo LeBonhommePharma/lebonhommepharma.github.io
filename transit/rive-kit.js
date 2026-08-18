@@ -54,6 +54,12 @@ export function emptyRiderStore() {
   return { here: null };
 }
 
+export function forgetInAppLocationGrant(store) {
+  if (!store || !store.here) return { here: null };
+  if (store.here.source === "gps") return { here: null };
+  return { here: { ...store.here } };
+}
+
 export function isCrowdProbeSource(source) {
   return source === "gps";
 }

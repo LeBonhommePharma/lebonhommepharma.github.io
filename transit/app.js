@@ -2,6 +2,7 @@
 import { probeGpuLabel } from "./webgpu.js";
 import {
   acceptRiderFix,
+  forgetInAppLocationGrant,
   applyFusedEtaToDue,
   emptyProbeStore,
   emptyRiderStore,
@@ -25,6 +26,7 @@ import {
   METRO_DEPTH_M,
   applyPitch,
   invertPitch,
+  overpassPostBody,
   overpassQuery,
   parseOverpassBuildings,
 } from "./buildings.js";
@@ -62,7 +64,7 @@ const state = {
   detours: [],
   theme: "day",
   sheetOpen: true,
-  clockMode: "os",
+  pin: null,
   camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4, pitch: 0 },
 };
 
@@ -80,9 +82,10 @@ function searchStops(atlas, query, limit = 7) {
   const q = fold(query);
   if (!q) return [];
   const hits = [];
-  for (const stop of atlas.stops) {
+  const pool = atlas === state.atlas ? liveStops() : atlas.stops;
+  for (const stop of pool) {
     if (stop.kind === 2) continue;
-    if (state.timetable && !stopHasService(stop, state.timetable)) continue;
+    if (!stop.temporary && state.timetable && !stopHasService(stop, state.timetable)) continue;
     const name = fold(stop.name);
     const code = fold(stop.code || "");
     const nameTokens = name.split(/\s+/).filter(Boolean);
@@ -99,6 +102,7 @@ function searchStops(atlas, query, limit = 7) {
     else if (name.includes(q)) score = 70;
     else if (tokenHits > 0) score = 40 + tokenHits * 25;
     if (score > 0 && stop.kind === 1) score += 8;
+    if (score > 0 && stop.temporary) score += 20;
     if (score > 0) hits.push({ stop, score });
   }
   hits.sort((a, b) => b.score - a.score);
@@ -138,17 +142,130 @@ function nearbyStops(stops, point, radiusM = 700, limit = 14) {
   const out = [];
   for (const stop of stops) {
     if (stop.kind === 2) continue;
-    if (state.timetable && !stopHasService(stop, state.timetable)) continue;
+    if (!stop.temporary && state.timetable && !stopHasService(stop, state.timetable)) continue;
     if (!Number.isFinite(stop.lon) || !Number.isFinite(stop.lat)) continue;
     const meters = haversineMeters(point, { lon: stop.lon, lat: stop.lat });
     if (!Number.isFinite(meters) || meters > radiusM) continue;
     out.push({ ...stop, meters: Math.round(meters * 10) / 10 });
   }
   out.sort((a, b) => {
+    if (a.temporary !== b.temporary) return a.temporary ? -1 : 1;
     if (a.kind !== b.kind) return a.kind === 1 ? -1 : b.kind === 1 ? 1 : 0;
     return a.meters - b.meters;
   });
   return out.slice(0, limit);
+}
+
+function epochMs(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return undefined;
+  return n < 1e12 ? n * 1000 : n;
+}
+
+function parseTempStops(raw) {
+  if (!Array.isArray(raw)) return [];
+  const out = [];
+  for (const row of raw) {
+    if (!row || typeof row !== "object") continue;
+    const lon = Number(row.lon ?? row.longitude ?? row.stop_lon);
+    const lat = Number(row.lat ?? row.latitude ?? row.stop_lat);
+    if (!Number.isFinite(lon) || !Number.isFinite(lat) || (lon === 0 && lat === 0)) continue;
+    const id = typeof row.id === "string" ? row.id : row.stopId || row.stop_id;
+    if (!id) continue;
+    out.push({
+      id: String(id),
+      name: typeof row.name === "string" && row.name ? row.name : String(row.stop_name || id),
+      lon,
+      lat,
+      routeId: typeof row.routeId === "string" ? row.routeId : typeof row.route_id === "string" ? row.route_id : undefined,
+    });
+  }
+  return out;
+}
+
+function mergeStopsWithDetours(stops, detours) {
+  const banned = new Map();
+  for (const d of detours || []) {
+    for (const id of d.skipStopIds || []) {
+      const set = banned.get(id) || new Set();
+      set.add(d.routeId || "*");
+      banned.set(id, set);
+    }
+  }
+  const out = [];
+  for (const stop of stops || []) {
+    const drop = banned.get(stop.id);
+    if (!drop) {
+      out.push({ ...stop, routes: [...(stop.routes || [])] });
+      continue;
+    }
+    if (drop.has("*")) continue;
+    const routes = (stop.routes || []).filter((id) => !drop.has(id));
+    if (!routes.length && (stop.routes || []).length) continue;
+    out.push({ ...stop, routes });
+  }
+  for (const d of detours || []) {
+    for (const temp of d.tempStops || []) {
+      const hit = out.find((s) => s.id === temp.id);
+      const rid = temp.routeId || d.routeId;
+      if (hit) {
+        if (rid && !hit.routes.includes(rid)) hit.routes.push(rid);
+        hit.temporary = true;
+        continue;
+      }
+      out.push({
+        id: temp.id,
+        name: temp.name,
+        lon: temp.lon,
+        lat: temp.lat,
+        routes: rid ? [rid] : [],
+        kind: 0,
+        temporary: true,
+      });
+    }
+  }
+  return out;
+}
+
+function detourIsActive(detour, now) {
+  const clock = typeof now === "number" && Number.isFinite(now) ? now : Date.now();
+  if (typeof detour.from === "number" && Number.isFinite(detour.from) && clock < detour.from) return false;
+  if (typeof detour.until === "number" && Number.isFinite(detour.until) && clock >= detour.until) return false;
+  return true;
+}
+
+function liveDetours(now) {
+  return (state.detours || []).filter((d) => detourIsActive(d, now));
+}
+
+function liveStops() {
+  if (!state.atlas) return [];
+  return mergeStopsWithDetours(state.atlas.stops, liveDetours());
+}
+
+function destPinPoint() {
+  if (state.pin && Number.isFinite(state.pin.lon)) return state.pin;
+  if (state.dest && Number.isFinite(state.dest.lon)) return state.dest;
+  if (state.here && Number.isFinite(state.here.lon)) return state.here;
+  return null;
+}
+
+function nearestStopForPin(stops, point, radiusM) {
+  const r = Number.isFinite(radiusM) ? radiusM : 280;
+  if (!point || !Number.isFinite(point.lon) || !Number.isFinite(point.lat)) return null;
+  let best = null;
+  for (const stop of stops || []) {
+    if (stop.kind === 2) continue;
+    if (!Number.isFinite(stop.lon) || !Number.isFinite(stop.lat)) continue;
+    const meters = haversineMeters(point, stop);
+    if (!Number.isFinite(meters) || meters > r) continue;
+    if (!best || meters < best.meters) best = { ...stop, meters };
+  }
+  return best;
+}
+
+function findStop(id) {
+  return liveStops().find((s) => s.id === id) || state.atlas?.stops.find((s) => s.id === id);
 }
 
 function parseClock24(value) {
@@ -216,19 +333,21 @@ function nextDeparture(timetable, stop, routeId, dir, now, active) {
 function planFromHere(from, destStop, now, active) {
   if (!state.atlas || !from || !destStop) return [];
   const routes = new Map(state.atlas.routes.map((r) => [r.id, r]));
-  const rapid = state.atlas.stops.filter((stop) => {
+  const poles = liveStops();
+  const rapid = poles.filter((stop) => {
     if (stop.kind === 1) return true;
+    if (stop.temporary) return true;
     return (stop.routes || []).some((id) => {
       const route = routes.get(id);
       return route && (route.type === 1 || /^80/.test(route.shortName));
     });
   });
-  const origins = nearbyStops(state.atlas.stops, from, 900, 14).concat(nearbyStops(rapid, from, 1400, 8));
+  const origins = nearbyStops(poles, from, 900, 14).concat(nearbyStops(rapid, from, 1400, 8));
   if (from.stopId) {
-    const seed = state.atlas.stops.find((s) => s.id === from.stopId);
+    const seed = poles.find((s) => s.id === from.stopId);
     if (seed) origins.unshift({ ...seed, meters: 0 });
   }
-  const dests = nearbyStops(state.atlas.stops, destStop, 1200, 40).concat(nearbyStops(rapid, destStop, 1600, 16));
+  const dests = nearbyStops(poles, destStop, 1200, 40).concat(nearbyStops(rapid, destStop, 1600, 16));
   dests.unshift({ ...destStop, meters: 0 });
   const found = [];
   const seen = new Set();
@@ -244,7 +363,7 @@ function planFromHere(from, destStop, now, active) {
           const j = indexOnDir(dir.stops, dest);
           if (i < 0 || j <= i) continue;
           let ride = hopSum(dir.hops, i, j);
-          const detour = (state.detours || []).find((d) => !d.routeId || d.routeId === route.id);
+          const detour = liveDetours().find((d) => !d.routeId || d.routeId === route.id);
           if (detour) {
             ride = applyDetour({
               staticEncoded: dir.line,
@@ -372,11 +491,12 @@ function planFromHere(from, destStop, now, active) {
 
 function nearbyLines(atlas, here, dest, radiusM = 1200) {
   if (!here || !Number.isFinite(here.lon) || !Number.isFinite(here.lat)) return [];
-  const near = nearbyStops(atlas.stops, here, radiusM, 24);
+  const poles = atlas === state.atlas ? liveStops() : atlas.stops;
+  const near = nearbyStops(poles, here, radiusM, 24);
   if (!near.length) return [];
   const destRouteIds = new Set();
   if (dest && Number.isFinite(dest.lon) && Number.isFinite(dest.lat)) {
-    for (const stop of nearbyStops(atlas.stops, dest, 900, 16)) {
+    for (const stop of nearbyStops(poles, dest, 900, 16)) {
       for (const id of stop.routes || []) destRouteIds.add(id);
     }
   }
@@ -417,7 +537,8 @@ function nextDueOnLine(atlas, timetable, here, routeId, now, active, limit = 12)
   if (!here || !routeId) return [];
   const route = atlas.routes.find((r) => r.id === routeId);
   if (!route) return [];
-  const near = nearbyStops(atlas.stops, here, 700, 16).filter((s) => (s.routes || []).includes(routeId));
+  const poles = atlas === state.atlas ? liveStops() : atlas.stops;
+  const near = nearbyStops(poles, here, 700, 16).filter((s) => (s.routes || []).includes(routeId));
   const rows = [];
   for (const stop of near) {
     for (const row of scheduleAtStop(atlas, timetable, stop, now, active)) {
@@ -540,10 +661,13 @@ function parseRealtimePayload(raw) {
     for (const row of raw.detours) {
       if (!row || typeof row !== "object") continue;
       detours.push({
-        routeId: typeof row.routeId === "string" ? row.routeId : undefined,
+        routeId: typeof row.routeId === "string" ? row.routeId : typeof row.route_id === "string" ? row.route_id : undefined,
         shape: typeof row.shape === "string" ? row.shape : undefined,
         skipStopIds: Array.isArray(row.skipStopIds) ? row.skipStopIds.filter((id) => typeof id === "string") : [],
         extraMinutes: Number.isFinite(Number(row.extraMinutes)) ? Number(row.extraMinutes) : undefined,
+        tempStops: parseTempStops(row.tempStops || row.temporaryStops || row.addedStops),
+        from: epochMs(row.from ?? row.start ?? row.validFrom),
+        until: epochMs(row.until ?? row.end ?? row.validUntil),
       });
     }
   }
@@ -582,6 +706,25 @@ function parseRealtimePayload(raw) {
         } else {
           updates.push({ routeId, canceled: Boolean(canceled) });
         }
+      }
+      const alert = entity.alert;
+      if (alert) {
+        const effect = alert.effect;
+        const skipEffect =
+          effect === 2 || effect === 5 || effect === 9 || effect === "NO_SERVICE" || effect === "DETOUR" || effect === "STOP_MOVED";
+        const informed = alert.informed_entity || alert.informedEntity || [];
+        if (skipEffect && Array.isArray(informed)) {
+          for (const ent of informed) {
+            const routeId = ent && (ent.route_id || ent.routeId);
+            const stopId = ent && (ent.stop_id || ent.stopId);
+            if (!stopId) continue;
+            const existing = detours.find((d) => d.routeId === routeId);
+            if (existing) existing.skipStopIds = (existing.skipStopIds || []).concat(stopId);
+            else detours.push({ routeId, skipStopIds: [stopId] });
+          }
+        }
+        const temps = parseTempStops(alert.tempStops || alert.temporaryStops || alert.addedStops || alert.replacement_stops);
+        if (temps.length) detours.push({ tempStops: temps });
       }
       const vehicle = entity.vehicle;
       if (vehicle && vehicle.position) {
@@ -795,7 +938,7 @@ function paintMapHud() {
     return;
   }
   hud.hidden = false;
-  const stop = state.stop || (state.atlas && riderPoint() ? nearbyStops(state.atlas.stops, riderPoint(), 400, 1)[0] : null);
+  const stop = state.stop || (state.atlas && riderPoint() ? nearbyStops(liveStops(), riderPoint(), 400, 1)[0] : null);
   const now = clockMinutes();
   let dueLine = "Touche un arrêt sur la carte.";
   if (stop && state.atlas && state.timetable) {
@@ -824,9 +967,9 @@ function inspectMapPoint(cx, cy) {
   const pitch = state.camera.pitch || 0;
   let best = null;
   let bestD = 28;
-  for (const stop of state.atlas.stops) {
+  for (const stop of liveStops()) {
     if (stop.kind === 2) continue;
-    if (state.timetable && !stopHasService(stop, state.timetable)) continue;
+    if (!stop.temporary && state.timetable && !stopHasService(stop, state.timetable)) continue;
     const [x, y] = worldToScreen(stop.lon, stop.lat, state.camera, w, h);
     let d = Math.hypot(x - cx, y - cy);
     if (stop.kind === 1 && pitch > 0.15) {
@@ -951,49 +1094,30 @@ function minutesOfDay(date) {
 }
 
 function prefersHour12() {
-  return false;
-}
-
-function paintClockInput() {
-  const input = document.getElementById("at");
-  if (!input) return;
-  input.lang = "fr-CA";
-  input.setAttribute("data-hour12", "0");
+  try {
+    const opts = new Intl.DateTimeFormat(undefined, { hour: "numeric" }).resolvedOptions();
+    if (opts.hourCycle === "h23" || opts.hourCycle === "h24") return false;
+    if (opts.hourCycle === "h11" || opts.hourCycle === "h12") return true;
+    return Boolean(opts.hour12);
+  } catch {
+    return false;
+  }
 }
 
 function formatClock(minutes) {
   const wrap = ((minutes % 1440) + 1440) % 1440;
   const h = Math.floor(wrap / 60);
   const m = wrap % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  const mm = String(m).padStart(2, "0");
+  if (!prefersHour12()) return `${String(h).padStart(2, "0")}:${mm}`;
+  const suffix = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${mm} ${suffix}`;
 }
 
 function formatMeters(meters) {
   if (!Number.isFinite(meters)) return "";
   return `${(Math.round(meters * 10) / 10).toFixed(1)} m`;
-}
-
-function setClockMode(mode) {
-  state.clockMode = "24";
-  try {
-    localStorage.setItem("rive.clock", state.clockMode);
-  } catch {
-    /* private */
-  }
-  const os = document.getElementById("clock-os");
-  const h24 = document.getElementById("clock-24");
-  if (os) {
-    os.classList.toggle("on", false);
-    os.setAttribute("aria-pressed", "false");
-  }
-  if (h24) {
-    h24.classList.toggle("on", true);
-    h24.setAttribute("aria-pressed", "true");
-  }
-  paintClockInput();
-  if (state.routeId) renderDue();
-  if (state.dest) openPlan(state.dest);
-  else if (state.stop) openStop(state.stop);
 }
 
 function activeServiceIndexes(atlas, date) {
@@ -1176,7 +1300,7 @@ function renderHits() {
     )
     .join("");
   box.querySelectorAll("button").forEach((btn) => {
-    btn.onclick = () => openStop(state.atlas.stops.find((s) => s.id === btn.dataset.id));
+    btn.onclick = () => openStop(findStop(btn.dataset.id));
   });
 }
 
@@ -1195,7 +1319,7 @@ function renderDestHits() {
     )
     .join("");
   box.querySelectorAll("button").forEach((btn) => {
-    btn.onclick = () => pickDest(state.atlas.stops.find((s) => s.id === btn.dataset.id));
+    btn.onclick = () => pickDest(findStop(btn.dataset.id));
   });
 }
 
@@ -1273,7 +1397,7 @@ function renderNearby() {
   const box = document.getElementById("nearby");
   if (!box || !state.atlas) return;
   const origin = riderPoint();
-  const stops = nearbyStops(state.atlas.stops, origin, 700, 8);
+  const stops = nearbyStops(liveStops(), origin, 700, 8);
   box.innerHTML = stops
     .map(
       (stop) =>
@@ -1281,7 +1405,7 @@ function renderNearby() {
     )
     .join("");
   box.querySelectorAll("button").forEach((btn) => {
-    btn.onclick = () => openStop(state.atlas.stops.find((s) => s.id === btn.dataset.id));
+    btn.onclick = () => openStop(findStop(btn.dataset.id));
   });
 }
 
@@ -1380,6 +1504,24 @@ function listenHeading() {
   };
   window.addEventListener("deviceorientationabsolute", apply, true);
   window.addEventListener("deviceorientation", apply, true);
+}
+
+function resetPermissions() {
+  if (state.watchId != null && navigator.geolocation && typeof navigator.geolocation.clearWatch === "function") {
+    navigator.geolocation.clearWatch(state.watchId);
+  }
+  state.watchId = null;
+  headingListen = false;
+  state.heading = null;
+  state.rider = forgetInAppLocationGrant(state.rider);
+  if (state.rider.here) {
+    state.here = { lon: state.rider.here.lon, lat: state.rider.here.lat, source: state.rider.here.source, at: state.rider.here.at };
+  } else {
+    state.here = null;
+  }
+  paintHeading();
+  paintGeoAsk(true);
+  locate();
 }
 
 function askHeadingPermission() {
@@ -2050,7 +2192,7 @@ function draw() {
     }
   };
   if (!mapBusy && pitch > 0.15) drawRouteSet(true, true);
-  if (!mapBusy) drawBuildings(w, h);
+  drawBuildings(w, h);
   drawRouteSet(false, false);
   const trip = currentTrip();
   if (trip) {
@@ -2150,16 +2292,18 @@ function draw() {
     ctx.fill();
   }
   if (showMetroStops) {
-    for (const stop of state.atlas.stops) {
+    for (const stop of liveStops()) {
       if (stop.kind === 2) continue;
-      if (state.timetable && !stopHasService(stop, state.timetable)) continue;
-      if (stop.kind !== 1 && !showBusStops) continue;
+      if (!stop.temporary && state.timetable && !stopHasService(stop, state.timetable)) continue;
+      if (stop.kind !== 1 && !showBusStops && !stop.temporary) continue;
       const picked = state.stop && state.stop.id === stop.id;
       const metro = stop.kind === 1;
-      if (mapBusy && !picked && !metro) continue;
-      const [x, y] = worldToScreen(stop.lon, stop.lat, cam, w, h);
+      const temp = Boolean(stop.temporary);
+      if (mapBusy && !picked && !metro && !temp) continue;
+      const alt = temp ? 10 : 0;
+      const [x, y] = worldToScreen(stop.lon, stop.lat, cam, w, h, alt);
       if (x < -10 || y < -10 || x > w + 10 || y > h + 10) continue;
-      const r = picked ? 6.2 : metro ? 5.2 : 3.8;
+      const r = temp ? 7 : picked ? 6.2 : metro ? 5.2 : 3.8;
       if (metro && pitch > 0.15 && !mapBusy) {
         const [ux, uy] = worldToScreen(stop.lon, stop.lat, cam, w, h, METRO_DEPTH_M);
         ctx.globalAlpha = 0.55;
@@ -2182,17 +2326,19 @@ function draw() {
       ctx.globalAlpha = 1;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fillStyle = picked ? gold : metro ? "#1d1d1f" : "#fff8ee";
+      ctx.fillStyle = temp ? gold : picked ? gold : metro ? "#1d1d1f" : "#fff8ee";
       ctx.fill();
-      ctx.lineWidth = metro ? 2 : 1.5;
-      ctx.strokeStyle = picked ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
+      ctx.lineWidth = temp ? 2.4 : metro ? 2 : 1.5;
+      ctx.strokeStyle = temp ? "#1d1d1f" : picked ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
       ctx.stroke();
       const wantLabel =
         picked ||
+        temp ||
         (!mapBusy &&
           (metro || heldLabels.has(stop.id) || (!state.sheetOpen && zoom >= 13) || zoom >= 14.4));
       if (wantLabel) {
-        queueLabel(stop.id, stop.name, x + r + 3, y + 3, metro ? 11 : 10, picked ? 100 : metro ? 70 : 40);
+        const label = temp ? `${stop.name} · temporaire` : stop.name;
+        queueLabel(stop.id, label, x + r + 3, y + 3, temp || metro ? 11 : 10, temp ? 110 : picked ? 100 : metro ? 70 : 40);
       }
     }
   }
@@ -2235,9 +2381,15 @@ async function loadBuildings() {
   if (buildingAbort) buildingAbort.abort();
   buildingAbort = new AbortController();
   const query = overpassQuery(box);
+  const body = overpassPostBody(query);
   for (const url of BUILDING_ENDPOINTS) {
     try {
-      const res = await fetch(url, { method: "POST", body: query, signal: buildingAbort.signal });
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body,
+        signal: buildingAbort.signal,
+      });
       if (!res.ok) continue;
       const parsed = parseOverpassBuildings(await res.json());
       if (!parsed.length) continue;
@@ -2255,10 +2407,10 @@ async function loadBuildings() {
 function drawBuildings(w, h) {
   if (state.camera.zoom < BUILDING_ZOOM - 0.85 || !state.buildings.length) return;
   const night = document.documentElement.classList.contains("night");
-  const wall = night ? "#1c2630" : "#c5cdd4";
-  const wallDark = night ? "#151c24" : "#aeb6be";
-  const roof = night ? "#24303a" : "#dbe2e8";
-  const edge = night ? "#141a20" : "#b0b8c0";
+  const wall = night ? "#2a3642" : "#b4a99a";
+  const wallDark = night ? "#1c2530" : "#8f867a";
+  const roof = night ? "#3a4754" : "#efe6d6";
+  const edge = night ? "#121820" : "#6f675c";
   ctx.lineWidth = 0.6;
   ctx.strokeStyle = edge;
   for (const b of state.buildings) {
@@ -2496,6 +2648,8 @@ document.getElementById("btn-quebec").onclick = () => switchCity("quebec");
 document.getElementById("btn-montreal").onclick = () => switchCity("montreal");
 document.getElementById("here").onclick = () => locate();
 document.getElementById("geo-ask").onclick = () => locate();
+const perms = document.getElementById("perms");
+if (perms) perms.onclick = () => resetPermissions();
 document.getElementById("pitch").onclick = () => {
   const on = (state.camera.pitch || 0) > 0.2;
   setPitch(on ? 0 : 0.72);
@@ -2517,9 +2671,8 @@ if (sheetBody) {
 }
 document.getElementById("dest").addEventListener("focus", bumpSheet);
 document.getElementById("q").addEventListener("focus", bumpSheet);
-document.getElementById("clock-os").onclick = () => setClockMode("os");
-document.getElementById("clock-24").onclick = () => setClockMode("24");
-document.getElementById("at").addEventListener("change", () => {
+const atInput = document.getElementById("at");
+if (atInput) atInput.addEventListener("change", () => {
   fillClockInput();
   if (state.routeId) renderDue();
   if (state.dest) openPlan(state.dest);
@@ -2587,13 +2740,6 @@ const bootStop = boot.get("stop");
 document.getElementById("btn-quebec").classList.toggle("on", bootCity === "quebec");
 document.getElementById("btn-montreal").classList.toggle("on", bootCity === "montreal");
 fillClockInput();
-try {
-  const saved = localStorage.getItem("rive.clock");
-  if (saved === "24" || saved === "os") state.clockMode = saved;
-} catch {
-  /* private */
-}
-setClockMode(state.clockMode);
 applyTheme();
 listenHeading();
 paintHeading();

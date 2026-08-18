@@ -1,6 +1,6 @@
 /* OSM 2.5D footprints. Apache-2.0. Fail-safe: junk → no buildings. */
 
-export const BUILDING_ZOOM = 13;
+export const BUILDING_ZOOM = 12.6;
 export const BUILDING_CAP = 280;
 export const METRO_DEPTH_M = -24;
 export const BUILDING_ENDPOINTS = [
@@ -11,10 +11,14 @@ export const BUILDING_ENDPOINTS = [
 export function altitudeLiftPx(altM, zoom, pitch, scale) {
   if (!Number.isFinite(altM) || altM === 0 || !Number.isFinite(zoom)) return 0;
   const p = Number.isFinite(pitch) ? Math.min(1, Math.max(0, pitch)) : 0;
-  const pxPerMeter = Math.max(0.18, 2 ** (zoom - 15) * 1.15);
-  const rise = 0.5 + p * 2.6;
-  const s = Number.isFinite(scale) && scale > 0 ? scale : 1;
-  return -altM * pxPerMeter * rise * s;
+  const pxPerMeter = 0.95 + Math.min(0.7, Math.max(0, 2 ** (zoom - 15) * 0.25));
+  const rise = 0.72 + p * 1.35;
+  const s = Number.isFinite(scale) && scale > 0 ? Math.min(scale, 1.12) : 1;
+  const raw = -altM * pxPerMeter * rise * s;
+  const cap = 68 + p * 42;
+  if (raw < -cap) return -cap;
+  if (raw > cap) return cap;
+  return raw;
 }
 
 export function applyPitch(px, py, w, h, pitch, altM, zoom) {
@@ -109,4 +113,8 @@ export function overpassQuery(bbox) {
     .map((n) => (Number.isFinite(n) ? n.toFixed(5) : ""))
     .join(",");
   return `[out:json][timeout:12];way["building"](${s});out tags geom ${BUILDING_CAP};`;
+}
+
+export function overpassPostBody(query) {
+  return `data=${encodeURIComponent(query || "")}`;
 }
