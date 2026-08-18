@@ -632,7 +632,9 @@ function setSheetOpen(open) {
   const fold = document.getElementById("fold");
   if (sheet) sheet.classList.toggle("folded", !state.sheetOpen);
   if (fold) {
-    fold.textContent = state.sheetOpen ? "Carte" : "Fiche";
+    const label = state.sheetOpen ? "Carte" : "Fiche";
+    fold.textContent = label;
+    fold.title = label;
     fold.setAttribute("aria-expanded", state.sheetOpen ? "true" : "false");
   }
   draw();
@@ -645,7 +647,11 @@ function applyTheme(mode) {
   document.documentElement.classList.toggle("day", state.theme === "day");
   document.documentElement.classList.toggle("night", state.theme === "night");
   const btn = document.getElementById("theme");
-  if (btn) btn.textContent = state.theme === "night" ? "Jour" : "Nuit";
+  if (btn) {
+    const label = state.theme === "night" ? "Jour" : "Nuit";
+    btn.setAttribute("aria-label", label);
+    btn.title = label;
+  }
   const color = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   if (themeMeta && color) themeMeta.setAttribute("content", color);
@@ -664,7 +670,12 @@ async function loadPois() {
 
 async function refreshFeeds(userDeclared) {
   const btn = document.getElementById("refresh");
-  if (btn) btn.textContent = "…";
+  if (btn) {
+    btn.classList.add("busy");
+    btn.classList.remove("ok", "err");
+    btn.title = "…";
+    btn.setAttribute("aria-busy", "true");
+  }
   try {
     const meta = await fetch(new URL(`./data/${state.city}/meta.json`, import.meta.url) + `?t=${Date.now()}`).then((r) =>
       r.json(),
@@ -680,9 +691,21 @@ async function refreshFeeds(userDeclared) {
     if (state.routeId) renderDue();
     renderNearby();
     draw();
-    if (btn) btn.textContent = "À jour";
+    if (btn) {
+      btn.classList.remove("busy");
+      btn.classList.add("ok");
+      btn.title = "À jour";
+      btn.setAttribute("aria-busy", "false");
+      btn.setAttribute("aria-label", "À jour");
+    }
   } catch {
-    if (btn) btn.textContent = "Actualiser";
+    if (btn) {
+      btn.classList.remove("busy");
+      btn.classList.add("err");
+      btn.title = "Actualiser";
+      btn.setAttribute("aria-busy", "false");
+      btn.setAttribute("aria-label", "Actualiser");
+    }
   }
 }
 
@@ -746,8 +769,16 @@ function setClockMode(mode) {
   } catch {
     /* private */
   }
-  const btn = document.getElementById("clockfmt");
-  if (btn) btn.textContent = state.clockMode === "24" ? "24 h" : "Auto";
+  const os = document.getElementById("clock-os");
+  const h24 = document.getElementById("clock-24");
+  if (os) {
+    os.classList.toggle("on", state.clockMode !== "24");
+    os.setAttribute("aria-pressed", state.clockMode !== "24" ? "true" : "false");
+  }
+  if (h24) {
+    h24.classList.toggle("on", state.clockMode === "24");
+    h24.setAttribute("aria-pressed", state.clockMode === "24" ? "true" : "false");
+  }
   if (state.routeId) renderDue();
   if (state.dest) openPlan(state.dest);
   else if (state.stop) openStop(state.stop);
@@ -1347,7 +1378,10 @@ fetch(new URL("l10n/rive.json", import.meta.url))
     if (destLead) destLead.textContent = t.destLead || destLead.textContent;
     if (elseTitle && t.elsewhere) elseTitle.textContent = t.elsewhere;
     if (elseLead && t.elsewhereLead) elseLead.textContent = t.elsewhereLead;
-    if (hereBtn && t.myPosition) hereBtn.textContent = t.myPosition;
+    if (hereBtn && t.myPosition) {
+      hereBtn.setAttribute("aria-label", t.myPosition);
+      hereBtn.title = t.myPosition;
+    }
     document.getElementById("q").placeholder = t.placeholder;
     const dest = document.getElementById("dest");
     if (dest && t.to) dest.placeholder = t.to + " — Université Laval, McGill…";
@@ -1362,7 +1396,8 @@ document.getElementById("here").onclick = () => locate();
 document.getElementById("refresh").onclick = () => refreshFeeds(true);
 document.getElementById("theme").onclick = () => applyTheme(state.theme === "night" ? "day" : "night");
 document.getElementById("fold").onclick = () => setSheetOpen(!state.sheetOpen);
-document.getElementById("clockfmt").onclick = () => setClockMode(state.clockMode === "24" ? "os" : "24");
+document.getElementById("clock-os").onclick = () => setClockMode("os");
+document.getElementById("clock-24").onclick = () => setClockMode("24");
 document.getElementById("at").addEventListener("change", () => {
   if (state.routeId) renderDue();
   if (state.dest) openPlan(state.dest);

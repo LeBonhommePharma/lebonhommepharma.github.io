@@ -37,6 +37,8 @@
         --stage: #d4cfc6;
         --chip: #2b2723;
         --chip-ink: #f4f0ea;
+        --well: rgb(43 39 35 / 0.07);
+        color-scheme: light;
       }
       html.night {
         --ink: #e4e9ee;
@@ -47,6 +49,8 @@
         --stage: #161c22;
         --chip: #e4e9ee;
         --chip-ink: #1e252c;
+        --well: rgb(255 255 255 / 0.09);
+        color-scheme: dark;
       }
       @media (prefers-color-scheme: dark) {
         :root:not(.day) {
@@ -58,6 +62,8 @@
           --stage: #161c22;
           --chip: #e4e9ee;
           --chip-ink: #1e252c;
+          --well: rgb(255 255 255 / 0.09);
+          color-scheme: dark;
         }
       }
       * { box-sizing: border-box; }
@@ -69,9 +75,9 @@
       .cities button { border: 0; background: transparent; color: #6e6e73; padding: 8px 18px; border-radius: 999px; font: inherit; cursor: pointer; }
       .cities button.on { background: var(--chip); color: var(--chip-ink); }
       .sheet { position: absolute; left: 16px; top: 68px; width: min(400px, calc(100% - 32px)); background: var(--glass); border: 1px solid rgb(0 0 0 / 0.08); border-radius: 28px; padding: 16px; backdrop-filter: blur(18px); max-height: calc(100dvh - 100px); overflow: auto; }
-      .sheet.folded { padding: 10px 12px; max-height: none; overflow: hidden; }
+      .sheet.folded { padding: 8px 10px; max-height: none; overflow: hidden; }
       .sheet.folded .sheet-body { display: none; }
-      #fold { border: 0; background: var(--chip); color: var(--chip-ink); border-radius: 999px; padding: 8px 14px; font: inherit; cursor: pointer; min-height: 44px; }
+      .sheet.folded .toolbar { margin-bottom: 0; }
       @media (max-width: 640px) {
         .sheet {
           left: 12px;
@@ -82,16 +88,84 @@
           max-height: 38dvh;
         }
         .sheet.folded { bottom: 12px; width: auto; left: 12px; right: auto; }
-        #fold { min-width: 72px; }
       }
       .sheet h1, .sheet h2 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
       .sheet h2 { margin-top: 14px; }
       .sheet p.lead { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.4; }
-      .sheet input { width: 100%; border: 0; border-radius: 16px; background: rgb(0 0 0 / 0.06); color: var(--ink); padding: 12px 14px; font: inherit; outline: none; }
-      .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-      #here, #refresh, #theme, #clockfmt { border: 0; background: var(--chip); color: var(--chip-ink); border-radius: 999px; padding: 8px 14px; font: inherit; cursor: pointer; }
-      .at { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
-      .at input { width: auto; padding: 8px 10px; }
+      .sheet input { width: 100%; border: 0; border-radius: 16px; background: var(--well); color: var(--ink); padding: 12px 14px; font: inherit; outline: none; }
+      .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 10px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+      }
+      .tools, .seg {
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: 1px;
+        padding: 2px;
+        border-radius: 999px;
+        background: var(--well);
+      }
+      .toolbar button {
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        border-radius: 999px;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        line-height: 1;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .toolbar button.icon {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+      }
+      .toolbar button.icon svg { width: 15px; height: 15px; display: block; }
+      .toolbar button.word { height: 28px; padding: 0 8px; }
+      .toolbar button.on { background: var(--chip); color: var(--chip-ink); }
+      .toolbar button:active { transform: scale(0.96); }
+      .toolbar button:focus-visible, .at input:focus-visible {
+        outline: 2px solid var(--sodium);
+        outline-offset: 1px;
+      }
+      .i-sun { display: none; }
+      html.night .i-moon { display: none; }
+      html.night .i-sun { display: block; }
+      .toolbar button.busy svg { animation: rive-spin 0.7s linear infinite; }
+      @keyframes rive-spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        .toolbar button.busy svg { animation: none; }
+        .toolbar button:active { transform: none; }
+      }
+      .seg button { min-height: 24px; min-width: 34px; padding: 4px 7px; }
+      .at { display: flex; align-items: center; margin-left: auto; min-width: 0; }
+      .at input {
+        width: 6.5em;
+        max-width: 100%;
+        height: 28px;
+        padding: 0 8px;
+        font-size: 12px;
+        font-family: "Rive Clock", "SF Mono", Menlo, ui-monospace, monospace;
+        border-radius: 999px;
+        background: var(--well);
+      }
+      @media (max-width: 380px) {
+        .toolbar { gap: 4px; }
+        .toolbar button.icon { width: 26px; height: 26px; }
+        .toolbar button.word { height: 26px; padding: 0 6px; }
+        .seg button { min-width: 30px; min-height: 22px; padding: 3px 5px; }
+        .at input { width: 5.8em; height: 26px; font-size: 11px; }
+      }
       .hits { list-style: none; margin: 8px 0 0; padding: 0; }
       .hits button { width: 100%; text-align: left; border: 0; background: transparent; color: inherit; padding: 8px 2px; font: inherit; cursor: pointer; }
       .hits .meta { color: var(--muted); font-size: 12px; }
@@ -116,14 +190,37 @@
         <button type="button" id="btn-montreal">Montréal</button>
       </div>
       <section class="sheet" id="sheet">
-        <div class="toolbar">
-          <button type="button" id="here">Ici</button>
-          <button type="button" id="refresh">Actualiser</button>
-          <button type="button" id="theme" aria-label="Jour ou nuit">Nuit</button>
-          <button type="button" id="fold" aria-expanded="true" aria-controls="sheet-body">Carte</button>
-          <button type="button" id="clockfmt" aria-label="Format d'heure">Auto</button>
+        <div class="toolbar" role="toolbar" aria-label="Outils">
+          <div class="tools">
+            <button type="button" id="here" class="icon" aria-label="Ici" title="Ici">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <circle cx="8" cy="8" r="3.1" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <path d="M8 1.4v2.3M8 12.3v2.3M1.4 8h2.3M12.3 8h2.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              </svg>
+            </button>
+            <button type="button" id="fold" class="word" aria-expanded="true" aria-controls="sheet-body" title="Carte">Carte</button>
+            <button type="button" id="refresh" class="icon" aria-label="Actualiser" title="Actualiser">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M13.1 8A5.1 5.1 0 1 1 11 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                <path d="M10.8 1.5v2.7h2.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button type="button" id="theme" class="icon" aria-label="Nuit" title="Nuit">
+              <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M12.8 10.1A5.3 5.3 0 0 1 6.2 3.1 5.3 5.3 0 1 0 12.8 10.1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+              </svg>
+              <svg class="i-sun" viewBox="0 0 16 16" aria-hidden="true">
+                <circle cx="8" cy="8" r="2.3" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <path d="M8 1.5v1.5M8 13v1.5M1.5 8h1.5M13 8h1.5M3.3 3.3l1.1 1.1M11.6 11.6l1.1 1.1M3.3 12.7l1.1-1.1M11.6 4.4l1.1-1.1" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+          <div class="seg" id="clockfmt" role="group" aria-label="Format d'heure">
+            <button type="button" id="clock-os" class="on" aria-pressed="true">Auto</button>
+            <button type="button" id="clock-24" aria-pressed="false">24</button>
+          </div>
           <label class="at">
-            À
+            <span class="sr-only" style="position:absolute;left:-9999px">Heure</span>
             <input id="at" type="time" />
           </label>
         </div>
