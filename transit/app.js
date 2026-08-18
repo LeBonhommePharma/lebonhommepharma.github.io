@@ -446,7 +446,7 @@ function applyTheme(mode) {
 
 async function loadPois() {
   try {
-    const table = await fetch(new URL("../data/pois.json", import.meta.url)).then((r) => r.json());
+    const table = await fetch(new URL("./data/pois.json", import.meta.url)).then((r) => r.json());
     const cityPlaces = (table.places || []).filter((poi) => !poi.city || poi.city === state.city);
     state.pois = pickPois(cityPlaces, table.budget || 8);
   } catch {
@@ -458,7 +458,7 @@ async function refreshFeeds(userDeclared) {
   const btn = document.getElementById("refresh");
   if (btn) btn.textContent = "…";
   try {
-    const meta = await fetch(new URL(`../data/${state.city}/meta.json`, import.meta.url) + `?t=${Date.now()}`).then((r) =>
+    const meta = await fetch(new URL(`./data/${state.city}/meta.json`, import.meta.url) + `?t=${Date.now()}`).then((r) =>
       r.json(),
     );
     const local = fingerprintFromMeta(state.atlas?.meta || meta);
