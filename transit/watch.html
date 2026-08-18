@@ -9,8 +9,9 @@
     <style>
       html, body { height: 100%; margin: 0; background: #1d1d1f; color: #fff; font-family: ui-sans-serif, system-ui, sans-serif; }
       main { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; }
-      .route { font-size: 28px; font-weight: 700; }
-      .clocks { font-family: ui-monospace, monospace; font-size: 18px; letter-spacing: 0.06em; margin-top: 8px; }
+      .route { font-size: 22px; font-weight: 700; }
+      .remain { font-size: 56px; font-weight: 620; letter-spacing: -0.04em; line-height: 1; margin-top: 4px; font-variant-numeric: tabular-nums; }
+      .clocks { font-family: ui-monospace, monospace; font-size: 16px; letter-spacing: 0.06em; margin-top: 8px; }
       .stop { margin-top: 10px; font-size: 14px; opacity: 0.7; max-width: 16rem; }
       .hint { margin-top: 28px; font-size: 11px; opacity: 0.45; max-width: 18rem; line-height: 1.4; }
     </style>
@@ -18,26 +19,74 @@
   <body>
     <main id="face">
       <div class="route" id="route">Rive</div>
+      <div class="remain" id="remain">—</div>
       <div class="clocks" id="clocks">—</div>
       <div class="stop" id="stop">Ouvre un arrêt sur l'atlas.</div>
       <p class="hint">
-        L'iPhone est le cerveau. Cette page est le cadran: même origine, dernier arrêt consulté.
-        Une app Watch native se sideloade depuis Xcode sans les 99 $ (profil 7 jours).
+        Ouvre ce lien depuis l'iPhone (Handoff / Messages) ou enregistre-le sur la Watch.
+        L'horaire voyage dans l'URL: pas besoin du téléphone ouvert.
       </p>
     </main>
     <script>
-      function paint() {
+      function minutesNow() {
+        const parts = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "America/Montreal",
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23",
+        }).formatToParts(new Date());
+        return (
+          Number(parts.find((p) => p.type === "hour").value) * 60 +
+          Number(parts.find((p) => p.type === "minute").value)
+        );
+      }
+
+      function remainMinutes(departs) {
+        const now = minutesNow();
+        let best = null;
+        for (const raw of departs) {
+          let t = Number(raw);
+          if (!Number.isFinite(t)) continue;
+          if (t < now - 90) t += 1440;
+          const wait = t - now;
+          if (wait < 0) continue;
+          if (best == null || wait < best) best = wait;
+        }
+        return best;
+      }
+
+      function readLive() {
+        const q = new URLSearchParams(location.search);
+        if (q.get("s") || q.get("r")) {
+          return {
+            stop: q.get("s") || "",
+            route: q.get("r") || "Rive",
+            color: q.get("k") || "#ffffff",
+            clocks: (q.get("t") || "").split(",").filter(Boolean),
+            departs: (q.get("m") || "").split(",").filter(Boolean),
+          };
+        }
         try {
-          const live = JSON.parse(localStorage.getItem("rive.live") || "null");
-          if (!live) return;
-          document.getElementById("route").textContent = live.route || "Rive";
-          document.getElementById("route").style.color = live.color || "#fff";
-          document.getElementById("clocks").textContent = (live.clocks || []).slice(0, 4).join("  ") || "—";
-          document.getElementById("stop").textContent = live.stop || "";
-        } catch {}
+          return JSON.parse(localStorage.getItem("rive.live") || "null");
+        } catch {
+          return null;
+        }
+      }
+
+      function paint() {
+        const live = readLive();
+        if (!live) return;
+        document.getElementById("route").textContent = live.route || "Rive";
+        document.getElementById("route").style.color = live.color || "#fff";
+        const wait = remainMinutes(live.departs || []);
+        document.getElementById("remain").textContent =
+          wait == null ? "—" : wait === 0 ? "now" : String(wait);
+        document.getElementById("clocks").textContent =
+          (live.clocks || []).slice(0, 4).join("  ") || "—";
+        document.getElementById("stop").textContent = live.stop || "";
       }
       paint();
-      setInterval(paint, 5000);
+      setInterval(paint, 15000);
     </script>
   </body>
 </html>

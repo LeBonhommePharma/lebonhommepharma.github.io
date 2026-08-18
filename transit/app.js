@@ -247,6 +247,7 @@ function openStop(stop) {
   const rows = scheduleAtStop(state.atlas, state.timetable, stop, now, active);
   const board = document.getElementById("board");
   board.hidden = false;
+  const watchHref = watchUrl(stop, rows);
   board.innerHTML = `<h2>${escapeHtml(stop.name)}</h2>
     <p class="lead">Prochains passages ici. Tu n'as pas besoin d'être sur le quai.</p>
     ${
@@ -263,25 +264,46 @@ function openStop(stop) {
               </div>`,
             )
             .join("")
-    }`;
+    }
+    <p class="lead"><a id="watch-open" href="${watchHref}">Cadran Watch</a></p>`;
   document.getElementById("hits").innerHTML = "";
+  const footerWatch = document.getElementById("watch-link");
+  if (footerWatch) footerWatch.setAttribute("href", watchHref);
   try {
-    localStorage.setItem(
-      "rive.live",
-      JSON.stringify({
-        city: state.city,
-        stop: stop.name,
-        color: rows[0]?.color || "#0071e3",
-        route: rows[0]?.shortName || "",
-        headsign: rows[0]?.headsign || "",
-        clocks: rows[0]?.times?.map(formatClock) || [],
-        at: Date.now(),
-      }),
-    );
+    history.replaceState(null, "", `?city=${encodeURIComponent(state.city)}&stop=${encodeURIComponent(stop.id)}`);
+  } catch {
+    /* ignore */
+  }
+  const live = {
+    city: state.city,
+    stopId: stop.id,
+    stop: stop.name,
+    color: rows[0]?.color || "#0071e3",
+    route: rows[0]?.shortName || "",
+    headsign: rows[0]?.headsign || "",
+    clocks: rows[0]?.times?.map(formatClock) || [],
+    departs: rows[0]?.times || [],
+    at: Date.now(),
+  };
+  try {
+    localStorage.setItem("rive.live", JSON.stringify(live));
   } catch {
     /* private mode */
   }
   draw();
+}
+
+function watchUrl(stop, rows) {
+  const first = rows[0];
+  const q = new URLSearchParams({
+    c: state.city,
+    s: stop.name,
+    r: first?.shortName || "",
+    k: first?.color || "#0071e3",
+    t: (first?.times || []).slice(0, 4).map(formatClock).join(","),
+    m: (first?.times || []).slice(0, 4).join(","),
+  });
+  return `./watch.html?${q.toString()}`;
 }
 
 const canvas = document.getElementById("stage");
@@ -438,4 +460,14 @@ function switchCity(city) {
 window.addEventListener("resize", resize);
 resize();
 tryWebGPU();
-loadCity("quebec");
+
+const boot = new URLSearchParams(location.search);
+const bootCity = boot.get("city") === "montreal" ? "montreal" : "quebec";
+const bootStop = boot.get("stop");
+document.getElementById("btn-quebec").classList.toggle("on", bootCity === "quebec");
+document.getElementById("btn-montreal").classList.toggle("on", bootCity === "montreal");
+loadCity(bootCity).then(() => {
+  if (!bootStop || !state.atlas) return;
+  const hit = state.atlas.stops.find((s) => s.id === bootStop);
+  if (hit) openStop(hit);
+});
