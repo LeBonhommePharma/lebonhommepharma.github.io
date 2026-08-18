@@ -22,11 +22,13 @@ import {
 import {
   BUILDING_ENDPOINTS,
   BUILDING_ZOOM,
-  extrudeOffsetPx,
+  METRO_DEPTH_M,
+  applyPitch,
+  invertPitch,
   overpassQuery,
   parseOverpassBuildings,
-  wallQuads,
 } from "./buildings.js";
+import { BIKE_FEEDS, feedUrl, mergeStations, nearbyStations } from "./bikes.js";
 
 const TZ = "America/Montreal";
 const CITIES = {
@@ -53,6 +55,7 @@ const state = {
   watchId: null,
   pois: [],
   buildings: [],
+  bikes: [],
   vehicles: [],
   tripUpdates: [],
   shapePatches: {},
@@ -367,9 +370,9 @@ function planFromHere(from, destStop, now, active) {
   return annotateTimeGaps(rankByDoorToDoor(found).slice(0, 8));
 }
 
-function nearbyLines(atlas, here, dest, radiusM = 700) {
+function nearbyLines(atlas, here, dest, radiusM = 1200) {
   if (!here || !Number.isFinite(here.lon) || !Number.isFinite(here.lat)) return [];
-  const near = nearbyStops(atlas.stops, here, radiusM, 16);
+  const near = nearbyStops(atlas.stops, here, radiusM, 24);
   if (!near.length) return [];
   const destRouteIds = new Set();
   if (dest && Number.isFinite(dest.lon) && Number.isFinite(dest.lat)) {
@@ -461,12 +464,11 @@ function formatRelative(wait) {
 }
 
 function riderPoint() {
-  return (
-    state.here ||
-    (state.stop
-      ? { lon: state.stop.lon, lat: state.stop.lat, stopId: state.stop.id }
-      : { lon: state.camera.lon, lat: state.camera.lat })
-  );
+  if (state.here && Number.isFinite(state.here.lon) && Number.isFinite(state.here.lat)) {
+    return { lon: state.here.lon, lat: state.here.lat, source: state.here.source };
+  }
+  if (state.stop) return { lon: state.stop.lon, lat: state.stop.lat, stopId: state.stop.id };
+  return { lon: state.camera.lon, lat: state.camera.lat };
 }
 
 function pickPois(candidates, budget) {
@@ -675,8 +677,20 @@ function trajectoryAfterRealtime(staticEncoded, patch) {
   return base;
 }
 
+const lineCache = new Map();
+
+function coordsFor(encoded) {
+  if (!encoded) return [];
+  let pts = lineCache.get(encoded);
+  if (pts) return pts;
+  pts = decodePolyline(encoded);
+  if (lineCache.size > 500) lineCache.clear();
+  lineCache.set(encoded, pts);
+  return pts;
+}
+
 function overlayWithVehicles(staticEncoded, vehicles, routeId, shape) {
-  const base = shape ? decodePolyline(shape) : decodePolyline(staticEncoded);
+  const base = shape ? coordsFor(shape) : coordsFor(staticEncoded);
   const dots = (vehicles || []).filter((item) => !item.routeId || item.routeId === routeId);
   if (!dots.length) return base;
   return dots.map((v) => [v.lon, v.lat]).concat(base);
@@ -726,7 +740,7 @@ function setSheetOpen(open) {
     fold.setAttribute("aria-expanded", state.sheetOpen ? "true" : "false");
   }
   paintMapHud();
-  draw();
+  requestDraw();
 }
 
 function paintMapHud() {
@@ -764,13 +778,18 @@ function inspectMapPoint(cx, cy) {
   if (!state.atlas) return;
   const w = innerWidth;
   const h = innerHeight;
+  const pitch = state.camera.pitch || 0;
   let best = null;
   let bestD = 28;
   for (const stop of state.atlas.stops) {
     if (stop.kind === 2) continue;
     if (state.timetable && !stopHasService(stop, state.timetable)) continue;
     const [x, y] = worldToScreen(stop.lon, stop.lat, state.camera, w, h);
-    const d = Math.hypot(x - cx, y - cy);
+    let d = Math.hypot(x - cx, y - cy);
+    if (stop.kind === 1 && pitch > 0.15) {
+      const [ux, uy] = worldToScreen(stop.lon, stop.lat, state.camera, w, h, METRO_DEPTH_M);
+      d = Math.min(d, Math.hypot(ux - cx, uy - cy));
+    }
     if (d < bestD) {
       bestD = d;
       best = stop;
@@ -785,7 +804,7 @@ function inspectMapPoint(cx, cy) {
   best.meters = origin ? Math.round(haversineMeters(origin, best) * 10) / 10 : undefined;
   state.stop = best;
   paintMapHud();
-  draw();
+  requestDraw();
 }
 
 function applyTheme(mode) {
@@ -803,7 +822,7 @@ function applyTheme(mode) {
   const color = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   if (themeMeta && color) themeMeta.setAttribute("content", color);
-  draw();
+  requestDraw();
 }
 
 async function loadPois() {
@@ -838,7 +857,7 @@ async function refreshFeeds(userDeclared) {
     if (state.dest) openPlan(state.dest);
     if (state.routeId) renderDue();
     renderNearby();
-    draw();
+    requestDraw();
     if (btn) {
       btn.classList.remove("busy");
       btn.classList.add("ok");
@@ -1035,22 +1054,33 @@ function project(lon, lat) {
   return [x, y];
 }
 
-function worldToScreen(lon, lat, cam, w, h) {
+function worldToScreen(lon, lat, cam, w, h, altM = 0) {
   const [x, y] = project(lon, lat);
   const [cx, cy] = project(cam.lon, cam.lat);
-  const scale = (256 * 2 ** cam.zoom) / 256;
-  let px = (x - cx) * scale * 256 + w / 2;
-  let py = (y - cy) * scale * 256 + h / 2;
-  const pitch = cam.pitch || 0;
-  if (pitch > 0) {
-    const horizon = h * (0.16 + (1 - pitch) * 0.1);
-    const ground = h * 0.94;
-    const t = (py - horizon) / Math.max(1, ground - horizon);
-    const persp = 0.52 + Math.max(0, Math.min(1.4, t)) * (0.48 + pitch * 0.4);
-    px = w / 2 + (px - w / 2) * persp;
-    py = horizon + (py - horizon) * (1 - pitch * 0.44);
-  }
-  return [px, py];
+  const scale = 2 ** cam.zoom;
+  const px = (x - cx) * scale * 256 + w / 2;
+  const py = (y - cy) * scale * 256 + h / 2;
+  const pitched = applyPitch(px, py, w, h, cam.pitch || 0, altM || 0, cam.zoom || 15);
+  return [pitched.x, pitched.y];
+}
+
+function horizonY(h, pitch) {
+  const p = Number.isFinite(pitch) ? Math.min(1, Math.max(0, pitch)) : 0;
+  return h * (0.16 + (1 - p) * 0.1);
+}
+
+function syncPitchButton() {
+  const btn = document.getElementById("pitch");
+  const on = (state.camera.pitch || 0) > 0.2;
+  if (!btn) return;
+  btn.classList.toggle("on", on);
+  btn.setAttribute("aria-pressed", on ? "true" : "false");
+}
+
+function setPitch(value) {
+  const next = Math.min(1, Math.max(0, Number(value) || 0));
+  state.camera.pitch = next;
+  syncPitchButton();
 }
 
 async function loadCity(city) {
@@ -1062,6 +1092,9 @@ async function loadCity(city) {
   state.city = city;
   state.atlas = atlas;
   state.timetable = timetable;
+  state.buildings = [];
+  buildingKey = "";
+  lineCache.clear();
   state.camera = {
     lon: atlas.meta.center[0],
     lat: atlas.meta.center[1],
@@ -1075,10 +1108,12 @@ async function loadCity(city) {
   document.getElementById("attr").textContent = atlas.meta.attribution;
   await loadPois();
   await loadRealtime();
+  await loadBikes();
   renderNearby();
   renderLines();
+  renderBikes();
   if (state.routeId) renderDue();
-  draw();
+  requestDraw();
   scheduleBuildings();
 }
 
@@ -1193,7 +1228,7 @@ function pickDest(destStop) {
 function renderNearby() {
   const box = document.getElementById("nearby");
   if (!box || !state.atlas) return;
-  const origin = state.here || { lon: state.camera.lon, lat: state.camera.lat };
+  const origin = riderPoint();
   const stops = nearbyStops(state.atlas.stops, origin, 700, 8);
   box.innerHTML = stops
     .map(
@@ -1204,6 +1239,44 @@ function renderNearby() {
   box.querySelectorAll("button").forEach((btn) => {
     btn.onclick = () => openStop(state.atlas.stops.find((s) => s.id === btn.dataset.id));
   });
+}
+
+async function loadBikes() {
+  const spec = BIKE_FEEDS[state.city];
+  const title = document.getElementById("bikes-title");
+  if (title && spec) title.textContent = `${spec.label} près d'ici`;
+  if (!spec) {
+    state.bikes = [];
+    renderBikes();
+    return;
+  }
+  try {
+    const discovery = await fetch(spec.gbfs).then((r) => r.json());
+    const infoUrl = feedUrl(discovery, "station_information");
+    const statusUrl = feedUrl(discovery, "station_status");
+    if (!infoUrl || !statusUrl) {
+      state.bikes = [];
+      renderBikes();
+      return;
+    }
+    const [info, status] = await Promise.all([fetch(infoUrl).then((r) => r.json()), fetch(statusUrl).then((r) => r.json())]);
+    state.bikes = mergeStations(info, status, spec.system);
+  } catch {
+    state.bikes = [];
+  }
+  renderBikes();
+}
+
+function renderBikes() {
+  const box = document.getElementById("bikes");
+  if (!box) return;
+  const racks = nearbyStations(state.bikes || [], riderPoint(), 500, 6);
+  box.innerHTML = racks
+    .map(
+      (row) =>
+        `<li>${escapeHtml(row.name)} <span class="meta">${formatMeters(row.meters)} · ${row.bikes} vélos · ${row.docks} places</span></li>`,
+    )
+    .join("");
 }
 
 function shapeForRoute(routeId) {
@@ -1241,10 +1314,9 @@ function paintHeading() {
 }
 
 function applyHere(lon, lat, source, at) {
-  const next = acceptRiderFix(state.rider, { lon, lat, at: at ?? Date.now(), source: source || "gps" }, Date.now());
-  if (!next.here || (state.rider.here && next.here.at === state.rider.here.at && next.here.lon === state.rider.here.lon)) {
-    if (!next.here) return;
-  }
+  const stamp = source === "gps" ? Date.now() : at ?? Date.now();
+  const next = acceptRiderFix(state.rider, { lon, lat, at: stamp, source: source || "gps" }, Date.now());
+  if (!next.here) return;
   state.rider = next;
   state.here = { lon: next.here.lon, lat: next.here.lat, source: next.here.source, at: next.here.at };
   if (state.routeId && isCrowdProbeSource(next.here.source)) {
@@ -1267,6 +1339,7 @@ function applyHere(lon, lat, source, at) {
     state.camera.zoom = Math.max(state.camera.zoom, 14.2);
     renderNearby();
     renderLines();
+    renderBikes();
     if (state.routeId) renderDue();
     if (state.dest) openPlan(state.dest);
     if (state.navigating) {
@@ -1276,7 +1349,7 @@ function applyHere(lon, lat, source, at) {
     }
     paintHeading();
     paintMapHud();
-    draw();
+    requestDraw();
     scheduleBuildings();
   };
   if (city !== state.city) {
@@ -1320,7 +1393,7 @@ function locate() {
     if (compass) {
       state.heading = compass;
       paintHeading();
-      draw();
+      requestDraw();
     }
   };
   navigator.geolocation.getCurrentPosition(onFix, fallback, {
@@ -1346,7 +1419,7 @@ function listenHeading() {
     if (!compass) return;
     state.heading = compass;
     paintHeading();
-    draw();
+    requestDraw();
   };
   window.addEventListener("deviceorientationabsolute", apply, true);
   window.addEventListener("deviceorientation", apply, true);
@@ -1418,7 +1491,7 @@ function renderTrips() {
       .map((trip, i) => {
         const on = i === state.tripIndex ? " on" : "";
         const mix = tripMix(trip);
-        const gap = trip.gap > 0 ? `+${trip.gap} min` : "Plus rapide";
+        const gap = trip.gap > 0 ? `+${trip.gap} min de plus` : "Le plus vite";
         const legs = (trip.legs || [])
           .map((leg) => {
             if (leg.kind === "walk" || leg.kind === "bike") {
@@ -1451,7 +1524,7 @@ function renderTrips() {
       renderTrips();
       const trip = state.trips[state.tripIndex];
       if (trip) fitTrip(trip);
-      draw();
+      requestDraw();
     };
   });
   box.querySelectorAll(".go").forEach((btn) => {
@@ -1519,7 +1592,7 @@ function startTrip(index) {
   locate();
   paintNav();
   pulseFromTrip(trip);
-  draw();
+  requestDraw();
 }
 
 function stopTrip() {
@@ -1529,7 +1602,7 @@ function stopTrip() {
   const trip = currentTrip();
   if (trip) fitTrip(trip);
   broadcastPulse(livePulseEnd());
-  draw();
+  requestDraw();
 }
 
 function pulseStorage() {
@@ -1623,7 +1696,7 @@ function openPlan(destStop) {
         <p class="lead">Pas de trajet à ${formatClock(now)} depuis ici. Choisis une ligne ou un horaire ailleurs.</p>`;
     }
   }
-  draw();
+  requestDraw();
 }
 
 function openStop(stop) {
@@ -1680,7 +1753,7 @@ function openStop(stop) {
   } catch {
     /* private mode */
   }
-  draw();
+  requestDraw();
 }
 
 function watchUrl(stop, rows) {
@@ -1699,6 +1772,44 @@ function watchUrl(stop, rows) {
 const canvas = document.getElementById("stage");
 const ctx = canvas.getContext("2d", { alpha: false });
 
+let drawFrame = 0;
+function requestDraw() {
+  if (drawFrame) return;
+  drawFrame = requestAnimationFrame(() => {
+    drawFrame = 0;
+    draw();
+  });
+}
+
+function screenToWorld(sx, sy, cam, w, h) {
+  const flat = invertPitch(sx, sy, w, h, cam.pitch || 0);
+  const [cx, cy] = project(cam.lon, cam.lat);
+  const scale = 2 ** cam.zoom * 256;
+  const x = cx + (flat.x - w / 2) / scale;
+  const y = cy + (flat.y - h / 2) / scale;
+  const lon = x * 360 - 180;
+  const n = Math.PI * (1 - 2 * y);
+  const lat = (Math.atan(Math.sinh(n)) * 180) / Math.PI;
+  return { lon, lat };
+}
+
+function zoomAt(sx, sy, nextZoom) {
+  const zoom = Math.min(16.5, Math.max(10.2, nextZoom));
+  const w = innerWidth;
+  const h = innerHeight;
+  if (!Number.isFinite(sx) || !Number.isFinite(sy) || !Number.isFinite(w) || !Number.isFinite(h)) {
+    state.camera.zoom = zoom;
+    return;
+  }
+  const hold = screenToWorld(sx, sy, state.camera, w, h);
+  state.camera.zoom = zoom;
+  const now = screenToWorld(sx, sy, state.camera, w, h);
+  if (Number.isFinite(hold.lon) && Number.isFinite(now.lon)) {
+    state.camera.lon += hold.lon - now.lon;
+    state.camera.lat += hold.lat - now.lat;
+  }
+}
+
 function resize() {
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   canvas.width = Math.floor(innerWidth * dpr);
@@ -1706,37 +1817,118 @@ function resize() {
   canvas.style.width = innerWidth + "px";
   canvas.style.height = innerHeight + "px";
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  draw();
+  requestDraw();
+}
+
+function drawHorizon(w, h) {
+  const pitch = state.camera.pitch || 0;
+  if (pitch <= 0) return;
+  const y = horizonY(h, pitch);
+  const night = document.documentElement.classList.contains("night");
+  const sky = ctx.createLinearGradient(0, 0, 0, y);
+  if (night) {
+    sky.addColorStop(0, "#070b12");
+    sky.addColorStop(1, "#141c28");
+  } else {
+    sky.addColorStop(0, "#8eb8d8");
+    sky.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue("--stage").trim() || "#d5dde4");
+  }
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, Math.max(1, y + 1));
+}
+
+let showBusStops = false;
+let showLocalRoutes = false;
+let showMetroStops = true;
+let heldLabels = new Set();
+const labelQueue = [];
+let labelBoxes = [];
+
+function queueLabel(id, text, x, y, size, pri) {
+  if (!id || !text) return;
+  labelQueue.push({ id, text, x, y, size, pri });
+}
+
+function flushLabels(ink, zoom) {
+  const held = heldLabels;
+  labelQueue.sort((a, b) => {
+    const ha = held.has(a.id) ? 1 : 0;
+    const hb = held.has(b.id) ? 1 : 0;
+    if (ha !== hb) return hb - ha;
+    if (a.pri !== b.pri) return b.pri - a.pri;
+    return String(a.id).localeCompare(String(b.id));
+  });
+  labelBoxes = [];
+  const next = new Set();
+  const cap = zoom < 12.6 ? 8 : zoom < 13.4 ? 18 : 56;
+  ctx.fillStyle = ink;
+  ctx.globalAlpha = 0.92;
+  for (const c of labelQueue) {
+    if (next.size >= cap && !held.has(c.id) && c.pri < 80) continue;
+    const tw = String(c.text).length * c.size * 0.52;
+    const th = c.size + 4;
+    let hit = false;
+    for (const box of labelBoxes) {
+      if (c.x < box.x + box.w && c.x + tw > box.x && c.y - th < box.y + box.h && c.y > box.y) {
+        hit = true;
+        break;
+      }
+    }
+    if (hit) continue;
+    ctx.font = `${c.size}px "Rive Text", sans-serif`;
+    ctx.fillText(c.text, c.x, c.y);
+    labelBoxes.push({ x: c.x, y: c.y - th, w: tw, h: th });
+    next.add(c.id);
+  }
+  heldLabels = next;
+  labelQueue.length = 0;
+  ctx.globalAlpha = 1;
 }
 
 function draw() {
   const w = innerWidth;
   const h = innerHeight;
-  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--stage").trim() || "#d5dde4";
+  const cam = state.camera;
+  const css = getComputedStyle(document.documentElement);
+  const stage = css.getPropertyValue("--stage").trim() || "#d5dde4";
+  const ink = css.getPropertyValue("--ink").trim() || "#2b2723";
+  const gold = css.getPropertyValue("--gold").trim() || "#d97706";
+  const sodium = css.getPropertyValue("--sodium").trim() || "#0e7490";
+  const terra = css.getPropertyValue("--terra").trim() || "#6d5cae";
+  ctx.fillStyle = stage;
   ctx.fillRect(0, 0, w, h);
-  labelBoxes = [];
+  drawHorizon(w, h);
+  labelQueue.length = 0;
   if (!state.atlas) return;
   const selected = new Set(state.stop?.routes || []);
-  const pitch = state.camera.pitch || 0;
+  const pitch = cam.pitch || 0;
+  const zoom = cam.zoom;
+  if (zoom >= 13.05) showLocalRoutes = true;
+  else if (zoom < 12.8) showLocalRoutes = false;
+  if (zoom >= 13.15 || !state.sheetOpen) showBusStops = true;
+  else if (zoom < 12.85 && state.sheetOpen) showBusStops = false;
+  if (zoom >= 12.65 || !state.sheetOpen) showMetroStops = true;
+  else if (zoom < 12.35 && state.sheetOpen) showMetroStops = false;
   const drawRouteSet = (onlyMetro, underground) => {
     for (const route of state.atlas.routes) {
       const metro = route.type === 1;
       if (onlyMetro && !metro) continue;
       if (!onlyMetro && metro && pitch > 0.15) continue;
       const frequent = metro || /^80/.test(route.shortName);
-      if (!frequent && state.camera.zoom < 13 && !selected.has(route.id)) continue;
-      ctx.strokeStyle = underground ? "#4b5563" : lineStrokeColor(route);
+      if (!frequent && !showLocalRoutes && !selected.has(route.id)) continue;
+      ctx.strokeStyle = underground ? (document.documentElement.classList.contains("night") ? "#6b7280" : "#4b5563") : lineStrokeColor(route);
       ctx.globalAlpha = underground
-        ? 0.38
+        ? 0.55
         : selected.size && !selected.has(route.id)
           ? 0.12
           : frequent
             ? 0.9
             : 0.35;
-      ctx.lineWidth = metro ? (underground ? 3.2 : 4.4) : /^80/.test(route.shortName) ? 2.8 : 1.4;
+      ctx.lineWidth = metro ? (underground ? 3.4 : 4.4) : /^80/.test(route.shortName) ? 2.8 : 1.4;
       ctx.setLineDash(underground ? [5, 6] : []);
       ctx.lineJoin = "round";
       ctx.lineCap = "round";
+      const alt = underground ? METRO_DEPTH_M : 0;
       for (const dir of route.dirs) {
         const detour = (state.detours || []).find((d) => !d.routeId || d.routeId === route.id);
         const shape = (detour && detour.shape) || (state.shapePatches && state.shapePatches[route.id]);
@@ -1744,10 +1936,9 @@ function draw() {
         if (line.length < 2) continue;
         ctx.beginPath();
         line.forEach(([lon, lat], i) => {
-          const [x, y] = worldToScreen(lon, lat, state.camera, w, h);
-          const yy = underground ? y + 14 + pitch * 22 : y;
-          if (i === 0) ctx.moveTo(x, yy);
-          else ctx.lineTo(x, yy);
+          const [x, y] = worldToScreen(lon, lat, state.camera, w, h, alt);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         });
         ctx.stroke();
       }
@@ -1766,9 +1957,10 @@ function draw() {
           ? [[leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat]]
           : [];
       if (coords.length < 2) continue;
+      const tunnel = pitch > 0.15 && leg.kind === "transit" && leg.type === 1;
       ctx.beginPath();
       coords.forEach(([lon, lat], i) => {
-        const [x, y] = worldToScreen(lon, lat, state.camera, w, h);
+        const [x, y] = worldToScreen(lon, lat, state.camera, w, h, tunnel ? METRO_DEPTH_M : 0);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
@@ -1780,9 +1972,9 @@ function draw() {
         ctx.lineWidth = 3.2;
         ctx.globalAlpha = 0.95;
       } else {
-        ctx.setLineDash([]);
+        ctx.setLineDash(tunnel ? [6, 5] : []);
         ctx.strokeStyle = leg.color || "#0b6bcb";
-        ctx.lineWidth = 6;
+        ctx.lineWidth = tunnel ? 5 : 6;
         ctx.globalAlpha = 0.96;
       }
       ctx.stroke();
@@ -1790,8 +1982,8 @@ function draw() {
     }
     const dest = state.dest;
     if (dest && Number.isFinite(dest.lon)) {
-      const [dx, dy] = worldToScreen(dest.lon, dest.lat, state.camera, w, h);
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--gold").trim() || "#d97706";
+      const [dx, dy] = worldToScreen(dest.lon, dest.lat, cam, w, h);
+      ctx.fillStyle = gold;
       ctx.globalAlpha = 1;
       ctx.beginPath();
       ctx.arc(dx, dy, 6, 0, Math.PI * 2);
@@ -1804,7 +1996,7 @@ function draw() {
   }
   ctx.globalAlpha = 1;
   for (const veh of state.vehicles || []) {
-    const [vx, vy] = worldToScreen(veh.lon, veh.lat, state.camera, w, h);
+    const [vx, vy] = worldToScreen(veh.lon, veh.lat, cam, w, h);
     if (vx < -8 || vy < -8 || vx > w + 8 || vy > h + 8) continue;
     ctx.fillStyle = "#e24b4a";
     ctx.beginPath();
@@ -1816,24 +2008,21 @@ function draw() {
     ctx.fill();
   }
   for (const poi of state.pois) {
-    const [px, py] = worldToScreen(poi.lon, poi.lat, state.camera, w, h);
+    const [px, py] = worldToScreen(poi.lon, poi.lat, cam, w, h);
     if (px < -12 || py < -12 || px > w + 12 || py > h + 12) continue;
     ctx.fillStyle = state.theme === "night" ? "#c9b27a" : "#8a6a2f";
     ctx.globalAlpha = 0.85;
     ctx.beginPath();
     ctx.arc(px, py, 3.2, 0, Math.PI * 2);
     ctx.fill();
-    if (state.camera.zoom >= 12.4 && placeLabel(poi.name, px + 6, py + 3, 11)) {
-      ctx.globalAlpha = 0.9;
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#2b2723";
-      ctx.font = "11px \"Rive Text\", sans-serif";
-      ctx.fillText(poi.name, px + 6, py + 3);
+    if (zoom >= 12.3 || heldLabels.has("poi:" + poi.name)) {
+      queueLabel("poi:" + poi.name, poi.name, px + 6, py + 3, 11, 20);
     }
   }
   ctx.globalAlpha = 1;
   if (state.here) {
-    const [hx, hy] = worldToScreen(state.here.lon, state.here.lat, state.camera, w, h);
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--sodium").trim() || "#0e7490";
+    const [hx, hy] = worldToScreen(state.here.lon, state.here.lat, cam, w, h);
+    ctx.fillStyle = sodium;
     ctx.beginPath();
     ctx.arc(hx, hy, 5, 0, Math.PI * 2);
     ctx.fill();
@@ -1848,48 +2037,61 @@ function draw() {
     }
   }
   if (state.fusedVehicle && Number.isFinite(state.fusedVehicle.lon)) {
-    const [fx, fy] = worldToScreen(state.fusedVehicle.lon, state.fusedVehicle.lat, state.camera, w, h);
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--terra").trim() || "#6d5cae";
+    const [fx, fy] = worldToScreen(state.fusedVehicle.lon, state.fusedVehicle.lat, cam, w, h);
+    ctx.fillStyle = terra;
     ctx.beginPath();
     ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
     ctx.fill();
   }
-  const showBus = state.camera.zoom >= 13.1 || !state.sheetOpen;
-  const showMetro = state.camera.zoom >= 12.6 || !state.sheetOpen;
-  if (showMetro) {
+  if (showMetroStops) {
     for (const stop of state.atlas.stops) {
       if (stop.kind === 2) continue;
       if (state.timetable && !stopHasService(stop, state.timetable)) continue;
-      if (stop.kind !== 1 && !showBus) continue;
-      const [x, y] = worldToScreen(stop.lon, stop.lat, state.camera, w, h);
+      if (stop.kind !== 1 && !showBusStops) continue;
+      const [x, y] = worldToScreen(stop.lon, stop.lat, cam, w, h);
       if (x < -10 || y < -10 || x > w + 10 || y > h + 10) continue;
-      const selected = state.stop && state.stop.id === stop.id;
+      const picked = state.stop && state.stop.id === stop.id;
       const metro = stop.kind === 1;
-      const r = selected ? 6.2 : metro ? 5.2 : 3.8;
+      const r = picked ? 6.2 : metro ? 5.2 : 3.8;
+      if (metro && pitch > 0.15) {
+        const [ux, uy] = worldToScreen(stop.lon, stop.lat, cam, w, h, METRO_DEPTH_M);
+        ctx.globalAlpha = 0.55;
+        ctx.strokeStyle = document.documentElement.classList.contains("night") ? "#6b7280" : "#8b949e";
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(ux, uy);
+        ctx.stroke();
+        ctx.globalAlpha = 0.9;
+        ctx.beginPath();
+        ctx.arc(ux, uy, r * 0.85, 0, Math.PI * 2);
+        ctx.fillStyle = "#1d1d1f";
+        ctx.fill();
+        ctx.strokeStyle = "#f0d060";
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fillStyle = selected
-        ? getComputedStyle(document.documentElement).getPropertyValue("--gold").trim() || "#d97706"
-        : metro
-          ? "#1d1d1f"
-          : "#fff8ee";
+      ctx.fillStyle = picked ? gold : metro ? "#1d1d1f" : "#fff8ee";
       ctx.fill();
       ctx.lineWidth = metro ? 2 : 1.5;
-      ctx.strokeStyle = selected ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
+      ctx.strokeStyle = picked ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
       ctx.stroke();
       const wantLabel =
-        selected ||
+        picked ||
         metro ||
-        (!state.sheetOpen && state.camera.zoom >= 13.2) ||
-        state.camera.zoom >= 14.6 ||
-        (metro && state.camera.zoom >= 13.4);
-      if (wantLabel && placeLabel(stop.name, x + r + 3, y + 3, metro ? 11 : 10)) {
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#2b2723";
-        ctx.font = `${metro ? 11 : 10}px "Rive Text", sans-serif`;
-        ctx.fillText(stop.name, x + r + 3, y + 3);
+        heldLabels.has(stop.id) ||
+        (!state.sheetOpen && zoom >= 13) ||
+        zoom >= 14.4;
+      if (wantLabel) {
+        queueLabel(stop.id, stop.name, x + r + 3, y + 3, metro ? 11 : 10, picked ? 100 : metro ? 70 : 40);
       }
     }
   }
+  flushLabels(ink, zoom);
 }
 
 let buildingTimer = 0;
@@ -1908,19 +2110,22 @@ function viewBbox() {
 
 function scheduleBuildings() {
   clearTimeout(buildingTimer);
-  buildingTimer = setTimeout(loadBuildings, 420);
+  buildingTimer = setTimeout(loadBuildings, 280);
 }
 
 async function loadBuildings() {
-  if (state.camera.zoom < BUILDING_ZOOM) {
+  if (state.camera.zoom < BUILDING_ZOOM - 0.85) {
     if (state.buildings.length) {
       state.buildings = [];
-      draw();
+      buildingKey = "";
+      requestDraw();
     }
     return;
   }
+  if (state.camera.zoom < BUILDING_ZOOM) return;
   const box = viewBbox();
-  const key = [box.south, box.west, box.north, box.east].map((n) => n.toFixed(3)).join(",");
+  const prec = state.camera.zoom >= 15 ? 3 : 2;
+  const key = [box.south, box.west, box.north, box.east].map((n) => n.toFixed(prec)).join(",");
   if (key === buildingKey) return;
   if (buildingAbort) buildingAbort.abort();
   buildingAbort = new AbortController();
@@ -1931,9 +2136,10 @@ async function loadBuildings() {
       if (!res.ok) continue;
       const parsed = parseOverpassBuildings(await res.json());
       if (!parsed.length) continue;
+      parsed.sort((a, b) => b.ring[0][1] - a.ring[0][1]);
       state.buildings = parsed;
       buildingKey = key;
-      draw();
+      requestDraw();
       return;
     } catch {
       /* try next mirror */
@@ -1941,50 +2147,31 @@ async function loadBuildings() {
   }
 }
 
-let labelBoxes = [];
-
-function placeLabel(text, x, y, size) {
-  if (!text) return false;
-  const tw = String(text).length * size * 0.52;
-  const th = size + 4;
-  for (const box of labelBoxes) {
-    if (x < box.x + box.w && x + tw > box.x && y - th < box.y + box.h && y > box.y) return false;
-  }
-  if (state.camera.zoom < 13.1 && labelBoxes.length > 10) return false;
-  labelBoxes.push({ x, y: y - th, w: tw, h: th });
-  return true;
-}
-
 function drawBuildings(w, h) {
-  if (state.camera.zoom < BUILDING_ZOOM || !state.buildings.length) return;
+  if (state.camera.zoom < BUILDING_ZOOM - 0.85 || !state.buildings.length) return;
   const night = document.documentElement.classList.contains("night");
   const wall = night ? "#1c2630" : "#c5cdd4";
+  const wallDark = night ? "#151c24" : "#aeb6be";
   const roof = night ? "#24303a" : "#dbe2e8";
   const edge = night ? "#141a20" : "#b0b8c0";
-  const pitch = state.camera.pitch || 0;
-  const list = state.buildings.slice().sort((a, b) => a.ring[0][1] - b.ring[0][1]);
-  for (const b of list) {
-    const off = extrudeOffsetPx(b.heightM, state.camera.zoom);
-    const dx = off.dx * (0.35 + pitch * 1.1);
-    const dy = off.dy * (1 + pitch * 2.6);
-    const screen = b.ring.map(([lon, lat]) => worldToScreen(lon, lat, state.camera, w, h));
-    ctx.fillStyle = wall;
-    ctx.strokeStyle = edge;
-    ctx.lineWidth = 0.6;
-    for (const quad of wallQuads(screen, dx, dy)) {
+  ctx.lineWidth = 0.6;
+  ctx.strokeStyle = edge;
+  for (const b of state.buildings) {
+    const ground = b.ring.map(([lon, lat]) => worldToScreen(lon, lat, state.camera, w, h, 0));
+    const top = b.ring.map(([lon, lat]) => worldToScreen(lon, lat, state.camera, w, h, b.heightM));
+    for (let i = 0; i < ground.length - 1; i++) {
+      ctx.fillStyle = ground[i + 1][0] >= ground[i][0] ? wallDark : wall;
       ctx.beginPath();
-      quad.forEach((p, i) => (i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1])));
+      ctx.moveTo(ground[i][0], ground[i][1]);
+      ctx.lineTo(ground[i + 1][0], ground[i + 1][1]);
+      ctx.lineTo(top[i + 1][0], top[i + 1][1]);
+      ctx.lineTo(top[i][0], top[i][1]);
       ctx.closePath();
       ctx.fill();
     }
     ctx.fillStyle = roof;
     ctx.beginPath();
-    screen.forEach(([x, y], i) => {
-      const px = x + dx;
-      const py = y + dy;
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    });
+    top.forEach(([x, y], i) => (i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)));
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
@@ -1998,18 +2185,68 @@ async function tryWebGPU() {
 }
 
 let drag = null;
+const pointers = new Map();
+
 canvas.addEventListener("pointerdown", (e) => {
-  drag = { x: e.clientX, y: e.clientY, lon: state.camera.lon, lat: state.camera.lat, moved: 0 };
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   canvas.setPointerCapture(e.pointerId);
+  if (pointers.size >= 2) {
+    const pts = [...pointers.values()];
+    drag = {
+      mode: "tilt",
+      y: (pts[0].y + pts[1].y) / 2,
+      pitch: state.camera.pitch || 0,
+      moved: 0,
+    };
+    return;
+  }
+  drag = {
+    mode: e.shiftKey || e.altKey ? "tilt" : "pan",
+    x: e.clientX,
+    y: e.clientY,
+    lon: state.camera.lon,
+    lat: state.camera.lat,
+    pitch: state.camera.pitch || 0,
+    moved: 0,
+  };
 });
 canvas.addEventListener("pointerup", (e) => {
-  const tap = drag && drag.moved < 8;
-  drag = null;
+  pointers.delete(e.pointerId);
+  const tap = drag && drag.mode === "pan" && drag.moved < 8;
+  const sx = e.clientX;
+  const sy = e.clientY;
+  if (pointers.size === 0) drag = null;
+  else if (pointers.size === 1) {
+    const p = [...pointers.values()][0];
+    drag = {
+      mode: "pan",
+      x: p.x,
+      y: p.y,
+      lon: state.camera.lon,
+      lat: state.camera.lat,
+      pitch: state.camera.pitch || 0,
+      moved: 8,
+    };
+  }
   scheduleBuildings();
-  if (tap) inspectMapPoint(e.clientX, e.clientY);
+  if (tap) inspectMapPoint(sx, sy);
+});
+canvas.addEventListener("pointercancel", (e) => {
+  pointers.delete(e.pointerId);
+  if (pointers.size === 0) drag = null;
 });
 canvas.addEventListener("pointermove", (e) => {
+  if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (!drag) return;
+  if (drag.mode === "tilt") {
+    const y =
+      pointers.size >= 2 ? ([...pointers.values()][0].y + [...pointers.values()][1].y) / 2 : e.clientY;
+    const dy = y - drag.y;
+    drag.moved = Math.max(drag.moved || 0, Math.abs(dy));
+    setPitch(drag.pitch - dy / 260);
+    requestDraw();
+    return;
+  }
   drag.moved = Math.max(drag.moved || 0, Math.hypot(e.clientX - drag.x, e.clientY - drag.y));
   const scale = 256 * 2 ** state.camera.zoom;
   const dx = (e.clientX - drag.x) / scale;
@@ -2019,14 +2256,19 @@ canvas.addEventListener("pointermove", (e) => {
   const ny = cy - dy;
   const n = Math.PI * (1 - 2 * ny);
   state.camera.lat = (Math.atan(Math.sinh(n)) * 180) / Math.PI;
-  draw();
+  requestDraw();
 });
 canvas.addEventListener(
   "wheel",
   (e) => {
     e.preventDefault();
-    state.camera.zoom = Math.min(16.5, Math.max(10.2, state.camera.zoom - e.deltaY * 0.004));
-    draw();
+    if (e.shiftKey) {
+      setPitch((state.camera.pitch || 0) - e.deltaY * 0.002);
+      requestDraw();
+      return;
+    }
+    zoomAt(e.clientX, e.clientY, state.camera.zoom - e.deltaY * 0.004);
+    requestDraw();
     scheduleBuildings();
   },
   { passive: false },
@@ -2078,14 +2320,11 @@ document.getElementById("btn-montreal").onclick = () => switchCity("montreal");
 document.getElementById("here").onclick = () => locate();
 document.getElementById("geo-ask").onclick = () => locate();
 document.getElementById("pitch").onclick = () => {
-  state.camera.pitch = (state.camera.pitch || 0) > 0.2 ? 0 : 0.62;
-  const btn = document.getElementById("pitch");
-  if (btn) {
-    btn.classList.toggle("on", state.camera.pitch > 0.2);
-    btn.setAttribute("aria-pressed", state.camera.pitch > 0.2 ? "true" : "false");
-  }
+  const on = (state.camera.pitch || 0) > 0.2;
+  setPitch(on ? 0 : 0.72);
+  if (!on && state.camera.zoom < 13.2) state.camera.zoom = 13.4;
   scheduleBuildings();
-  draw();
+  requestDraw();
 };
 document.getElementById("refresh").onclick = () => refreshFeeds(true);
 document.getElementById("theme").onclick = () => applyTheme(state.theme === "night" ? "day" : "night");

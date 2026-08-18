@@ -318,7 +318,7 @@
                 <path d="M10.8 1.5v2.7h2.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
-            <button type="button" id="pitch" class="word" aria-pressed="false" title="Vue 3D">3D</button>
+            <button type="button" id="pitch" class="word" aria-pressed="false" title="Vue 3D — hauteurs et souterrain">3D</button>
             <button type="button" id="theme" class="icon" aria-label="Nuit" title="Nuit">
               <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M12.8 10.1A5.3 5.3 0 0 1 6.2 3.1 5.3 5.3 0 1 0 12.8 10.1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
@@ -340,7 +340,7 @@
         </div>
         <div class="sheet-body" id="sheet-body">
         <h1 id="dest-title">Où vas-tu ?</h1>
-        <p class="lead" id="dest-lead">Depuis ici. Le plus court d'abord, avec l'écart en minutes.</p>
+        <p class="lead" id="dest-lead">Le chemin le plus vite d'abord. Les autres disent combien de minutes de plus.</p>
         <label>
           <span class="sr-only" style="position:absolute;left:-9999px">Destination</span>
           <input id="dest" type="search" autocomplete="off" placeholder="Université Laval, McGill…" />
@@ -362,6 +362,8 @@
         <ul class="hits" id="hits"></ul>
         <h2 id="nearby-title">Près d'ici</h2>
         <ul class="hits" id="nearby"></ul>
+        <h2 id="bikes-title">Vélo près d'ici</h2>
+        <ul class="hits" id="bikes"></ul>
         <div class="board" id="board" hidden></div>
         </div>
       </section>

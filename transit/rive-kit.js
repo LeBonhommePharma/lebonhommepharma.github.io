@@ -75,11 +75,11 @@ export function acceptRiderFix(store, sample, now) {
   const at = typeof sample.at === "number" && Number.isFinite(sample.at) ? sample.at : Number(sample.at);
   if (lon == null || lat == null || !Number.isFinite(at)) return store;
   const clock = typeof now === "number" && Number.isFinite(now) ? now : at;
+  const source = typeof sample.source === "string" && sample.source ? sample.source : "gps";
   if (clock - at > RIDER_STALE_MS) return store;
-  if (store.here && at < store.here.at) return store;
+  if (store.here && at < store.here.at && !(source === "gps" && store.here.source === "map")) return store;
   const accuracy =
     typeof sample.accuracy === "number" && Number.isFinite(sample.accuracy) ? sample.accuracy : undefined;
-  const source = typeof sample.source === "string" && sample.source ? sample.source : "gps";
   return { here: { lon, lat, at, source, accuracy } };
 }
 

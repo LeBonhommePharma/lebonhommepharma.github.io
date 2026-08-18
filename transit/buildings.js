@@ -2,10 +2,47 @@
 
 export const BUILDING_ZOOM = 13;
 export const BUILDING_CAP = 280;
+export const METRO_DEPTH_M = -24;
 export const BUILDING_ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
 ];
+
+export function altitudeLiftPx(altM, zoom, pitch, scale) {
+  if (!Number.isFinite(altM) || altM === 0 || !Number.isFinite(zoom)) return 0;
+  const p = Number.isFinite(pitch) ? Math.min(1, Math.max(0, pitch)) : 0;
+  const pxPerMeter = Math.max(0.18, 2 ** (zoom - 15) * 1.15);
+  const rise = 0.5 + p * 2.6;
+  const s = Number.isFinite(scale) && scale > 0 ? scale : 1;
+  return -altM * pxPerMeter * rise * s;
+}
+
+export function applyPitch(px, py, w, h, pitch, altM, zoom) {
+  let x = px;
+  let y = py;
+  let scale = 1;
+  const p = Number.isFinite(pitch) ? Math.min(1, Math.max(0, pitch)) : 0;
+  if (p > 0) {
+    const horizon = h * (0.16 + (1 - p) * 0.1);
+    const ground = h * 0.94;
+    const t = (py - horizon) / Math.max(1, ground - horizon);
+    scale = 0.52 + Math.max(0, Math.min(1.4, t)) * (0.48 + p * 0.4);
+    x = w / 2 + (px - w / 2) * scale;
+    y = horizon + (py - horizon) * (1 - p * 0.44);
+  }
+  return { x, y: y + altitudeLiftPx(altM || 0, zoom == null ? 15 : zoom, p, scale), scale };
+}
+
+export function invertPitch(sx, sy, w, h, pitch) {
+  if (!Number.isFinite(pitch) || pitch <= 0) return { x: sx, y: sy };
+  const p = Math.min(1, Math.max(0, pitch));
+  const horizon = h * (0.16 + (1 - p) * 0.1);
+  const ground = h * 0.94;
+  const py = horizon + (sy - horizon) / Math.max(0.2, 1 - p * 0.44);
+  const t = (py - horizon) / Math.max(1, ground - horizon);
+  const persp = 0.52 + Math.max(0, Math.min(1.4, t)) * (0.48 + p * 0.4);
+  return { x: w / 2 + (sx - w / 2) / Math.max(0.2, persp), y: py };
+}
 
 export function buildingHeightMeters(tags) {
   if (!tags || typeof tags !== "object") return 10;
@@ -46,10 +83,14 @@ export function parseOverpassBuildings(raw, cap) {
   return out;
 }
 
-export function extrudeOffsetPx(heightM, zoom) {
+export function extrudeOffsetPx(heightM, zoom, pitch) {
   if (!Number.isFinite(heightM) || heightM <= 0 || !Number.isFinite(zoom)) return { dx: 0, dy: 0 };
+  const p = Number.isFinite(pitch) ? Math.min(1, Math.max(0, pitch)) : 0;
   const pxPerMeter = Math.max(0.15, 2 ** (zoom - 15) * 0.85);
-  return { dx: heightM * pxPerMeter * 0.32, dy: -heightM * pxPerMeter * 0.58 };
+  return {
+    dx: heightM * pxPerMeter * (0.32 - p * 0.22),
+    dy: -heightM * pxPerMeter * (0.58 + p * 1.7),
+  };
 }
 
 export function wallQuads(ring, dx, dy) {
