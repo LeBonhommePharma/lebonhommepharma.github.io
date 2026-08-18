@@ -23,11 +23,13 @@
       <div class="clocks" id="clocks">—</div>
       <div class="stop" id="stop">Ouvre un arrêt sur l'atlas.</div>
       <p class="hint">
-        Ouvre ce lien depuis l'iPhone (Handoff / Messages) ou enregistre-le sur la Watch.
-        L'horaire voyage dans l'URL: pas besoin du téléphone ouvert.
+        Ajoute cette page à l'écran d'accueil Watch ou ouvre le lien Handoff.
+        L'horaire est dans l'URL. Le téléphone peut être éteint.
       </p>
     </main>
-    <script>
+    <script type="module">
+      import { remainMinutes, watchPulseFromPayload } from "./rive-kit.js";
+
       function minutesNow() {
         const parts = new Intl.DateTimeFormat("en-GB", {
           timeZone: "America/Montreal",
@@ -41,49 +43,39 @@
         );
       }
 
-      function remainMinutes(departs) {
-        const now = minutesNow();
-        let best = null;
-        for (const raw of departs) {
-          let t = Number(raw);
-          if (!Number.isFinite(t)) continue;
-          if (t < now - 90) t += 1440;
-          const wait = t - now;
-          if (wait < 0) continue;
-          if (best == null || wait < best) best = wait;
-        }
-        return best;
-      }
-
       function readLive() {
-        const q = new URLSearchParams(location.search);
-        if (q.get("s") || q.get("r")) {
-          return {
-            stop: q.get("s") || "",
-            route: q.get("r") || "Rive",
-            color: q.get("k") || "#ffffff",
-            clocks: (q.get("t") || "").split(",").filter(Boolean),
-            departs: (q.get("m") || "").split(",").filter(Boolean),
-          };
-        }
         try {
-          return JSON.parse(localStorage.getItem("rive.live") || "null");
+          const q = new URLSearchParams(location.search);
+          if (q.get("s") || q.get("r") || q.get("m")) {
+            return watchPulseFromPayload({
+              s: q.get("s") || "",
+              r: q.get("r") || "",
+              k: q.get("k") || "",
+              t: q.get("t") || "",
+              m: q.get("m") || "",
+            });
+          }
+          return watchPulseFromPayload(localStorage.getItem("rive.live"));
         } catch {
           return null;
         }
       }
 
       function paint() {
-        const live = readLive();
-        if (!live) return;
-        document.getElementById("route").textContent = live.route || "Rive";
-        document.getElementById("route").style.color = live.color || "#fff";
-        const wait = remainMinutes(live.departs || []);
-        document.getElementById("remain").textContent =
-          wait == null ? "—" : wait === 0 ? "now" : String(wait);
-        document.getElementById("clocks").textContent =
-          (live.clocks || []).slice(0, 4).join("  ") || "—";
-        document.getElementById("stop").textContent = live.stop || "";
+        try {
+          const live = readLive();
+          if (!live) return;
+          document.getElementById("route").textContent = live.route || "Rive";
+          document.getElementById("route").style.color = live.color || "#fff";
+          const wait = remainMinutes(live.departs || [], minutesNow());
+          document.getElementById("remain").textContent =
+            wait == null ? "—" : wait === 0 ? "now" : String(wait);
+          document.getElementById("clocks").textContent =
+            (live.clocks || []).slice(0, 4).join("  ") || "—";
+          document.getElementById("stop").textContent = live.stop || "";
+        } catch {
+          /* stay on the empty face */
+        }
       }
       paint();
       setInterval(paint, 15000);

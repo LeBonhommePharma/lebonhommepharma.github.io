@@ -1,5 +1,16 @@
 /* Rive standalone atlas. Copyright 2026 Rive contributors. Apache-2.0 */
 import { probeGpuLabel } from "./webgpu.js";
+import {
+  acceptRiderFix,
+  applyFusedEtaToDue,
+  emptyProbeStore,
+  emptyRiderStore,
+  fuseRouteProbes,
+  headingFromSample,
+  ingestProbe,
+  rankByDoorToDoor,
+  snapToShape,
+} from "./rive-kit.js";
 
 const TZ = "America/Montreal";
 const CITIES = {
@@ -17,6 +28,10 @@ const state = {
   routeId: null,
   stop: null,
   here: null,
+  heading: null,
+  rider: emptyRiderStore(),
+  probes: emptyProbeStore(),
+  watchId: null,
   pois: [],
   vehicles: [],
   tripUpdates: [],
@@ -272,11 +287,7 @@ function planFromHere(from, destStop, now, active) {
       legs: [{ kind: "bike", minutes: bikeMin, meters: Math.round(walkM), label: `Vélo ${Math.round(walkM)} m` }],
     });
   }
-  found.sort((a, b) => {
-    const metro = (item) => (item.legs || []).some((leg) => leg.type === 1) ? 0 : 1;
-    return metro(a) - metro(b) || a.arrive - b.arrive || a.walkMeters - b.walkMeters;
-  });
-  return found.slice(0, 8);
+  return rankByDoorToDoor(found).slice(0, 8);
 }
 
 function nearbyLines(atlas, here, dest, radiusM = 700) {
@@ -992,7 +1003,10 @@ function renderDue() {
   const now = clockMinutes();
   const active = activeServiceIndexes(state.atlas, new Date());
   const scheduled = nextDueOnLine(state.atlas, state.timetable, riderPoint(), state.routeId, now, active);
-  const due = applyTripUpdatesToDue(scheduled, state.tripUpdates || [], now);
+  const official = applyTripUpdatesToDue(scheduled, state.tripUpdates || [], now);
+  const fused = fuseSelectedRoute(official[0]?.depart ?? now);
+  const due = applyFusedEtaToDue(official, fused, now);
+  state.fusedVehicle = fused;
   box.hidden = false;
   if (!due.length) {
     box.innerHTML = `<h2>Prochains</h2><p class="lead">Aucun passage de cette ligne à ${formatClock(now)} près d'ici.</p>`;
@@ -1042,17 +1056,70 @@ function renderNearby() {
   });
 }
 
-function applyHere(lon, lat, source) {
-  if (!Number.isFinite(lon) || !Number.isFinite(lat)) return;
-  state.here = { lon, lat, source: source || "gps" };
-  const city = cityForPoint(lon, lat);
+function shapeForRoute(routeId) {
+  const route = state.atlas?.routes.find((r) => r.id === routeId);
+  const encoded = route?.dirs?.[0]?.line;
+  return encoded ? decodePolyline(encoded) : [];
+}
+
+function fuseSelectedRoute(officialDepart) {
+  if (!state.routeId) return null;
+  const shape = shapeForRoute(state.routeId);
+  const officialVeh = (state.vehicles || []).find((v) => v.routeId === state.routeId);
+  const expected = officialVeh ? snapToShape(officialVeh, shape) : null;
+  return fuseRouteProbes({
+    store: state.probes,
+    routeId: state.routeId,
+    shape,
+    now: Date.now(),
+    officialDepart,
+    expectedAlongMeters: expected ? expected.alongMeters : undefined,
+  });
+}
+
+function paintHeading() {
+  const el = document.getElementById("heading");
+  if (!el) return;
+  const h = state.heading;
+  if (!h) {
+    el.hidden = true;
+    el.textContent = "";
+    return;
+  }
+  el.hidden = false;
+  el.textContent = `${h.cardinal} ${Math.round(h.degrees)}°`;
+}
+
+function applyHere(lon, lat, source, at) {
+  const next = acceptRiderFix(state.rider, { lon, lat, at: at ?? Date.now(), source: source || "gps" }, Date.now());
+  if (!next.here || (state.rider.here && next.here.at === state.rider.here.at && next.here.lon === state.rider.here.lon)) {
+    if (!next.here) return;
+  }
+  state.rider = next;
+  state.here = { lon: next.here.lon, lat: next.here.lat, source: next.here.source, at: next.here.at };
+  if (state.routeId) {
+    state.probes = ingestProbe(
+      state.probes,
+      {
+        lon: next.here.lon,
+        lat: next.here.lat,
+        at: next.here.at,
+        routeId: state.routeId,
+        heading: state.heading?.degrees,
+      },
+      Date.now(),
+    );
+  }
+  const city = cityForPoint(next.here.lon, next.here.lat);
   const go = () => {
-    state.camera.lon = lon;
-    state.camera.lat = lat;
+    state.camera.lon = next.here.lon;
+    state.camera.lat = next.here.lat;
     state.camera.zoom = Math.max(state.camera.zoom, 14.2);
     renderNearby();
     renderLines();
     if (state.routeId) renderDue();
+    if (state.dest) openPlan(state.dest);
+    paintHeading();
     draw();
   };
   if (city !== state.city) {
@@ -1075,11 +1142,42 @@ function locate() {
     fallback();
     return;
   }
-  navigator.geolocation.getCurrentPosition(
-    (pos) => applyHere(pos.coords.longitude, pos.coords.latitude, "gps"),
-    fallback,
-    { enableHighAccuracy: true, maximumAge: 30000, timeout: 8000 },
-  );
+  const onFix = (pos) => {
+    applyHere(pos.coords.longitude, pos.coords.latitude, "gps", pos.timestamp || Date.now());
+    const compass = headingFromSample(pos.coords);
+    if (compass) {
+      state.heading = compass;
+      paintHeading();
+      draw();
+    }
+  };
+  navigator.geolocation.getCurrentPosition(onFix, fallback, {
+    enableHighAccuracy: true,
+    maximumAge: 5000,
+    timeout: 8000,
+  });
+  if (state.watchId == null && typeof navigator.geolocation.watchPosition === "function") {
+    state.watchId = navigator.geolocation.watchPosition(onFix, () => {}, {
+      enableHighAccuracy: true,
+      maximumAge: 3000,
+      timeout: 12000,
+    });
+  }
+}
+
+function listenHeading() {
+  const apply = (event) => {
+    const compass = headingFromSample({
+      heading: event.webkitCompassHeading,
+      alpha: event.alpha,
+    });
+    if (!compass) return;
+    state.heading = compass;
+    paintHeading();
+    draw();
+  };
+  window.addEventListener("deviceorientationabsolute", apply, true);
+  window.addEventListener("deviceorientation", apply, true);
 }
 
 function escapeHtml(value) {
@@ -1103,7 +1201,7 @@ function openPlan(destStop) {
   }
   board.innerHTML =
     `<h2>Vers ${escapeHtml(destStop.name)}</h2>
-    <p class="lead">Temps total selon marche, vélo, bus${state.city === "montreal" ? " et métro" : ""}.</p>` +
+    <p class="lead">Le plus court d'abord. Marche, vélo, bus${state.city === "montreal" ? " et métro" : ""}.</p>` +
     itineraries
       .map((trip) => {
         const mix =
@@ -1284,6 +1382,22 @@ function draw() {
     ctx.beginPath();
     ctx.arc(hx, hy, 5, 0, Math.PI * 2);
     ctx.fill();
+    if (state.heading && Number.isFinite(state.heading.degrees)) {
+      const rad = ((state.heading.degrees - 90) * Math.PI) / 180;
+      ctx.beginPath();
+      ctx.moveTo(hx + Math.cos(rad) * 14, hy + Math.sin(rad) * 14);
+      ctx.lineTo(hx + Math.cos(rad + 2.6) * 6, hy + Math.sin(rad + 2.6) * 6);
+      ctx.lineTo(hx + Math.cos(rad - 2.6) * 6, hy + Math.sin(rad - 2.6) * 6);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+  if (state.fusedVehicle && Number.isFinite(state.fusedVehicle.lon)) {
+    const [fx, fy] = worldToScreen(state.fusedVehicle.lon, state.fusedVehicle.lat, state.camera, w, h);
+    ctx.fillStyle = "#c45c26";
+    ctx.beginPath();
+    ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
+    ctx.fill();
   }
   const showBus = state.camera.zoom >= 13.1;
   const showMetro = state.camera.zoom >= 12.6;
@@ -1460,6 +1574,8 @@ try {
 }
 setClockMode(state.clockMode);
 applyTheme();
+listenHeading();
+paintHeading();
 loadCity(bootCity).then(() => {
   if (bootStop && state.atlas) {
     const hit = state.atlas.stops.find((s) => s.id === bootStop);

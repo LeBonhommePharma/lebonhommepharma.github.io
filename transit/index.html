@@ -180,6 +180,19 @@
       .times { font-family: "Rive Clock", "SF Mono", Menlo, ui-monospace, monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
       footer { position: absolute; right: 16px; bottom: 14px; max-width: 280px; text-align: right; font-size: 10px; color: #6e6e73; line-height: 1.45; }
       footer a { color: inherit; }
+      #heading {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: var(--glass);
+        border: 1px solid rgb(0 0 0 / 0.08);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        font-family: "Rive Clock", "SF Mono", Menlo, ui-monospace, monospace;
+      }
     </style>
   </head>
   <body>
@@ -226,7 +239,7 @@
         </div>
         <div class="sheet-body" id="sheet-body">
         <h1 id="dest-title">Où vas-tu ?</h1>
-        <p class="lead" id="dest-lead">Depuis ici. Un trajet marche + bus ou métro, à cette heure.</p>
+        <p class="lead" id="dest-lead">Depuis ici. Plusieurs options, la plus courte d'abord.</p>
         <label>
           <span class="sr-only" style="position:absolute;left:-9999px">Destination</span>
           <input id="dest" type="search" autocomplete="off" placeholder="Université Laval, McGill…" />
@@ -250,6 +263,7 @@
         <div class="board" id="board" hidden></div>
         </div>
       </section>
+      <div id="heading" hidden></div>
       <footer>
         <span id="gpu">WebGL</span><br />
         Rive, Apache License 2.0.
