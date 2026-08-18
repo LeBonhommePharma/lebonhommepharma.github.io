@@ -42,7 +42,7 @@ function searchStops(atlas, query, limit = 7) {
     else if (code.startsWith(q)) score = 130;
     else if (name.includes(q)) score = 70;
     else if (tokenHits > 0) score = 40 + tokenHits * 25;
-    if (stop.kind === 1) score += 8;
+    if (score > 0 && stop.kind === 1) score += 8;
     if (score > 0) hits.push({ stop, score });
   }
   hits.sort((a, b) => b.score - a.score);
