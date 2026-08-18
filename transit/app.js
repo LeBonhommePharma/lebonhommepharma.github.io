@@ -33,7 +33,8 @@ function searchStops(atlas, query, limit = 7) {
     const name = fold(stop.name);
     const code = fold(stop.code || "");
     const tokens = q.split(/\s+/).filter((t) => t.length > 2);
-    const tokenHits = tokens.filter((t) => name.includes(t) || code.includes(t)).length;
+    const hay = ` ${name} ${code} `;
+    const tokenHits = tokens.filter((t) => hay.includes(` ${t} `)).length;
     let score = -1;
     if (code && code === q) score = 190;
     else if (name === q) score = 180;
