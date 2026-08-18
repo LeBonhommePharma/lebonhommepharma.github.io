@@ -12,7 +12,9 @@ const state = {
   atlas: null,
   timetable: null,
   query: "",
+  destQuery: "",
   stop: null,
+  here: null,
   camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4 },
 };
 
@@ -49,6 +51,163 @@ function searchStops(atlas, query, limit = 7) {
   }
   hits.sort((a, b) => b.score - a.score);
   return hits.slice(0, limit).map((h) => h.stop);
+}
+
+function haversineMeters(a, b) {
+  const R = 6371000;
+  const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+  const dLon = ((b.lon - a.lon) * Math.PI) / 180;
+  const la1 = (a.lat * Math.PI) / 180;
+  const la2 = (b.lat * Math.PI) / 180;
+  const s =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
+}
+
+function nearbyStops(stops, point, radiusM = 700, limit = 14) {
+  if (!point || !Number.isFinite(point.lon) || !Number.isFinite(point.lat)) return [];
+  const out = [];
+  for (const stop of stops) {
+    if (stop.kind === 2) continue;
+    if (!Number.isFinite(stop.lon) || !Number.isFinite(stop.lat)) continue;
+    const meters = haversineMeters(point, { lon: stop.lon, lat: stop.lat });
+    if (!Number.isFinite(meters) || meters > radiusM) continue;
+    out.push({ ...stop, meters: Math.round(meters) });
+  }
+  out.sort((a, b) => {
+    if (a.kind !== b.kind) return a.kind === 1 ? -1 : b.kind === 1 ? 1 : 0;
+    return a.meters - b.meters;
+  });
+  return out.slice(0, limit);
+}
+
+function clockMinutes() {
+  const input = document.getElementById("at");
+  if (input && input.value) {
+    const [h, m] = String(input.value).split(":").map(Number);
+    if (Number.isFinite(h) && Number.isFinite(m)) return h * 60 + m;
+  }
+  return minutesOfDay(new Date());
+}
+
+function fillClockInput() {
+  const input = document.getElementById("at");
+  if (!input || input.value) return;
+  const mins = minutesOfDay(new Date());
+  input.value = formatClock(mins);
+}
+
+function cityForPoint(lon, lat) {
+  const dQc = (lon + 71.2082) ** 2 + (lat - 46.8131) ** 2;
+  const dMtl = (lon + 73.5673) ** 2 + (lat - 45.5017) ** 2;
+  return dQc < dMtl ? "quebec" : "montreal";
+}
+
+function hopSum(hops, from, to) {
+  let n = 0;
+  for (let i = from; i < to && i < hops.length; i++) n += hops[i];
+  return Math.max(1, n);
+}
+
+function indexOnDir(dirStops, stop) {
+  const ids = new Set(lookupIds(stop));
+  for (let i = 0; i < dirStops.length; i++) {
+    if (ids.has(dirStops[i])) return i;
+  }
+  return -1;
+}
+
+function nextDeparture(timetable, stop, routeId, dir, now, active) {
+  let best = null;
+  for (const id of lookupIds(stop)) {
+    for (const row of timetable[id] || []) {
+      if (row.r !== routeId) continue;
+      if (row.d !== dir && dir != null) continue;
+      if (!row.s.some((s) => active.has(s))) continue;
+      const upcoming = row.t.filter((t) => t >= now);
+      const depart = upcoming.length ? upcoming[0] : null;
+      if (depart == null) continue;
+      if (!best || depart < best.depart) best = { depart, headsign: row.h };
+    }
+  }
+  return best;
+}
+
+function planFromHere(from, destStop, now, active) {
+  if (!state.atlas || !from || !destStop) return [];
+  const routes = new Map(state.atlas.routes.map((r) => [r.id, r]));
+  const origins = nearbyStops(state.atlas.stops, from, 700, 10);
+  if (from.stopId) {
+    const seed = state.atlas.stops.find((s) => s.id === from.stopId);
+    if (seed) origins.unshift({ ...seed, meters: 0 });
+  }
+  const dests = nearbyStops(state.atlas.stops, destStop, 220, 6);
+  dests.unshift({ ...destStop, meters: 0 });
+  const found = [];
+  const seen = new Set();
+  for (const origin of origins) {
+    for (const dest of dests) {
+      if (origin.id === dest.id) continue;
+      const shared = (origin.routes || []).filter((id) => (dest.routes || []).includes(id));
+      for (const routeId of shared) {
+        const route = routes.get(routeId);
+        if (!route) continue;
+        for (const dir of route.dirs) {
+          const i = indexOnDir(dir.stops, origin);
+          const j = indexOnDir(dir.stops, dest);
+          if (i < 0 || j <= i) continue;
+          const ride = hopSum(dir.hops, i, j);
+          const next = nextDeparture(state.timetable, origin, route.id, dir.id, now, active);
+          if (!next) continue;
+          const walk1 = haversineMeters(from, origin);
+          const walk2 = haversineMeters(dest, destStop);
+          const w1 = walk1 > 40 ? Math.max(1, Math.round(walk1 / 75)) : 0;
+          const w2 = walk2 > 40 ? Math.max(1, Math.round(walk2 / 75)) : 0;
+          const board = Math.max(now + w1, next.depart);
+          const key = `${route.id}|${origin.id}|${dest.id}|${board}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const legs = [];
+          if (w1 > 0) {
+            legs.push({
+              kind: "walk",
+              minutes: w1,
+              meters: Math.round(walk1),
+              label: `Marche ${Math.round(walk1)} m`,
+            });
+          }
+          legs.push({
+            kind: "transit",
+            minutes: ride,
+            shortName: route.shortName,
+            color: route.color,
+            textColor: route.textColor,
+            headsign: next.headsign || dir.headsign,
+            depart: board,
+            arrive: board + ride,
+          });
+          if (w2 > 0) {
+            legs.push({
+              kind: "walk",
+              minutes: w2,
+              meters: Math.round(walk2),
+              label: `Marche ${Math.round(walk2)} m`,
+            });
+          }
+          found.push({
+            minutes: board + ride + w2 - now,
+            walkMeters: Math.round((w1 ? walk1 : 0) + (w2 ? walk2 : 0)),
+            depart: w1 > 0 ? now : board,
+            arrive: board + ride + w2,
+            legs,
+          });
+        }
+      }
+    }
+  }
+  found.sort((a, b) => a.arrive - b.arrive || a.walkMeters - b.walkMeters);
+  return found.slice(0, 3);
 }
 
 function yyyymmdd(date) {
@@ -214,11 +373,13 @@ async function loadCity(city) {
     zoom: atlas.meta.zoom,
   };
   document.getElementById("attr").textContent = atlas.meta.attribution;
+  renderNearby();
   draw();
 }
 
 function renderHits() {
   const box = document.getElementById("hits");
+  if (!box) return;
   if (!state.atlas || state.query.trim().length < 1) {
     box.innerHTML = "";
     return;
@@ -235,8 +396,128 @@ function renderHits() {
   });
 }
 
+function renderDestHits() {
+  const box = document.getElementById("dest-hits");
+  if (!box) return;
+  if (!state.atlas || state.destQuery.trim().length < 1) {
+    box.innerHTML = "";
+    return;
+  }
+  const stops = searchStops(state.atlas, state.destQuery);
+  box.innerHTML = stops
+    .map(
+      (stop) =>
+        `<li><button type="button" data-id="${stop.id}">${escapeHtml(stop.name)}</button></li>`,
+    )
+    .join("");
+  box.querySelectorAll("button").forEach((btn) => {
+    btn.onclick = () => openPlan(state.atlas.stops.find((s) => s.id === btn.dataset.id));
+  });
+}
+
+function renderNearby() {
+  const box = document.getElementById("nearby");
+  if (!box || !state.atlas) return;
+  const origin = state.here || { lon: state.camera.lon, lat: state.camera.lat };
+  const stops = nearbyStops(state.atlas.stops, origin, 700, 8);
+  box.innerHTML = stops
+    .map(
+      (stop) =>
+        `<li><button type="button" data-id="${stop.id}">${escapeHtml(stop.name)} <span class="meta">${stop.meters} m</span></button></li>`,
+    )
+    .join("");
+  box.querySelectorAll("button").forEach((btn) => {
+    btn.onclick = () => openStop(state.atlas.stops.find((s) => s.id === btn.dataset.id));
+  });
+}
+
+function applyHere(lon, lat, source) {
+  if (!Number.isFinite(lon) || !Number.isFinite(lat)) return;
+  state.here = { lon, lat, source: source || "gps" };
+  const city = cityForPoint(lon, lat);
+  const go = () => {
+    state.camera.lon = lon;
+    state.camera.lat = lat;
+    state.camera.zoom = Math.max(state.camera.zoom, 14.2);
+    renderNearby();
+    draw();
+  };
+  if (city !== state.city) {
+    document.getElementById("btn-quebec").classList.toggle("on", city === "quebec");
+    document.getElementById("btn-montreal").classList.toggle("on", city === "montreal");
+    loadCity(city).then(go);
+    return;
+  }
+  go();
+}
+
+function locate() {
+  const fallback = () => {
+    const center = state.atlas
+      ? { lon: state.atlas.meta.center[0], lat: state.atlas.meta.center[1] }
+      : state.camera;
+    applyHere(center.lon, center.lat, "map");
+  };
+  if (!navigator.geolocation) {
+    fallback();
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => applyHere(pos.coords.longitude, pos.coords.latitude, "gps"),
+    fallback,
+    { enableHighAccuracy: true, maximumAge: 30000, timeout: 8000 },
+  );
+}
+
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function openPlan(destStop) {
+  if (!destStop || !state.atlas) return;
+  const from =
+    state.here ||
+    (state.stop
+      ? { lon: state.stop.lon, lat: state.stop.lat, stopId: state.stop.id }
+      : { lon: state.camera.lon, lat: state.camera.lat });
+  const now = clockMinutes();
+  const active = activeServiceIndexes(state.atlas, new Date());
+  const itineraries = planFromHere(from, destStop, now, active);
+  const board = document.getElementById("board");
+  board.hidden = false;
+  const destHits = document.getElementById("dest-hits");
+  if (destHits) destHits.innerHTML = "";
+  if (!itineraries.length) {
+    board.innerHTML = `<h2>${escapeHtml(destStop.name)}</h2>
+      <p class="lead">Pas de trajet direct à ${formatClock(now)} depuis ici. Essaie un horaire ailleurs.</p>`;
+    return;
+  }
+  board.innerHTML =
+    `<h2>Vers ${escapeHtml(destStop.name)}</h2>
+    <p class="lead">À ${formatClock(now)}, depuis ici.</p>` +
+    itineraries
+      .map((trip) => {
+        const legs = trip.legs
+          .map((leg) => {
+            if (leg.kind === "walk") {
+              return `<div class="row"><span class="badge" style="background:#e8eaed;color:#1d1d1f">à pied</span><div>${escapeHtml(leg.label)}</div></div>`;
+            }
+            return `<div class="row">
+              <span class="badge" style="background:${leg.color};color:${leg.textColor}">${escapeHtml(leg.shortName)}</span>
+              <div>
+                <div>${escapeHtml(leg.headsign)}</div>
+                <div class="times">${formatClock(leg.depart)}  →  ${formatClock(leg.arrive)}</div>
+              </div>
+            </div>`;
+          })
+          .join("");
+        return `<div class="trip">${legs}</div>`;
+      })
+      .join("");
+  state.camera.lon = destStop.lon;
+  state.camera.lat = destStop.lat;
+  state.camera.zoom = Math.max(state.camera.zoom, 13.6);
+  draw();
 }
 
 function openStop(stop) {
@@ -245,14 +526,14 @@ function openStop(stop) {
   state.camera.lon = stop.lon;
   state.camera.lat = stop.lat;
   state.camera.zoom = Math.max(state.camera.zoom, 14.2);
-  const now = minutesOfDay(new Date());
+  const now = clockMinutes();
   const active = activeServiceIndexes(state.atlas, new Date());
   const rows = scheduleAtStop(state.atlas, state.timetable, stop, now, active);
   const board = document.getElementById("board");
   board.hidden = false;
   const watchHref = watchUrl(stop, rows);
   board.innerHTML = `<h2>${escapeHtml(stop.name)}</h2>
-    <p class="lead">Prochains passages ici. Tu n'as pas besoin d'être sur le quai.</p>
+    <p class="lead">Passages à ${formatClock(now)}. Tu n'as pas besoin d'être sur le quai.</p>
     ${
       rows.length === 0
         ? `<p class="lead">Aucun passage restant aujourd'hui.</p>`
@@ -350,6 +631,13 @@ function draw() {
     }
   }
   ctx.globalAlpha = 1;
+  if (state.here) {
+    const [hx, hy] = worldToScreen(state.here.lon, state.here.lat, state.camera, w, h);
+    ctx.fillStyle = "#0071e3";
+    ctx.beginPath();
+    ctx.arc(hx, hy, 5, 0, Math.PI * 2);
+    ctx.fill();
+  }
   if (state.camera.zoom >= 13.4) {
     for (const stop of state.atlas.stops) {
       if (stop.kind === 2) continue;
@@ -420,9 +708,19 @@ fetch(new URL("l10n/rive.json", import.meta.url))
       }
     }
     const t = tables[loc] || tables.fr || tables.en;
-    document.querySelector(".sheet h1").textContent = t.elsewhere;
-    document.querySelector(".sheet .lead").textContent = t.elsewhereLead;
+    const destTitle = document.getElementById("dest-title");
+    const destLead = document.getElementById("dest-lead");
+    const elseTitle = document.getElementById("else-title");
+    const elseLead = document.getElementById("else-lead");
+    const hereBtn = document.getElementById("here");
+    if (destTitle && t.whereTo) destTitle.textContent = t.whereTo;
+    if (destLead) destLead.textContent = t.destLead || destLead.textContent;
+    if (elseTitle && t.elsewhere) elseTitle.textContent = t.elsewhere;
+    if (elseLead && t.elsewhereLead) elseLead.textContent = t.elsewhereLead;
+    if (hereBtn && t.myPosition) hereBtn.textContent = t.myPosition;
     document.getElementById("q").placeholder = t.placeholder;
+    const dest = document.getElementById("dest");
+    if (dest && t.to) dest.placeholder = t.to + " — Université Laval, McGill…";
     document.getElementById("btn-quebec").textContent = t.quebec;
     document.getElementById("btn-montreal").textContent = t.montreal;
   })
@@ -430,6 +728,10 @@ fetch(new URL("l10n/rive.json", import.meta.url))
 
 document.getElementById("btn-quebec").onclick = () => switchCity("quebec");
 document.getElementById("btn-montreal").onclick = () => switchCity("montreal");
+document.getElementById("here").onclick = () => locate();
+document.getElementById("at").addEventListener("change", () => {
+  if (state.stop) openStop(state.stop);
+});
 document.getElementById("q").addEventListener("input", (e) => {
   state.query = e.target.value;
   renderHits();
@@ -438,6 +740,15 @@ document.getElementById("q").addEventListener("keydown", (e) => {
   if (e.key !== "Enter") return;
   const first = searchStops(state.atlas, state.query, 1)[0];
   if (first) openStop(first);
+});
+document.getElementById("dest").addEventListener("input", (e) => {
+  state.destQuery = e.target.value;
+  renderDestHits();
+});
+document.getElementById("dest").addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  const first = searchStops(state.atlas, state.destQuery, 1)[0];
+  if (first) openPlan(first);
 });
 
 function switchCity(city) {
@@ -460,8 +771,11 @@ const bootCity = boot.get("city") === "montreal" ? "montreal" : "quebec";
 const bootStop = boot.get("stop");
 document.getElementById("btn-quebec").classList.toggle("on", bootCity === "quebec");
 document.getElementById("btn-montreal").classList.toggle("on", bootCity === "montreal");
+fillClockInput();
 loadCity(bootCity).then(() => {
-  if (!bootStop || !state.atlas) return;
-  const hit = state.atlas.stops.find((s) => s.id === bootStop);
-  if (hit) openStop(hit);
+  if (bootStop && state.atlas) {
+    const hit = state.atlas.stops.find((s) => s.id === bootStop);
+    if (hit) openStop(hit);
+  }
+  locate();
 });

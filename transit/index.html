@@ -29,12 +29,18 @@
       .cities { display: flex; width: max-content; margin: 16px auto 0; padding: 4px; border-radius: 999px; background: var(--glass); border: 1px solid rgb(0 0 0 / 0.08); }
       .cities button { border: 0; background: transparent; color: #6e6e73; padding: 8px 18px; border-radius: 999px; font: inherit; cursor: pointer; }
       .cities button.on { background: #1d1d1f; color: #fff; }
-      .sheet { position: absolute; left: 16px; top: 68px; width: min(400px, calc(100% - 32px)); background: var(--glass); border: 1px solid rgb(0 0 0 / 0.08); border-radius: 28px; padding: 16px; backdrop-filter: blur(18px); }
-      .sheet h1 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
-      .sheet p.lead { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+      .sheet { position: absolute; left: 16px; top: 68px; width: min(400px, calc(100% - 32px)); background: var(--glass); border: 1px solid rgb(0 0 0 / 0.08); border-radius: 28px; padding: 16px; backdrop-filter: blur(18px); max-height: calc(100dvh - 100px); overflow: auto; }
+      .sheet h1, .sheet h2 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
+      .sheet h2 { margin-top: 14px; }
+      .sheet p.lead { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.4; }
       .sheet input { width: 100%; border: 0; border-radius: 16px; background: rgb(0 0 0 / 0.06); color: var(--ink); padding: 12px 14px; font: inherit; outline: none; }
-      .hits { list-style: none; margin: 10px 0 0; padding: 0; }
+      .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+      #here { border: 0; background: #1d1d1f; color: #fff; border-radius: 999px; padding: 8px 14px; font: inherit; cursor: pointer; }
+      .at { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
+      .at input { width: auto; padding: 8px 10px; }
+      .hits { list-style: none; margin: 8px 0 0; padding: 0; }
       .hits button { width: 100%; text-align: left; border: 0; background: transparent; color: inherit; padding: 8px 2px; font: inherit; cursor: pointer; }
+      .hits .meta { color: var(--muted); font-size: 12px; }
       .board { margin-top: 14px; }
       .board h2 { margin: 0 0 4px; font-size: 20px; font-weight: 560; }
       .row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
@@ -52,15 +58,31 @@
         <button type="button" id="btn-montreal">Montréal</button>
       </div>
       <section class="sheet">
-        <h1>Horaire ailleurs</h1>
-        <p class="lead">
-          Tape un arrêt où tu n{"'"}es pas. Les passages viennent du GTFS officiel. Gratuit.
+        <div class="toolbar">
+          <button type="button" id="here">Ici</button>
+          <label class="at">
+            À
+            <input id="at" type="time" />
+          </label>
+        </div>
+        <h1 id="dest-title">Où vas-tu ?</h1>
+        <p class="lead" id="dest-lead">Depuis ici. Un trajet marche + bus ou métro, à cette heure.</p>
+        <label>
+          <span class="sr-only" style="position:absolute;left:-9999px">Destination</span>
+          <input id="dest" type="search" autocomplete="off" placeholder="Université Laval, McGill…" />
+        </label>
+        <ul class="hits" id="dest-hits"></ul>
+        <h2 id="else-title">Horaire ailleurs</h2>
+        <p class="lead" id="else-lead">
+          Un arrêt où tu n{"'"}es pas. Les passages viennent du GTFS officiel.
         </p>
         <label>
           <span class="sr-only" style="position:absolute;left:-9999px">Arrêt</span>
           <input id="q" type="search" autocomplete="off" placeholder="Youville, 801, Berri, McGill…" />
         </label>
         <ul class="hits" id="hits"></ul>
+        <h2 id="nearby-title">Près d'ici</h2>
+        <ul class="hits" id="nearby"></ul>
         <div class="board" id="board" hidden></div>
       </section>
       <footer>

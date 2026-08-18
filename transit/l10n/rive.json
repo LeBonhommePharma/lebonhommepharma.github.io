@@ -1,6 +1,7 @@
 {
   "en": {
     "whereTo": "Where to",
+    "destLead": "From here. Walk plus bus or metro at this time.",
     "elsewhere": "Schedule somewhere else",
     "elsewhereLead": "Type a stop you are not at. Official times. Free.",
     "from": "From",
