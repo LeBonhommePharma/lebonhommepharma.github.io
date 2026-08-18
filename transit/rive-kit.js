@@ -75,6 +75,26 @@ export function formatClock(minutes, hour12) {
   return `${h12}:${mm} ${suffix}`;
 }
 
+export function parseClock24(value) {
+  if (value == null) return null;
+  const raw = String(value).trim();
+  const ampm = raw.match(/^(\d{1,2})(?:[:hH.\s](\d{2}))?\s*([ap]m)$/i);
+  if (ampm) {
+    let h = Number(ampm[1]);
+    const min = Number(ampm[2] || 0);
+    if (!Number.isFinite(h) || !Number.isFinite(min) || h < 1 || h > 12 || min > 59) return null;
+    if (h === 12) h = 0;
+    if (ampm[3].toLowerCase() === "pm") h += 12;
+    return h * 60 + min;
+  }
+  const m = raw.match(/^(\d{1,2})(?:[:hH.\s]?(\d{2}))?$/);
+  if (!m) return null;
+  const h = Number(m[1]);
+  const min = Number(m[2] || 0);
+  if (!Number.isFinite(h) || !Number.isFinite(min) || h > 23 || min > 59) return null;
+  return h * 60 + min;
+}
+
 export function acceptRiderFix(store, sample, now) {
   const lon = finiteCoord(sample.lon, 180);
   const lat = finiteCoord(sample.lat, 90);

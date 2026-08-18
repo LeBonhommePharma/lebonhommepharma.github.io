@@ -17,6 +17,7 @@ import {
   livePulseEnd,
   lineStrokeColor,
   livePulseFromTransit,
+  parseClock24,
   rankByDoorToDoor,
   snapToShape,
 } from "./rive-kit.js";
@@ -266,16 +267,6 @@ function nearestStopForPin(stops, point, radiusM) {
 
 function findStop(id) {
   return liveStops().find((s) => s.id === id) || state.atlas?.stops.find((s) => s.id === id);
-}
-
-function parseClock24(value) {
-  const raw = String(value || "").trim();
-  const m = raw.match(/^(\d{1,2})(?:[:hH.\s]?(\d{2}))?$/);
-  if (!m) return null;
-  const h = Number(m[1]);
-  const min = Number(m[2] || 0);
-  if (!Number.isFinite(h) || !Number.isFinite(min) || h > 23 || min > 59) return null;
-  return h * 60 + min;
 }
 
 function clockMinutes() {
