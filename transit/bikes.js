@@ -19,6 +19,12 @@ export function feedUrl(discovery, name) {
   const data = discovery && discovery.data;
   if (!data) return null;
   if (Array.isArray(data.feeds)) return (data.feeds.find((f) => f.name === name) || {}).url || null;
+  for (const key of ["fr", "en"]) {
+    const block = data[key];
+    const feeds = block && Array.isArray(block.feeds) ? block.feeds : [];
+    const url = (feeds.find((f) => f.name === name) || {}).url;
+    if (url) return url;
+  }
   return null;
 }
 

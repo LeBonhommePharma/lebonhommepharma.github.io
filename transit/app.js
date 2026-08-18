@@ -865,6 +865,7 @@ function applyTheme(mode) {
   const color = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   if (themeMeta && color) themeMeta.setAttribute("content", color);
+  refreshPaint();
   requestDraw();
 }
 
@@ -1818,6 +1819,40 @@ const canvas = document.getElementById("stage");
 const ctx = canvas.getContext("2d", { alpha: false });
 
 let drawFrame = 0;
+let mapBusy = false;
+let mapBusyUntil = 0;
+let paint = null;
+let wheelIdle = 0;
+let safariPinch = false;
+
+function refreshPaint() {
+  const css = getComputedStyle(document.documentElement);
+  paint = {
+    stage: css.getPropertyValue("--stage").trim() || "#d5dde4",
+    ink: css.getPropertyValue("--ink").trim() || "#2b2723",
+    gold: css.getPropertyValue("--gold").trim() || "#d97706",
+    sodium: css.getPropertyValue("--sodium").trim() || "#0e7490",
+    terra: css.getPropertyValue("--terra").trim() || "#6d5cae",
+    night: document.documentElement.classList.contains("night"),
+  };
+  return paint;
+}
+
+function beginGesture() {
+  mapBusy = true;
+  mapBusyUntil = Date.now() + 120;
+}
+
+function endGesture() {
+  mapBusyUntil = Date.now() + 80;
+  setTimeout(() => {
+    if (Date.now() < mapBusyUntil || pointers.size >= 2) return;
+    mapBusy = false;
+    requestDraw();
+    scheduleBuildings();
+  }, 90);
+}
+
 function requestDraw() {
   if (drawFrame) return;
   drawFrame = requestAnimationFrame(() => {
@@ -1934,15 +1969,15 @@ function draw() {
   const w = innerWidth;
   const h = innerHeight;
   const cam = state.camera;
-  const css = getComputedStyle(document.documentElement);
-  const stage = css.getPropertyValue("--stage").trim() || "#d5dde4";
-  const ink = css.getPropertyValue("--ink").trim() || "#2b2723";
-  const gold = css.getPropertyValue("--gold").trim() || "#d97706";
-  const sodium = css.getPropertyValue("--sodium").trim() || "#0e7490";
-  const terra = css.getPropertyValue("--terra").trim() || "#6d5cae";
+  const theme = paint || refreshPaint();
+  const stage = theme.stage;
+  const ink = theme.ink;
+  const gold = theme.gold;
+  const sodium = theme.sodium;
+  const terra = theme.terra;
   ctx.fillStyle = stage;
   ctx.fillRect(0, 0, w, h);
-  drawHorizon(w, h);
+  if (!mapBusy) drawHorizon(w, h);
   labelQueue.length = 0;
   if (!state.atlas) return;
   const selected = new Set(state.stop?.routes || []);
@@ -1960,7 +1995,7 @@ function draw() {
       if (onlyMetro && !metro) continue;
       if (!onlyMetro && metro && pitch > 0.15) continue;
       const frequent = metro || /^80/.test(route.shortName);
-      if (!frequent && !showLocalRoutes && !selected.has(route.id)) continue;
+      if (!frequent && (mapBusy || !showLocalRoutes) && !selected.has(route.id)) continue;
       ctx.strokeStyle = underground ? (document.documentElement.classList.contains("night") ? "#6b7280" : "#4b5563") : lineStrokeColor(route);
       ctx.globalAlpha = underground
         ? 0.55
@@ -1990,8 +2025,8 @@ function draw() {
       ctx.setLineDash([]);
     }
   };
-  if (pitch > 0.15) drawRouteSet(true, true);
-  drawBuildings(w, h);
+  if (!mapBusy && pitch > 0.15) drawRouteSet(true, true);
+  if (!mapBusy) drawBuildings(w, h);
   drawRouteSet(false, false);
   const trip = currentTrip();
   if (trip) {
@@ -2040,7 +2075,7 @@ function draw() {
     }
   }
   ctx.globalAlpha = 1;
-  for (const veh of state.vehicles || []) {
+  for (const veh of mapBusy ? [] : state.vehicles || []) {
     const [vx, vy] = worldToScreen(veh.lon, veh.lat, cam, w, h);
     if (vx < -8 || vy < -8 || vx > w + 8 || vy > h + 8) continue;
     ctx.fillStyle = "#e24b4a";
@@ -2052,16 +2087,18 @@ function draw() {
     ctx.arc(vx, vy, 2.1, 0, Math.PI * 2);
     ctx.fill();
   }
-  for (const poi of state.pois) {
-    const [px, py] = worldToScreen(poi.lon, poi.lat, cam, w, h);
-    if (px < -12 || py < -12 || px > w + 12 || py > h + 12) continue;
-    ctx.fillStyle = state.theme === "night" ? "#c9b27a" : "#8a6a2f";
-    ctx.globalAlpha = 0.85;
-    ctx.beginPath();
-    ctx.arc(px, py, 3.2, 0, Math.PI * 2);
-    ctx.fill();
-    if (zoom >= 12.3 || heldLabels.has("poi:" + poi.name)) {
-      queueLabel("poi:" + poi.name, poi.name, px + 6, py + 3, 11, 20);
+  if (!mapBusy) {
+    for (const poi of state.pois) {
+      const [px, py] = worldToScreen(poi.lon, poi.lat, cam, w, h);
+      if (px < -12 || py < -12 || px > w + 12 || py > h + 12) continue;
+      ctx.fillStyle = state.theme === "night" ? "#c9b27a" : "#8a6a2f";
+      ctx.globalAlpha = 0.85;
+      ctx.beginPath();
+      ctx.arc(px, py, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+      if (zoom >= 12.3 || heldLabels.has("poi:" + poi.name)) {
+        queueLabel("poi:" + poi.name, poi.name, px + 6, py + 3, 11, 20);
+      }
     }
   }
   ctx.globalAlpha = 1;
@@ -2093,12 +2130,13 @@ function draw() {
       if (stop.kind === 2) continue;
       if (state.timetable && !stopHasService(stop, state.timetable)) continue;
       if (stop.kind !== 1 && !showBusStops) continue;
-      const [x, y] = worldToScreen(stop.lon, stop.lat, cam, w, h);
-      if (x < -10 || y < -10 || x > w + 10 || y > h + 10) continue;
       const picked = state.stop && state.stop.id === stop.id;
       const metro = stop.kind === 1;
+      if (mapBusy && !picked && !metro) continue;
+      const [x, y] = worldToScreen(stop.lon, stop.lat, cam, w, h);
+      if (x < -10 || y < -10 || x > w + 10 || y > h + 10) continue;
       const r = picked ? 6.2 : metro ? 5.2 : 3.8;
-      if (metro && pitch > 0.15) {
+      if (metro && pitch > 0.15 && !mapBusy) {
         const [ux, uy] = worldToScreen(stop.lon, stop.lat, cam, w, h, METRO_DEPTH_M);
         ctx.globalAlpha = 0.55;
         ctx.strokeStyle = document.documentElement.classList.contains("night") ? "#6b7280" : "#8b949e";
@@ -2127,10 +2165,8 @@ function draw() {
       ctx.stroke();
       const wantLabel =
         picked ||
-        metro ||
-        heldLabels.has(stop.id) ||
-        (!state.sheetOpen && zoom >= 13) ||
-        zoom >= 14.4;
+        (!mapBusy &&
+          (metro || heldLabels.has(stop.id) || (!state.sheetOpen && zoom >= 13) || zoom >= 14.4));
       if (wantLabel) {
         queueLabel(stop.id, stop.name, x + r + 3, y + 3, metro ? 11 : 10, picked ? 100 : metro ? 70 : 40);
       }
@@ -2231,15 +2267,34 @@ async function tryWebGPU() {
 
 let drag = null;
 const pointers = new Map();
+let gestureZoom0 = 0;
+
+function pointerSpan() {
+  const pts = [...pointers.values()];
+  if (pts.length < 2) return null;
+  return {
+    dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) || 1,
+    x: (pts[0].x + pts[1].x) / 2,
+    y: (pts[0].y + pts[1].y) / 2,
+  };
+}
 
 canvas.addEventListener("pointerdown", (e) => {
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  canvas.setPointerCapture(e.pointerId);
+  try {
+    canvas.setPointerCapture(e.pointerId);
+  } catch {
+    /* iOS */
+  }
   if (pointers.size >= 2) {
-    const pts = [...pointers.values()];
+    beginGesture();
+    const span = pointerSpan();
     drag = {
-      mode: "tilt",
-      y: (pts[0].y + pts[1].y) / 2,
+      mode: "pinch",
+      dist: span ? span.dist : 1,
+      x: span ? span.x : e.clientX,
+      y: span ? span.y : e.clientY,
+      zoom: state.camera.zoom,
       pitch: state.camera.pitch || 0,
       moved: 0,
     };
@@ -2260,8 +2315,10 @@ canvas.addEventListener("pointerup", (e) => {
   const tap = drag && drag.mode === "pan" && drag.moved < 8;
   const sx = e.clientX;
   const sy = e.clientY;
-  if (pointers.size === 0) drag = null;
-  else if (pointers.size === 1) {
+  if (pointers.size === 0) {
+    endGesture();
+    drag = null;
+  } else if (pointers.size === 1) {
     const p = [...pointers.values()][0];
     drag = {
       mode: "pan",
@@ -2272,26 +2329,42 @@ canvas.addEventListener("pointerup", (e) => {
       pitch: state.camera.pitch || 0,
       moved: 8,
     };
+    endGesture();
   }
-  scheduleBuildings();
   if (tap) inspectMapPoint(sx, sy);
 });
 canvas.addEventListener("pointercancel", (e) => {
   pointers.delete(e.pointerId);
-  if (pointers.size === 0) drag = null;
+  if (pointers.size === 0) {
+    if (drag && drag.mode === "pinch") endGesture();
+    drag = null;
+  }
 });
 canvas.addEventListener("pointermove", (e) => {
   if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (!drag) return;
+  if (drag.mode === "pinch") {
+    beginGesture();
+    const span = pointerSpan();
+    if (!span) return;
+    const ratio = span.dist / Math.max(1, drag.dist);
+    zoomAt(span.x, span.y, drag.zoom + Math.log2(ratio));
+    if (Math.abs(span.y - drag.y) > 10 && Math.abs(Math.log(ratio)) < 0.04) {
+      setPitch(drag.pitch - (span.y - drag.y) / 260);
+    }
+    drag.moved = 16;
+    requestDraw();
+    return;
+  }
   if (drag.mode === "tilt") {
-    const y =
-      pointers.size >= 2 ? ([...pointers.values()][0].y + [...pointers.values()][1].y) / 2 : e.clientY;
-    const dy = y - drag.y;
+    beginGesture();
+    const dy = e.clientY - drag.y;
     drag.moved = Math.max(drag.moved || 0, Math.abs(dy));
     setPitch(drag.pitch - dy / 260);
     requestDraw();
     return;
   }
+  beginGesture();
   drag.moved = Math.max(drag.moved || 0, Math.hypot(e.clientX - drag.x, e.clientY - drag.y));
   const scale = 256 * 2 ** state.camera.zoom;
   const dx = (e.clientX - drag.x) / scale;
@@ -2307,17 +2380,52 @@ canvas.addEventListener(
   "wheel",
   (e) => {
     e.preventDefault();
+    if (safariPinch) return;
+    beginGesture();
     if (e.shiftKey) {
       setPitch((state.camera.pitch || 0) - e.deltaY * 0.002);
       requestDraw();
-      return;
+    } else {
+      const step = e.ctrlKey ? 0.01 : 0.004;
+      zoomAt(e.clientX, e.clientY, state.camera.zoom - e.deltaY * step);
+      requestDraw();
     }
-    zoomAt(e.clientX, e.clientY, state.camera.zoom - e.deltaY * 0.004);
-    requestDraw();
-    scheduleBuildings();
+    clearTimeout(wheelIdle);
+    wheelIdle = setTimeout(endGesture, 140);
   },
   { passive: false },
 );
+canvas.addEventListener(
+  "touchmove",
+  (e) => {
+    e.preventDefault();
+  },
+  { passive: false },
+);
+
+function onSafariGesture(e) {
+  e.preventDefault();
+  if (e.type === "gesturestart") {
+    safariPinch = true;
+    beginGesture();
+    gestureZoom0 = state.camera.zoom;
+    return;
+  }
+  if (e.type === "gesturechange") {
+    safariPinch = true;
+    beginGesture();
+    const x = Number.isFinite(e.clientX) ? e.clientX : innerWidth / 2;
+    const y = Number.isFinite(e.clientY) ? e.clientY : innerHeight / 2;
+    zoomAt(x, y, gestureZoom0 + Math.log2(e.scale || 1));
+    requestDraw();
+    return;
+  }
+  safariPinch = false;
+  endGesture();
+}
+for (const ev of ["gesturestart", "gesturechange", "gestureend"]) {
+  canvas.addEventListener(ev, onSafariGesture, { passive: false });
+}
 
 fetch(new URL("l10n/rive.json", import.meta.url))
   .then((r) => r.json())
