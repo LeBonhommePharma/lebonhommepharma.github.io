@@ -21,6 +21,7 @@ const state = {
   vehicles: [],
   tripUpdates: [],
   shapePatches: {},
+  detours: [],
   theme: "day",
   sheetOpen: true,
   camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4 },
@@ -186,7 +187,18 @@ function planFromHere(from, destStop, now, active) {
           const i = indexOnDir(dir.stops, origin);
           const j = indexOnDir(dir.stops, dest);
           if (i < 0 || j <= i) continue;
-          const ride = hopSum(dir.hops, i, j);
+          let ride = hopSum(dir.hops, i, j);
+          const detour = (state.detours || []).find((d) => !d.routeId || d.routeId === route.id);
+          if (detour) {
+            ride = applyDetour({
+              staticEncoded: dir.line,
+              hops: dir.hops,
+              stopIds: dir.stops,
+              fromIndex: i,
+              toIndex: j,
+              detour,
+            }).minutes;
+          }
           const next = nextDeparture(state.timetable, origin, route.id, dir.id, now, active);
           if (!next) continue;
           const walk1 = haversineMeters(from, origin);
@@ -398,11 +410,12 @@ function shouldFetchZip(local, remote, opts = {}) {
 }
 
 function parseRealtimePayload(raw) {
-  const empty = { updates: [], vehicles: [], shapes: {} };
+  const empty = { updates: [], vehicles: [], shapes: {}, detours: [] };
   if (!raw || typeof raw !== "object") return empty;
   const updates = [];
   const vehicles = [];
   const shapes = {};
+  const detours = [];
   if (Array.isArray(raw.updates)) {
     for (const row of raw.updates) {
       if (!row || typeof row !== "object") continue;
@@ -425,6 +438,17 @@ function parseRealtimePayload(raw) {
       });
     }
   }
+  if (Array.isArray(raw.detours)) {
+    for (const row of raw.detours) {
+      if (!row || typeof row !== "object") continue;
+      detours.push({
+        routeId: typeof row.routeId === "string" ? row.routeId : undefined,
+        shape: typeof row.shape === "string" ? row.shape : undefined,
+        skipStopIds: Array.isArray(row.skipStopIds) ? row.skipStopIds.filter((id) => typeof id === "string") : [],
+        extraMinutes: Number.isFinite(Number(row.extraMinutes)) ? Number(row.extraMinutes) : undefined,
+      });
+    }
+  }
   if (raw.shapes && typeof raw.shapes === "object") {
     for (const [id, line] of Object.entries(raw.shapes)) {
       if (typeof line === "string" && line) shapes[id] = line;
@@ -443,12 +467,19 @@ function parseRealtimePayload(raw) {
         if (stus.length) {
           for (const stu of stus) {
             const dep = stu.departure || stu.arrival || {};
+            const stopId = stu.stop_id || stu.stopId;
+            const skipped = stu.schedule_relationship === 1 || stu.scheduleRelationship === "SKIPPED";
             updates.push({
               routeId,
-              stopId: stu.stop_id || stu.stopId,
+              stopId,
               delaySec: Number.isFinite(Number(dep.delay)) ? Number(dep.delay) : undefined,
-              canceled: canceled || stu.schedule_relationship === 1,
+              canceled: canceled || skipped,
             });
+            if (skipped && stopId) {
+              const existing = detours.find((d) => d.routeId === routeId);
+              if (existing) existing.skipStopIds = (existing.skipStopIds || []).concat(stopId);
+              else detours.push({ routeId, skipStopIds: [stopId] });
+            }
           }
         } else {
           updates.push({ routeId, canceled: Boolean(canceled) });
@@ -468,7 +499,7 @@ function parseRealtimePayload(raw) {
       }
     }
   }
-  return { updates, vehicles, shapes };
+  return { updates, vehicles, shapes, detours };
 }
 
 const RT_URLS = {
@@ -485,6 +516,7 @@ async function loadRealtime() {
   let updates = [];
   let vehicles = [];
   let shapes = {};
+  let detours = [];
   for (const url of urls) {
     try {
       const res = await fetch(url, { cache: "no-store" });
@@ -499,6 +531,7 @@ async function loadRealtime() {
       const parsed = parseRealtimePayload(payload);
       updates = updates.concat(parsed.updates);
       vehicles = vehicles.concat(parsed.vehicles);
+      detours = detours.concat(parsed.detours || []);
       Object.assign(shapes, parsed.shapes);
     } catch {
       /* CORS or missing feed */
@@ -507,6 +540,7 @@ async function loadRealtime() {
   state.tripUpdates = updates;
   state.vehicles = vehicles;
   state.shapePatches = shapes;
+  state.detours = detours;
 }
 
 function applyTripUpdatesToDue(due, updates, now) {
@@ -543,6 +577,45 @@ function trajectoryAfterRealtime(staticEncoded, patch) {
     return [[patch.vehicle.lon, patch.vehicle.lat], ...base];
   }
   return base;
+}
+
+function overlayWithVehicles(staticEncoded, vehicles, routeId, shape) {
+  const base = shape ? decodePolyline(shape) : decodePolyline(staticEncoded);
+  const dots = (vehicles || []).filter((item) => !item.routeId || item.routeId === routeId);
+  if (!dots.length) return base;
+  return dots.map((v) => [v.lon, v.lat]).concat(base);
+}
+
+function applyDetour(input) {
+  const hops = input.hops || [];
+  let staticMinutes = 1;
+  for (let i = input.fromIndex; i < input.toIndex && i < hops.length; i++) staticMinutes += hops[i];
+  staticMinutes = Math.max(1, staticMinutes - 1 + (hops[input.fromIndex] ? 0 : 0));
+  staticMinutes = 0;
+  for (let i = input.fromIndex; i < input.toIndex && i < hops.length; i++) staticMinutes += hops[i];
+  staticMinutes = Math.max(1, staticMinutes);
+  const detour = input.detour || {};
+  const skip = new Set(detour.skipStopIds || []);
+  let minutes = staticMinutes;
+  if (skip.size) {
+    let n = 0;
+    for (let i = input.fromIndex; i < input.toIndex && i < hops.length; i++) {
+      n += hops[i];
+      const dest = (input.stopIds || [])[i + 1];
+      if (dest && skip.has(dest)) n += 4;
+    }
+    minutes = Math.max(staticMinutes + 1, n);
+  }
+  if (Number.isFinite(detour.extraMinutes)) minutes = Math.max(1, minutes + detour.extraMinutes);
+  if (detour.shape) {
+    const line = decodePolyline(detour.shape);
+    let meters = 0;
+    for (let i = 1; i < line.length; i++) meters += haversineMeters({ lon: line[i - 1][0], lat: line[i - 1][1] }, { lon: line[i][0], lat: line[i][1] });
+    minutes = Math.max(1, Math.round(meters / 280)) + (detour.extraMinutes || 0) + skip.size * 2;
+    if (minutes === staticMinutes) minutes = staticMinutes + 1;
+    return { line, minutes, staticMinutes };
+  }
+  return { line: decodePolyline(input.staticEncoded), minutes, staticMinutes };
 }
 
 function setSheetOpen(open) {
@@ -1094,12 +1167,9 @@ function draw() {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     for (const dir of route.dirs) {
-      const veh = (state.vehicles || []).find((item) => item.routeId === route.id);
-      const shape = state.shapePatches && state.shapePatches[route.id];
-      const line =
-        veh || shape
-          ? trajectoryAfterRealtime(dir.line, { vehicle: veh, shape })
-          : decodePolyline(dir.line);
+      const detour = (state.detours || []).find((d) => !d.routeId || d.routeId === route.id);
+      const shape = (detour && detour.shape) || (state.shapePatches && state.shapePatches[route.id]);
+      const line = overlayWithVehicles(dir.line, state.vehicles || [], route.id, shape);
       if (line.length < 2) continue;
       ctx.beginPath();
       line.forEach(([lon, lat], i) => {
@@ -1111,6 +1181,18 @@ function draw() {
     }
   }
   ctx.globalAlpha = 1;
+  for (const veh of state.vehicles || []) {
+    const [vx, vy] = worldToScreen(veh.lon, veh.lat, state.camera, w, h);
+    if (vx < -8 || vy < -8 || vx > w + 8 || vy > h + 8) continue;
+    ctx.fillStyle = "#e24b4a";
+    ctx.beginPath();
+    ctx.arc(vx, vy, 5.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(vx, vy, 2.1, 0, Math.PI * 2);
+    ctx.fill();
+  }
   for (const poi of state.pois) {
     const [px, py] = worldToScreen(poi.lon, poi.lat, state.camera, w, h);
     if (px < -12 || py < -12 || px > w + 12 || py > h + 12) continue;
