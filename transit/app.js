@@ -346,16 +346,21 @@ function nextDueOnLine(atlas, timetable, here, routeId, now, active, limit = 12)
       });
     }
   }
-  rows.sort((a, b) => a.depart - b.depart || a.meters - b.meters);
+  return collapseDueByDirection(rows, limit);
+}
+
+function collapseDueByDirection(rows, limit = 12) {
+  const ranked = rows.slice().sort((a, b) => a.meters - b.meters || a.depart - b.depart);
   const seen = new Set();
   const unique = [];
-  for (const row of rows) {
-    const key = `${row.stopId}|${row.headsign}|${row.depart}`;
+  for (const row of ranked) {
+    const key = `${row.routeId}|${fold(row.headsign)}`;
     if (seen.has(key)) continue;
     seen.add(key);
     unique.push(row);
     if (unique.length >= limit) break;
   }
+  unique.sort((a, b) => a.depart - b.depart || a.meters - b.meters);
   return unique;
 }
 
