@@ -16,6 +16,7 @@ const state = {
 };
 
 function fold(value) {
+  if (typeof value !== "string") return "";
   return value
     .normalize("NFD")
     .replace(/\p{M}/gu, "")
@@ -234,7 +235,7 @@ function renderHits() {
 }
 
 function escapeHtml(value) {
-  return value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
 function openStop(stop) {
