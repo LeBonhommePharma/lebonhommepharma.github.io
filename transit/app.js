@@ -10,6 +10,7 @@ import {
   ingestProbe,
   annotateTimeGaps,
   applyLivePulse,
+  boardingStopName,
   isCrowdProbeSource,
   lineSlice,
   livePulseEnd,
@@ -137,7 +138,7 @@ function nearbyStops(stops, point, radiusM = 700, limit = 14) {
     if (!Number.isFinite(stop.lon) || !Number.isFinite(stop.lat)) continue;
     const meters = haversineMeters(point, { lon: stop.lon, lat: stop.lat });
     if (!Number.isFinite(meters) || meters > radiusM) continue;
-    out.push({ ...stop, meters: Math.round(meters) });
+    out.push({ ...stop, meters: Math.round(meters * 10) / 10 });
   }
   out.sort((a, b) => {
     if (a.kind !== b.kind) return a.kind === 1 ? -1 : b.kind === 1 ? 1 : 0;
@@ -266,9 +267,9 @@ function planFromHere(from, destStop, now, active) {
               kind: "walk",
               minutes: w1,
               meters: Math.round(walk1),
-              label: `Marche ${Math.round(walk1)} m`,
+              label: `Marche ${formatMeters(walk1)}`,
               from: { lon: from.lon, lat: from.lat },
-              to: { lon: origin.lon, lat: origin.lat },
+              to: { lon: origin.lon, lat: origin.lat, name: origin.name, label: origin.name },
               line: [
                 [from.lon, from.lat],
                 [origin.lon, origin.lat],
@@ -286,8 +287,8 @@ function planFromHere(from, destStop, now, active) {
             routeId: route.id,
             depart: board,
             arrive: board + ride,
-            from: { lon: origin.lon, lat: origin.lat },
-            to: { lon: dest.lon, lat: dest.lat },
+            from: { lon: origin.lon, lat: origin.lat, name: origin.name, label: origin.name },
+            to: { lon: dest.lon, lat: dest.lat, name: dest.name, label: dest.name },
             line: lineSlice(decodePolyline(dir.line), origin, dest),
           });
           if (w2 > 0) {
@@ -295,7 +296,7 @@ function planFromHere(from, destStop, now, active) {
               kind: "walk",
               minutes: w2,
               meters: Math.round(walk2),
-              label: `Marche ${Math.round(walk2)} m`,
+              label: `Marche ${formatMeters(walk2)}`,
               from: { lon: dest.lon, lat: dest.lat },
               to: { lon: destStop.lon, lat: destStop.lat },
               line: [
@@ -330,7 +331,7 @@ function planFromHere(from, destStop, now, active) {
           kind: "walk",
           minutes: walkMin,
           meters: Math.round(walkM),
-          label: `Marche ${Math.round(walkM)} m`,
+          label: `Marche ${formatMeters(walkM)}`,
           from: { lon: from.lon, lat: from.lat },
           to: { lon: destStop.lon, lat: destStop.lat },
           line: [
@@ -351,7 +352,7 @@ function planFromHere(from, destStop, now, active) {
           kind: "bike",
           minutes: bikeMin,
           meters: Math.round(walkM),
-          label: `Vélo ${Math.round(walkM)} m`,
+          label: `Vélo ${formatMeters(walkM)}`,
           from: { lon: from.lon, lat: from.lat },
           to: { lon: destStop.lon, lat: destStop.lat },
           line: [
@@ -723,6 +724,66 @@ function setSheetOpen(open) {
     fold.title = label;
     fold.setAttribute("aria-expanded", state.sheetOpen ? "true" : "false");
   }
+  paintMapHud();
+  draw();
+}
+
+function paintMapHud() {
+  const hud = document.getElementById("map-hud");
+  if (!hud) return;
+  if (state.sheetOpen) {
+    hud.hidden = true;
+    hud.innerHTML = "";
+    return;
+  }
+  hud.hidden = false;
+  const stop = state.stop || (state.atlas && riderPoint() ? nearbyStops(state.atlas.stops, riderPoint(), 400, 1)[0] : null);
+  const now = clockMinutes();
+  let dueLine = "Touche un arrêt sur la carte.";
+  if (stop && state.atlas && state.timetable) {
+    const active = activeServiceIndexes(state.atlas, new Date());
+    const rows = scheduleAtStop(state.atlas, state.timetable, stop, now, active).slice(0, 3);
+    dueLine = rows.length
+      ? rows.map((row) => `${row.shortName} ${formatClock(row.depart)}`).join(" · ")
+      : "Aucun passage maintenant.";
+  }
+  const title = stop
+    ? `${stop.name}${Number.isFinite(stop.meters) ? " · " + formatMeters(stop.meters) : ""}`
+    : state.dest
+      ? `Vers ${state.dest.name}`
+      : "Carte";
+  const trip = currentTrip();
+  const extra = trip ? `${trip.minutes} min · ${tripMix(trip)}` : "";
+  hud.innerHTML = `<div class="hud-title">${escapeHtml(title)}</div>
+    <div class="hud-due">${escapeHtml(dueLine)}</div>
+    ${extra ? `<div class="hud-trip">${escapeHtml(extra)}</div>` : ""}`;
+}
+
+function inspectMapPoint(cx, cy) {
+  if (!state.atlas) return;
+  const w = innerWidth;
+  const h = innerHeight;
+  let best = null;
+  let bestD = 28;
+  for (const stop of state.atlas.stops) {
+    if (stop.kind === 2) continue;
+    if (state.timetable && !stopHasService(stop, state.timetable)) continue;
+    const [x, y] = worldToScreen(stop.lon, stop.lat, state.camera, w, h);
+    const d = Math.hypot(x - cx, y - cy);
+    if (d < bestD) {
+      bestD = d;
+      best = stop;
+    }
+  }
+  if (!best) return;
+  if (state.sheetOpen) {
+    openStop(best);
+    return;
+  }
+  const origin = riderPoint();
+  best.meters = origin ? Math.round(haversineMeters(origin, best) * 10) / 10 : undefined;
+  state.stop = best;
+  paintMapHud();
   draw();
 }
 
@@ -841,6 +902,11 @@ function formatClock(minutes) {
   const h = Math.floor(wrap / 60);
   const m = wrap % 60;
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function formatMeters(meters) {
+  if (!Number.isFinite(meters)) return "";
+  return `${(Math.round(meters * 10) / 10).toFixed(1)} m`;
 }
 
 function setClockMode(mode) {
@@ -1094,7 +1160,7 @@ function renderDue() {
           <div>
             <div class="wait">${escapeHtml(formatRelative(row.wait))}</div>
             <div>${escapeHtml(row.headsign)}</div>
-            <div class="times">${escapeHtml(row.stopName)} · ${row.meters} m · ${row.clocks.join("  ")}</div>
+            <div class="times">${escapeHtml(row.stopName)} · ${formatMeters(row.meters)} · ${row.clocks.join("  ")}</div>
           </div>
         </div>`,
       )
@@ -1121,7 +1187,7 @@ function renderNearby() {
   box.innerHTML = stops
     .map(
       (stop) =>
-        `<li><button type="button" data-id="${stop.id}">${escapeHtml(stop.name)} <span class="meta">${stop.meters} m</span></button></li>`,
+        `<li><button type="button" data-id="${stop.id}">${escapeHtml(stop.name)} <span class="meta">${formatMeters(stop.meters)}</span></button></li>`,
     )
     .join("");
   box.querySelectorAll("button").forEach((btn) => {
@@ -1198,6 +1264,7 @@ function applyHere(lon, lat, source, at) {
       pulseFromTrip(currentTrip());
     }
     paintHeading();
+    paintMapHud();
     draw();
     scheduleBuildings();
   };
@@ -1465,7 +1532,7 @@ function pulseFromTrip(trip) {
   const command = livePulseFromTransit(
     {
       city: state.city,
-      stop: (transit && transit.from && transit.from.label) || (state.dest && state.dest.name) || "",
+      stop: boardingStopName(trip),
       route: transit && transit.shortName,
       color: transit && transit.color,
       headsign: transit && transit.headsign,
@@ -1624,7 +1691,7 @@ function draw() {
   if (!state.atlas) return;
   drawBuildings(w, h);
   const selected = new Set(state.stop?.routes || []);
-  if (state.sheetOpen) for (const route of state.atlas.routes) {
+  for (const route of state.atlas.routes) {
     const frequent = route.type === 1 || /^80/.test(route.shortName);
     if (!frequent && state.camera.zoom < 13 && !selected.has(route.id)) continue;
     ctx.strokeStyle = lineStrokeColor(route);
@@ -1743,8 +1810,8 @@ function draw() {
     ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
     ctx.fill();
   }
-  const showBus = state.camera.zoom >= 13.1;
-  const showMetro = state.camera.zoom >= 12.6;
+  const showBus = state.camera.zoom >= 13.1 || !state.sheetOpen;
+  const showMetro = state.camera.zoom >= 12.6 || !state.sheetOpen;
   if (showMetro) {
     for (const stop of state.atlas.stops) {
       if (stop.kind === 2) continue;
@@ -1766,7 +1833,7 @@ function draw() {
       ctx.lineWidth = metro ? 2 : 1.5;
       ctx.strokeStyle = selected ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
       ctx.stroke();
-      if (state.camera.zoom >= 14.6 || (metro && state.camera.zoom >= 13.8)) {
+      if (state.camera.zoom >= 14.6 || (metro && state.camera.zoom >= 13.8) || !state.sheetOpen) {
         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#2b2723";
         ctx.font = `${metro ? 11 : 10}px "Rive Text", sans-serif`;
         ctx.fillText(stop.name, x + r + 3, y + 3);
@@ -1863,15 +1930,18 @@ async function tryWebGPU() {
 
 let drag = null;
 canvas.addEventListener("pointerdown", (e) => {
-  drag = { x: e.clientX, y: e.clientY, lon: state.camera.lon, lat: state.camera.lat };
+  drag = { x: e.clientX, y: e.clientY, lon: state.camera.lon, lat: state.camera.lat, moved: 0 };
   canvas.setPointerCapture(e.pointerId);
 });
-canvas.addEventListener("pointerup", () => {
+canvas.addEventListener("pointerup", (e) => {
+  const tap = drag && drag.moved < 8;
   drag = null;
   scheduleBuildings();
+  if (tap) inspectMapPoint(e.clientX, e.clientY);
 });
 canvas.addEventListener("pointermove", (e) => {
   if (!drag) return;
+  drag.moved = Math.max(drag.moved || 0, Math.hypot(e.clientX - drag.x, e.clientY - drag.y));
   const scale = 256 * 2 ** state.camera.zoom;
   const dx = (e.clientX - drag.x) / scale;
   const dy = (e.clientY - drag.y) / scale;

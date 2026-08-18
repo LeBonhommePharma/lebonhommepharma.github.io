@@ -227,6 +227,20 @@
         backdrop-filter: blur(18px);
       }
       #nav[hidden] { display: none; }
+      #map-hud {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 72px;
+        background: var(--glass);
+        border: 1px solid rgb(0 0 0 / 0.08);
+        border-radius: 16px;
+        padding: 10px 12px;
+        backdrop-filter: blur(18px);
+      }
+      #map-hud[hidden] { display: none; }
+      #map-hud .hud-title { font-size: 14px; font-weight: 650; }
+      #map-hud .hud-due, #map-hud .hud-trip { color: var(--muted); font-size: 12px; margin-top: 3px; font-family: "Rive Clock", "SF Mono", Menlo, ui-monospace, monospace; }
       #nav .nav-step { font-size: 16px; font-weight: 650; }
       #nav .nav-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
       #nav-stop {
@@ -334,6 +348,7 @@
       </section>
       <div id="heading" hidden></div>
       <div id="nav" hidden></div>
+      <div id="map-hud" hidden></div>
       <footer>
         <span id="gpu">WebGL</span><br />
         Rive, Apache License 2.0.

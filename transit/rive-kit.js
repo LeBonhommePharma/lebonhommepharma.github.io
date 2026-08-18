@@ -98,6 +98,13 @@ export function remainMinutes(departs, now) {
   return best;
 }
 
+export function boardingStopName(trip) {
+  const transit = (trip && trip.legs ? trip.legs : []).find((leg) => leg.kind === "transit");
+  const from = transit && transit.from;
+  if (!from || typeof from !== "object") return "";
+  return from.name || from.label || "";
+}
+
 export function livePulseFromTransit(input, now) {
   if (!input || typeof input !== "object") return { action: "end" };
   const route = typeof input.route === "string" ? input.route.trim() : "";
