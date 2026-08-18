@@ -24,6 +24,7 @@ const state = {
   detours: [],
   theme: "day",
   sheetOpen: true,
+  clockMode: "os",
   camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4 },
 };
 
@@ -125,7 +126,9 @@ function fillClockInput() {
   const input = document.getElementById("at");
   if (!input || input.value) return;
   const mins = minutesOfDay(new Date());
-  input.value = formatClock(mins);
+  const h = Math.floor((((mins % 1440) + 1440) % 1440) / 60);
+  const m = ((mins % 1440) + 1440) % 1440 % 60;
+  input.value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
 function cityForPoint(lon, lat) {
@@ -708,11 +711,41 @@ function minutesOfDay(date) {
     Number(parts.find((p) => p.type === "minute").value);
 }
 
+function prefersHour12() {
+  try {
+    const opts = new Intl.DateTimeFormat(undefined, { hour: "numeric" }).resolvedOptions();
+    if (opts.hourCycle === "h11" || opts.hourCycle === "h12") return true;
+    if (opts.hourCycle === "h23" || opts.hourCycle === "h24") return false;
+    return Boolean(opts.hour12);
+  } catch {
+    return false;
+  }
+}
+
 function formatClock(minutes) {
   const wrap = ((minutes % 1440) + 1440) % 1440;
   const h = Math.floor(wrap / 60);
   const m = wrap % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  const mm = String(m).padStart(2, "0");
+  const hour12 = state.clockMode === "os" ? prefersHour12() : false;
+  if (!hour12) return `${String(h).padStart(2, "0")}:${mm}`;
+  const suffix = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${mm} ${suffix}`;
+}
+
+function setClockMode(mode) {
+  state.clockMode = mode === "24" ? "24" : "os";
+  try {
+    localStorage.setItem("rive.clock", state.clockMode);
+  } catch {
+    /* private */
+  }
+  const btn = document.getElementById("clockfmt");
+  if (btn) btn.textContent = state.clockMode === "24" ? "24 h" : "Auto";
+  if (state.routeId) renderDue();
+  if (state.dest) openPlan(state.dest);
+  else if (state.stop) openStop(state.stop);
 }
 
 function activeServiceIndexes(atlas, date) {
@@ -1216,17 +1249,30 @@ function draw() {
     ctx.arc(hx, hy, 5, 0, Math.PI * 2);
     ctx.fill();
   }
-  if (state.camera.zoom >= 13.4) {
+  const showBus = state.camera.zoom >= 13.1;
+  const showMetro = state.camera.zoom >= 12.6;
+  if (showMetro) {
     for (const stop of state.atlas.stops) {
       if (stop.kind === 2) continue;
       if (state.timetable && !stopHasService(stop, state.timetable)) continue;
-      if (state.camera.zoom < 14.2 && stop.kind !== 1) continue;
+      if (stop.kind !== 1 && !showBus) continue;
       const [x, y] = worldToScreen(stop.lon, stop.lat, state.camera, w, h);
-      if (x < -8 || y < -8 || x > w + 8 || y > h + 8) continue;
-      ctx.fillStyle = state.stop && state.stop.id === stop.id ? "#e3a21c" : "#e7eef3";
+      if (x < -10 || y < -10 || x > w + 10 || y > h + 10) continue;
+      const selected = state.stop && state.stop.id === stop.id;
+      const metro = stop.kind === 1;
+      const r = selected ? 6.2 : metro ? 5.2 : 3.8;
       ctx.beginPath();
-      ctx.arc(x, y, stop.kind === 1 ? 4.2 : 2.2, 0, Math.PI * 2);
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = selected ? "#e3a21c" : metro ? "#1d1d1f" : "#fff8ee";
       ctx.fill();
+      ctx.lineWidth = metro ? 2 : 1.5;
+      ctx.strokeStyle = selected ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
+      ctx.stroke();
+      if (state.camera.zoom >= 14.6 || (metro && state.camera.zoom >= 13.8)) {
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#2b2723";
+        ctx.font = `${metro ? 11 : 10}px "Rive Text", sans-serif`;
+        ctx.fillText(stop.name, x + r + 3, y + 3);
+      }
     }
   }
 }
@@ -1311,6 +1357,7 @@ document.getElementById("here").onclick = () => locate();
 document.getElementById("refresh").onclick = () => refreshFeeds(true);
 document.getElementById("theme").onclick = () => applyTheme(state.theme === "night" ? "day" : "night");
 document.getElementById("fold").onclick = () => setSheetOpen(!state.sheetOpen);
+document.getElementById("clockfmt").onclick = () => setClockMode(state.clockMode === "24" ? "os" : "24");
 document.getElementById("at").addEventListener("change", () => {
   if (state.routeId) renderDue();
   if (state.dest) openPlan(state.dest);
@@ -1365,6 +1412,13 @@ const bootStop = boot.get("stop");
 document.getElementById("btn-quebec").classList.toggle("on", bootCity === "quebec");
 document.getElementById("btn-montreal").classList.toggle("on", bootCity === "montreal");
 fillClockInput();
+try {
+  const saved = localStorage.getItem("rive.clock");
+  if (saved === "24" || saved === "os") state.clockMode = saved;
+} catch {
+  /* private */
+}
+setClockMode(state.clockMode);
 applyTheme();
 loadCity(bootCity).then(() => {
   if (bootStop && state.atlas) {
