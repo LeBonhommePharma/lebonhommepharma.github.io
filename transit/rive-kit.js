@@ -98,6 +98,69 @@ export function remainMinutes(departs, now) {
   return best;
 }
 
+export function livePulseFromTransit(input, now) {
+  if (!input || typeof input !== "object") return { action: "end" };
+  const route = typeof input.route === "string" ? input.route.trim() : "";
+  const stop = typeof input.stop === "string" ? input.stop.trim() : "";
+  const departs = (Array.isArray(input.departs) ? input.departs : [])
+    .map((raw) => (typeof raw === "number" ? raw : Number(raw)))
+    .filter((n) => Number.isFinite(n));
+  if (!route || !departs.length) return { action: "end" };
+  const remain = remainMinutes(departs, now);
+  if (remain == null) return { action: "end" };
+  return {
+    action: "start",
+    city: typeof input.city === "string" && input.city ? input.city : "quebec",
+    stop,
+    route,
+    color: typeof input.color === "string" && input.color ? input.color : "#0071e3",
+    headsign: typeof input.headsign === "string" ? input.headsign : "",
+    clocks: Array.isArray(input.clocks) ? input.clocks.filter((item) => typeof item === "string" && item) : [],
+    departs,
+    remain,
+  };
+}
+
+export function livePulseEnd() {
+  return { action: "end" };
+}
+
+export function applyLivePulse(command, store, key) {
+  const name = key || "rive.live";
+  if (!command || command.action === "end") {
+    try {
+      store && store.removeItem(name);
+    } catch {
+      /* private */
+    }
+    return { href: "./watch.html", live: null };
+  }
+  const live = {
+    city: command.city,
+    stop: command.stop,
+    route: command.route,
+    color: command.color,
+    headsign: command.headsign,
+    clocks: command.clocks,
+    departs: command.departs,
+    remain: command.remain,
+  };
+  try {
+    store && store.setItem(name, JSON.stringify(live));
+  } catch {
+    /* private */
+  }
+  const q = new URLSearchParams({
+    c: command.city,
+    s: command.stop,
+    r: command.route,
+    k: command.color,
+    t: (command.clocks || []).slice(0, 4).join(","),
+    m: (command.departs || []).slice(0, 4).join(","),
+  });
+  return { href: `./watch.html?${q.toString()}`, live };
+}
+
 export function watchPulseFromPayload(payload) {
   if (payload == null) return null;
   if (typeof payload === "string") {
@@ -255,6 +318,71 @@ export function applyFusedEtaToDue(due, fused, now) {
       clocks: [formatClock(depart), ...clocks.slice(1)],
     };
   });
+}
+
+export function parseHexColor(hex) {
+  if (typeof hex !== "string") return null;
+  let raw = hex.trim().replace(/^#/, "");
+  if (raw.length === 3) raw = raw.split("").map((c) => c + c).join("");
+  if (!/^[0-9a-fA-F]{6}$/.test(raw)) return null;
+  return { r: parseInt(raw.slice(0, 2), 16), g: parseInt(raw.slice(2, 4), 16), b: parseInt(raw.slice(4, 6), 16) };
+}
+
+function rgbToHsl(r, g, b) {
+  const R = r / 255;
+  const G = g / 255;
+  const B = b / 255;
+  const max = Math.max(R, G, B);
+  const min = Math.min(R, G, B);
+  const l = (max + min) / 2;
+  if (max === min) return { h: 0, s: 0, l };
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h = 0;
+  if (max === R) h = (G - B) / d + (G < B ? 6 : 0);
+  else if (max === G) h = (B - R) / d + 2;
+  else h = (R - G) / d + 4;
+  return { h: h * 60, s, l };
+}
+
+function hslToHex(h, s, l) {
+  const hue = ((h % 360) + 360) % 360;
+  const C = (1 - Math.abs(2 * l - 1)) * s;
+  const X = C * (1 - Math.abs(((hue / 60) % 2) - 1));
+  const m = l - C / 2;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  if (hue < 60) [r, g, b] = [C, X, 0];
+  else if (hue < 120) [r, g, b] = [X, C, 0];
+  else if (hue < 180) [r, g, b] = [0, C, X];
+  else if (hue < 240) [r, g, b] = [0, X, C];
+  else if (hue < 300) [r, g, b] = [X, 0, C];
+  else [r, g, b] = [C, 0, X];
+  const hex = (n) => Math.round((n + m) * 255).toString(16).padStart(2, "0");
+  return `#${hex(r)}${hex(g)}${hex(b)}`;
+}
+
+export function isBlueFamily(hex) {
+  const rgb = parseHexColor(hex);
+  if (!rgb) return true;
+  const { h, s } = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  if (s < 0.12) return true;
+  return h >= 170 && h <= 265;
+}
+
+export function lineStrokeColor(route) {
+  const official = typeof route.color === "string" && parseHexColor(route.color) ? route.color : "#0e7490";
+  const base = official.startsWith("#") ? official : `#${official}`;
+  if (!isBlueFamily(base)) return base;
+  const rgb = parseHexColor(base);
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const num = parseInt(String(route.shortName || "").replace(/\D/g, ""), 10) || 0;
+  const hueShift = ((num * 17) % 36) - 18;
+  const popular = route.type === 1 || /^80/.test(String(route.shortName || "")) || (num > 0 && num < 20);
+  const s = Math.min(0.72, Math.max(0.28, hsl.s + (popular ? 0.08 : -0.04)));
+  const l = Math.min(0.58, Math.max(0.28, hsl.l + (popular ? -0.08 : 0.04) + ((num % 7) - 3) * 0.012));
+  return hslToHex(hsl.h + hueShift, s, l);
 }
 
 export function rankByDoorToDoor(options) {

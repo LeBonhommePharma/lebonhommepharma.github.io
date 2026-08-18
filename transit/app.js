@@ -9,8 +9,12 @@ import {
   headingFromSample,
   ingestProbe,
   annotateTimeGaps,
+  applyLivePulse,
   isCrowdProbeSource,
   lineSlice,
+  livePulseEnd,
+  lineStrokeColor,
+  livePulseFromTransit,
   rankByDoorToDoor,
   snapToShape,
 } from "./rive-kit.js";
@@ -142,22 +146,30 @@ function nearbyStops(stops, point, radiusM = 700, limit = 14) {
   return out.slice(0, limit);
 }
 
-function clockMinutes() {
-  const input = document.getElementById("at");
-  if (input && input.value) {
-    const [h, m] = String(input.value).split(":").map(Number);
-    if (Number.isFinite(h) && Number.isFinite(m)) return h * 60 + m;
-  }
-  return minutesOfDay(new Date());
+function parseClock24(value) {
+  const raw = String(value || "").trim();
+  const m = raw.match(/^(\d{1,2})(?:[:hH.\s]?(\d{2}))?$/);
+  if (!m) return null;
+  const h = Number(m[1]);
+  const min = Number(m[2] || 0);
+  if (!Number.isFinite(h) || !Number.isFinite(min) || h > 23 || min > 59) return null;
+  return h * 60 + min;
 }
 
-function fillClockInput() {
+function clockMinutes() {
   const input = document.getElementById("at");
-  if (!input || input.value) return;
-  const mins = minutesOfDay(new Date());
-  const h = Math.floor((((mins % 1440) + 1440) % 1440) / 60);
-  const m = ((mins % 1440) + 1440) % 1440 % 60;
-  input.value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  const parsed = input ? parseClock24(input.value) : null;
+  return parsed == null ? minutesOfDay(new Date()) : parsed;
+}
+
+function fillClockInput(force) {
+  const input = document.getElementById("at");
+  if (!input) return;
+  if (!force && input.value && parseClock24(input.value) != null) {
+    input.value = formatClock(parseClock24(input.value));
+    return;
+  }
+  input.value = formatClock(minutesOfDay(new Date()));
 }
 
 function cityForPoint(lon, lat) {
@@ -188,7 +200,7 @@ function nextDeparture(timetable, stop, routeId, dir, now, active) {
       if (row.d !== dir && dir != null) continue;
       if (!row.s.some((s) => active.has(s))) continue;
       const upcoming = row.t.filter((t) => t >= now);
-      const depart = upcoming.length ? upcoming[0] : null;
+      const depart = upcoming.length ? upcoming[0] : row.t.length ? row.t[0] + 1440 : null;
       if (depart == null) continue;
       if (!best || depart < best.depart) best = { depart, headsign: row.h };
     }
@@ -199,12 +211,19 @@ function nextDeparture(timetable, stop, routeId, dir, now, active) {
 function planFromHere(from, destStop, now, active) {
   if (!state.atlas || !from || !destStop) return [];
   const routes = new Map(state.atlas.routes.map((r) => [r.id, r]));
-  const origins = nearbyStops(state.atlas.stops, from, 700, 10);
+  const rapid = state.atlas.stops.filter((stop) => {
+    if (stop.kind === 1) return true;
+    return (stop.routes || []).some((id) => {
+      const route = routes.get(id);
+      return route && (route.type === 1 || /^80/.test(route.shortName));
+    });
+  });
+  const origins = nearbyStops(state.atlas.stops, from, 900, 14).concat(nearbyStops(rapid, from, 1400, 8));
   if (from.stopId) {
     const seed = state.atlas.stops.find((s) => s.id === from.stopId);
     if (seed) origins.unshift({ ...seed, meters: 0 });
   }
-  const dests = nearbyStops(state.atlas.stops, destStop, 220, 6);
+  const dests = nearbyStops(state.atlas.stops, destStop, 900, 12).concat(nearbyStops(rapid, destStop, 1400, 8));
   dests.unshift({ ...destStop, meters: 0 });
   const found = [];
   const seen = new Set();
@@ -807,46 +826,25 @@ function minutesOfDay(date) {
 }
 
 function prefersHour12() {
-  try {
-    const candidates = ["fr-CA", "en-CA", undefined];
-    let saw12 = false;
-    for (const loc of candidates) {
-      const opts = new Intl.DateTimeFormat(loc, { hour: "numeric" }).resolvedOptions();
-      if (opts.hourCycle === "h23" || opts.hourCycle === "h24") return false;
-      if (opts.hourCycle === "h11" || opts.hourCycle === "h12") saw12 = true;
-      else if (opts.hour12) saw12 = true;
-    }
-    return saw12;
-  } catch {
-    return false;
-  }
-}
-
-function usesHour12() {
-  return state.clockMode === "os" ? prefersHour12() : false;
+  return false;
 }
 
 function paintClockInput() {
   const input = document.getElementById("at");
   if (!input) return;
-  input.lang = usesHour12() ? "en-US" : "fr-CA";
-  input.setAttribute("data-hour12", usesHour12() ? "1" : "0");
+  input.lang = "fr-CA";
+  input.setAttribute("data-hour12", "0");
 }
 
 function formatClock(minutes) {
   const wrap = ((minutes % 1440) + 1440) % 1440;
   const h = Math.floor(wrap / 60);
   const m = wrap % 60;
-  const mm = String(m).padStart(2, "0");
-  const hour12 = usesHour12();
-  if (!hour12) return `${String(h).padStart(2, "0")}:${mm}`;
-  const suffix = h >= 12 ? "PM" : "AM";
-  const h12 = h % 12 === 0 ? 12 : h % 12;
-  return `${h12}:${mm} ${suffix}`;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
 function setClockMode(mode) {
-  state.clockMode = mode === "24" ? "24" : "os";
+  state.clockMode = "24";
   try {
     localStorage.setItem("rive.clock", state.clockMode);
   } catch {
@@ -855,12 +853,12 @@ function setClockMode(mode) {
   const os = document.getElementById("clock-os");
   const h24 = document.getElementById("clock-24");
   if (os) {
-    os.classList.toggle("on", state.clockMode !== "24");
-    os.setAttribute("aria-pressed", state.clockMode !== "24" ? "true" : "false");
+    os.classList.toggle("on", false);
+    os.setAttribute("aria-pressed", "false");
   }
   if (h24) {
-    h24.classList.toggle("on", state.clockMode === "24");
-    h24.setAttribute("aria-pressed", state.clockMode === "24" ? "true" : "false");
+    h24.classList.toggle("on", true);
+    h24.setAttribute("aria-pressed", "true");
   }
   paintClockInput();
   if (state.routeId) renderDue();
@@ -1064,6 +1062,7 @@ function renderLines() {
       state.routeId = btn.dataset.id;
       renderLines();
       renderDue();
+      pulseFromSelectedLine();
     };
   });
 }
@@ -1196,6 +1195,7 @@ function applyHere(lon, lat, source, at) {
     if (state.navigating) {
       state.camera.zoom = Math.max(state.camera.zoom, 15);
       paintNav();
+      pulseFromTrip(currentTrip());
     }
     paintHeading();
     draw();
@@ -1425,6 +1425,7 @@ function startTrip(index) {
   setSheetOpen(false);
   locate();
   paintNav();
+  pulseFromTrip(trip);
   draw();
 }
 
@@ -1434,7 +1435,71 @@ function stopTrip() {
   setSheetOpen(true);
   const trip = currentTrip();
   if (trip) fitTrip(trip);
+  broadcastPulse(livePulseEnd());
   draw();
+}
+
+function pulseStorage() {
+  try {
+    return localStorage;
+  } catch {
+    return null;
+  }
+}
+
+function broadcastPulse(command) {
+  const applied = applyLivePulse(command, pulseStorage());
+  const footerWatch = document.getElementById("watch-link");
+  if (footerWatch) footerWatch.setAttribute("href", applied.href);
+  try {
+    const bridge = globalThis.webkit && globalThis.webkit.messageHandlers && globalThis.webkit.messageHandlers.riveLive;
+    if (bridge && typeof bridge.postMessage === "function") bridge.postMessage(command);
+  } catch {
+    /* no native shell */
+  }
+  return applied;
+}
+
+function pulseFromTrip(trip) {
+  const transit = (trip && trip.legs ? trip.legs : []).find((leg) => leg.kind === "transit");
+  const command = livePulseFromTransit(
+    {
+      city: state.city,
+      stop: (transit && transit.from && transit.from.label) || (state.dest && state.dest.name) || "",
+      route: transit && transit.shortName,
+      color: transit && transit.color,
+      headsign: transit && transit.headsign,
+      clocks: transit && Number.isFinite(transit.depart) ? [formatClock(transit.depart), formatClock(transit.arrive)] : [],
+      departs: transit && Number.isFinite(transit.depart) ? [transit.depart] : [],
+    },
+    clockMinutes(),
+  );
+  return broadcastPulse(command);
+}
+
+function pulseFromSelectedLine() {
+  if (!state.atlas || !state.routeId) {
+    broadcastPulse(livePulseEnd());
+    return;
+  }
+  const now = clockMinutes();
+  const active = activeServiceIndexes(state.atlas, new Date());
+  const due = nextDueOnLine(state.atlas, state.timetable, riderPoint(), state.routeId, now, active);
+  const first = due[0];
+  const route = state.atlas.routes.find((r) => r.id === state.routeId);
+  const command = livePulseFromTransit(
+    {
+      city: state.city,
+      stop: first ? first.stopName : "",
+      route: first ? first.shortName : route && route.shortName,
+      color: first ? first.color : route && route.color,
+      headsign: first ? first.headsign : "",
+      clocks: first ? first.clocks : [],
+      departs: first && Number.isFinite(first.depart) ? [first.depart] : [],
+    },
+    now,
+  );
+  broadcastPulse(command);
 }
 
 function openPlan(destStop) {
@@ -1562,7 +1627,7 @@ function draw() {
   if (state.sheetOpen) for (const route of state.atlas.routes) {
     const frequent = route.type === 1 || /^80/.test(route.shortName);
     if (!frequent && state.camera.zoom < 13 && !selected.has(route.id)) continue;
-    ctx.strokeStyle = route.color;
+    ctx.strokeStyle = lineStrokeColor(route);
     ctx.globalAlpha = selected.size && !selected.has(route.id) ? 0.12 : frequent ? 0.9 : 0.35;
     ctx.lineWidth = route.type === 1 ? 4.4 : /^80/.test(route.shortName) ? 2.8 : 1.4;
     ctx.lineJoin = "round";
@@ -1878,10 +1943,12 @@ document.getElementById("fold").onclick = () => setSheetOpen(!state.sheetOpen);
 document.getElementById("clock-os").onclick = () => setClockMode("os");
 document.getElementById("clock-24").onclick = () => setClockMode("24");
 document.getElementById("at").addEventListener("change", () => {
+  fillClockInput();
   if (state.routeId) renderDue();
   if (state.dest) openPlan(state.dest);
   else if (state.stop) openStop(state.stop);
 });
+document.getElementById("at").addEventListener("blur", () => fillClockInput());
 document.getElementById("q").addEventListener("input", (e) => {
   state.query = e.target.value;
   renderHits();
@@ -1914,6 +1981,7 @@ function switchCity(city) {
   state.tripIndex = 0;
   state.navigating = false;
   state.routeId = null;
+  broadcastPulse(livePulseEnd());
   const trips = document.getElementById("trips");
   if (trips) {
     trips.hidden = true;
