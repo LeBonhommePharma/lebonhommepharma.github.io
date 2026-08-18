@@ -728,11 +728,30 @@ function applyDetour(input) {
   return { line: decodePolyline(input.staticEncoded), minutes, staticMinutes };
 }
 
+const SHEET_IDLE_MS = 12000;
+let sheetIdle = 0;
+
+function sheetHasFocus() {
+  const sheet = document.getElementById("sheet");
+  const el = document.activeElement;
+  return !!(sheet && el && sheet.contains(el) && (el.tagName === "INPUT" || el.tagName === "TEXTAREA"));
+}
+
+function setSheetTall(on) {
+  const sheet = document.getElementById("sheet");
+  if (sheet) sheet.classList.toggle("tall", !!on);
+}
+
 function setSheetOpen(open) {
   state.sheetOpen = open !== false;
   const sheet = document.getElementById("sheet");
   const fold = document.getElementById("fold");
   if (sheet) sheet.classList.toggle("folded", !state.sheetOpen);
+  if (!state.sheetOpen) {
+    setSheetTall(false);
+    clearTimeout(sheetIdle);
+    sheetIdle = 0;
+  }
   if (fold) {
     const label = state.sheetOpen ? "Carte" : "Fiche";
     fold.textContent = label;
@@ -741,6 +760,30 @@ function setSheetOpen(open) {
   }
   paintMapHud();
   requestDraw();
+}
+
+function armSheetIdle() {
+  clearTimeout(sheetIdle);
+  sheetIdle = setTimeout(() => {
+    if (sheetHasFocus()) {
+      armSheetIdle();
+      return;
+    }
+    minimizeSheet();
+  }, SHEET_IDLE_MS);
+}
+
+function bumpSheet() {
+  setSheetOpen(true);
+  setSheetTall(true);
+  armSheetIdle();
+}
+
+function minimizeSheet() {
+  clearTimeout(sheetIdle);
+  sheetIdle = 0;
+  setSheetTall(false);
+  setSheetOpen(false);
 }
 
 function paintMapHud() {
@@ -854,7 +897,7 @@ async function refreshFeeds(userDeclared) {
     }
     await loadPois();
     await loadRealtime();
-    if (state.dest) openPlan(state.dest);
+    if (state.dest) openPlan(state.dest, true);
     if (state.routeId) renderDue();
     renderNearby();
     requestDraw();
@@ -1341,7 +1384,7 @@ function applyHere(lon, lat, source, at) {
     renderLines();
     renderBikes();
     if (state.routeId) renderDue();
-    if (state.dest) openPlan(state.dest);
+    if (state.dest) openPlan(state.dest, true);
     if (state.navigating) {
       state.camera.zoom = Math.max(state.camera.zoom, 15);
       paintNav();
@@ -1486,7 +1529,7 @@ function renderTrips() {
   const destName = state.dest?.name || "";
   box.innerHTML =
     `<h2>Vers ${escapeHtml(destName)}</h2>
-    <p class="lead">Le plus court d'abord. L'écart est contre cette option.</p>` +
+    <p class="lead">Le plus vite d'abord. Les autres disent combien de minutes de plus.</p>` +
     state.trips
       .map((trip, i) => {
         const on = i === state.tripIndex ? " on" : "";
@@ -1668,7 +1711,7 @@ function pulseFromSelectedLine() {
   broadcastPulse(command);
 }
 
-function openPlan(destStop) {
+function openPlan(destStop, quiet) {
   if (!destStop || !state.atlas) return;
   const from = riderPoint();
   const now = clockMinutes();
@@ -1696,6 +1739,7 @@ function openPlan(destStop) {
         <p class="lead">Pas de trajet à ${formatClock(now)} depuis ici. Choisis une ligne ou un horaire ailleurs.</p>`;
     }
   }
+  if (!quiet) bumpSheet();
   requestDraw();
 }
 
@@ -1753,6 +1797,7 @@ function openStop(stop) {
   } catch {
     /* private mode */
   }
+  bumpSheet();
   requestDraw();
 }
 
@@ -2328,7 +2373,18 @@ document.getElementById("pitch").onclick = () => {
 };
 document.getElementById("refresh").onclick = () => refreshFeeds(true);
 document.getElementById("theme").onclick = () => applyTheme(state.theme === "night" ? "day" : "night");
-document.getElementById("fold").onclick = () => setSheetOpen(!state.sheetOpen);
+document.getElementById("fold").onclick = () => {
+  if (state.sheetOpen) minimizeSheet();
+  else bumpSheet();
+};
+const sheetBody = document.getElementById("sheet-body");
+if (sheetBody) {
+  sheetBody.addEventListener("pointerdown", bumpSheet);
+  sheetBody.addEventListener("focusin", bumpSheet);
+  sheetBody.addEventListener("scroll", armSheetIdle, { passive: true });
+}
+document.getElementById("dest").addEventListener("focus", bumpSheet);
+document.getElementById("q").addEventListener("focus", bumpSheet);
 document.getElementById("clock-os").onclick = () => setClockMode("os");
 document.getElementById("clock-24").onclick = () => setClockMode("24");
 document.getElementById("at").addEventListener("change", () => {
@@ -2341,6 +2397,7 @@ document.getElementById("at").addEventListener("blur", () => fillClockInput());
 document.getElementById("q").addEventListener("input", (e) => {
   state.query = e.target.value;
   renderHits();
+  bumpSheet();
 });
 document.getElementById("q").addEventListener("keydown", (e) => {
   if (e.key !== "Enter") return;
@@ -2350,6 +2407,7 @@ document.getElementById("q").addEventListener("keydown", (e) => {
 document.getElementById("dest").addEventListener("input", (e) => {
   state.destQuery = e.target.value;
   renderDestHits();
+  bumpSheet();
 });
 document.getElementById("dest").addEventListener("keydown", (e) => {
   if (e.key !== "Enter") return;

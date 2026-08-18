@@ -80,8 +80,22 @@
       .cities { display: flex; width: max-content; margin: 16px auto 0; padding: 4px; border-radius: 999px; background: var(--glass); border: 1px solid rgb(0 0 0 / 0.08); }
       .cities button { border: 0; background: transparent; color: #6e6e73; padding: 8px 18px; border-radius: 999px; font: inherit; cursor: pointer; }
       .cities button.on { background: var(--chip); color: var(--chip-ink); }
-      .sheet { position: absolute; left: 16px; top: 68px; width: min(400px, calc(100% - 32px)); background: var(--glass); border: 1px solid rgb(0 0 0 / 0.08); border-radius: 28px; padding: 16px; backdrop-filter: blur(18px); max-height: calc(100dvh - 100px); overflow: auto; }
-      .sheet.folded { padding: 8px 10px; max-height: none; overflow: hidden; }
+      .sheet {
+        position: absolute;
+        left: 16px;
+        top: 68px;
+        width: min(400px, calc(100% - 32px));
+        background: var(--glass);
+        border: 1px solid rgb(0 0 0 / 0.08);
+        border-radius: 28px;
+        padding: 16px;
+        backdrop-filter: blur(18px);
+        max-height: calc(100dvh - 100px);
+        overflow: auto;
+        transition: max-height 0.28s ease, padding 0.2s ease;
+      }
+      .sheet.tall { max-height: calc(100dvh - 72px); }
+      .sheet.folded { padding: 8px 10px; max-height: 52px; overflow: hidden; }
       .sheet.folded .sheet-body { display: none; }
       .sheet.folded .toolbar { margin-bottom: 0; }
       @media (max-width: 640px) {
@@ -93,7 +107,11 @@
           bottom: 12px;
           max-height: 38dvh;
         }
-        .sheet.folded { bottom: 12px; width: auto; left: 12px; right: auto; }
+        .sheet.tall { max-height: 78dvh; }
+        .sheet.folded { bottom: 12px; width: auto; left: 12px; right: auto; max-height: 52px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .sheet { transition: none; }
       }
       .sheet h1, .sheet h2 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
       .sheet h2 { margin-top: 14px; }
@@ -340,7 +358,7 @@
         </div>
         <div class="sheet-body" id="sheet-body">
         <h1 id="dest-title">Où vas-tu ?</h1>
-        <p class="lead" id="dest-lead">Le chemin le plus vite d'abord. Les autres disent combien de minutes de plus.</p>
+        <p class="lead" id="dest-lead">Le plus vite d'abord. Les autres disent combien de minutes de plus.</p>
         <label>
           <span class="sr-only" style="position:absolute;left:-9999px">Destination</span>
           <input id="dest" type="search" autocomplete="off" placeholder="Université Laval, McGill…" />
