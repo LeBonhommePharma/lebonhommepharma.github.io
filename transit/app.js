@@ -1,4 +1,5 @@
 /* Rive standalone atlas. Copyright 2026 Rive contributors. Apache-2.0 */
+import { probeGpuLabel } from "./webgpu.js";
 
 const TZ = "America/Montreal";
 const CITIES = {
@@ -364,18 +365,9 @@ function draw() {
 }
 
 async function tryWebGPU() {
-  const gpu = navigator.gpu;
   const el = document.getElementById("gpu");
-  if (!gpu) {
-    el.textContent = "Canvas 2D";
-    return;
-  }
-  const adapter = await gpu.requestAdapter();
-  if (!adapter) {
-    el.textContent = "Canvas 2D";
-    return;
-  }
-  el.textContent = "WebGPU prêt";
+  if (!el) return;
+  el.textContent = await probeGpuLabel(globalThis.navigator && globalThis.navigator.gpu);
 }
 
 let drag = null;
