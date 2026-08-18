@@ -22,6 +22,7 @@ const state = {
   tripUpdates: [],
   shapePatches: {},
   theme: "day",
+  sheetOpen: true,
   camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4 },
 };
 
@@ -542,6 +543,18 @@ function trajectoryAfterRealtime(staticEncoded, patch) {
     return [[patch.vehicle.lon, patch.vehicle.lat], ...base];
   }
   return base;
+}
+
+function setSheetOpen(open) {
+  state.sheetOpen = open !== false;
+  const sheet = document.getElementById("sheet");
+  const fold = document.getElementById("fold");
+  if (sheet) sheet.classList.toggle("folded", !state.sheetOpen);
+  if (fold) {
+    fold.textContent = state.sheetOpen ? "Carte" : "Fiche";
+    fold.setAttribute("aria-expanded", state.sheetOpen ? "true" : "false");
+  }
+  draw();
 }
 
 function applyTheme(mode) {
@@ -1072,7 +1085,7 @@ function draw() {
   ctx.fillRect(0, 0, w, h);
   if (!state.atlas) return;
   const selected = new Set(state.stop?.routes || []);
-  for (const route of state.atlas.routes) {
+  if (state.sheetOpen) for (const route of state.atlas.routes) {
     const frequent = route.type === 1 || /^80/.test(route.shortName);
     if (!frequent && state.camera.zoom < 13 && !selected.has(route.id)) continue;
     ctx.strokeStyle = route.color;
@@ -1215,6 +1228,7 @@ document.getElementById("btn-montreal").onclick = () => switchCity("montreal");
 document.getElementById("here").onclick = () => locate();
 document.getElementById("refresh").onclick = () => refreshFeeds(true);
 document.getElementById("theme").onclick = () => applyTheme(state.theme === "night" ? "day" : "night");
+document.getElementById("fold").onclick = () => setSheetOpen(!state.sheetOpen);
 document.getElementById("at").addEventListener("change", () => {
   if (state.routeId) renderDue();
   if (state.dest) openPlan(state.dest);
