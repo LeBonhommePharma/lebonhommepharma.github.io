@@ -260,3 +260,33 @@ export function applyFusedEtaToDue(due, fused, now) {
 export function rankByDoorToDoor(options) {
   return options.slice().sort((a, b) => a.minutes - b.minutes);
 }
+
+export function annotateTimeGaps(options) {
+  if (!options.length) return [];
+  const fastest = Math.min(...options.map((row) => row.minutes));
+  return options.map((row) => ({ ...row, gap: row.minutes - fastest }));
+}
+
+export function lineSlice(coords, from, to) {
+  if (!coords || coords.length < 2) return coords || [];
+  let i0 = 0;
+  let i1 = coords.length - 1;
+  let d0 = Infinity;
+  let d1 = Infinity;
+  for (let i = 0; i < coords.length; i++) {
+    const [lon, lat] = coords[i];
+    const a = (lon - from.lon) ** 2 + (lat - from.lat) ** 2;
+    const b = (lon - to.lon) ** 2 + (lat - to.lat) ** 2;
+    if (a < d0) {
+      d0 = a;
+      i0 = i;
+    }
+    if (b < d1) {
+      d1 = b;
+      i1 = i;
+    }
+  }
+  if (i0 === i1) return [coords[i0], [to.lon, to.lat]];
+  if (i0 < i1) return coords.slice(i0, i1 + 1);
+  return coords.slice(i1, i0 + 1).reverse();
+}

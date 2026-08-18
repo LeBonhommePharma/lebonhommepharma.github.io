@@ -12,7 +12,7 @@
     <link rel="manifest" href="./manifest.json" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Rive" />
-    <meta name="theme-color" content="#e8e4dc" />
+    <meta name="theme-color" content="#0a0e14" />
     <style>
       @font-face {
         font-family: "Rive Text";
@@ -29,40 +29,46 @@
         font-display: swap;
       }
       :root, html.day {
-        --ink: #2b2723;
-        --paper: #e8e4dc;
-        --muted: #6a655e;
-        --sodium: #0b6bcb;
-        --glass: rgb(255 252 246 / 0.84);
-        --stage: #d4cfc6;
-        --chip: #2b2723;
-        --chip-ink: #f4f0ea;
-        --well: rgb(43 39 35 / 0.07);
+        --ink: #1a2430;
+        --paper: #e8eef2;
+        --muted: #5a6878;
+        --sodium: #0e7490;
+        --gold: #d97706;
+        --terra: #6d5cae;
+        --glass: rgb(248 252 255 / 0.88);
+        --stage: #d5dde4;
+        --chip: #0e7490;
+        --chip-ink: #f0fdff;
+        --well: rgb(14 116 144 / 0.08);
         color-scheme: light;
       }
       html.night {
-        --ink: #e4e9ee;
-        --paper: #1e252c;
-        --muted: #9aa3aa;
-        --sodium: #7eb6ff;
-        --glass: rgb(28 34 40 / 0.84);
-        --stage: #161c22;
-        --chip: #e4e9ee;
-        --chip-ink: #1e252c;
-        --well: rgb(255 255 255 / 0.09);
+        --ink: #d4dced;
+        --paper: #0a0e14;
+        --muted: #8a93a8;
+        --sodium: #22d3ee;
+        --gold: #fbbf24;
+        --terra: #a78bfa;
+        --glass: rgb(16 20 28 / 0.88);
+        --stage: #0d1218;
+        --chip: #22d3ee;
+        --chip-ink: #0a0e14;
+        --well: rgb(34 211 238 / 0.08);
         color-scheme: dark;
       }
       @media (prefers-color-scheme: dark) {
         :root:not(.day) {
-          --ink: #e4e9ee;
-          --paper: #1e252c;
-          --muted: #9aa3aa;
-          --sodium: #7eb6ff;
-          --glass: rgb(28 34 40 / 0.84);
-          --stage: #161c22;
-          --chip: #e4e9ee;
-          --chip-ink: #1e252c;
-          --well: rgb(255 255 255 / 0.09);
+          --ink: #d4dced;
+          --paper: #0a0e14;
+          --muted: #8a93a8;
+          --sodium: #22d3ee;
+          --gold: #fbbf24;
+          --terra: #a78bfa;
+          --glass: rgb(16 20 28 / 0.88);
+          --stage: #0d1218;
+          --chip: #22d3ee;
+          --chip-ink: #0a0e14;
+          --well: rgb(34 211 238 / 0.08);
           color-scheme: dark;
         }
       }
@@ -173,6 +179,68 @@
       .lines button { border: 0; border-radius: 999px; padding: 6px 12px; font: inherit; font-weight: 700; font-size: 13px; cursor: pointer; }
       .lines button.on { outline: 2px solid #1d1d1f; outline-offset: 2px; }
       .due .wait { font-size: 20px; font-weight: 560; letter-spacing: -0.03em; }
+      #trips { margin: 10px 0 4px; }
+      #trips[hidden] { display: none; }
+      .trip {
+        border-radius: 16px;
+        background: var(--well);
+        padding: 8px 10px 10px;
+        margin: 8px 0 0;
+      }
+      .trip.on { outline: 1.5px solid var(--chip); }
+      .trip-pick {
+        width: 100%;
+        text-align: left;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+      }
+      .trip .wait { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+      .trip .gap { color: var(--muted); font-size: 12px; margin: 2px 0 6px; }
+      .trip.on .gap { color: var(--gold); font-weight: 650; }
+      .trip .wait { color: var(--ink); }
+      .trip.on .wait { color: var(--sodium); }
+      .trip .go {
+        margin-top: 6px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--chip);
+        color: var(--chip-ink);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 650;
+        padding: 8px 14px;
+        cursor: pointer;
+      }
+      #nav {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        top: 64px;
+        background: var(--glass);
+        border: 1px solid rgb(0 0 0 / 0.08);
+        border-radius: 18px;
+        padding: 10px 12px;
+        backdrop-filter: blur(18px);
+      }
+      #nav[hidden] { display: none; }
+      #nav .nav-step { font-size: 16px; font-weight: 650; }
+      #nav .nav-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+      #nav-stop {
+        margin-top: 8px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--well);
+        color: var(--ink);
+        font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 12px;
+        cursor: pointer;
+      }
       .board { margin-top: 14px; }
       .board h2 { margin: 0 0 4px; font-size: 20px; font-weight: 560; }
       .row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
@@ -234,19 +302,20 @@
           </div>
           <label class="at">
             <span class="sr-only" style="position:absolute;left:-9999px">Heure</span>
-            <input id="at" type="time" />
+            <input id="at" type="time" lang="fr-CA" />
           </label>
         </div>
         <div class="sheet-body" id="sheet-body">
         <h1 id="dest-title">Où vas-tu ?</h1>
-        <p class="lead" id="dest-lead">Depuis ici. Plusieurs options, la plus courte d'abord.</p>
+        <p class="lead" id="dest-lead">Depuis ici. Le plus court d'abord, avec l'écart en minutes.</p>
         <label>
           <span class="sr-only" style="position:absolute;left:-9999px">Destination</span>
           <input id="dest" type="search" autocomplete="off" placeholder="Université Laval, McGill…" />
         </label>
         <ul class="hits" id="dest-hits"></ul>
+        <div id="trips" hidden></div>
         <h2 id="line-title">Ligne</h2>
-        <p class="lead" id="line-lead">Après la destination, choisis le numéro ou la couleur près d{"'"}ici.</p>
+        <p class="lead" id="line-lead">Après la destination, choisis le numéro ou la couleur près d'ici.</p>
         <div id="lines" class="lines" role="listbox" aria-label="Ligne"></div>
         <div class="board due" id="due" hidden></div>
         <h2 id="else-title">Horaire ailleurs</h2>
@@ -264,6 +333,7 @@
         </div>
       </section>
       <div id="heading" hidden></div>
+      <div id="nav" hidden></div>
       <footer>
         <span id="gpu">WebGL</span><br />
         Rive, Apache License 2.0.

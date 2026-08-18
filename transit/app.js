@@ -8,10 +8,19 @@ import {
   fuseRouteProbes,
   headingFromSample,
   ingestProbe,
+  annotateTimeGaps,
   isCrowdProbeSource,
+  lineSlice,
   rankByDoorToDoor,
   snapToShape,
 } from "./rive-kit.js";
+import {
+  BUILDING_ZOOM,
+  extrudeOffsetPx,
+  overpassQuery,
+  parseOverpassBuildings,
+  wallQuads,
+} from "./buildings.js";
 
 const TZ = "America/Montreal";
 const CITIES = {
@@ -26,6 +35,9 @@ const state = {
   query: "",
   destQuery: "",
   dest: null,
+  trips: [],
+  tripIndex: 0,
+  navigating: false,
   routeId: null,
   stop: null,
   here: null,
@@ -34,6 +46,7 @@ const state = {
   probes: emptyProbeStore(),
   watchId: null,
   pois: [],
+  buildings: [],
   vehicles: [],
   tripUpdates: [],
   shapePatches: {},
@@ -235,6 +248,12 @@ function planFromHere(from, destStop, now, active) {
               minutes: w1,
               meters: Math.round(walk1),
               label: `Marche ${Math.round(walk1)} m`,
+              from: { lon: from.lon, lat: from.lat },
+              to: { lon: origin.lon, lat: origin.lat },
+              line: [
+                [from.lon, from.lat],
+                [origin.lon, origin.lat],
+              ],
             });
           }
           legs.push({
@@ -245,8 +264,12 @@ function planFromHere(from, destStop, now, active) {
             textColor: route.textColor,
             headsign: next.headsign || dir.headsign,
             type: route.type,
+            routeId: route.id,
             depart: board,
             arrive: board + ride,
+            from: { lon: origin.lon, lat: origin.lat },
+            to: { lon: dest.lon, lat: dest.lat },
+            line: lineSlice(decodePolyline(dir.line), origin, dest),
           });
           if (w2 > 0) {
             legs.push({
@@ -254,6 +277,12 @@ function planFromHere(from, destStop, now, active) {
               minutes: w2,
               meters: Math.round(walk2),
               label: `Marche ${Math.round(walk2)} m`,
+              from: { lon: dest.lon, lat: dest.lat },
+              to: { lon: destStop.lon, lat: destStop.lat },
+              line: [
+                [dest.lon, dest.lat],
+                [destStop.lon, destStop.lat],
+              ],
             });
           }
           found.push({
@@ -277,7 +306,20 @@ function planFromHere(from, destStop, now, active) {
       depart: now,
       arrive: now + walkMin,
       mix: "marche",
-      legs: [{ kind: "walk", minutes: walkMin, meters: Math.round(walkM), label: `Marche ${Math.round(walkM)} m` }],
+      legs: [
+        {
+          kind: "walk",
+          minutes: walkMin,
+          meters: Math.round(walkM),
+          label: `Marche ${Math.round(walkM)} m`,
+          from: { lon: from.lon, lat: from.lat },
+          to: { lon: destStop.lon, lat: destStop.lat },
+          line: [
+            [from.lon, from.lat],
+            [destStop.lon, destStop.lat],
+          ],
+        },
+      ],
     });
     found.push({
       minutes: bikeMin,
@@ -285,10 +327,23 @@ function planFromHere(from, destStop, now, active) {
       depart: now,
       arrive: now + bikeMin,
       mix: "vélo",
-      legs: [{ kind: "bike", minutes: bikeMin, meters: Math.round(walkM), label: `Vélo ${Math.round(walkM)} m` }],
+      legs: [
+        {
+          kind: "bike",
+          minutes: bikeMin,
+          meters: Math.round(walkM),
+          label: `Vélo ${Math.round(walkM)} m`,
+          from: { lon: from.lon, lat: from.lat },
+          to: { lon: destStop.lon, lat: destStop.lat },
+          line: [
+            [from.lon, from.lat],
+            [destStop.lon, destStop.lat],
+          ],
+        },
+      ],
     });
   }
-  return rankByDoorToDoor(found).slice(0, 8);
+  return annotateTimeGaps(rankByDoorToDoor(found).slice(0, 8));
 }
 
 function nearbyLines(atlas, here, dest, radiusM = 700) {
@@ -753,13 +808,29 @@ function minutesOfDay(date) {
 
 function prefersHour12() {
   try {
-    const opts = new Intl.DateTimeFormat(undefined, { hour: "numeric" }).resolvedOptions();
-    if (opts.hourCycle === "h11" || opts.hourCycle === "h12") return true;
-    if (opts.hourCycle === "h23" || opts.hourCycle === "h24") return false;
-    return Boolean(opts.hour12);
+    const candidates = ["fr-CA", "en-CA", undefined];
+    let saw12 = false;
+    for (const loc of candidates) {
+      const opts = new Intl.DateTimeFormat(loc, { hour: "numeric" }).resolvedOptions();
+      if (opts.hourCycle === "h23" || opts.hourCycle === "h24") return false;
+      if (opts.hourCycle === "h11" || opts.hourCycle === "h12") saw12 = true;
+      else if (opts.hour12) saw12 = true;
+    }
+    return saw12;
   } catch {
     return false;
   }
+}
+
+function usesHour12() {
+  return state.clockMode === "os" ? prefersHour12() : false;
+}
+
+function paintClockInput() {
+  const input = document.getElementById("at");
+  if (!input) return;
+  input.lang = usesHour12() ? "en-US" : "fr-CA";
+  input.setAttribute("data-hour12", usesHour12() ? "1" : "0");
 }
 
 function formatClock(minutes) {
@@ -767,7 +838,7 @@ function formatClock(minutes) {
   const h = Math.floor(wrap / 60);
   const m = wrap % 60;
   const mm = String(m).padStart(2, "0");
-  const hour12 = state.clockMode === "os" ? prefersHour12() : false;
+  const hour12 = usesHour12();
   if (!hour12) return `${String(h).padStart(2, "0")}:${mm}`;
   const suffix = h >= 12 ? "PM" : "AM";
   const h12 = h % 12 === 0 ? 12 : h % 12;
@@ -791,6 +862,7 @@ function setClockMode(mode) {
     h24.classList.toggle("on", state.clockMode === "24");
     h24.setAttribute("aria-pressed", state.clockMode === "24" ? "true" : "false");
   }
+  paintClockInput();
   if (state.routeId) renderDue();
   if (state.dest) openPlan(state.dest);
   else if (state.stop) openStop(state.stop);
@@ -932,6 +1004,7 @@ async function loadCity(city) {
   renderLines();
   if (state.routeId) renderDue();
   draw();
+  scheduleBuildings();
 }
 
 function renderHits() {
@@ -1120,8 +1193,13 @@ function applyHere(lon, lat, source, at) {
     renderLines();
     if (state.routeId) renderDue();
     if (state.dest) openPlan(state.dest);
+    if (state.navigating) {
+      state.camera.zoom = Math.max(state.camera.zoom, 15);
+      paintNav();
+    }
     paintHeading();
     draw();
+    scheduleBuildings();
   };
   if (city !== state.city) {
     document.getElementById("btn-quebec").classList.toggle("on", city === "quebec");
@@ -1185,35 +1263,70 @@ function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-function openPlan(destStop) {
-  if (!destStop || !state.atlas) return;
-  const from = riderPoint();
-  const now = clockMinutes();
-  const active = activeServiceIndexes(state.atlas, new Date());
-  const itineraries = planFromHere(from, destStop, now, active);
-  const board = document.getElementById("board");
-  board.hidden = false;
+function tripMix(trip) {
+  return (
+    trip.mix ||
+    (trip.legs || [])
+      .map((leg) =>
+        leg.kind === "walk" ? "marche" : leg.kind === "bike" ? "vélo" : leg.type === 1 ? "métro" : "bus",
+      )
+      .filter((name, i, all) => all[i - 1] !== name)
+      .join(" + ")
+  );
+}
+
+function tripLine(trip) {
+  const coords = [];
+  for (const leg of trip.legs || []) {
+    if (Array.isArray(leg.line) && leg.line.length) {
+      for (const pt of leg.line) coords.push(pt);
+    } else if (leg.from && leg.to) {
+      coords.push([leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat]);
+    }
+  }
+  return coords;
+}
+
+function fitTrip(trip) {
+  const coords = tripLine(trip);
+  if (!coords.length) return;
+  let minLon = coords[0][0];
+  let maxLon = coords[0][0];
+  let minLat = coords[0][1];
+  let maxLat = coords[0][1];
+  for (const [lon, lat] of coords) {
+    if (lon < minLon) minLon = lon;
+    if (lon > maxLon) maxLon = lon;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+  }
+  state.camera.lon = (minLon + maxLon) / 2;
+  state.camera.lat = (minLat + maxLat) / 2;
+  const span = Math.max(maxLon - minLon, maxLat - minLat);
+  state.camera.zoom = span < 0.008 ? 14.6 : span < 0.02 ? 13.8 : span < 0.05 ? 12.8 : 12.2;
+}
+
+function renderTrips() {
+  const box = document.getElementById("trips");
+  if (!box) return;
   const destHits = document.getElementById("dest-hits");
   if (destHits) destHits.innerHTML = "";
-  if (!itineraries.length) {
-    board.innerHTML = `<h2>${escapeHtml(destStop.name)}</h2>
-      <p class="lead">Pas de trajet à ${formatClock(now)} depuis ici. Choisis une ligne ou un horaire ailleurs.</p>`;
+  if (!state.trips.length) {
+    box.hidden = true;
+    box.innerHTML = "";
     return;
   }
-  board.innerHTML =
-    `<h2>Vers ${escapeHtml(destStop.name)}</h2>
-    <p class="lead">Le plus court d'abord. Marche, vélo, bus${state.city === "montreal" ? " et métro" : ""}.</p>` +
-    itineraries
-      .map((trip) => {
-        const mix =
-          trip.mix ||
-          trip.legs
-            .map((leg) =>
-              leg.kind === "walk" ? "marche" : leg.kind === "bike" ? "vélo" : leg.type === 1 ? "métro" : "bus",
-            )
-            .filter((name, i, all) => all[i - 1] !== name)
-            .join(" + ");
-        const legs = trip.legs
+  box.hidden = false;
+  const destName = state.dest?.name || "";
+  box.innerHTML =
+    `<h2>Vers ${escapeHtml(destName)}</h2>
+    <p class="lead">Le plus court d'abord. L'écart est contre cette option.</p>` +
+    state.trips
+      .map((trip, i) => {
+        const on = i === state.tripIndex ? " on" : "";
+        const mix = tripMix(trip);
+        const gap = trip.gap > 0 ? `+${trip.gap} min` : "Plus rapide";
+        const legs = (trip.legs || [])
           .map((leg) => {
             if (leg.kind === "walk" || leg.kind === "bike") {
               return `<div class="row"><span class="badge" style="background:#e8eaed;color:#1d1d1f">${leg.kind === "bike" ? "vélo" : "à pied"}</span><div>${escapeHtml(leg.label || "")}</div></div>`;
@@ -1227,12 +1340,131 @@ function openPlan(destStop) {
             </div>`;
           })
           .join("");
-        return `<div class="trip"><div class="wait">${trip.minutes} min · ${escapeHtml(mix)}</div>${legs}</div>`;
+        return `<article class="trip${on}" data-i="${i}">
+          <button type="button" class="trip-pick" data-i="${i}">
+            <div class="wait">${trip.minutes} min · ${escapeHtml(mix)}</div>
+            <div class="gap">${escapeHtml(gap)}</div>
+            ${legs}
+          </button>
+          ${i === state.tripIndex ? `<button type="button" class="go" data-go="${i}">Démarrer</button>` : ""}
+        </article>`;
       })
       .join("");
-  state.camera.lon = destStop.lon;
-  state.camera.lat = destStop.lat;
-  state.camera.zoom = Math.max(state.camera.zoom, 13.6);
+  box.querySelectorAll(".trip-pick").forEach((btn) => {
+    btn.onclick = () => {
+      state.tripIndex = Number(btn.dataset.i);
+      state.navigating = false;
+      paintNav();
+      renderTrips();
+      const trip = state.trips[state.tripIndex];
+      if (trip) fitTrip(trip);
+      draw();
+    };
+  });
+  box.querySelectorAll(".go").forEach((btn) => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      startTrip(Number(btn.dataset.go));
+    };
+  });
+}
+
+function currentTrip() {
+  return state.trips[state.tripIndex] || null;
+}
+
+function currentLeg() {
+  const trip = currentTrip();
+  if (!trip || !state.here) return (trip && trip.legs && trip.legs[0]) || null;
+  let best = trip.legs[0];
+  let bestD = Infinity;
+  for (const leg of trip.legs || []) {
+    const end = leg.to || (leg.line && leg.line[leg.line.length - 1]);
+    if (!end) continue;
+    const pt = Array.isArray(end) ? { lon: end[0], lat: end[1] } : end;
+    const d = haversineMeters(state.here, pt);
+    if (d < bestD) {
+      bestD = d;
+      best = leg;
+    }
+  }
+  return best;
+}
+
+function paintNav() {
+  const nav = document.getElementById("nav");
+  if (!nav) return;
+  if (!state.navigating || !currentTrip()) {
+    nav.hidden = true;
+    nav.innerHTML = "";
+    return;
+  }
+  const trip = currentTrip();
+  const leg = currentLeg();
+  const step =
+    !leg
+      ? tripMix(trip)
+      : leg.kind === "walk" || leg.kind === "bike"
+        ? leg.label || (leg.kind === "bike" ? "Vélo" : "À pied")
+        : `${leg.shortName} · ${leg.headsign || ""}`;
+  nav.hidden = false;
+  nav.innerHTML = `<div class="nav-step">${escapeHtml(step)}</div>
+    <div class="nav-meta">${trip.minutes} min · ${escapeHtml(tripMix(trip))}</div>
+    <button type="button" id="nav-stop">Fin</button>`;
+  const stop = document.getElementById("nav-stop");
+  if (stop) stop.onclick = () => stopTrip();
+}
+
+function startTrip(index) {
+  if (Number.isFinite(index)) state.tripIndex = index;
+  const trip = currentTrip();
+  if (!trip) return;
+  state.navigating = true;
+  const transit = (trip.legs || []).find((leg) => leg.kind === "transit" && leg.routeId);
+  if (transit) state.routeId = transit.routeId;
+  setSheetOpen(false);
+  locate();
+  paintNav();
+  draw();
+}
+
+function stopTrip() {
+  state.navigating = false;
+  paintNav();
+  setSheetOpen(true);
+  const trip = currentTrip();
+  if (trip) fitTrip(trip);
+  draw();
+}
+
+function openPlan(destStop) {
+  if (!destStop || !state.atlas) return;
+  const from = riderPoint();
+  const now = clockMinutes();
+  const active = activeServiceIndexes(state.atlas, new Date());
+  const itineraries = planFromHere(from, destStop, now, active);
+  const destHits = document.getElementById("dest-hits");
+  if (destHits) destHits.innerHTML = "";
+  const keep = state.tripIndex;
+  state.trips = itineraries;
+  state.tripIndex = itineraries.length ? Math.min(keep, itineraries.length - 1) : 0;
+  if (!state.navigating) {
+    if (itineraries[0]) fitTrip(itineraries[0]);
+    else {
+      state.camera.lon = destStop.lon;
+      state.camera.lat = destStop.lat;
+      state.camera.zoom = Math.max(state.camera.zoom, 13.6);
+    }
+  }
+  renderTrips();
+  if (!itineraries.length) {
+    const box = document.getElementById("trips");
+    if (box) {
+      box.hidden = false;
+      box.innerHTML = `<h2>Vers ${escapeHtml(destStop.name)}</h2>
+        <p class="lead">Pas de trajet à ${formatClock(now)} depuis ici. Choisis une ligne ou un horaire ailleurs.</p>`;
+    }
+  }
   draw();
 }
 
@@ -1322,9 +1554,10 @@ function resize() {
 function draw() {
   const w = innerWidth;
   const h = innerHeight;
-  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--stage").trim() || "#d4cfc6";
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--stage").trim() || "#d5dde4";
   ctx.fillRect(0, 0, w, h);
   if (!state.atlas) return;
+  drawBuildings(w, h);
   const selected = new Set(state.stop?.routes || []);
   if (state.sheetOpen) for (const route of state.atlas.routes) {
     const frequent = route.type === 1 || /^80/.test(route.shortName);
@@ -1346,6 +1579,51 @@ function draw() {
         else ctx.lineTo(x, y);
       });
       ctx.stroke();
+    }
+  }
+  const trip = currentTrip();
+  if (trip) {
+    for (const leg of trip.legs || []) {
+      const coords = Array.isArray(leg.line) && leg.line.length >= 2
+        ? leg.line
+        : leg.from && leg.to
+          ? [[leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat]]
+          : [];
+      if (coords.length < 2) continue;
+      ctx.beginPath();
+      coords.forEach(([lon, lat], i) => {
+        const [x, y] = worldToScreen(lon, lat, state.camera, w, h);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      if (leg.kind === "walk" || leg.kind === "bike") {
+        ctx.setLineDash([6, 7]);
+        ctx.strokeStyle = leg.kind === "bike" ? "#0b6bcb" : "#6a655e";
+        ctx.lineWidth = 3.2;
+        ctx.globalAlpha = 0.95;
+      } else {
+        ctx.setLineDash([]);
+        ctx.strokeStyle = leg.color || "#0b6bcb";
+        ctx.lineWidth = 6;
+        ctx.globalAlpha = 0.96;
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    const dest = state.dest;
+    if (dest && Number.isFinite(dest.lon)) {
+      const [dx, dy] = worldToScreen(dest.lon, dest.lat, state.camera, w, h);
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--gold").trim() || "#d97706";
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.arc(dx, dy, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.arc(dx, dy, 2.4, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
   ctx.globalAlpha = 1;
@@ -1379,7 +1657,7 @@ function draw() {
   ctx.globalAlpha = 1;
   if (state.here) {
     const [hx, hy] = worldToScreen(state.here.lon, state.here.lat, state.camera, w, h);
-    ctx.fillStyle = "#0071e3";
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--sodium").trim() || "#0e7490";
     ctx.beginPath();
     ctx.arc(hx, hy, 5, 0, Math.PI * 2);
     ctx.fill();
@@ -1395,7 +1673,7 @@ function draw() {
   }
   if (state.fusedVehicle && Number.isFinite(state.fusedVehicle.lon)) {
     const [fx, fy] = worldToScreen(state.fusedVehicle.lon, state.fusedVehicle.lat, state.camera, w, h);
-    ctx.fillStyle = "#c45c26";
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--terra").trim() || "#6d5cae";
     ctx.beginPath();
     ctx.arc(fx, fy, 4.5, 0, Math.PI * 2);
     ctx.fill();
@@ -1414,7 +1692,11 @@ function draw() {
       const r = selected ? 6.2 : metro ? 5.2 : 3.8;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fillStyle = selected ? "#e3a21c" : metro ? "#1d1d1f" : "#fff8ee";
+      ctx.fillStyle = selected
+        ? getComputedStyle(document.documentElement).getPropertyValue("--gold").trim() || "#d97706"
+        : metro
+          ? "#1d1d1f"
+          : "#fff8ee";
       ctx.fill();
       ctx.lineWidth = metro ? 2 : 1.5;
       ctx.strokeStyle = selected ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
@@ -1425,6 +1707,86 @@ function draw() {
         ctx.fillText(stop.name, x + r + 3, y + 3);
       }
     }
+  }
+}
+
+let buildingTimer = 0;
+let buildingKey = "";
+let buildingAbort = null;
+
+function viewBbox() {
+  const deg = 360 / 2 ** state.camera.zoom;
+  return {
+    south: state.camera.lat - deg * 0.32,
+    west: state.camera.lon - deg * 0.5,
+    north: state.camera.lat + deg * 0.32,
+    east: state.camera.lon + deg * 0.5,
+  };
+}
+
+function scheduleBuildings() {
+  clearTimeout(buildingTimer);
+  buildingTimer = setTimeout(loadBuildings, 420);
+}
+
+async function loadBuildings() {
+  if (state.camera.zoom < BUILDING_ZOOM) {
+    if (state.buildings.length) {
+      state.buildings = [];
+      draw();
+    }
+    return;
+  }
+  const box = viewBbox();
+  const key = [box.south, box.west, box.north, box.east].map((n) => n.toFixed(3)).join(",");
+  if (key === buildingKey) return;
+  if (buildingAbort) buildingAbort.abort();
+  buildingAbort = new AbortController();
+  try {
+    const res = await fetch("https://overpass-api.de/api/interpreter", {
+      method: "POST",
+      body: overpassQuery(box),
+      signal: buildingAbort.signal,
+    });
+    if (!res.ok) return;
+    state.buildings = parseOverpassBuildings(await res.json());
+    buildingKey = key;
+    draw();
+  } catch {
+    /* official map still works without OSM */
+  }
+}
+
+function drawBuildings(w, h) {
+  if (state.camera.zoom < BUILDING_ZOOM || !state.buildings.length) return;
+  const night = document.documentElement.classList.contains("night");
+  const wall = night ? "#1c2630" : "#c5cdd4";
+  const roof = night ? "#24303a" : "#dbe2e8";
+  const edge = night ? "#141a20" : "#b0b8c0";
+  const list = state.buildings.slice().sort((a, b) => a.ring[0][1] - b.ring[0][1]);
+  for (const b of list) {
+    const { dx, dy } = extrudeOffsetPx(b.heightM, state.camera.zoom);
+    const screen = b.ring.map(([lon, lat]) => worldToScreen(lon, lat, state.camera, w, h));
+    ctx.fillStyle = wall;
+    ctx.strokeStyle = edge;
+    ctx.lineWidth = 0.6;
+    for (const quad of wallQuads(screen, dx, dy)) {
+      ctx.beginPath();
+      quad.forEach((p, i) => (i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1])));
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.fillStyle = roof;
+    ctx.beginPath();
+    screen.forEach(([x, y], i) => {
+      const px = x + dx;
+      const py = y + dy;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    });
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
   }
 }
 
@@ -1441,6 +1803,7 @@ canvas.addEventListener("pointerdown", (e) => {
 });
 canvas.addEventListener("pointerup", () => {
   drag = null;
+  scheduleBuildings();
 });
 canvas.addEventListener("pointermove", (e) => {
   if (!drag) return;
@@ -1460,6 +1823,7 @@ canvas.addEventListener(
     e.preventDefault();
     state.camera.zoom = Math.min(16.5, Math.max(10.2, state.camera.zoom - e.deltaY * 0.004));
     draw();
+    scheduleBuildings();
   },
   { passive: false },
 );
@@ -1546,7 +1910,16 @@ function switchCity(city) {
   state.query = "";
   document.getElementById("hits").innerHTML = "";
   state.dest = null;
+  state.trips = [];
+  state.tripIndex = 0;
+  state.navigating = false;
   state.routeId = null;
+  const trips = document.getElementById("trips");
+  if (trips) {
+    trips.hidden = true;
+    trips.innerHTML = "";
+  }
+  paintNav();
   const due = document.getElementById("due");
   if (due) {
     due.hidden = true;
