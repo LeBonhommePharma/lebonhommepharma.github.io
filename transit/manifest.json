@@ -1,0 +1,9 @@
+{
+  "name": "Rive",
+  "short_name": "Rive",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f5f7",
+  "theme_color": "#f5f5f7",
+  "lang": "fr"
+}

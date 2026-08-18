@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Rive Watch</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#1d1d1f" />
+    <style>
+      html, body { height: 100%; margin: 0; background: #1d1d1f; color: #fff; font-family: ui-sans-serif, system-ui, sans-serif; }
+      main { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; }
+      .route { font-size: 28px; font-weight: 700; }
+      .clocks { font-family: ui-monospace, monospace; font-size: 18px; letter-spacing: 0.06em; margin-top: 8px; }
+      .stop { margin-top: 10px; font-size: 14px; opacity: 0.7; max-width: 16rem; }
+      .hint { margin-top: 28px; font-size: 11px; opacity: 0.45; max-width: 18rem; line-height: 1.4; }
+    </style>
+  </head>
+  <body>
+    <main id="face">
+      <div class="route" id="route">Rive</div>
+      <div class="clocks" id="clocks">—</div>
+      <div class="stop" id="stop">Ouvre un arrêt sur l'atlas.</div>
+      <p class="hint">
+        L'iPhone est le cerveau. Cette page est le cadran: même origine, dernier arrêt consulté.
+        Une app Watch native se sideloade depuis Xcode sans les 99 $ (profil 7 jours).
+      </p>
+    </main>
+    <script>
+      function paint() {
+        try {
+          const live = JSON.parse(localStorage.getItem("rive.live") || "null");
+          if (!live) return;
+          document.getElementById("route").textContent = live.route || "Rive";
+          document.getElementById("route").style.color = live.color || "#fff";
+          document.getElementById("clocks").textContent = (live.clocks || []).slice(0, 4).join("  ") || "—";
+          document.getElementById("stop").textContent = live.stop || "";
+        } catch {}
+      }
+      paint();
+      setInterval(paint, 5000);
+    </script>
+  </body>
+</html>
