@@ -35,6 +35,7 @@ import {
   resolveCityRequest,
   tripStrokeStyle,
   setServedCenters,
+  themeButtonLabel,
 } from "./rive-kit.js";
 import {
   BUILDING_ENDPOINTS,
@@ -1165,7 +1166,7 @@ function applyTheme(mode) {
   document.documentElement.classList.toggle("night", state.theme === "night");
   const btn = document.getElementById("theme");
   if (btn) {
-    const label = state.theme === "night" ? "Jour" : "Nuit";
+    const label = themeButtonLabel(state.theme);
     btn.setAttribute("aria-label", label);
     btn.title = label;
   }

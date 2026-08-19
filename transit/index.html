@@ -287,7 +287,7 @@
         display: grid;
         place-items: center;
       }
-      .toolbar button.icon svg { width: 16px; height: 16px; display: block; }
+      .toolbar button.icon svg { width: 16px; height: 16px; }
       .toolbar button.word { height: 44px; min-height: 44px; padding: 0 10px; }
       .toolbar button.on { background: var(--chip); color: var(--chip-ink); }
       .toolbar button:hover:not(.on) { background: var(--well); }
@@ -298,9 +298,9 @@
         outline: 2px solid var(--ring);
         outline-offset: 2px;
       }
-      .i-sun { display: none; }
-      html.night .i-moon { display: none; }
-      html.night .i-sun { display: block; }
+      .toolbar button.icon svg.i-sun { display: none; }
+      html.night .toolbar button.icon svg.i-moon { display: none; }
+      html.night .toolbar button.icon svg.i-sun { display: block; }
       .toolbar button.busy svg { animation: rive-spin 0.7s linear infinite; }
       @keyframes rive-spin { to { transform: rotate(360deg); } }
       @media (prefers-reduced-motion: reduce) {

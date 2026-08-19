@@ -7,6 +7,11 @@ export const PROBE_MIN_AGREE = 3;
 export const PROBE_SNAP_M = 90;
 export const PROBE_AGREE_M = 130;
 export const PROBE_CITY_RADIUS_M = 45_000;
+
+/** Theme control advertises the theme you can switch to. */
+export function themeButtonLabel(theme) {
+  return theme === "night" ? "Jour" : "Nuit";
+}
 const QC = { lon: -71.2082, lat: 46.8131 };
 const MTL = { lon: -73.5673, lat: 45.5017 };
 const SHB = { lon: -71.8908, lat: 45.4042 };
