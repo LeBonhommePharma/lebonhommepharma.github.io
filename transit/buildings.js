@@ -3,6 +3,7 @@
 export const BUILDING_ZOOM = 12.6;
 export const BUILDING_CAP = 280;
 export const METRO_DEPTH_M = -24;
+const MAX_BUILDING_RING_POINTS = 2000;
 export const BUILDING_ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
@@ -66,17 +67,17 @@ function closedRing(pts) {
 }
 
 export function parseOverpassBuildings(raw, cap) {
-  const limit = cap || BUILDING_CAP;
+  const limit = Number.isFinite(cap) ? Math.min(BUILDING_CAP, Math.max(0, Math.floor(cap))) : BUILDING_CAP;
   if (!raw || typeof raw !== "object") return [];
   const out = [];
   const elements = Array.isArray(raw.elements) ? raw.elements : [];
-  for (const el of elements) {
+  for (const el of elements.slice(0, limit * 2)) {
     if (!el || typeof el !== "object") continue;
     const ring = [];
-    for (const pt of el.geometry || []) {
+    for (const pt of (Array.isArray(el.geometry) ? el.geometry : []).slice(0, MAX_BUILDING_RING_POINTS)) {
       const lon = Number(pt && pt.lon);
       const lat = Number(pt && pt.lat);
-      if (!Number.isFinite(lon) || !Number.isFinite(lat)) continue;
+      if (!Number.isFinite(lon) || !Number.isFinite(lat) || lon < -180 || lon > 180 || lat < -90 || lat > 90) continue;
       ring.push([lon, lat]);
     }
     const closed = closedRing(ring);
@@ -100,7 +101,7 @@ export function extrudeOffsetPx(heightM, zoom, pitch) {
 export function wallQuads(ring, dx, dy) {
   const quads = [];
   if (!ring || ring.length < 2) return quads;
-  for (let i = 0; i < ring.length - 1; i++) {
+  for (let i = 0; i < Math.min(ring.length - 1, MAX_BUILDING_RING_POINTS); i++) {
     const a = ring[i];
     const b = ring[i + 1];
     quads.push([a, b, [b[0] + dx, b[1] + dy], [a[0] + dx, a[1] + dy]]);
@@ -109,6 +110,7 @@ export function wallQuads(ring, dx, dy) {
 }
 
 export function overpassQuery(bbox) {
+  if (!bbox || !Number.isFinite(bbox.south) || !Number.isFinite(bbox.west) || !Number.isFinite(bbox.north) || !Number.isFinite(bbox.east) || bbox.south < -90 || bbox.north > 90 || bbox.west < -180 || bbox.east > 180 || bbox.south >= bbox.north || bbox.west >= bbox.east || bbox.north - bbox.south > 1 || bbox.east - bbox.west > 1) return "";
   const s = [bbox.south, bbox.west, bbox.north, bbox.east]
     .map((n) => (Number.isFinite(n) ? n.toFixed(5) : ""))
     .join(",");

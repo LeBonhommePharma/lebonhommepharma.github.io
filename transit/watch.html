@@ -6,6 +6,7 @@
     <title>Rive Watch</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#1d1d1f" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:;" />
     <style>
       html, body { height: 100%; margin: 0; background: #1d1d1f; color: #fff; font-family: ui-sans-serif, system-ui, sans-serif; }
       main { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; }
@@ -27,58 +28,6 @@
         L'horaire est dans l'URL. Le téléphone peut être éteint.
       </p>
     </main>
-    <script type="module">
-      import { remainMinutes, watchPulseFromPayload } from "./rive-kit.js";
-
-      function minutesNow() {
-        const parts = new Intl.DateTimeFormat("en-GB", {
-          timeZone: "America/Montreal",
-          hour: "2-digit",
-          minute: "2-digit",
-          hourCycle: "h23",
-        }).formatToParts(new Date());
-        return (
-          Number(parts.find((p) => p.type === "hour").value) * 60 +
-          Number(parts.find((p) => p.type === "minute").value)
-        );
-      }
-
-      function readLive() {
-        try {
-          const q = new URLSearchParams(location.search);
-          if (q.get("s") || q.get("r") || q.get("m")) {
-            return watchPulseFromPayload({
-              s: q.get("s") || "",
-              r: q.get("r") || "",
-              k: q.get("k") || "",
-              t: q.get("t") || "",
-              m: q.get("m") || "",
-            });
-          }
-          return watchPulseFromPayload(localStorage.getItem("rive.live"));
-        } catch {
-          return null;
-        }
-      }
-
-      function paint() {
-        try {
-          const live = readLive();
-          if (!live) return;
-          document.getElementById("route").textContent = live.route || "Rive";
-          document.getElementById("route").style.color = live.color || "#fff";
-          const wait = remainMinutes(live.departs || [], minutesNow());
-          document.getElementById("remain").textContent =
-            wait == null ? "—" : wait === 0 ? "now" : String(wait);
-          document.getElementById("clocks").textContent =
-            (live.clocks || []).slice(0, 4).join("  ") || "—";
-          document.getElementById("stop").textContent = live.stop || "";
-        } catch {
-          /* stay on the empty face */
-        }
-      }
-      paint();
-      setInterval(paint, 15000);
-    </script>
+    <script type="module" src="./watch.js"></script>
   </body>
 </html>

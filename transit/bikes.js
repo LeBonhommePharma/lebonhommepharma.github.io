@@ -15,14 +15,30 @@ function haversineMeters(a, b) {
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
 }
 
-export function feedUrl(discovery, name) {
+function safeFeedUrl(value, allowedOrigin) {
+  if (typeof value !== "string" || !value || value.length > 512 || !allowedOrigin) return null;
+  try {
+    const base = new URL(allowedOrigin);
+    const url = new URL(value, base);
+    if (url.protocol !== "https:" || url.origin !== base.origin || url.username || url.password) return null;
+    return url.href;
+  } catch {
+    return null;
+  }
+}
+
+export function feedUrl(discovery, name, allowedOrigin) {
   const data = discovery && discovery.data;
   if (!data) return null;
-  if (Array.isArray(data.feeds)) return (data.feeds.find((f) => f.name === name) || {}).url || null;
+  if (Array.isArray(data.feeds)) {
+    const match = data.feeds.find((f) => f && f.name === name);
+    return safeFeedUrl(match && match.url, allowedOrigin);
+  }
   for (const key of ["fr", "en"]) {
     const block = data[key];
     const feeds = block && Array.isArray(block.feeds) ? block.feeds : [];
-    const url = (feeds.find((f) => f.name === name) || {}).url;
+    const match = feeds.find((f) => f && f.name === name);
+    const url = safeFeedUrl(match && match.url, allowedOrigin);
     if (url) return url;
   }
   return null;
@@ -30,21 +46,26 @@ export function feedUrl(discovery, name) {
 
 export function mergeStations(info, status, system) {
   const live = new Map();
-  for (const row of (status && status.data && status.data.stations) || []) live.set(String(row.station_id), row);
+  const statusRows = status && status.data && Array.isArray(status.data.stations) ? status.data.stations : [];
+  const infoRows = info && info.data && Array.isArray(info.data.stations) ? info.data.stations : [];
+  for (const row of statusRows.slice(0, 20000)) {
+    const id = String(row.station_id ?? "").slice(0, 160);
+    if (id) live.set(id, row);
+  }
   const out = [];
-  for (const row of (info && info.data && info.data.stations) || []) {
-    const id = String(row.station_id || "");
+  for (const row of infoRows.slice(0, 20000)) {
+    const id = String(row.station_id || "").slice(0, 160);
     if (!id) continue;
     const lat = Number(row.lat);
     const lon = Number(row.lon);
-    if (!Number.isFinite(lat) || !Number.isFinite(lon) || (lat === 0 && lon === 0)) continue;
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180 || (lat === 0 && lon === 0)) continue;
     const pos = live.get(id) || {};
     const bikes = Number(pos.num_bikes_available ?? 0);
     const docks = Number(pos.num_docks_available ?? 0);
-    if (!Number.isFinite(bikes) || !Number.isFinite(docks) || (bikes < 1 && docks < 1)) continue;
+    if (!Number.isFinite(bikes) || !Number.isFinite(docks) || bikes < 0 || docks < 0 || bikes > 100000 || docks > 100000 || (bikes < 1 && docks < 1)) continue;
     out.push({
       id,
-      name: typeof row.name === "string" ? row.name : id,
+      name: (typeof row.name === "string" ? row.name : id).slice(0, 160),
       lat,
       lon,
       bikes,
@@ -56,13 +77,15 @@ export function mergeStations(info, status, system) {
 }
 
 export function nearbyStations(stations, point, radiusM = 500, limit = 6) {
-  if (!point || !Number.isFinite(point.lon) || !Number.isFinite(point.lat)) return [];
+  if (!point || !Number.isFinite(point.lon) || !Number.isFinite(point.lat) || point.lon < -180 || point.lon > 180 || point.lat < -90 || point.lat > 90) return [];
+  const radius = Math.min(5000, Math.max(0, Number.isFinite(radiusM) ? radiusM : 500));
+  const max = Math.min(20, Math.max(1, Number.isFinite(limit) ? Math.floor(limit) : 6));
   const hits = [];
   for (const station of stations || []) {
     if ((station.bikes || 0) < 1 && (station.docks || 0) < 1) continue;
     const meters = haversineMeters(point, station);
-    if (meters <= radiusM) hits.push({ ...station, meters });
+    if (meters <= radius) hits.push({ ...station, meters });
   }
   hits.sort((a, b) => a.meters - b.meters);
-  return hits.slice(0, limit);
+  return hits.slice(0, max);
 }

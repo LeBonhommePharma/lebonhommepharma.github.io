@@ -111,7 +111,7 @@ export function acceptRiderFix(store, sample, now) {
 
 export function remainMinutes(departs, now) {
   if (!Number.isFinite(now)) return null;
-  const list = Array.isArray(departs) ? departs : [];
+  const list = Array.isArray(departs) ? departs.slice(0, 16) : [];
   let best = null;
   for (const raw of list) {
     let t = typeof raw === "number" ? raw : Number(raw);
@@ -162,7 +162,7 @@ export function applyLivePulse(command, store, key) {
   const name = key || "rive.live";
   if (!command || command.action === "end") {
     try {
-      store && store.removeItem(name);
+      store?.removeItem(name);
     } catch {
       /* private */
     }
@@ -179,7 +179,7 @@ export function applyLivePulse(command, store, key) {
     remain: command.remain,
   };
   try {
-    store && store.setItem(name, JSON.stringify(live));
+    store?.setItem(name, JSON.stringify(live));
   } catch {
     /* private */
   }
@@ -198,7 +198,7 @@ export function watchPulseFromPayload(payload) {
   if (payload == null) return null;
   if (typeof payload === "string") {
     const trimmed = payload.trim();
-    if (!trimmed) return null;
+    if (!trimmed || trimmed.length > 16 * 1024) return null;
     try {
       return watchPulseFromPayload(JSON.parse(trimmed));
     } catch {
@@ -206,20 +206,22 @@ export function watchPulseFromPayload(payload) {
     }
   }
   if (typeof payload !== "object") return null;
-  const stop = typeof payload.stop === "string" ? payload.stop : typeof payload.s === "string" ? payload.s : "";
-  const route = typeof payload.route === "string" ? payload.route : typeof payload.r === "string" ? payload.r : "";
-  const color = typeof payload.color === "string" ? payload.color : typeof payload.k === "string" ? payload.k : "";
+  const text = (value) => (typeof value === "string" ? value.slice(0, 160) : "");
+  const colorValue = text(typeof payload.color === "string" ? payload.color : payload.k);
+  const color = /^#[0-9a-f]{3,8}$/i.test(colorValue) ? colorValue : "#ffffff";
+  const stop = text(typeof payload.stop === "string" ? payload.stop : payload.s);
+  const route = text(typeof payload.route === "string" ? payload.route : payload.r);
   const clocksRaw = payload.clocks ?? payload.t;
   const departsRaw = payload.departs ?? payload.m;
   const clocks = Array.isArray(clocksRaw)
-    ? clocksRaw.filter((item) => typeof item === "string")
+    ? clocksRaw.filter((item) => typeof item === "string").slice(0, 8).map(text)
     : typeof clocksRaw === "string"
-      ? clocksRaw.split(",").filter(Boolean)
+      ? clocksRaw.slice(0, 1024).split(",").filter(Boolean).slice(0, 8).map(text)
       : [];
   const departs = Array.isArray(departsRaw)
-    ? departsRaw
+    ? departsRaw.slice(0, 8)
     : typeof departsRaw === "string"
-      ? departsRaw.split(",").filter(Boolean)
+      ? departsRaw.slice(0, 1024).split(",").filter(Boolean).slice(0, 8)
       : [];
   if (!stop && !route && clocks.length === 0 && departs.length === 0) return null;
   return { stop, route, color, clocks, departs };
