@@ -528,8 +528,12 @@ export function cityForPoint(lon, lat, centers, maxMeters) {
 export function cityAfterHereSample(input) {
   const explicit = input && typeof input.explicitCity === "string" && input.explicitCity ? input.explicitCity : null;
   const detected = input && typeof input.detectedCity === "string" && input.detectedCity ? input.detectedCity : null;
-  if (input && input.locked && explicit) return explicit;
-  return detected || explicit;
+  const wantSnap = Boolean(input && input.wantSnap);
+  if (input && input.locked && explicit) {
+    const outside = !detected || detected !== explicit;
+    return { city: explicit, snap: wantSnap && !outside };
+  }
+  return { city: detected || explicit, snap: wantSnap };
 }
 
 export const MIX_FAMILIES = [

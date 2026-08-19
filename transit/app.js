@@ -1500,6 +1500,7 @@ async function loadCity(city) {
   state.city = city;
   state.atlas = atlas;
   state.timetable = timetable;
+  paintCityButtons();
   state.buildings = [];
   buildingKey = "";
   lineCache.clear();
@@ -1813,7 +1814,7 @@ function applyHere(lon, lat, source, at, follow) {
   state.rider = next;
   state.here = { lon: next.here.lon, lat: next.here.lat, source: next.here.source, at: next.here.at };
   const moved = !prev || haversineMeters(prev, next.here) > 15;
-  const snap = follow || !prev || moved || state.navigating;
+  const wantSnap = follow || !prev || moved || state.navigating;
   if (state.routeId && isCrowdProbeSource(next.here.source)) {
     state.probes = ingestProbe(
       state.probes,
@@ -1828,10 +1829,11 @@ function applyHere(lon, lat, source, at, follow) {
     );
   }
   const detected = detectCity(next.here.lon, next.here.lat);
-  const city = cityAfterHereSample({
+  const { city, snap } = cityAfterHereSample({
     explicitCity: state.city,
     detectedCity: detected,
     locked: state.cityLocked,
+    wantSnap,
   });
   const go = () => {
     if (snap) {
