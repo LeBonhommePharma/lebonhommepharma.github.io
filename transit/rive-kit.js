@@ -524,6 +524,14 @@ export function cityForPoint(lon, lat, centers, maxMeters) {
   return best;
 }
 
+/** Chip/`?city=` lock wins over a here-sample in another served region. */
+export function cityAfterHereSample(input) {
+  const explicit = input && typeof input.explicitCity === "string" && input.explicitCity ? input.explicitCity : null;
+  const detected = input && typeof input.detectedCity === "string" && input.detectedCity ? input.detectedCity : null;
+  if (input && input.locked && explicit) return explicit;
+  return detected || explicit;
+}
+
 export const MIX_FAMILIES = [
   "marche",
   "velo",

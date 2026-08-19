@@ -28,6 +28,7 @@ import {
   walkMinutes,
   snapToShape,
   cityForPoint,
+  cityAfterHereSample,
   chipsForCities,
   CITY_VISITS,
   escapeHtml,
@@ -60,6 +61,7 @@ const TZ = "America/Montreal";
 
 const state = {
   city: "quebec",
+  cityLocked: false,
   visitId: "",
   cityCenters: {
     quebec: { lon: -71.2082, lat: 46.8131 },
@@ -1825,7 +1827,12 @@ function applyHere(lon, lat, source, at, follow) {
       Date.now(),
     );
   }
-  const city = detectCity(next.here.lon, next.here.lat);
+  const detected = detectCity(next.here.lon, next.here.lat);
+  const city = cityAfterHereSample({
+    explicitCity: state.city,
+    detectedCity: detected,
+    locked: state.cityLocked,
+  });
   const go = () => {
     if (snap) {
       state.camera.lon = next.here.lon;
@@ -3181,6 +3188,7 @@ document.getElementById("dest").addEventListener("keydown", (e) => {
 
 function switchCity(city, visit) {
   if (typeof city !== "string" || city.length > 64 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(city)) return;
+  state.cityLocked = true;
   state.visitId = visit && typeof visit.id === "string" ? visit.id : "";
   paintCityButtons();
   state.stop = null;
@@ -3224,6 +3232,7 @@ const bootCity =
   bootResolved.city.length <= 64 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(bootResolved.city) ? bootResolved.city : "quebec";
 const bootVisit = bootResolved.visit;
 const bootStop = boot.get("stop");
+state.cityLocked = Boolean(boot.get("city"));
 state.visitId = bootVisit ? bootVisit.id : "";
 paintCityButtons();
 bindCityButtons();
