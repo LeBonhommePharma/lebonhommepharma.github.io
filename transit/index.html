@@ -12,39 +12,53 @@
     <link rel="manifest" href="./manifest.json" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Rive" />
-    <meta name="theme-color" content="#0a0e14" />
+    <meta name="theme-color" content="#0f172a" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.openfreemap.org; font-src 'self' data:; connect-src 'self' https://api.stm.info https://quebec.publicbikesystem.net https://gbfs.velobixi.com https://overpass-api.de https://overpass.kumi.systems https://tiles.openfreemap.org https://api.open-meteo.com https://air-quality-api.open-meteo.com; worker-src 'self' blob:;" />
     <style>
       @font-face {
         font-family: "Rive Text";
-        src: local("Avenir Next"), local("Avenir"), local("Segoe UI Variable Text"), local("Segoe UI"), local("Helvetica Neue");
-        font-weight: 400 700;
+        src: url("./fonts/Outfit-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Rive Text";
+        src: url("./fonts/Outfit-Bold.ttf") format("truetype");
+        font-weight: 700;
         font-style: normal;
         font-display: swap;
       }
       @font-face {
         font-family: "Rive Clock";
-        src: local("SF Mono"), local("Menlo"), local("Consolas"), local("ui-monospace");
-        font-weight: 400 600;
+        src: url("./fonts/IBMPlexMono-Regular.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Rive Clock";
+        src: url("./fonts/IBMPlexMono-Bold.ttf") format("truetype");
+        font-weight: 700;
         font-style: normal;
         font-display: swap;
       }
       :root, html.day {
-        --ink: #1c1917;
-        --paper: #f7f6f3;
-        --muted: #57534e;
+        --ink: #1a2330;
+        --paper: #eef2f6;
+        --muted: #475569;
         --sodium: #0e7490;
-        --gold: #9a3412;
-        --terra: #57534e;
-        --glass: rgb(251 250 247 / 0.94);
-        --stage: #eceae4;
-        --chip: #1c1917;
-        --chip-ink: #f7f6f3;
-        --well: rgb(28 25 23 / 0.06);
-        --hair: rgb(28 25 23 / 0.10);
+        --gold: #b45309;
+        --terra: #475569;
+        --glass: rgb(248 250 252 / 0.92);
+        --stage: #dbe4ee;
+        --chip: #0e7490;
+        --chip-ink: #f0fdfa;
+        --well: rgb(15 23 42 / 0.06);
+        --hair: rgb(15 23 42 / 0.12);
         --shadow: none;
         --ring: #0e7490;
-        --radius: 10px;
+        --radius: 12px;
         --ease: cubic-bezier(0.16, 1, 0.3, 1);
         --z-ui: 2;
         --z-rail: 4;
@@ -54,49 +68,49 @@
         color-scheme: light;
       }
       html.night {
-        --ink: #e7e5e4;
-        --paper: #141210;
-        --muted: #a8a29e;
+        --ink: #e8eef6;
+        --paper: #0f172a;
+        --muted: #94a3b8;
         --sodium: #22d3ee;
-        --gold: #fdba74;
-        --terra: #a8a29e;
-        --glass: rgb(28 25 23 / 0.94);
-        --stage: #1c1917;
-        --chip: #e7e5e4;
-        --chip-ink: #141210;
-        --well: rgb(231 229 228 / 0.08);
-        --hair: rgb(231 229 228 / 0.14);
+        --gold: #fbbf24;
+        --terra: #94a3b8;
+        --glass: rgb(15 23 42 / 0.88);
+        --stage: #1e293b;
+        --chip: #22d3ee;
+        --chip-ink: #0f172a;
+        --well: rgb(232 238 246 / 0.08);
+        --hair: rgb(232 238 246 / 0.14);
         --shadow: none;
         --ring: #22d3ee;
-        --radius: 10px;
+        --radius: 12px;
         color-scheme: dark;
       }
       @media (prefers-color-scheme: dark) {
         :root:not(.day) {
-          --ink: #e7e5e4;
-          --paper: #141210;
-          --muted: #a8a29e;
+          --ink: #e8eef6;
+          --paper: #0f172a;
+          --muted: #94a3b8;
           --sodium: #22d3ee;
-          --gold: #fdba74;
-          --terra: #a8a29e;
-          --glass: rgb(28 25 23 / 0.94);
-          --stage: #1c1917;
-          --chip: #e7e5e4;
-          --chip-ink: #141210;
-          --well: rgb(231 229 228 / 0.08);
-          --hair: rgb(231 229 228 / 0.14);
+          --gold: #fbbf24;
+          --terra: #94a3b8;
+          --glass: rgb(15 23 42 / 0.88);
+          --stage: #1e293b;
+          --chip: #22d3ee;
+          --chip-ink: #0f172a;
+          --well: rgb(232 238 246 / 0.08);
+          --hair: rgb(232 238 246 / 0.14);
           --shadow: none;
           --ring: #22d3ee;
-          --radius: 10px;
+          --radius: 12px;
           color-scheme: dark;
         }
       }
       @media (prefers-reduced-transparency: reduce) {
-        :root, html.day { --glass: #f7f6f3; }
-        html.night, :root:not(.day) { --glass: #1c1917; }
+        :root, html.day { --glass: #eef2f6; }
+        html.night, :root:not(.day) { --glass: #0f172a; }
       }
       * { box-sizing: border-box; }
-      html, body { height: 100%; margin: 0; background: var(--paper); color: var(--ink); font-family: "Rive Text", "Avenir Next", "Segoe UI", sans-serif; }
+      html, body { height: 100%; margin: 0; background: var(--paper); color: var(--ink); font-family: "Rive Text", "Outfit", "Segoe UI", sans-serif; font-size: 16px; line-height: 1.5; }
       #stage {
         position: fixed;
         inset: 0;
@@ -152,30 +166,32 @@
         left: var(--safe-left);
         right: calc(var(--safe-right) + var(--rail));
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         justify-content: flex-start;
         width: auto;
         max-width: none;
         margin: 0;
-        padding: 3px;
+        padding: 4px;
         border-radius: var(--radius);
         background: var(--glass);
         border: 1px solid var(--hair);
         box-shadow: var(--shadow);
-        overflow-x: auto;
-        overscroll-behavior: contain;
-        scrollbar-width: none;
+        backdrop-filter: blur(16px);
+        overflow: visible;
+        row-gap: 2px;
         z-index: var(--z-rail);
       }
-      .cities::-webkit-scrollbar { display: none; }
       .cities button {
         border: 0;
         background: transparent;
         color: var(--muted);
         padding: 10px 12px;
         min-height: 44px;
-        border-radius: 8px;
+        border-radius: 10px;
         font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
         cursor: pointer;
         flex: 0 0 auto;
         touch-action: manipulation;
@@ -183,17 +199,17 @@
       }
       .cities button:hover:not(.on) { background: var(--well); color: var(--ink); }
       .cities button.on { background: var(--chip); color: var(--chip-ink); }
-      .cities button:active { transform: scale(0.98); }
+      .cities button:active { transform: scale(0.97); }
       .sheet {
         position: absolute;
         left: var(--safe-left);
-        top: calc(var(--safe-top) + 56px);
+        top: calc(var(--safe-top) + 108px);
         width: min(400px, calc(100% - var(--safe-left) - var(--safe-right)));
         background: var(--glass);
         border: 1px solid var(--hair);
         border-radius: var(--radius);
-        padding: 14px;
-        backdrop-filter: blur(12px);
+        padding: 16px;
+        backdrop-filter: blur(16px);
         box-shadow: var(--shadow);
         max-height: calc(100dvh - 100px);
         overflow: auto;
@@ -220,10 +236,10 @@
         .sheet { transition: none; }
         .cities button:active, .toolbar button:active { transform: none; }
       }
-      .sheet h1, .sheet h2 { margin: 0 0 4px; font-size: 15px; font-weight: 600; text-wrap: balance; }
-      .sheet h2 { margin-top: 14px; }
-      .sheet p.lead { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.45; max-width: 65ch; }
-      .sheet input { width: 100%; border: 0; border-radius: 8px; background: var(--well); color: var(--ink); padding: 12px 14px; font: inherit; outline: none; }
+      .sheet h1, .sheet h2 { margin: 0 0 4px; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; }
+      .sheet h2 { margin-top: 16px; font-size: 13px; font-weight: 650; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+      .sheet p.lead { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 1.5; max-width: 65ch; }
+      .sheet input { width: 100%; border: 0; border-radius: 10px; background: var(--well); color: var(--ink); padding: 12px 14px; font: inherit; outline: none; }
       .sheet input::placeholder { color: var(--muted); opacity: 0.9; }
       .toolbar {
         display: flex;
@@ -322,12 +338,14 @@
       #trips { margin: 10px 0 4px; }
       #trips[hidden] { display: none; }
       .trip {
-        border-radius: 8px;
+        border-radius: 12px;
         background: var(--well);
-        padding: 8px 10px 10px;
+        padding: 10px 12px 12px;
         margin: 8px 0 0;
+        border: 1px solid transparent;
+        transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
       }
-      .trip.on { outline: 1.5px solid var(--chip); }
+      .trip.on { outline: none; border-color: var(--sodium); }
       .trip-pick {
         width: 100%;
         text-align: left;
@@ -478,7 +496,10 @@
       <a class="skip" href="#dest">Aller à la destination</a>
       <div class="cities" role="tablist">
         <button type="button" id="btn-quebec" data-city="quebec" class="on">Québec</button>
+        <button type="button" id="btn-levis" data-city="quebec" data-visit="levis">Lévis</button>
         <button type="button" id="btn-montreal" data-city="montreal">Montréal</button>
+        <button type="button" id="btn-laval" data-city="montreal" data-visit="laval">Laval</button>
+        <button type="button" id="btn-longueuil" data-city="montreal" data-visit="longueuil">Longueuil</button>
         <button type="button" id="btn-sherbrooke" data-city="sherbrooke">Sherbrooke</button>
         <button type="button" id="btn-trois-rivieres" data-city="trois-rivieres">Trois-Rivières</button>
       </div>

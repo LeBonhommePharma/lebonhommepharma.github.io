@@ -28,7 +28,10 @@ import {
   walkMinutes,
   snapToShape,
   cityForPoint,
+  chipsForCities,
+  CITY_VISITS,
   escapeHtml,
+  resolveCityRequest,
   tripStrokeStyle,
   setServedCenters,
 } from "./rive-kit.js";
@@ -57,6 +60,7 @@ const TZ = "America/Montreal";
 
 const state = {
   city: "quebec",
+  visitId: "",
   cityCenters: {
     quebec: { lon: -71.2082, lat: 46.8131 },
     montreal: { lon: -73.5673, lat: 45.5017 },
@@ -1191,10 +1195,47 @@ async function loadPois() {
   }
 }
 
+function paintCityButtons() {
+  document.querySelectorAll("[data-city]").forEach((button) => {
+    const visit = button.dataset.visit || "";
+    const on = visit ? state.visitId === visit : button.dataset.city === state.city && !state.visitId;
+    button.classList.toggle("on", on);
+  });
+}
+
 function bindCityButtons() {
   document.querySelectorAll("[data-city]").forEach((button) => {
-    button.onclick = () => switchCity(button.dataset.city);
+    button.onclick = () => {
+      const visit = CITY_VISITS.find((item) => item.id === button.dataset.visit) || null;
+      switchCity(button.dataset.city, visit);
+    };
   });
+}
+
+function renderCityChips(cities) {
+  const citiesBox = document.querySelector(".cities");
+  if (!citiesBox) return;
+  citiesBox.innerHTML = chipsForCities(cities)
+    .map((chip) => {
+      const visit = chip.kind === "visit" ? ` data-visit="${escapeHtml(chip.id)}"` : "";
+      return `<button type="button" data-city="${escapeHtml(chip.city)}"${visit}>${escapeHtml(chip.label)}</button>`;
+    })
+    .join("");
+  bindCityButtons();
+  paintCityButtons();
+}
+
+function applyVisit(visit) {
+  if (!visit || !Number.isFinite(visit.lon) || !Number.isFinite(visit.lat)) return;
+  state.camera = {
+    ...state.camera,
+    lon: visit.lon,
+    lat: visit.lat,
+    zoom: Number.isFinite(visit.zoom) ? visit.zoom : state.camera.zoom,
+  };
+  requestDraw();
+  scheduleBuildings();
+  scheduleWeather();
 }
 
 async function loadCityIndex() {
@@ -1208,15 +1249,11 @@ async function loadCityIndex() {
       cities.map((item) => [item.city, { lon: Number(item.center?.[0]), lat: Number(item.center?.[1]) }]).filter(([, center]) => Number.isFinite(center.lon) && Number.isFinite(center.lat)),
     );
     setServedCenters(state.cityCenters);
-    const citiesBox = document.querySelector(".cities");
-    if (citiesBox) {
-      citiesBox.innerHTML = cities
-        .map((item) => `<button type="button" data-city="${escapeHtml(item.city)}">${escapeHtml(item.name || item.city)}</button>`)
-        .join("");
-      bindCityButtons();
-      const requested = new URLSearchParams(location.search).get("city");
-      if (requested && cities.some((item) => item.city === requested) && requested !== state.city) switchCity(requested);
-    }
+    renderCityChips(cities);
+    const requested = new URLSearchParams(location.search).get("city");
+    const resolved = resolveCityRequest(requested);
+    if (resolved.visit) switchCity(resolved.city, resolved.visit);
+    else if (requested && cities.some((item) => item.city === requested) && requested !== state.city) switchCity(requested);
   } catch {
     bindCityButtons();
   }
@@ -1814,7 +1851,8 @@ function applyHere(lon, lat, source, at, follow) {
     }
   };
   if (city && city !== state.city) {
-     document.querySelectorAll("[data-city]").forEach((button) => button.classList.toggle("on", button.dataset.city === city));
+    state.visitId = "";
+    paintCityButtons();
     loadCity(city).then(go);
     return;
   }
@@ -3141,9 +3179,10 @@ document.getElementById("dest").addEventListener("keydown", (e) => {
   if (first) selectSearchHit(first, true);
 });
 
-function switchCity(city) {
+function switchCity(city, visit) {
   if (typeof city !== "string" || city.length > 64 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(city)) return;
-  document.querySelectorAll("[data-city]").forEach((button) => button.classList.toggle("on", button.dataset.city === city));
+  state.visitId = visit && typeof visit.id === "string" ? visit.id : "";
+  paintCityButtons();
   state.stop = null;
   document.getElementById("board").hidden = true;
   document.getElementById("q").value = "";
@@ -3168,7 +3207,11 @@ function switchCity(city) {
   }
   const lines = document.getElementById("lines");
   if (lines) lines.innerHTML = "";
-  loadCity(city);
+  if (visit && city === state.city && state.atlas) {
+    applyVisit(visit);
+    return;
+  }
+  loadCity(city).then(() => applyVisit(visit));
 }
 
 window.addEventListener("resize", resize);
@@ -3176,16 +3219,21 @@ resize();
 tryWebGPU();
 
 const boot = new URLSearchParams(location.search);
-const requestedCity = boot.get("city") || "";
-const bootCity = requestedCity.length <= 64 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(requestedCity) ? requestedCity : "quebec";
+const bootResolved = resolveCityRequest(boot.get("city") || "");
+const bootCity =
+  bootResolved.city.length <= 64 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(bootResolved.city) ? bootResolved.city : "quebec";
+const bootVisit = bootResolved.visit;
 const bootStop = boot.get("stop");
-document.querySelectorAll("[data-city]").forEach((button) => button.classList.toggle("on", button.dataset.city === bootCity));
+state.visitId = bootVisit ? bootVisit.id : "";
+paintCityButtons();
+bindCityButtons();
 fillClockInput();
 applyTheme();
 listenHeading();
 paintHeading();
 paintGeoAsk(true);
 loadCity(bootCity).then(() => {
+  if (bootVisit) applyVisit(bootVisit);
   if (bootStop && state.atlas) {
     const hit = state.atlas.stops.find((s) => s.id === bootStop);
     if (hit) openStop(hit);

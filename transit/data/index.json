@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-18T17:13:44.616Z",
+  "builtAt": "2026-08-19T06:34:16.404Z",
   "cities": [
     {
       "city": "quebec",
@@ -59,9 +59,9 @@
       "phone": "",
       "updated": "20260615",
       "start": "20260615",
-      "end": "20261030",
+      "end": "20261101",
       "version": "20260805110000_26S",
-      "attribution": "Horaires et parcours STM, données ouvertes. Horaires et parcours STL Laval, données ouvertes.",
+      "attribution": "Horaires et parcours STM, données ouvertes. Horaires et parcours STL Laval, données ouvertes. Horaires et parcours RTL Longueuil, données ouvertes.",
       "licenseUrl": "https://www.stm.info/fr/a-propos/developpeurs",
       "sourceUrl": "https://www.stm.info/sites/default/files/gtfs/gtfs_stm.zip",
       "center": [
@@ -70,11 +70,11 @@
       ],
       "zoom": 12.1,
       "counts": {
-        "routes": 413,
-        "stops": 14439,
-        "trips": 159151,
-        "services": 102,
-        "timetableStops": 14368
+        "routes": 558,
+        "stops": 17735,
+        "trips": 171623,
+        "services": 107,
+        "timetableStops": 17663
       },
       "agencies": [
         {
@@ -92,6 +92,92 @@
           "attribution": "Horaires et parcours STL Laval, données ouvertes.",
           "licenseUrl": "https://stlaval.ca/affaires/donnees-ouvertes",
           "sourceUrl": "https://stlaval.ca/datas/opendata/GTF_STL.zip"
+        },
+        {
+          "id": "RTL",
+          "name": "Réseau de transport de Longueuil",
+          "url": "http://www.rtl-longueuil.qc.ca",
+          "attribution": "Horaires et parcours RTL Longueuil, données ouvertes.",
+          "licenseUrl": "https://www.rtl-longueuil.qc.ca/donnees-ouvertes",
+          "sourceUrl": "https://www.rtl-longueuil.qc.ca/transit/latestfeed/RTL.zip"
+        }
+      ]
+    },
+    {
+      "city": "sherbrooke",
+      "name": "Sherbrooke",
+      "agencyId": "STS",
+      "agencyName": "Société de Transport de Sherbrooke",
+      "agencyUrl": "http://www.sts.qc.ca/",
+      "timezone": "America/Toronto",
+      "lang": "FR",
+      "phone": "819-564-2687",
+      "updated": "",
+      "start": "",
+      "end": "",
+      "version": "",
+      "attribution": "Horaires et parcours STS Sherbrooke, données ouvertes.",
+      "licenseUrl": "https://www.sts.qc.ca/a-propos/la-sts/donnees-ouvertes/",
+      "sourceUrl": "https://gtfs.sts.qc.ca:8443/gtfs/client/GTFS_clients.zip",
+      "center": [
+        -71.8908,
+        45.4042
+      ],
+      "zoom": 12.6,
+      "counts": {
+        "routes": 58,
+        "stops": 1469,
+        "trips": 7642,
+        "services": 11,
+        "timetableStops": 1466
+      },
+      "agencies": [
+        {
+          "id": "STS",
+          "name": "Société de Transport de Sherbrooke",
+          "url": "http://www.sts.qc.ca/",
+          "attribution": "Horaires et parcours STS Sherbrooke, données ouvertes.",
+          "licenseUrl": "https://www.sts.qc.ca/a-propos/la-sts/donnees-ouvertes/",
+          "sourceUrl": "https://gtfs.sts.qc.ca:8443/gtfs/client/GTFS_clients.zip"
+        }
+      ]
+    },
+    {
+      "city": "trois-rivieres",
+      "name": "Trois-Rivières",
+      "agencyId": "STTR",
+      "agencyName": "Société de Transport de Trois-Rivières",
+      "agencyUrl": "http://www.sttr.qc.ca/",
+      "timezone": "America/Montreal",
+      "lang": "FR",
+      "phone": "819-373-4533",
+      "updated": "20260816",
+      "start": "20260816",
+      "end": "20261226",
+      "version": "",
+      "attribution": "Horaires et parcours STTR Trois-Rivières, données ouvertes.",
+      "licenseUrl": "https://www.donneesquebec.ca/recherche/dataset/gtsf",
+      "sourceUrl": "https://sttr.qc.ca/app/uploads/2026/08/sttr_aut26.zip",
+      "center": [
+        -72.5415,
+        46.3432
+      ],
+      "zoom": 12.8,
+      "counts": {
+        "routes": 364,
+        "stops": 1043,
+        "trips": 2003,
+        "services": 138,
+        "timetableStops": 1032
+      },
+      "agencies": [
+        {
+          "id": "STTR",
+          "name": "Société de Transport de Trois-Rivières",
+          "url": "http://www.sttr.qc.ca/",
+          "attribution": "Horaires et parcours STTR Trois-Rivières, données ouvertes.",
+          "licenseUrl": "https://www.donneesquebec.ca/recherche/dataset/gtsf",
+          "sourceUrl": "https://sttr.qc.ca/app/uploads/2026/08/sttr_aut26.zip"
         }
       ]
     }
