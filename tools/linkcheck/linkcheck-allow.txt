@@ -1,0 +1,47 @@
+# linkcheck allowlist
+#
+# Format:  <path-glob><whitespace><reason>
+# A reason is MANDATORY. An entry without one is a hard error, not a warning.
+#
+# This file ONLY suppresses DYNAMIC findings — asset-shaped string literals
+# found inside inline scripts. It can never suppress a DECLARATIVE finding
+# (<script src>, <link href>, css url(), import, Worker, ...), and it can never
+# suppress an UNBUNDLED finding. Those always fail.
+#
+# Every allowlisted path that actually 404s is still printed in the report under
+# [WARN] ALLOWLISTED, and an entry that stops matching anything is reported as
+# stale. Nothing here goes quiet.
+
+# ---------------------------------------------------------------------------
+# /benchmark/ — the deck runtime fallback
+#
+# The deck's inline script contains:
+#     if (!window.FLEX_RAW && !document.querySelector('script[src*="flex-data.js"]')) {
+#       inject('deck_assets/flex-data.js', 'flex-data-js', () => {
+#         inject('deck_assets/flex-render.js', 'flex-render-js'); });
+#     }
+# Those two paths 404 (measured on live). They are DEAD CODE — but only for as
+# long as the deck runtime is actually bundled into __bundler/manifest, because
+# that is what sets window.FLEX_RAW and short-circuits the guard.
+#
+# At 06bc70d the runtime was NOT bundled: window.FLEX_RAW was never set, the
+# inject fired, flex-data.js 404'd, its onload never ran, flex-render.js was
+# never requested, and every canvas in the deck stayed at 300x150 on a 200 page.
+#
+# So this entry is guarded. `window.FLEX_RAW =` appears exactly once in the
+# bundled corpus of the fixed deck and zero times in the broken one. Re-export
+# the deck without bundling the runtime and this suppression evaporates.
+/benchmark/deck_assets/*.js	[requires=window\.FLEX_RAW\s*=]	dead fallback; live only if the bundled deck runtime disappears
+
+# ---------------------------------------------------------------------------
+# /entropy-help/ledger.html — KNOWN BROKEN, NOT a false positive.
+#
+# ledger.html does `await fetch('../docs/entropy-help/audits/audits.json')`.
+# There is no docs/ directory in this repo, so the audit table is permanently
+# empty. It fails soft (try/catch + response.ok), so it is not the 200-page-
+# renders-nothing class this gate exists to stop — but it IS broken.
+#
+# Allowlisted so the gate can ship green on a repo that already has this defect.
+# It is reprinted under [WARN] ALLOWLISTED on every single run. Delete this line
+# the moment the JSON is published or the fetch is removed.
+/docs/entropy-help/audits/audits.json	tracked defect: docs/ does not exist in this repo; ledger audit table is always empty

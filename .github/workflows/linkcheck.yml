@@ -1,0 +1,122 @@
+name: Artifact link check
+
+# Catches the "page returns 200 while its scripts 404" class of failure.
+#
+# WHY THIS IS A SEPARATE WORKFLOW AND NOT A JOB INSIDE pages.yml
+# --------------------------------------------------------------
+# pages.yml is the transit bot's publish path: transit-publish[bot] pushes to
+# main on a */15 cron and then dispatches pages.yml explicitly. Adding a job to
+# that file puts this check inside the bot's critical path -- one YAML mistake
+# and the bot stops publishing. A flaky gate that blocks an automated push is
+# worse than no gate. So this lives in its own file and pages.yml is untouched.
+#
+# TRIGGER CHOICES
+#   pull_request    -> artifact mode. THE SHIP-BLOCKER. Serves the exact tree
+#                      this PR would deploy and crawls it. ~1s, no network.
+#   push (main)     -> artifact mode. Covers direct human pushes. Note this does
+#                      NOT fire for transit-publish[bot]: a push made with
+#                      GITHUB_TOKEN does not trigger push workflows, which is
+#                      why publish-transit.yml has to dispatch pages.yml by hand.
+#   workflow_run    -> artifact mode, after "Publish /transit" finishes. This is
+#                      how bot publishes get covered. workflow_run runs in a
+#                      SEPARATE workflow after the fact, so by construction it
+#                      cannot delay, block, or wedge the bot's publish path.
+#   schedule        -> live mode. Catches deploy drift and external rot. Daily,
+#                      not per-deploy: per-deploy live checks would mean ~24k
+#                      requests/day at the bot's cadence, and a Pages 429 would
+#                      look exactly like a broken site.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ['Publish /transit']
+    types: [completed]
+  schedule:
+    - cron: '17 11 * * *'
+  workflow_dispatch:
+    inputs:
+      base:
+        description: 'Base URL for a live run'
+        required: false
+        default: 'https://thebonhomme.com/'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linkcheck-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  artifact:
+    name: artifact (served locally)
+    if: >-
+      github.event_name == 'pull_request' ||
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # For workflow_run we deliberately take the CURRENT tip of main, not
+      # workflow_run.head_sha: publish-transit is schedule-triggered, so its
+      # head_sha is the commit from BEFORE it pushed the new /transit content.
+      # head_sha would check out the tree we do not care about.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # No install step on purpose: the crawler uses only Node builtins plus
+      # global fetch. Nothing to lockfile, nothing to audit, nothing to break.
+      - name: Crawl the artifact this commit would deploy
+        run: |
+          node tools/linkcheck/crawl.mjs \
+            --artifact . \
+            --json linkcheck-artifact.json
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkcheck-artifact-${{ github.run_id }}
+          path: linkcheck-artifact.json
+          if-no-files-found: warn
+
+  live:
+    name: live (deployed site)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # --seed-from is not optional here. The homepage is a self-extracting
+      # bundle that builds its nav at runtime, so a bare link-crawl from /
+      # reaches 4 routes out of 89. Seeding from the checkout gives the crawler
+      # the full route list; the HTTP responses still come from the live site.
+      - name: Crawl the deployed site
+        run: |
+          node tools/linkcheck/crawl.mjs \
+            --base "${{ github.event.inputs.base || 'https://thebonhomme.com/' }}" \
+            --seed-from . \
+            --timeout 120000 \
+            --concurrency 4 \
+            --json linkcheck-live.json
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkcheck-live-${{ github.run_id }}
+          path: linkcheck-live.json
+          if-no-files-found: warn
