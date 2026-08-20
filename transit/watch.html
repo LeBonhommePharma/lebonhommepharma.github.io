@@ -2,112 +2,23 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="build-sha" content="6411e65d262bc9259dd239128cedf251ef26a6c4" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Rive Watch</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="theme-color" content="#0a0e14" />
+    <meta name="theme-color" content="#1d1d1f" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:;" />
-    <link rel="preload" href="./fonts/IBMPlexMono-Bold.ttf" as="font" type="font/ttf" crossorigin />
     <style>
-      @font-face {
-        font-family: "Rive Clock";
-        src: url("./fonts/IBMPlexMono-Regular.ttf") format("truetype");
-        font-weight: 400;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: "Rive Clock";
-        src: url("./fonts/IBMPlexMono-Bold.ttf") format("truetype");
-        font-weight: 700;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: "Rive Text";
-        src: url("./fonts/Outfit-Regular.ttf") format("truetype");
-        font-weight: 400;
-        font-display: swap;
-      }
-      :root {
-        --paper: #0a0e14;
-        --ink: #e4eef6;
-        --muted: #8fa4b4;
-        --sodium: #22d3ee;
-        --gold: #fbbf24;
-        --mono: "Rive Clock", "IBM Plex Mono", ui-monospace, monospace;
-        color-scheme: dark;
-      }
-      html, body {
-        height: 100%;
-        margin: 0;
-        background: var(--paper);
-        color: var(--ink);
-        font-family: "Rive Text", ui-sans-serif, system-ui, sans-serif;
-        -webkit-text-size-adjust: 100%;
-      }
-      main {
-        min-height: 100dvh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
-      }
-      .eyebrow {
-        font-family: var(--mono);
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0.2em;
-        color: var(--muted);
-        margin-bottom: 10px;
-      }
-      .eyebrow::before { content: "// "; color: var(--sodium); }
-      .route {
-        font-family: var(--mono);
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-      }
-      .remain {
-        font-family: var(--mono);
-        font-size: 60px;
-        font-weight: 700;
-        letter-spacing: -0.05em;
-        line-height: 1;
-        margin-top: 6px;
-        color: var(--gold);
-        font-variant-numeric: tabular-nums;
-      }
-      .clocks {
-        font-family: var(--mono);
-        font-size: 15px;
-        letter-spacing: 0.08em;
-        font-variant-numeric: tabular-nums;
-        color: var(--sodium);
-        margin-top: 10px;
-      }
-      .stop {
-        margin-top: 12px;
-        font-size: 14px;
-        color: var(--muted);
-        max-width: 16rem;
-        text-wrap: pretty;
-      }
-      .hint {
-        margin-top: 28px;
-        font-size: 11px;
-        color: var(--muted);
-        opacity: 0.7;
-        max-width: 18rem;
-        line-height: 1.45;
-        text-wrap: pretty;
-      }
+      html, body { height: 100%; margin: 0; background: #1d1d1f; color: #fff; font-family: ui-sans-serif, system-ui, sans-serif; }
+      main { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; }
+      .route { font-size: 22px; font-weight: 700; }
+      .remain { font-size: 56px; font-weight: 620; letter-spacing: -0.04em; line-height: 1; margin-top: 4px; font-variant-numeric: tabular-nums; }
+      .clocks { font-family: ui-monospace, monospace; font-size: 16px; letter-spacing: 0.06em; margin-top: 8px; }
+      .stop { margin-top: 10px; font-size: 14px; opacity: 0.7; max-width: 16rem; }
+      .hint { margin-top: 28px; font-size: 11px; opacity: 0.45; max-width: 18rem; line-height: 1.4; }
     </style>
   </head>
   <body>
     <main id="face">
-      <p class="eyebrow">prochain passage</p>
       <div class="route" id="route">Rive</div>
       <div class="remain" id="remain">—</div>
       <div class="clocks" id="clocks">—</div>
