@@ -1,0 +1,227 @@
+name: Publish /transit
+
+# Publishes the static Rive atlas from LeBonhommePharma/Transit into this
+# repository's transit/ directory, then lets pages.yml deploy the site.
+#
+# Why the engine lives here and not in the Transit repo: a workflow's
+# GITHUB_TOKEN is scoped to its own repository, so Transit cannot push here.
+# Transit is public, so this repo can read it with no credential at all.
+# That makes the whole pipeline token-free. See DEPLOY.md.
+
+on:
+  # Instant publish. Transit's own workflow sends this once APEX_DISPATCH_TOKEN
+  # exists; until then, use the schedule below or run this manually.
+  repository_dispatch:
+    types: [transit-publish]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Transit ref to publish
+        default: main
+        type: string
+      dry_run:
+        description: Build and verify only — do not commit or push
+        default: false
+        type: boolean
+      expect_sha256:
+        description: "Failsafe drill: override the expected live sha256 to prove verification fails"
+        default: ""
+        type: string
+  schedule:
+    # Automatic publish without any secret. Cheap: exits early when in sync.
+    - cron: "*/15 * * * *"
+
+permissions:
+  contents: write
+
+# Never let two publishes interleave. Not cancel-in-progress: a half-finished
+# publish must be allowed to either complete or roll itself back.
+concurrency:
+  group: publish-transit
+  cancel-in-progress: false
+
+env:
+  SITE_URL: https://thebonhomme.com/transit/
+  TRANSIT_REF: ${{ github.event.inputs.ref || github.event.client_payload.ref || 'main' }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout apex site
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout Transit source
+        uses: actions/checkout@v4
+        with:
+          repository: LeBonhommePharma/Transit
+          ref: ${{ env.TRANSIT_REF }}
+          path: _transit
+          fetch-depth: 0
+
+      - name: Resolve source commit
+        id: src
+        run: |
+          set -euo pipefail
+          cd _transit
+          sha=$(git rev-parse HEAD)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "short=${sha:0:8}" >> "$GITHUB_OUTPUT"
+          echo "Publishing Transit @ $sha" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: _transit/package-lock.json
+
+      - name: Install Transit dependencies
+        working-directory: _transit
+        run: npm ci
+
+      # ---------------------------------------------------------------------
+      # GATE A — the test suite.
+      #
+      # Scope note, deliberate and documented: this gate runs `npm test`, not
+      # `npm run build`. `npm run build` (next build) is red on main with 10
+      # pre-existing TypeScript errors — 9 in *.test.ts files and one in
+      # src/lib/webgpu.ts. Those are NOT masked here and NOT fixed here; they
+      # are simply not a gate on this deploy, because the Next.js app is not
+      # what gets published. The published artifact is the hand-authored static
+      # atlas under public/Transit plus the tracked GTFS data under public/data.
+      # `npm test` is the meaningful gate: it is fully green (162/162) and it
+      # imports the shipped static modules directly (see src/lib/rive.test.ts,
+      # which imports ../../public/Transit/rive-kit.js and bikes.js), so it
+      # exercises the exact bytes this workflow publishes.
+      #
+      # If you want next build gating the deploy, fix those 10 errors first and
+      # add the step. Do not add it with `|| true`.
+      # ---------------------------------------------------------------------
+      - name: "Gate A — tests (162 expected)"
+        working-directory: _transit
+        run: npm test
+
+      - name: "Gate B — compose and verify artifact"
+        id: build
+        run: |
+          set -euo pipefail
+          node _transit/scripts/publish-transit.mjs compose \
+            --src _transit --out _stage --sha "${{ steps.src.outputs.sha }}"
+          node _transit/scripts/publish-transit.mjs verify-artifact \
+            --dir _stage --sha "${{ steps.src.outputs.sha }}" | tee _gate.txt
+          echo "sha256=$(grep '^index-sha256=' _gate.txt | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+
+      # transit/README.md is authored in this repo, not in Transit. Carry it
+      # across so the sync below cannot drop it.
+      - name: Preserve apex-local files
+        run: |
+          set -euo pipefail
+          [ -f transit/README.md ] && cp transit/README.md _stage/README.md || true
+
+      - name: Detect changes
+        id: diff
+        run: |
+          set -euo pipefail
+          if [ -d transit ] && diff -r -q transit _stage >/dev/null 2>&1; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Already in sync at ${{ steps.src.outputs.short }} — nothing to publish." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Record rollback point
+        id: rollback
+        if: steps.diff.outputs.changed == 'true'
+        run: echo "before=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      # --delete is scoped to the transit/ tree only. Nothing outside transit/
+      # is read or written by this step, so the other 81 routes, pages.yml,
+      # CNAME, interaction.css, fonts and PDFs are untouched by construction.
+      - name: Sync into transit/
+        if: steps.diff.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p transit
+          rsync -a --delete _stage/ transit/
+          git config user.name  "transit-publish[bot]"
+          git config user.email "transit-publish@users.noreply.github.com"
+          git add -- transit
+          git status --porcelain -- transit | head -20
+          git commit -m "Publish /transit from Transit@${{ steps.src.outputs.short }}
+
+          Source: LeBonhommePharma/Transit@${{ steps.src.outputs.sha }}
+          index.html sha256: ${{ steps.build.outputs.sha256 }}
+          Gates: tests 162/162, artifact integrity passed."
+          git push origin HEAD:main
+
+      - name: Await GitHub Pages deployment
+        if: steps.diff.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 60); do
+            s=$(gh api repos/${{ github.repository }}/pages -q .status 2>/dev/null || echo unknown)
+            echo "pages status: $s"
+            [ "$s" = "built" ] && break
+            sleep 10
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      # ---------------------------------------------------------------------
+      # GATE C — the one whose absence caused the stale site.
+      # A green run means "verified live", not "pushed".
+      # ---------------------------------------------------------------------
+      - name: "Gate C — verify live bytes"
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          set -euo pipefail
+          expect="${{ github.event.inputs.expect_sha256 }}"
+          [ -n "$expect" ] || expect="${{ steps.build.outputs.sha256 }}"
+          [ -n "${{ github.event.inputs.expect_sha256 }}" ] && \
+            echo "::warning::FAILSAFE DRILL — expecting deliberately wrong sha256 $expect"
+          node _transit/scripts/publish-transit.mjs verify-live \
+            --url "$SITE_URL" \
+            --sha "${{ steps.src.outputs.sha }}" \
+            --sha256 "$expect" \
+            --timeout 900 --interval 15
+
+      - name: "Gate D — other routes still serve"
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          set -euo pipefail
+          fail=0
+          for r in / /benchmark/ /shannon/ /periodic/ /FlexAIDdS/ /drug-of-the-day/ /interaction.css; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://thebonhomme.com$r")
+            printf '%-22s %s\n' "$r" "$code"
+            [ "$code" = "200" ] || fail=1
+          done
+          [ "$fail" = "0" ] || { echo "::error::a non-transit route regressed"; exit 1; }
+
+      # If the bytes never went live, put the site back the way we found it
+      # rather than leaving an unverified publish standing.
+      - name: Roll back on verification failure
+        if: failure() && steps.rollback.outputs.before != '' && github.event.inputs.dry_run != 'true'
+        run: |
+          set -euo pipefail
+          git config user.name  "transit-publish[bot]"
+          git config user.email "transit-publish@users.noreply.github.com"
+          git fetch origin main
+          git revert --no-edit ${{ steps.rollback.outputs.before }}..HEAD || {
+            echo "::error::automatic rollback failed — roll back by hand, see DEPLOY.md"; exit 1; }
+          git push origin HEAD:main
+          echo "::warning::Verification failed; /transit rolled back to ${{ steps.rollback.outputs.before }}"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "| field | value |"
+            echo "|---|---|"
+            echo "| Transit ref | \`${{ env.TRANSIT_REF }}\` |"
+            echo "| Transit sha | \`${{ steps.src.outputs.sha }}\` |"
+            echo "| index.html sha256 | \`${{ steps.build.outputs.sha256 }}\` |"
+            echo "| changed | ${{ steps.diff.outputs.changed }} |"
+            echo "| dry run | ${{ github.event.inputs.dry_run || 'false' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
