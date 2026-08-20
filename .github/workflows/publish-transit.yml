@@ -33,6 +33,9 @@ on:
 
 permissions:
   contents: write
+  # Needed to dispatch pages.yml. A push made with GITHUB_TOKEN does NOT
+  # trigger other workflows, so the deploy must be dispatched explicitly.
+  actions: write
 
 # Never let two publishes interleave. Not cancel-in-progress: a half-finished
 # publish must be allowed to either complete or roll itself back.
@@ -156,18 +159,28 @@ jobs:
           Gates: tests 162/162, artifact integrity passed."
           git push origin HEAD:main
 
-      - name: Await GitHub Pages deployment
+      # GitHub deliberately does not start a workflow run for a push made with
+      # GITHUB_TOKEN, so the commit above will NOT trigger pages.yml on its own.
+      # (This is exactly the failure the first live run caught: the commit
+      # landed, nothing deployed, Gate C went red and rolled it back.)
+      # Dispatch the site's own deploy workflow explicitly and wait for it, so
+      # /transit keeps being published by the same job that serves the other
+      # 81 routes rather than by a second, divergent copy of it.
+      - name: Deploy via pages.yml
         if: steps.diff.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
-        run: |
-          set -euo pipefail
-          for i in $(seq 1 60); do
-            s=$(gh api repos/${{ github.repository }}/pages -q .status 2>/dev/null || echo unknown)
-            echo "pages status: $s"
-            [ "$s" = "built" ] && break
-            sleep 10
-          done
         env:
           GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          before=$(gh run list --workflow=pages.yml -L 1 --json databaseId -q '.[0].databaseId')
+          gh workflow run pages.yml --ref main
+          for i in $(seq 1 40); do
+            id=$(gh run list --workflow=pages.yml -L 1 --json databaseId -q '.[0].databaseId')
+            if [ "$id" != "$before" ]; then echo "pages run $id"; break; fi
+            sleep 5
+          done
+          [ "$id" != "$before" ] || { echo "::error::pages.yml never started"; exit 1; }
+          gh run watch "$id" --exit-status
 
       # ---------------------------------------------------------------------
       # GATE C — the one whose absence caused the stale site.
@@ -203,6 +216,8 @@ jobs:
       # rather than leaving an unverified publish standing.
       - name: Roll back on verification failure
         if: failure() && steps.rollback.outputs.before != '' && github.event.inputs.dry_run != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git config user.name  "transit-publish[bot]"
@@ -211,6 +226,8 @@ jobs:
           git revert --no-edit ${{ steps.rollback.outputs.before }}..HEAD || {
             echo "::error::automatic rollback failed — roll back by hand, see DEPLOY.md"; exit 1; }
           git push origin HEAD:main
+          gh workflow run pages.yml --ref main || \
+            echo "::error::rollback committed but pages.yml dispatch failed — dispatch it by hand"
           echo "::warning::Verification failed; /transit rolled back to ${{ steps.rollback.outputs.before }}"
 
       - name: Summary
