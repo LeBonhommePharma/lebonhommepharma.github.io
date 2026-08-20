@@ -69,7 +69,16 @@ jobs:
         run: |
           set -euo pipefail
           cd _transit
-          sha=$(git rev-parse HEAD)
+          # Stamp with the last commit that touched the *published* surface,
+          # not HEAD. The stamp goes into index.html, so using HEAD would make
+          # every unrelated commit (a src/ change, a README edit) produce a
+          # different artifact and churn a pointless republish. This keeps the
+          # stamp a real, traceable commit while staying stable when the
+          # published bytes have not changed.
+          sha=$(git log -1 --format=%H -- \
+                  public/Transit public/data public/l10n public/favicon.svg)
+          [ -n "$sha" ] || sha=$(git rev-parse HEAD)
+          echo "HEAD is $(git rev-parse HEAD); publishing content of $sha"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
           echo "short=${sha:0:8}" >> "$GITHUB_OUTPUT"
           echo "Publishing Transit @ $sha" >> "$GITHUB_STEP_SUMMARY"
