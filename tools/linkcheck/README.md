@@ -106,6 +106,32 @@ Root-absolute local paths (`/interaction.css`, `/assets/…`) are reported as
 is ever served from a subpath. 978 such references across 122 distinct paths at
 time of writing.
 
+## Following refs inside fetched CSS/JS
+
+Phase 2 used to check every sub-resource with `HEAD`. That reads a stylesheet's
+status but never its body, so a file reachable only from *inside* another
+stylesheet was invisible:
+
+    /flexaid-ds/styles.css   @import url('../colors_and_type.css')
+    /FlexAIDdS/styles.css    @import url('../colors_and_type.css')
+    /lebonhomme-brand.css    @import url('colors_and_type.css')
+
+Deleting `colors_and_type.css` from the artifact left the crawl at exactly 125
+sub-resources and `RESULT: PASS`. An unstyled page throws nothing and returns
+200 — the same silent class as the dead `<script src>`.
+
+Phase 2 now `GET`s `.css/.js/.mjs/.cjs` sub-resources, harvests their
+**declarative** refs only (same tier rule the manifest scan uses, so no new
+allowlist surface), and repeats up to `--ref-depth` (default 2). Everything
+else is still `HEAD` — the multi-MB PDFs and fonts are never downloaded.
+Clean artifact goes 125 → 126 sub-resources, live 126 → 164, runtime unchanged
+(0.6s artifact, 25.1s live).
+
+`extractCssRefs` strips `/* … */` first. `colors_and_type.css` carries a
+commented-out `@font-face` block ("Commented to avoid 404s") naming nine SF-Pro
+`.otf` files that really are absent; a browser never requests them. Without the
+strip, following the `@import` reported nine phantom 404s on a clean tree.
+
 ## Known gaps — stated, not hidden
 
 - **Dynamic refs are only harvested from inline scripts in HTML documents**, not
