@@ -97,6 +97,7 @@ const state = {
   detours: [],
   theme: "day",
   sheetOpen: true,
+  userMoved: false,
   pin: null,
   camera: { lon: -71.2082, lat: 46.8131, zoom: 12.4, pitch: 0 },
 };
@@ -1063,7 +1064,7 @@ function setSheetOpen(open) {
   if (fold) {
     const label = state.sheetOpen ? "Carte" : "Fiche";
     fold.textContent = label;
-    fold.title = label;
+    fold.title = state.sheetOpen ? "Replier la fiche pour voir la carte" : "Ouvrir la fiche";
     fold.setAttribute("aria-expanded", state.sheetOpen ? "true" : "false");
   }
   paintMapHud();
@@ -1230,13 +1231,13 @@ function renderCityChips(cities) {
 
 function applyVisit(visit) {
   if (!visit || !Number.isFinite(visit.lon) || !Number.isFinite(visit.lat)) return;
-  state.camera = {
-    ...state.camera,
+  state.userMoved = false;
+  paintHereButton();
+  flyTo({
     lon: visit.lon,
     lat: visit.lat,
     zoom: Number.isFinite(visit.zoom) ? visit.zoom : state.camera.zoom,
-  };
-  requestDraw();
+  });
   scheduleBuildings();
   scheduleWeather();
 }
@@ -1264,6 +1265,7 @@ async function loadCityIndex() {
 
 async function refreshFeeds(userDeclared) {
   const btn = document.getElementById("refresh");
+  toolStatus("Lecture des flux officiels…");
   if (btn) {
     btn.classList.add("busy");
     btn.classList.remove("ok", "err");
@@ -1287,10 +1289,12 @@ async function refreshFeeds(userDeclared) {
       btn.classList.remove("busy");
       btn.classList.add("ok");
       btn.title = "À jour";
+      toolStatus("Horaires à jour.", "ok");
       btn.setAttribute("aria-busy", "false");
       btn.setAttribute("aria-label", "À jour");
     }
   } catch {
+    toolStatus("Réseau indisponible. Réessaie.", "err");
     if (btn) {
       btn.classList.remove("busy");
       btn.classList.add("err");
@@ -1331,7 +1335,14 @@ function minutesOfDay(date) {
     Number(parts.find((p) => p.type === "minute").value);
 }
 
+let hour12Cache = null;
 function prefersHour12() {
+  if (hour12Cache !== null) return hour12Cache;
+  hour12Cache = resolveHour12();
+  return hour12Cache;
+}
+
+function resolveHour12() {
   try {
     const opts = new Intl.DateTimeFormat(undefined, { hour: "numeric" }).resolvedOptions();
     if (opts.hourCycle === "h23" || opts.hourCycle === "h24") return false;
@@ -1355,7 +1366,8 @@ function formatClock(minutes) {
 
 function formatMeters(meters) {
   if (!Number.isFinite(meters)) return "";
-  return `${(Math.round(meters * 10) / 10).toFixed(1)} m`;
+  if (meters < 950) return `${Math.round(meters)} m`;
+  return `${(meters / 1000).toFixed(1)} km`;
 }
 
 function activeServiceIndexes(atlas, date) {
@@ -1511,21 +1523,40 @@ async function loadCity(city) {
     zoom: atlas.meta.zoom,
     pitch: state.camera.pitch || 0,
   };
+  state.userMoved = false;
+  cancelFlight();
   state.here = pinHereForCity(state.here, {
     lon: atlas.meta.center[0],
     lat: atlas.meta.center[1],
   });
   document.getElementById("attr").textContent = atlas.meta.attribution;
-  await loadPois();
-  await loadRealtime();
-  await loadBikes();
+  hideLoadError();
+  renderNearby();
+  renderLines();
+  requestDraw();
+  scheduleBuildings();
+  await Promise.allSettled([loadPois(), loadRealtime(), loadBikes()]);
   scheduleWeather();
   renderNearby();
   renderLines();
   renderBikes();
   if (state.routeId) renderDue();
   requestDraw();
-  scheduleBuildings();
+}
+
+function showLoadError(err) {
+  const box = document.getElementById("load-err");
+  if (!box) return;
+  const why = err && err.message ? err.message : "réseau";
+  box.hidden = false;
+  box.textContent = `Horaires indisponibles (${why}). Touche Actualiser.`;
+}
+
+function hideLoadError() {
+  const box = document.getElementById("load-err");
+  if (!box) return;
+  box.hidden = true;
+  box.textContent = "";
 }
 
 function renderHits() {
@@ -1558,12 +1589,21 @@ function renderDestHits() {
 
 function searchHitHtml(hit, index) {
   if (hit.kind === "stop") {
-    return `<li><button type="button" data-index="${index}" data-id="${escapeHtml(hit.stop.id)}"><span>${escapeHtml(hit.stop.name)}</span><span class="meta">${hit.stop.kind === 1 ? "métro · " : ""}${Math.round(hit.importance)} importance</span></button></li>`;
+    const stop = hit.stop;
+    const served = (stop.routes || []).length;
+    const bits = [
+      stop.kind === 1 ? "métro" : "arrêt",
+      stop.agencyId ? escapeHtml(stop.agencyId) : "",
+      stop.code ? escapeHtml(stop.code) : "",
+      served ? `${served} ligne${served > 1 ? "s" : ""}` : "",
+    ].filter(Boolean);
+    return `<li><button type="button" data-index="${index}" data-id="${escapeHtml(stop.id)}"><span>${escapeHtml(hit.stop.name)}</span><span class="meta">${bits.join(" · ")}</span></button></li>`;
   }
   if (hit.kind === "poi") {
-    return `<li><button type="button" data-index="${index}"><span>${escapeHtml(hit.poi.name)}</span><span class="meta">${escapeHtml(hit.poi.category || "Point important")} · popularité ${Math.round(hit.poi.popularity)}</span></button></li>`;
+    return `<li><button type="button" data-index="${index}"><span>${escapeHtml(hit.poi.name)}</span><span class="meta">${escapeHtml(hit.poi.category || "lieu")}</span></button></li>`;
   }
-  return `<li><button type="button" data-index="${index}"><span>${escapeHtml(hit.route.shortName)} · ${escapeHtml(hit.route.longName || hit.route.agencyName)}</span><span class="meta">ligne · ${Math.round(hit.importance)} importance</span></button></li>`;
+  const route = hit.route;
+  return `<li><button type="button" data-index="${index}"><span>${escapeHtml(route.shortName)} · ${escapeHtml(route.longName || route.agencyName)}</span><span class="meta">ligne${route.agencyId ? ` · ${escapeHtml(route.agencyId)}` : ""}</span></button></li>`;
 }
 
 function selectSearchHit(hit, destination) {
@@ -1600,7 +1640,7 @@ function renderLines() {
     .map((line) => {
       const on = state.routeId === line.routeId ? " on" : "";
       const kind = line.type === 1 ? "métro" : line.towardDest ? "vers" : "";
-      return `<button type="button" class="${on}" role="option" data-id="${escapeHtml(line.routeId)}" style="background:${safeColor(line.color)};color:${safeColor(line.textColor, "#ffffff")}" title="${escapeHtml(line.shortName)}">${escapeHtml(line.shortName)}${kind ? ` <span class="meta">${kind}</span>` : ""}</button>`;
+      return `<button type="button" class="${on}" role="option" aria-selected="${on ? "true" : "false"}" data-id="${escapeHtml(line.routeId)}" style="background:${safeColor(line.color)};color:${safeColor(line.textColor, "#ffffff")}" title="${escapeHtml(line.shortName)}">${escapeHtml(line.shortName)}${kind ? ` <span class="meta">${kind}</span>` : ""}</button>`;
     })
     .join("");
   box.querySelectorAll("button").forEach((btn) => {
@@ -1738,6 +1778,21 @@ function fuseSelectedRoute(officialDepart) {
   });
 }
 
+function paintHereButton() {
+  const btn = document.getElementById("here");
+  if (!btn) return;
+  const fixed = Boolean(state.here && state.here.source === "gps");
+  const following = fixed && !state.userMoved;
+  btn.classList.toggle("on", following);
+  btn.classList.toggle("dim", !fixed);
+  btn.setAttribute("aria-pressed", following ? "true" : "false");
+  btn.title = !fixed
+    ? "Position inconnue — touche pour autoriser"
+    : following
+      ? "La carte suit ta position"
+      : "Recentrer sur ta position";
+}
+
 function paintHeading() {
   const el = document.getElementById("heading");
   if (!el) return;
@@ -1789,7 +1844,9 @@ function resetPermissions() {
   } else {
     state.here = null;
   }
+  state.userMoved = false;
   paintHeading();
+  paintHereButton();
   paintGeoAsk(true);
   locate();
 }
@@ -1837,11 +1894,18 @@ function applyHere(lon, lat, source, at, follow) {
     wantSnap,
   });
   const go = () => {
-    if (snap) {
-      state.camera.lon = next.here.lon;
-      state.camera.lat = next.here.lat;
-      state.camera.zoom = Math.max(state.camera.zoom, 14.2);
+    // follow === true means the rider asked (boot fix, Ici, GPS). A passive
+    // watchPosition sample must never move a map the rider has panned or zoomed.
+    const asked = follow === true;
+    if (snap && (asked || state.navigating || !state.userMoved)) {
+      if (asked) state.userMoved = false;
+      flyTo({
+        lon: next.here.lon,
+        lat: next.here.lat,
+        zoom: asked || !state.userMoved ? Math.max(state.camera.zoom, 14.2) : state.camera.zoom,
+      });
     }
+    paintHereButton();
     renderNearby();
     renderLines();
     renderBikes();
@@ -1863,10 +1927,29 @@ function applyHere(lon, lat, source, at, follow) {
   if (city && city !== state.city) {
     state.visitId = "";
     paintCityButtons();
-    loadCity(city).then(go);
+    loadCity(city).then(go).catch(showLoadError);
     return;
   }
   go();
+}
+
+let toolStatusTimer = 0;
+let userAskedLocation = false;
+
+function toolStatus(message, kind) {
+  const el = document.getElementById("tool-status");
+  const row = document.getElementById("toolrow");
+  if (!el || !row) return;
+  clearTimeout(toolStatusTimer);
+  el.textContent = message;
+  row.classList.remove("ok", "err");
+  if (kind) row.classList.add(kind);
+  row.classList.add("show");
+  toolStatusTimer = setTimeout(() => {
+    row.classList.remove("show", "ok", "err");
+    const refresh = document.getElementById("refresh");
+    if (refresh) refresh.classList.remove("ok", "err");
+  }, 3600);
 }
 
 function paintGeoAsk(needed) {
@@ -1875,15 +1958,23 @@ function paintGeoAsk(needed) {
   const gps = state.here && state.here.source === "gps";
   el.hidden = Boolean(gps) && needed !== true;
   if (!el.hidden) {
-    el.textContent = navigator.geolocation
-      ? "Autoriser la position — sinon le centre-ville est une fausse origine."
-      : "Pas de géolocalisation sur cet appareil.";
+    el.textContent = navigator.geolocation ? "Autoriser la position" : "Pas de géolocalisation ici";
+    el.title = navigator.geolocation
+      ? "Sinon le centre-ville sert de fausse origine."
+      : "Cet appareil ne fournit pas de position.";
   }
 }
 
 function locate() {
   const fallback = () => {
     paintGeoAsk(true);
+    if (userAskedLocation) {
+      userAskedLocation = false;
+      toolStatus(
+        navigator.geolocation ? "Position refusée. Origine: centre-ville." : "Pas de position sur cet appareil.",
+        "err",
+      );
+    }
     if (state.here && state.here.source === "gps") return;
     const center = state.atlas
       ? { lon: state.atlas.meta.center[0], lat: state.atlas.meta.center[1] }
@@ -1897,6 +1988,10 @@ function locate() {
   askHeadingPermission();
   const onFix = (pos, follow) => {
     paintGeoAsk(false);
+    if (userAskedLocation) {
+      userAskedLocation = false;
+      toolStatus("Position trouvée.", "ok");
+    }
     applyHere(pos.coords.longitude, pos.coords.latitude, "gps", pos.timestamp || Date.now(), follow);
     applyHeading(pos.coords);
   };
@@ -1949,10 +2044,12 @@ function fitTrip(trip) {
     if (lat < minLat) minLat = lat;
     if (lat > maxLat) maxLat = lat;
   }
-  state.camera.lon = (minLon + maxLon) / 2;
-  state.camera.lat = (minLat + maxLat) / 2;
   const span = Math.max(maxLon - minLon, maxLat - minLat);
-  state.camera.zoom = span < 0.008 ? 14.6 : span < 0.02 ? 13.8 : span < 0.05 ? 12.8 : 12.2;
+  flyTo({
+    lon: (minLon + maxLon) / 2,
+    lat: (minLat + maxLat) / 2,
+    zoom: span < 0.008 ? 14.6 : span < 0.02 ? 13.8 : span < 0.05 ? 12.8 : 12.2,
+  });
 }
 
 function renderTrips() {
@@ -1968,8 +2065,7 @@ function renderTrips() {
   box.hidden = false;
   const destName = state.dest?.name || "";
   box.innerHTML =
-    `<h2>Vers ${escapeHtml(destName)}</h2>
-    <p class="lead">Le plus vite d'abord. Les autres disent combien de minutes de plus.</p>` +
+    `<h2>Vers ${escapeHtml(destName)}</h2>` +
     state.trips
       .map((trip, i) => {
         const on = i === state.tripIndex ? " on" : "";
@@ -2161,9 +2257,7 @@ function openPlan(destStop, quiet) {
   if (!state.navigating) {
     if (itineraries[0]) fitTrip(itineraries[0]);
     else {
-      state.camera.lon = destStop.lon;
-      state.camera.lat = destStop.lat;
-      state.camera.zoom = Math.max(state.camera.zoom, 13.6);
+      flyTo({ lon: destStop.lon, lat: destStop.lat, zoom: Math.max(state.camera.zoom, 13.6) });
     }
   }
   renderTrips();
@@ -2182,9 +2276,7 @@ function openPlan(destStop, quiet) {
 function openStop(stop) {
   if (!stop) return;
   state.stop = stop;
-  state.camera.lon = stop.lon;
-  state.camera.lat = stop.lat;
-  state.camera.zoom = Math.max(state.camera.zoom, 14.2);
+  flyTo({ lon: stop.lon, lat: stop.lat, zoom: Math.max(state.camera.zoom, 14.2) });
   const now = clockMinutes();
   const active = activeServiceIndexes(state.atlas, new Date());
   const rows = scheduleAtStop(state.atlas, state.timetable, stop, now, active);
@@ -2268,12 +2360,74 @@ function refreshPaint() {
     gold: css.getPropertyValue("--gold").trim() || "#d97706",
     sodium: css.getPropertyValue("--sodium").trim() || "#0e7490",
     terra: css.getPropertyValue("--terra").trim() || "#6d5cae",
+    dot: css.getPropertyValue("--dot").trim() || "#fff8ee",
+    dotEdge: css.getPropertyValue("--dot-edge").trim() || "#2b2723",
+    metro: css.getPropertyValue("--metro").trim() || "#1d1d1f",
+    metroEdge: css.getPropertyValue("--metro-edge").trim() || "#f0d060",
     night: document.documentElement.classList.contains("night"),
   };
   return paint;
 }
 
+let flight = 0;
+
+function cancelFlight() {
+  if (!flight) return;
+  cancelAnimationFrame(flight);
+  flight = 0;
+}
+
+function prefersReducedMotion() {
+  try {
+    return matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch {
+    return false;
+  }
+}
+
+// Eases the camera instead of teleporting it. Long hops jump: flying across the
+// province would just stream buildings the whole way.
+function flyTo(target, ms = 420) {
+  cancelFlight();
+  const from = { lon: state.camera.lon, lat: state.camera.lat, zoom: state.camera.zoom };
+  const to = {
+    lon: Number.isFinite(target.lon) ? target.lon : from.lon,
+    lat: Number.isFinite(target.lat) ? target.lat : from.lat,
+    zoom: Number.isFinite(target.zoom) ? target.zoom : from.zoom,
+  };
+  const far = Math.abs(to.lon - from.lon) > 0.35 || Math.abs(to.lat - from.lat) > 0.35;
+  if (ms <= 0 || far || prefersReducedMotion()) {
+    state.camera.lon = to.lon;
+    state.camera.lat = to.lat;
+    state.camera.zoom = to.zoom;
+    requestDraw();
+    scheduleBuildings();
+    return;
+  }
+  const start = performance.now();
+  const step = (now) => {
+    const p = Math.min(1, (now - start) / ms);
+    const k = 1 - (1 - p) ** 3;
+    state.camera.lon = from.lon + (to.lon - from.lon) * k;
+    state.camera.lat = from.lat + (to.lat - from.lat) * k;
+    state.camera.zoom = from.zoom + (to.zoom - from.zoom) * k;
+    requestDraw();
+    if (p < 1) {
+      flight = requestAnimationFrame(step);
+      return;
+    }
+    flight = 0;
+    scheduleBuildings();
+  };
+  flight = requestAnimationFrame(step);
+}
+
 function beginGesture() {
+  cancelFlight();
+  if (!state.userMoved) {
+    state.userMoved = true;
+    paintHereButton();
+  }
   mapBusy = true;
   mapBusyUntil = Date.now() + 120;
 }
@@ -2608,19 +2762,19 @@ function draw() {
         ctx.globalAlpha = 0.9;
         ctx.beginPath();
         ctx.arc(ux, uy, r * 0.85, 0, Math.PI * 2);
-        ctx.fillStyle = "#1d1d1f";
+        ctx.fillStyle = theme.metro;
         ctx.fill();
-        ctx.strokeStyle = "#f0d060";
+        ctx.strokeStyle = theme.metroEdge;
         ctx.lineWidth = 1.4;
         ctx.stroke();
       }
       ctx.globalAlpha = 1;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fillStyle = temp ? gold : picked ? gold : metro ? "#1d1d1f" : "#fff8ee";
+      ctx.fillStyle = temp || picked ? gold : metro ? theme.metro : theme.dot;
       ctx.fill();
       ctx.lineWidth = temp ? 2.4 : metro ? 2 : 1.5;
-      ctx.strokeStyle = temp ? "#1d1d1f" : picked ? "#1d1d1f" : metro ? "#f0d060" : "#2b2723";
+      ctx.strokeStyle = metro && !temp && !picked ? theme.metroEdge : theme.dotEdge;
       ctx.stroke();
       const wantLabel =
         picked ||
@@ -3135,19 +3289,42 @@ fetchJsonLimited(new URL("l10n/rive.json", import.meta.url), {}, 512 * 1024)
   .catch(() => {});
 
 bindCityButtons();
-document.getElementById("here").onclick = () => locate();
-document.getElementById("geo-ask").onclick = () => locate();
+document.getElementById("here").onclick = () => {
+  userAskedLocation = true;
+  state.userMoved = false;
+  paintHereButton();
+  toolStatus(state.here && state.here.source === "gps" ? "Recentrage…" : "Recherche de ta position…");
+  if (state.here && state.here.source === "gps") {
+    flyTo({ lon: state.here.lon, lat: state.here.lat, zoom: Math.max(state.camera.zoom, 14.2) });
+  }
+  locate();
+};
+document.getElementById("geo-ask").onclick = () => {
+  userAskedLocation = true;
+  toolStatus("Recherche de ta position…");
+  locate();
+};
 const perms = document.getElementById("perms");
-if (perms) perms.onclick = () => resetPermissions();
+if (perms) {
+  perms.onclick = () => {
+    userAskedLocation = true;
+    toolStatus("Position et boussole redemandées…");
+    resetPermissions();
+  };
+}
 document.getElementById("pitch").onclick = () => {
   const on = (state.camera.pitch || 0) > 0.2;
   setPitch(on ? 0 : 0.72);
   if (!on && state.camera.zoom < 13.2) state.camera.zoom = 13.4;
+  toolStatus(on ? "Vue à plat." : "Vue 3D: hauteurs et souterrain.");
   scheduleBuildings();
   requestDraw();
 };
 document.getElementById("refresh").onclick = () => refreshFeeds(true);
-document.getElementById("theme").onclick = () => applyTheme(state.theme === "night" ? "day" : "night");
+document.getElementById("theme").onclick = () => {
+  applyTheme(state.theme === "night" ? "day" : "night");
+  toolStatus(state.theme === "night" ? "Thème nuit." : "Thème jour.");
+};
 document.getElementById("fold").onclick = () => {
   if (state.sheetOpen) minimizeSheet();
   else bumpSheet();
@@ -3168,9 +3345,17 @@ if (atInput) atInput.addEventListener("change", () => {
   else if (state.stop) openStop(state.stop);
 });
 document.getElementById("at").addEventListener("blur", () => fillClockInput());
+let searchTick = 0;
+function scheduleSearch(render) {
+  clearTimeout(searchTick);
+  searchTick = setTimeout(() => {
+    searchTick = 0;
+    render();
+  }, 90);
+}
 document.getElementById("q").addEventListener("input", (e) => {
   state.query = e.target.value;
-  renderHits();
+  scheduleSearch(renderHits);
   bumpSheet();
 });
 document.getElementById("q").addEventListener("keydown", (e) => {
@@ -3180,7 +3365,7 @@ document.getElementById("q").addEventListener("keydown", (e) => {
 });
 document.getElementById("dest").addEventListener("input", (e) => {
   state.destQuery = e.target.value;
-  renderDestHits();
+  scheduleSearch(renderDestHits);
   bumpSheet();
 });
 document.getElementById("dest").addEventListener("keydown", (e) => {
@@ -3222,10 +3407,17 @@ function switchCity(city, visit) {
     applyVisit(visit);
     return;
   }
-  loadCity(city).then(() => applyVisit(visit));
+  loadCity(city).then(() => applyVisit(visit)).catch(showLoadError);
 }
 
-window.addEventListener("resize", resize);
+let resizeTick = 0;
+window.addEventListener("resize", () => {
+  if (resizeTick) return;
+  resizeTick = requestAnimationFrame(() => {
+    resizeTick = 0;
+    resize();
+  });
+});
 resize();
 tryWebGPU();
 
@@ -3243,13 +3435,16 @@ fillClockInput();
 applyTheme();
 listenHeading();
 paintHeading();
+paintHereButton();
 paintGeoAsk(true);
-loadCity(bootCity).then(() => {
-  if (bootVisit) applyVisit(bootVisit);
-  if (bootStop && state.atlas) {
-    const hit = state.atlas.stops.find((s) => s.id === bootStop);
-    if (hit) openStop(hit);
-  }
-  locate();
-});
+loadCity(bootCity)
+  .then(() => {
+    if (bootVisit) applyVisit(bootVisit);
+    if (bootStop && state.atlas) {
+      const hit = state.atlas.stops.find((s) => s.id === bootStop);
+      if (hit) openStop(hit);
+    }
+    locate();
+  })
+  .catch(showLoadError);
 loadCityIndex();
