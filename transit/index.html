@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="build-sha" content="7a53a8b2638774860629ce1d1a3d1b5e69c9b690" />
+    <meta name="build-sha" content="149cd54a56743f916d143aa8e24c4f3c208f3e44" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Rive. Horaires RTC, STLévis, STM et STL, sans abonnement</title>
     <meta
@@ -76,6 +76,8 @@
         --dot-edge: #2b2723;
         --metro: #1d1d1f;
         --metro-edge: #f0d060;
+        --tunnel: #4b5563;
+        --tunnel-hi: #8b949e;
         --shadow: none;
         --ring: #0e7490;
         --radius: 12px;
@@ -115,6 +117,8 @@
         --dot-edge: #0a0e14;
         --metro: #0a0e14;
         --metro-edge: #fbbf24;
+        --tunnel: #6b7280;
+        --tunnel-hi: #6b7280;
         --shadow: none;
         --ring: #22d3ee;
         color-scheme: dark;
@@ -141,6 +145,8 @@
           --dot-edge: #0a0e14;
           --metro: #0a0e14;
           --metro-edge: #fbbf24;
+          --tunnel: #6b7280;
+          --tunnel-hi: #6b7280;
           --shadow: none;
           --ring: #22d3ee;
           color-scheme: dark;
@@ -471,6 +477,9 @@
       .toolbar button.icon svg.i-sun { display: none; }
       html.night .toolbar button.icon svg.i-moon { display: none; }
       html.night .toolbar button.icon svg.i-sun { display: block; }
+      .toolbar button.icon svg.i-card { display: none; }
+      .sheet.folded .toolbar button.icon svg.i-map { display: none; }
+      .sheet.folded .toolbar button.icon svg.i-card { display: block; }
       .toolbar button .tl {
         font-size: 8.5px;
         font-weight: 500;
@@ -963,7 +972,17 @@
               </svg>
               <span class="tl" aria-hidden="true">Ici</span>
             </button>
-            <button type="button" id="fold" class="word" aria-expanded="true" aria-controls="sheet-body" title="Replier la fiche pour voir la carte">Carte</button>
+            <button type="button" id="fold" class="icon" aria-expanded="true" aria-controls="sheet-body" aria-label="Replier la fiche pour voir la carte" title="Replier la fiche pour voir la carte">
+              <svg class="i-map" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M2.2 4.1 6 2.6l4 1.5 3.8-1.5v9.3L10 13.4l-4-1.5-3.8 1.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                <path d="M6 2.6v9.3M10 4.1v9.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+              </svg>
+              <svg class="i-card" viewBox="0 0 16 16" aria-hidden="true">
+                <rect x="2.4" y="3.2" width="11.2" height="9.6" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <path d="M4.8 6.4h6.4M4.8 9.2h4.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              </svg>
+              <span class="tl" aria-hidden="true">Carte</span>
+            </button>
             <button type="button" id="refresh" class="icon" aria-label="Actualiser les horaires" title="Actualiser les horaires">
               <svg viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M13.1 8A5.1 5.1 0 1 1 11 3.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
@@ -971,8 +990,14 @@
               </svg>
               <span class="tl" aria-hidden="true">Maj</span>
             </button>
-            <button type="button" id="pitch" class="word" aria-pressed="false" title="Vue 3D: hauteurs et souterrain">3D</button>
-            <button type="button" id="perms" class="word" title="Redemander la position et la boussole">GPS</button>
+            <button type="button" id="pitch" class="word" aria-pressed="false" aria-label="Vue 3D: hauteurs et souterrain" title="Vue 3D: hauteurs et souterrain">3D</button>
+            <button type="button" id="perms" class="icon" aria-label="Redemander la position et la boussole" title="Redemander la position et la boussole">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.4" />
+                <path d="M10.2 5.8 6.9 7.1 5.8 10.2 9.1 8.9z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+              </svg>
+              <span class="tl" aria-hidden="true">GPS</span>
+            </button>
             <button type="button" id="theme" class="icon" aria-label="Nuit" title="Nuit">
               <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M12.8 10.1A5.3 5.3 0 0 1 6.2 3.1 5.3 5.3 0 1 0 12.8 10.1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />

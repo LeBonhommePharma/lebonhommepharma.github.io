@@ -993,16 +993,63 @@ function coordsFor(encoded) {
   let pts = lineCache.get(encoded);
   if (pts) return pts;
   pts = decodePolyline(encoded);
-  if (lineCache.size > 500) lineCache.clear();
+  // LRU, not clear-all. Montréal is ~250 routes x 2 directions, which sat exactly on the
+  // old 500 boundary: the cache filled, wiped, and re-decoded every shape every frame.
+  const cap = Math.max(600, ((state.atlas && state.atlas.routes && state.atlas.routes.length) || 0) * 3);
+  while (lineCache.size >= cap) {
+    const oldest = lineCache.keys().next();
+    if (oldest.done) break;
+    lineCache.delete(oldest.value);
+  }
   lineCache.set(encoded, pts);
   return pts;
 }
 
-function overlayWithVehicles(staticEncoded, vehicles, routeId, shape) {
-  const base = shape ? coordsFor(shape) : coordsFor(staticEncoded);
-  const dots = (vehicles || []).filter((item) => !item.routeId || item.routeId === routeId);
-  if (!dots.length) return base;
-  return dots.map((v) => [v.lon, v.lat]).concat(base);
+/** Mirrors vehiclesOnRoute in src/lib/realtime.ts: a route's own dots, plus unattributed ones. */
+function vehiclesOnRoute(vehicles, routeId) {
+  return (vehicles || []).filter((item) => !item.routeId || item.routeId === routeId);
+}
+
+// Route geometry only. This used to be overlayWithVehicles, which prepended live vehicle
+// coordinates to the shape; draw() strokes the result as ONE path, so every pair of
+// vehicles got a straight segment between them plus one from the last vehicle back to the
+// shape's first point — stray chords across the map whenever realtime was up. Vehicles are
+// drawn as their own dots below. The [...dots, ...base] contract still lives in
+// src/lib/realtime.ts, where it is a data helper and is asserted by rive.test.ts.
+function routeGeometry(staticEncoded, shape) {
+  return shape ? coordsFor(shape) : coordsFor(staticEncoded);
+}
+
+// Lazily cached lon/lat bbox per direction, so offscreen routes are skipped before any
+// point is projected. Only cached for unpatched geometry; a detour shape computes inline.
+function lineBounds(coords, holder) {
+  if (holder && holder._bb) return holder._bb;
+  let minLon = Infinity;
+  let minLat = Infinity;
+  let maxLon = -Infinity;
+  let maxLat = -Infinity;
+  for (let i = 0; i < coords.length; i++) {
+    const p = coords[i];
+    if (p[0] < minLon) minLon = p[0];
+    if (p[0] > maxLon) maxLon = p[0];
+    if (p[1] < minLat) minLat = p[1];
+    if (p[1] > maxLat) maxLat = p[1];
+  }
+  const bb = [minLon, minLat, maxLon, maxLat];
+  if (holder) holder._bb = bb;
+  return bb;
+}
+
+/** Precompute the per-route classification draw() used to recompute every frame. */
+function prepareAtlas(atlas) {
+  if (!atlas || !Array.isArray(atlas.routes)) return atlas;
+  for (const route of atlas.routes) {
+    route.isMetro = route.type === 1;
+    route.isRail = route.type === 2;
+    route.isTrunk = /^80/.test(route.shortName || "");
+    for (const dir of route.dirs || []) dir._bb = null;
+  }
+  return atlas;
 }
 
 function applyDetour(input) {
@@ -1063,8 +1110,13 @@ function setSheetOpen(open) {
   }
   if (fold) {
     const label = state.sheetOpen ? "Carte" : "Fiche";
-    fold.textContent = label;
-    fold.title = state.sheetOpen ? "Replier la fiche pour voir la carte" : "Ouvrir la fiche";
+    // Write the label span, not the button: textContent here used to wipe the glyph.
+    const foldLabel = fold.querySelector(".tl");
+    if (foldLabel) foldLabel.textContent = label;
+    else fold.textContent = label;
+    const hint = state.sheetOpen ? "Replier la fiche pour voir la carte" : "Ouvrir la fiche";
+    fold.title = hint;
+    fold.setAttribute("aria-label", hint);
     fold.setAttribute("aria-expanded", state.sheetOpen ? "true" : "false");
   }
   paintMapHud();
@@ -1510,6 +1562,7 @@ async function loadCity(city) {
     fetchJsonLimited(new URL("atlas.json", base), {}, 32 * 1024 * 1024),
     fetchJsonLimited(new URL("timetable.json", base), {}, 32 * 1024 * 1024),
   ]);
+  prepareAtlas(atlas);
   state.city = city;
   state.atlas = atlas;
   state.timetable = timetable;
@@ -2359,7 +2412,9 @@ function refreshPaint() {
     ink: css.getPropertyValue("--ink").trim() || "#2b2723",
     gold: css.getPropertyValue("--gold").trim() || "#d97706",
     sodium: css.getPropertyValue("--sodium").trim() || "#0e7490",
-    terra: css.getPropertyValue("--terra").trim() || "#6d5cae",
+    terra: css.getPropertyValue("--terra").trim() || "#8b1a4a",
+    tunnel: css.getPropertyValue("--tunnel").trim() || "#4b5563",
+    tunnelHi: css.getPropertyValue("--tunnel-hi").trim() || "#8b949e",
     dot: css.getPropertyValue("--dot").trim() || "#fff8ee",
     dotEdge: css.getPropertyValue("--dot-edge").trim() || "#2b2723",
     metro: css.getPropertyValue("--metro").trim() || "#1d1d1f",
@@ -2486,6 +2541,10 @@ function resize() {
   canvas.style.width = innerWidth + "px";
   canvas.style.height = innerHeight + "px";
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // Setting canvas.width resets every context property, font included.
+  labelFontSize = 0;
+  renderScale = dpr;
+  paintGpuLabel();
   requestDraw();
 }
 
@@ -2493,7 +2552,7 @@ function drawPrecip(w, h) {
   if (!shouldDrawPrecip(state.weather)) return;
   const t = precipIntensity(state.weather);
   if (!(t > 0)) return;
-  const night = document.documentElement.classList.contains("night");
+  const night = (paint || refreshPaint()).night;
   ctx.save();
   ctx.globalAlpha = 0.08 + t * 0.18;
   ctx.fillStyle = night ? "#6b8cac" : "#6a8eae";
@@ -2518,14 +2577,16 @@ function drawHorizon(w, h) {
   const pitch = state.camera.pitch || 0;
   if (pitch <= 0) return;
   const y = horizonY(h, pitch);
-  const night = document.documentElement.classList.contains("night");
+  const theme = paint || refreshPaint();
   const sky = ctx.createLinearGradient(0, 0, 0, y);
-  if (night) {
+  if (theme.night) {
     sky.addColorStop(0, "#070b12");
     sky.addColorStop(1, "#141c28");
   } else {
     sky.addColorStop(0, "#8eb8d8");
-    sky.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue("--stage").trim() || "#d5dde4");
+    // Was a getComputedStyle() per frame while pitched — a full style recalc for a token
+    // refreshPaint() had already read.
+    sky.addColorStop(1, theme.stage);
   }
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, w, Math.max(1, y + 1));
@@ -2543,6 +2604,41 @@ function queueLabel(id, text, x, y, size, pri) {
   labelQueue.push({ id, text, x, y, size, pri });
 }
 
+let labelFontSize = 0;
+const labelWidths = new Map();
+
+function setLabelFont(size) {
+  if (labelFontSize === size) return;
+  labelFontSize = size;
+  ctx.font = `${size}px "Rive Text", sans-serif`;
+}
+
+// Real metrics instead of text.length * size * 0.52. The estimate drifted on accented
+// French stop names, which read as either overlapping labels or labels suppressed for no
+// visible reason. The label set is stable between frames, so this amortises to a Map hit.
+function labelWidth(text, size) {
+  const key = size + "|" + text;
+  let w = labelWidths.get(key);
+  if (w === undefined) {
+    setLabelFont(size);
+    w = ctx.measureText(text).width;
+    if (labelWidths.size > 4000) labelWidths.clear();
+    labelWidths.set(key, w);
+  }
+  return w;
+}
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready
+    .then(() => {
+      // Metrics measured before "Rive Text" loaded were the fallback's.
+      labelWidths.clear();
+      labelFontSize = 0;
+      requestDraw();
+    })
+    .catch(() => {});
+}
+
 function flushLabels(ink, zoom) {
   const held = heldLabels;
   labelQueue.sort((a, b) => {
@@ -2550,7 +2646,9 @@ function flushLabels(ink, zoom) {
     const hb = held.has(b.id) ? 1 : 0;
     if (ha !== hb) return hb - ha;
     if (a.pri !== b.pri) return b.pri - a.pri;
-    return String(a.id).localeCompare(String(b.id));
+    // Plain compare: ids are machine strings, and localeCompare went through Intl
+    // collation on every label on every frame.
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
   });
   labelBoxes = [];
   const next = new Set();
@@ -2559,7 +2657,7 @@ function flushLabels(ink, zoom) {
   ctx.globalAlpha = 0.92;
   for (const c of labelQueue) {
     if (next.size >= cap && !held.has(c.id) && c.pri < 80) continue;
-    const tw = String(c.text).length * c.size * 0.52;
+    const tw = labelWidth(c.text, c.size);
     const th = c.size + 4;
     let hit = false;
     for (const box of labelBoxes) {
@@ -2569,7 +2667,7 @@ function flushLabels(ink, zoom) {
       }
     }
     if (hit) continue;
-    ctx.font = `${c.size}px "Rive Text", sans-serif`;
+    setLabelFont(c.size);
     ctx.fillText(c.text, c.x, c.y);
     labelBoxes.push({ x: c.x, y: c.y - th, w: tw, h: th });
     next.add(c.id);
@@ -2577,6 +2675,39 @@ function flushLabels(ink, zoom) {
   heldLabels = next;
   labelQueue.length = 0;
   ctx.globalAlpha = 1;
+}
+
+let selStop = null;
+let selRoutes = null;
+let selSet = new Set();
+
+/** The selected stop's route ids. Rebuilt only when the stop or its routes array changes. */
+function selectedRouteSet() {
+  const stop = state.stop || null;
+  const routes = (stop && stop.routes) || null;
+  if (stop !== selStop || routes !== selRoutes) {
+    selStop = stop;
+    selRoutes = routes;
+    selSet = new Set(routes || []);
+  }
+  return selSet;
+}
+
+// Visible lon/lat box, padded. Only used unpitched: with pitch the top of the viewport
+// approaches the horizon and the inverse projection is unbounded there.
+function viewBounds(w, h) {
+  const cam = state.camera;
+  if ((cam.pitch || 0) > 0.15) return null;
+  const a = screenToWorld(0, 0, cam, w, h);
+  const b = screenToWorld(w, h, cam, w, h);
+  if (!Number.isFinite(a.lon) || !Number.isFinite(a.lat) || !Number.isFinite(b.lon) || !Number.isFinite(b.lat)) return null;
+  const minLon = Math.min(a.lon, b.lon);
+  const maxLon = Math.max(a.lon, b.lon);
+  const minLat = Math.min(a.lat, b.lat);
+  const maxLat = Math.max(a.lat, b.lat);
+  const padLon = (maxLon - minLon) * 0.2 + 0.003;
+  const padLat = (maxLat - minLat) * 0.2 + 0.003;
+  return [minLon - padLon, minLat - padLat, maxLon + padLon, maxLat + padLat];
 }
 
 function draw() {
@@ -2595,9 +2726,11 @@ function draw() {
   drawPrecip(w, h);
   labelQueue.length = 0;
   if (!state.atlas) return;
-  const selected = new Set(state.stop?.routes || []);
+  const selected = selectedRouteSet();
   const pitch = cam.pitch || 0;
   const zoom = cam.zoom;
+  const view = viewBounds(w, h);
+  const detours = state.detours || [];
   if (zoom >= 13.05) showLocalRoutes = true;
   else if (zoom < 12.8) showLocalRoutes = false;
   if (zoom >= 13.15 || !state.sheetOpen) showBusStops = true;
@@ -2606,13 +2739,14 @@ function draw() {
   else if (zoom < 12.35 && state.sheetOpen) showMetroStops = false;
   const drawRouteSet = (onlyMetro, underground) => {
     for (const route of state.atlas.routes) {
-      const metro = route.type === 1;
-      const rail = route.type === 2;
+      const metro = route.isMetro !== undefined ? route.isMetro : route.type === 1;
+      const rail = route.isRail !== undefined ? route.isRail : route.type === 2;
       if (onlyMetro && !metro && !rail) continue;
       if (!onlyMetro && (metro || rail) && pitch > 0.15) continue;
-      const frequent = metro || rail || /^80/.test(route.shortName);
+      const trunk = route.isTrunk !== undefined ? route.isTrunk : /^80/.test(route.shortName || "");
+      const frequent = metro || rail || trunk;
       if (!frequent && (mapBusy || !showLocalRoutes) && !selected.has(route.id)) continue;
-      ctx.strokeStyle = underground ? (document.documentElement.classList.contains("night") ? "#6b7280" : "#4b5563") : lineStrokeColor(route);
+      ctx.strokeStyle = underground ? theme.tunnel : lineStrokeColor(route);
       ctx.globalAlpha = underground
         ? 0.55
         : selected.size && !selected.has(route.id)
@@ -2620,23 +2754,49 @@ function draw() {
           : frequent
             ? 0.9
             : 0.35;
-      ctx.lineWidth = metro || rail ? (underground ? 3.4 : 4.4) : /^80/.test(route.shortName) ? 2.8 : 1.4;
+      ctx.lineWidth = metro || rail ? (underground ? 3.4 : 4.4) : trunk ? 2.8 : 1.4;
       ctx.setLineDash(underground ? [5, 6] : []);
       ctx.lineJoin = "round";
       ctx.lineCap = "round";
       const alt = underground ? METRO_DEPTH_M : 0;
+      // Hoisted out of the direction loop: it only depends on route.id, and was running
+      // per direction per pass per frame.
+      const detour = detours.length ? detours.find((d) => !d.routeId || d.routeId === route.id) : null;
+      const shape = (detour && detour.shape) || (state.shapePatches && state.shapePatches[route.id]);
       for (const dir of route.dirs) {
-        const detour = (state.detours || []).find((d) => !d.routeId || d.routeId === route.id);
-        const shape = (detour && detour.shape) || (state.shapePatches && state.shapePatches[route.id]);
-        const line = overlayWithVehicles(dir.line, state.vehicles || [], route.id, shape);
+        const line = routeGeometry(dir.line, shape);
         if (line.length < 2) continue;
+        if (view) {
+          const bb = lineBounds(line, shape ? null : dir);
+          if (bb[0] > view[2] || bb[2] < view[0] || bb[1] > view[3] || bb[3] < view[1]) continue;
+        }
         ctx.beginPath();
-        line.forEach(([lon, lat], i) => {
-          const [x, y] = worldToScreen(lon, lat, state.camera, w, h, alt);
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        });
-        ctx.stroke();
+        let lastX = 0;
+        let lastY = 0;
+        let started = false;
+        const last = line.length - 1;
+        for (let i = 0; i <= last; i++) {
+          const p = line[i];
+          const [x, y] = worldToScreen(p[0], p[1], cam, w, h, alt);
+          if (!started) {
+            ctx.moveTo(x, y);
+            lastX = x;
+            lastY = y;
+            started = true;
+            continue;
+          }
+          // Drop points that land within ~1.2px of the last one emitted; always keep the
+          // endpoint so no line is truncated.
+          if (i < last) {
+            const dx = x - lastX;
+            const dy = y - lastY;
+            if (dx * dx + dy * dy < 1.44) continue;
+          }
+          ctx.lineTo(x, y);
+          lastX = x;
+          lastY = y;
+        }
+        if (started) ctx.stroke();
       }
       ctx.setLineDash([]);
     }
@@ -2686,18 +2846,25 @@ function draw() {
     }
   }
   ctx.globalAlpha = 1;
+  // Live skittles. The selected line's vehicles stay solid and a touch larger; the rest
+  // dim, matching how off-route strokes are dimmed above.
+  const focus = state.routeId ? new Set(vehiclesOnRoute(state.vehicles, state.routeId)) : null;
   for (const veh of mapBusy ? [] : state.vehicles || []) {
     const [vx, vy] = worldToScreen(veh.lon, veh.lat, cam, w, h);
     if (vx < -8 || vy < -8 || vx > w + 8 || vy > h + 8) continue;
-    ctx.fillStyle = "#e24b4a";
+    const hot = !focus || focus.has(veh);
+    ctx.globalAlpha = hot ? 1 : 0.32;
+    // --terra, not a literal: night lifts it to #c62a63 for contrast on #0d1219.
+    ctx.fillStyle = terra;
     ctx.beginPath();
-    ctx.arc(vx, vy, 5.2, 0, Math.PI * 2);
+    ctx.arc(vx, vy, hot ? 5.6 : 5.2, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = theme.dot;
     ctx.beginPath();
     ctx.arc(vx, vy, 2.1, 0, Math.PI * 2);
     ctx.fill();
   }
+  ctx.globalAlpha = 1;
   if (!mapBusy) {
     for (const poi of state.pois) {
       const [px, py] = worldToScreen(poi.lon, poi.lat, cam, w, h);
@@ -2752,7 +2919,7 @@ function draw() {
       if (metro && pitch > 0.15 && !mapBusy) {
         const [ux, uy] = worldToScreen(stop.lon, stop.lat, cam, w, h, METRO_DEPTH_M);
         ctx.globalAlpha = 0.55;
-        ctx.strokeStyle = document.documentElement.classList.contains("night") ? "#6b7280" : "#8b949e";
+        ctx.strokeStyle = theme.tunnelHi;
         ctx.lineWidth = 1.2;
         ctx.setLineDash([]);
         ctx.beginPath();
@@ -2961,11 +3128,12 @@ async function loadAccessWays() {
 
 function drawAccessWays(w, h) {
   if (!state.ways || !state.ways.length || state.camera.zoom < 13.2) return;
-  const night = document.documentElement.classList.contains("night");
+  const theme = paint || refreshPaint();
   for (const way of state.ways) {
     if (!way.line || way.line.length < 2) continue;
-    ctx.globalAlpha = night ? 0.28 : 0.22;
-    ctx.strokeStyle = way.kind === "cycle" ? "#0e7490" : way.kind === "foot" ? "#6f675c" : "#8b949e";
+    ctx.globalAlpha = theme.night ? 0.28 : 0.22;
+    // #0e7490 was day --sodium spelled out; #8b949e was day --tunnel-hi.
+    ctx.strokeStyle = way.kind === "cycle" ? theme.sodium : way.kind === "foot" ? "#6f675c" : theme.tunnelHi;
     ctx.lineWidth = way.kind === "road" ? 1.5 : 1.1;
     ctx.beginPath();
     way.line.forEach(([lon, lat], i) => {
@@ -2997,7 +3165,7 @@ function mapLightNow() {
 function drawBuildings(w, h) {
   if (!state.buildings.length) return;
   if (!isMotionView() && state.camera.zoom < BUILDING_ZOOM - 0.85) return;
-  const night = document.documentElement.classList.contains("night");
+  const night = (paint || refreshPaint()).night;
   const wall = night ? "#2a3642" : "#b4a99a";
   const wallDark = night ? "#1c2530" : "#8f867a";
   const roof = night ? "#3a4754" : "#efe6d6";
@@ -3076,10 +3244,21 @@ function drawBuildings(w, h) {
   }
 }
 
+let gpuLabel = "";
+let renderScale = 1;
+
+/** DPR is capped at 2 in resize(); surface the effective scale so a soft map is diagnosable. */
+function paintGpuLabel() {
+  const el = document.getElementById("gpu");
+  if (!el || !gpuLabel) return;
+  const scale = Math.round(renderScale * 10) / 10;
+  el.textContent = scale > 1 ? `${gpuLabel} · ${scale}×` : gpuLabel;
+}
+
 async function tryWebGPU() {
   const gpu = globalThis.navigator && globalThis.navigator.gpu;
-  const el = document.getElementById("gpu");
-  if (el) el.textContent = await probeGpuLabel(gpu);
+  gpuLabel = await probeGpuLabel(gpu);
+  paintGpuLabel();
   await acquireGpuDevice(gpu);
   try {
     await computeWallShades(gpu, [{ x: 1, y: 0, z: 0 }], { x: 1, y: 0, z: 0 });
