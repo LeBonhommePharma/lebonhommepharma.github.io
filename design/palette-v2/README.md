@@ -144,6 +144,25 @@ still wants the 12px floor.
 `1a` is consequently the only card on the board not inked in v2 indigo. That
 is deliberate — it is the v1 reference the rest of the board moved away from.
 
+## Decisions taken
+
+**The brand mark is mint, and that is settled.** `logo-flexaid-ds.svg`,
+`assets/logo-flexaid-ds.svg` and `assets/favicon-flexaid-ds.svg` carry the
+bound pose in mint `#45E0A8` and the ghost fan in violet `#8B5CF6`.
+
+This was raised as an open question and explicitly accepted rather than
+allowed to happen by default. The reasoning: the bound pose was teal *because
+teal meant ΔH*. In v2 ΔH is mint, so recolouring preserves what the mark
+means — it is the minimum on the binding free-energy surface — instead of
+preserving a hue that no longer carries that quantity. The ghost fan tracks
+the entropy the ligand explores, and violet is TΔS in v2, so it lands
+correctly too.
+
+Do not revert this to teal `#22D3EE` without a fresh decision. That hex is on
+the retired list, so `scripts/check-palette-v2.sh` will fail the build unless
+an exemption is added — which is deliberate friction, not an obstacle to route
+around.
+
 ## Left alone, but worth knowing
 
 These are inconsistencies in the source that look deliberate or belong to a
@@ -179,3 +198,21 @@ License 1.1, latin + latin-ext + greek subsets as woff2 (1.7 MB total).
 SF Pro Display is Apple's, carried over from the bound design system's
 `_ds/…/fonts/` directory; only the four weights the board and the token
 package use (400/500/600/700) are included.
+
+## A separate defect in the logo, not introduced here
+
+The mark is documented as *"five rotated copies of a 3-atom V-shaped ligand
+[sharing] a single pivot point"* — four ghosts at decreasing opacity tracing
+the entropy fan. In `logo-flexaid-ds.svg` all five groups carry the **same**
+path, `M 13 26 L 20 18 L 27 26`, with no `transform` and no stylesheet
+anywhere in the repo targeting `.ghost-a` / `.ghost-b`. They stack exactly on
+the bound pose and never render: the logo draws as a single ligand, and the
+entropy fan — the whole idea of the mark — is invisible.
+
+The favicon does not have this problem; its ghosts carry their own offsets.
+
+This predates the palette work. At `b3829e2`, before the migration, the paths
+were already identical and transform-free; the v2 commit changed colour values
+and nothing else. Fixing it means authoring rotations on the ghost groups,
+which is a change to the mark's *shape* rather than its palette, so it is
+left for an explicit decision.
