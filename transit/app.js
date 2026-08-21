@@ -2418,7 +2418,7 @@ function refreshPaint() {
     dot: css.getPropertyValue("--dot").trim() || "#fff8ee",
     dotEdge: css.getPropertyValue("--dot-edge").trim() || "#2b2723",
     metro: css.getPropertyValue("--metro").trim() || "#1d1d1f",
-    metroEdge: css.getPropertyValue("--metro-edge").trim() || "#f0d060",
+    metroEdge: css.getPropertyValue("--metro-edge").trim() || "#FFB84D",
     night: document.documentElement.classList.contains("night"),
   };
   return paint;
