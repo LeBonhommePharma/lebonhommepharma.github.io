@@ -13,15 +13,15 @@
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
     :root {
-      --bg: #0a0e14;
+      --bg: #08091A;
       --bg-panel: #10141c;
-      --bg-card: rgba(16, 20, 28, 0.92);
-      --teal: #22D3EE;
-      --terra: #A78BFA;
-      --gold: #FBBF24;
-      --fg: #d4dced;
-      --fg-muted: #8a93a8;
-      --border: rgba(34, 211, 238, 0.15);
+      --bg-card: rgba(17, 18, 38, 0.92);
+      --teal: #45E0A8;
+      --terra: #8B5CF6;
+      --gold: #FF9300;
+      --fg: #E4E3F5;
+      --fg-muted: #8D8CB0;
+      --border: rgba(69, 224, 168, 0.15);
     }
 
     body {
@@ -39,7 +39,7 @@
       grid-template-columns: repeat(18, minmax(0, 1fr));
       gap: 3px;
       padding: 4px;
-      background: rgba(16, 20, 28, 0.6);
+      background: rgba(17, 18, 38, 0.6);
       border-radius: 12px;
       border: 1px solid var(--border);
     }
@@ -103,7 +103,7 @@
     }
 
     .element.pharma-relevant {
-      box-shadow: inset 0 0 0 1.5px rgba(251, 191, 36, 0.35);
+      box-shadow: inset 0 0 0 1.5px rgba(255, 147, 0, 0.35);
     }
 
     .element.pharma-relevant::after {
@@ -115,13 +115,13 @@
       height: 5px;
       background: var(--gold);
       border-radius: 50%;
-      box-shadow: 0 0 0 1.5px rgba(251, 191, 36, 0.3);
+      box-shadow: 0 0 0 1.5px rgba(255, 147, 0, 0.3);
     }
 
     .cat-alkali { background: #451a03; color: #fed7aa; border-color: #f59e0b33; }
-    .cat-alkaline { background: #422006; color: #fde68a; border-color: #fbbf2433; }
-    .cat-transition { background: #0f172a; color: #67e8f9; border-color: #22d3ee33; }
-    .cat-posttrans { background: #1e1135; color: #c4b5fd; border-color: #a78bfa33; }
+    .cat-alkaline { background: #422006; color: #FFC773; border-color: #FF930033; }
+    .cat-transition { background: #0f172a; color: #8EEFC9; border-color: #45E0A833; }
+    .cat-posttrans { background: #1e1135; color: #c4b5fd; border-color: #8B5CF633; }
     .cat-metalloid { background: #1f2937; color: #94a3b8; border-color: #64748b33; }
     .cat-nonmetal { background: #0c4a6e; color: #bae6fd; border-color: #38bdf833; }
     .cat-halogen { background: #431407; color: #fdba74; border-color: #fb923c33; }
@@ -148,9 +148,9 @@
       font-size: 10px;
       padding: 1px 7px;
       border-radius: 999px;
-      background: rgba(251, 191, 36, 0.15);
+      background: rgba(255, 147, 0, 0.15);
       color: #fde047;
-      border: 1px solid rgba(251, 191, 36, 0.3);
+      border: 1px solid rgba(255, 147, 0, 0.3);
       font-weight: 500;
     }
 
@@ -171,9 +171,9 @@
     }
 
     .nav {
-      background: rgba(10, 14, 20, 0.92);
+      background: rgba(8, 9, 26, 0.92);
       backdrop-filter: blur(24px);
-      border-bottom: 1px solid rgba(34,211,238,0.12);
+      border-bottom: 1px solid rgba(69,224,168,0.12);
     }
 
     .filter-btn {
@@ -186,7 +186,7 @@
     }
     .filter-btn.active {
       background: var(--teal);
-      color: #0a0e14;
+      color: #08091A;
       border-color: var(--teal);
       font-weight: 600;
     }
@@ -229,28 +229,28 @@
   <meta name="twitter:title" content="Periodic Table of the Elements — Pharmacological Edition · thebonhomme.com">
   <meta name="twitter:description" content="Interactive pharmacological periodic table with FDA-approved drugs and clinical trial medications for each element. Le Bonhomme Pharma · Montréal.">
   <meta name="twitter:image" content="https://thebonhomme.com/assets/og-thebonhomme.png">
-  <meta name="theme-color" content="#0a0e14">
+  <meta name="theme-color" content="#08091A">
   <link rel="canonical" href="https://thebonhomme.com/periodic/">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
 </head>
-<body class="bg-[#0a0e14] text-[#d4dced] min-h-screen">
+<body class="bg-[#08091A] text-[#E4E3F5] min-h-screen">
   <nav class="nav sticky top-0 z-50 border-b border-white/10">
     <div class="max-w-7xl mx-auto px-5 h-14 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <a href="/" class="flex items-center gap-2">
-          <div class="w-6 h-6 rounded bg-gradient-to-br from-[#22D3EE] to-[#A78BFA] flex items-center justify-center">
-            <span class="text-[#0a0e14] text-[13px] font-bold tracking-tighter">P</span>
+          <div class="w-6 h-6 rounded bg-gradient-to-br from-[#45E0A8] to-[#8B5CF6] flex items-center justify-center">
+            <span class="text-[#08091A] text-[13px] font-bold tracking-tighter">P</span>
           </div>
           <div>
             <div class="font-semibold tracking-tight text-lg leading-none pt-0.5">thebonhomme.com</div>
-            <div class="text-[10px] text-[#8a93a8] -mt-0.5 font-mono">LE BONHOMME PHARMA</div>
+            <div class="text-[10px] text-[#8D8CB0] -mt-0.5 font-mono">LE BONHOMME PHARMA</div>
           </div>
         </a>
         <div class="hidden sm:block text-[#64748b] text-sm pl-2">/ periodic</div>
       </div>
       <div class="flex items-center gap-3 text-sm">
-        <a href="/" class="text-[#8a93a8] hover:text-[#22D3EE] transition-colors hidden sm:block">← Main Site</a>
-        <a href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" class="text-[#8a93a8] hover:text-[#22D3EE] transition-colors font-mono text-xs px-3 py-1 rounded border border-white/10 hover:border-[#22D3EE]/40">GITHUB</a>
+        <a href="/" class="text-[#8D8CB0] hover:text-[#45E0A8] transition-colors hidden sm:block">← Main Site</a>
+        <a href="https://github.com/LeBonhommePharma/FlexAIDdS" target="_blank" class="text-[#8D8CB0] hover:text-[#45E0A8] transition-colors font-mono text-xs px-3 py-1 rounded border border-white/10 hover:border-[#45E0A8]/40">GITHUB</a>
       </div>
     </div>
   </nav>
@@ -260,16 +260,16 @@
       <div>
         <div class="section-label mb-1.5 tracking-[3px]">CLINICAL CHEMISTRY &amp; DRUG DISCOVERY</div>
         <h1 class="pt-header text-5xl md:text-6xl font-semibold tracking-tighter">Periodic Table of the Elements</h1>
-        <p class="mt-2 text-xl text-[#8a93a8]">Pharmacological Edition — FDA Approved + Clinical Trial Drugs</p>
+        <p class="mt-2 text-xl text-[#8D8CB0]">Pharmacological Edition — FDA Approved + Clinical Trial Drugs</p>
       </div>
-      <div class="text-sm text-[#8a93a8] max-w-md">
+      <div class="text-sm text-[#8D8CB0] max-w-md">
         Comprehensive annotations for elements with approved drugs or active clinical trials. Data from FDA, ClinicalTrials.gov, and peer-reviewed literature (2026).
       </div>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-3 lg:items-center justify-between mb-4">
       <div class="relative flex-1 max-w-md">
-        <input id="search" type="text" placeholder="Search element, symbol, or drug (e.g. cisplatin, levothyroxine, fluoxetine)" class="w-full bg-[#10141c] border border-white/10 focus:border-[#22D3EE]/60 rounded-xl px-4 py-2.5 text-sm placeholder:text-[#64748b] outline-none font-light">
+        <input id="search" type="text" placeholder="Search element, symbol, or drug (e.g. cisplatin, levothyroxine, fluoxetine)" class="w-full bg-[#10141c] border border-white/10 focus:border-[#45E0A8]/60 rounded-xl px-4 py-2.5 text-sm placeholder:text-[#64748b] outline-none font-light">
         <div class="absolute right-4 top-3 text-[#64748b] text-xs font-mono pointer-events-none">⌘K</div>
       </div>
 
@@ -283,11 +283,11 @@
       </div>
     </div>
 
-    <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs mb-3 px-1 text-[#8a93a8]">
+    <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs mb-3 px-1 text-[#8D8CB0]">
       <div class="flex items-center gap-2"><span class="legend-dot" style="background:#f59e0b"></span> Alkali</div>
-      <div class="flex items-center gap-2"><span class="legend-dot" style="background:#fbbf24"></span> Alkaline earth</div>
-      <div class="flex items-center gap-2"><span class="legend-dot" style="background:#22d3ee"></span> Transition</div>
-      <div class="flex items-center gap-2"><span class="legend-dot" style="background:#a78bfa"></span> Post-transition</div>
+      <div class="flex items-center gap-2"><span class="legend-dot" style="background:#FF9300"></span> Alkaline earth</div>
+      <div class="flex items-center gap-2"><span class="legend-dot" style="background:#45E0A8"></span> Transition</div>
+      <div class="flex items-center gap-2"><span class="legend-dot" style="background:#8B5CF6"></span> Post-transition</div>
       <div class="flex items-center gap-2"><span class="legend-dot" style="background:#64748b"></span> Metalloid</div>
       <div class="flex items-center gap-2"><span class="legend-dot" style="background:#38bdf8"></span> Nonmetal</div>
       <div class="flex items-center gap-2"><span class="legend-dot" style="background:#fb923c"></span> Halogen</div>
@@ -314,7 +314,7 @@
   <div id="detail-panel" class="hidden fixed z-[70] inset-x-0 bottom-0 md:inset-auto md:right-6 md:top-20 md:bottom-auto md:w-[460px] detail-panel p-6 shadow-2xl max-h-[85vh] md:max-h-[calc(100vh-100px)] overflow-y-auto">
     <div class="flex justify-between items-start mb-4">
       <div id="detail-header" class="flex items-center gap-4"></div>
-      <button onclick="closeDetail()" class="text-[#8a93a8] hover:text-white text-3xl leading-none px-1 -mt-1">×</button>
+      <button onclick="closeDetail()" class="text-[#8D8CB0] hover:text-white text-3xl leading-none px-1 -mt-1">×</button>
     </div>
     <div id="detail-body" class="space-y-5 text-sm"></div>
     <div class="pt-4 mt-4 border-t border-white/10 flex gap-2">
@@ -324,13 +324,13 @@
   </div>
 
   <footer class="max-w-7xl mx-auto px-5 py-8 mt-8 text-[#64748b] text-xs border-t border-white/10">
-    <div>Le Bonhomme Pharma · Montréal · <a href="https://thebonhomme.com" class="hover:text-[#22D3EE]">thebonhomme.com</a></div>
-    <div class="mt-1">Served at <a href="https://thebonhomme.com/periodic" class="hover:text-[#22D3EE]">thebonhomme.com/periodic</a> (and /flexaid, /entropy-driven) via GitHub Pages + Cloudflare edge rewrites for clean root paths. Source in <code>site/periodic/</code> under FlexAIDdS.</div>
+    <div>Le Bonhomme Pharma · Montréal · <a href="https://thebonhomme.com" class="hover:text-[#45E0A8]">thebonhomme.com</a></div>
+    <div class="mt-1">Served at <a href="https://thebonhomme.com/periodic" class="hover:text-[#45E0A8]">thebonhomme.com/periodic</a> (and /flexaid, /entropy-driven) via GitHub Pages + Cloudflare edge rewrites for clean root paths. Source in <code>site/periodic/</code> under FlexAIDdS.</div>
   </footer>
 
   <script>
     function initTailwind() {
-      document.documentElement.style.setProperty('--accent-teal', '#22D3EE');
+      document.documentElement.style.setProperty('--accent-teal', '#45E0A8');
     }
 
     // Significantly expanded pharmacological data — major FDA-approved + notable clinical trial drugs per element (2026)
@@ -521,7 +521,7 @@
         if (el.pharma.role) html += `<div><div class="section-label mb-1.5">MECHANISTIC ROLE</div><div class="element-info">${el.pharma.role}</div></div>`;
         if (el.pharma.notes) html += `<div><div class="section-label mb-1.5">CLINICAL &amp; TOXICOLOGICAL NOTES</div><div class="element-info text-[#94a3b8]">${el.pharma.notes}</div></div>`;
       } else {
-        html += `<div class="py-2"><div class="section-label mb-2">NO APPROVED PHARMACOLOGICAL USE</div><div class="text-[#8a93a8] text-sm">This element has no established approved therapeutic or diagnostic role. It may appear in research, toxicology, or environmental exposure contexts.</div></div>`;
+        html += `<div class="py-2"><div class="section-label mb-2">NO APPROVED PHARMACOLOGICAL USE</div><div class="text-[#8D8CB0] text-sm">This element has no established approved therapeutic or diagnostic role. It may appear in research, toxicology, or environmental exposure contexts.</div></div>`;
       }
       html += `<div class="pt-3 border-t border-white/10 text-sm"><div class="grid grid-cols-2 gap-x-4 gap-y-1"><div><span class="text-[#64748b]">Category</span><br><span class="font-medium">${el.cat.replace('posttrans','post-transition')}</span></div><div><span class="text-[#64748b]">Atomic weight</span><br><span class="font-mono">${el.mass}</span></div></div></div>`;
       body.innerHTML = html;

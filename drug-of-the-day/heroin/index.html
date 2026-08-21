@@ -16,19 +16,19 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:          #0a0e14;
-  --bg-card:     rgba(16, 20, 28, 0.85);
-  --bg-alt:      rgba(12, 16, 22, 0.55);
+  --bg:          #08091A;
+  --bg-card:     rgba(17, 18, 38, 0.85);
+  --bg-alt:      rgba(12, 13, 30, 0.55);
   --border:      rgba(232,213,183,0.10);
   --border-h:    rgba(232,213,183,0.28);
-  --teal:        #22D3EE;
+  --teal:        #45E0A8;
   --gold:        #E8D5B7;
-  --gold-bright: #FBBF24;
-  --terra:       #A78BFA;
+  --gold-bright: #FF9300;
+  --terra:       #8B5CF6;
   --rose:        #f43f5e;
   --green:       #4ade80;
-  --fg:          #d4dced;
-  --fg-muted:    #8a93a8;
+  --fg:          #E4E3F5;
+  --fg-muted:    #8D8CB0;
   --fg-dim:      rgba(138,147,168,0.5);
   --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
   --font-body:   'Inter', system-ui, sans-serif;
@@ -37,16 +37,16 @@
   --r-md:        10px;
   --r-lg:        14px;
   --glow-gold:   0 0 24px rgba(232,213,183,0.20);
-  --glow-teal:   0 0 20px rgba(34,211,238,0.18);
-  --nav-bg:      rgba(10,14,20,0.92);
+  --glow-teal:   0 0 20px rgba(69,224,168,0.18);
+  --nav-bg:      rgba(8,9,26,0.92);
   --harm-bg:           rgba(244,63,94,0.06);
   --harm-eyebrow-line: rgba(244,63,94,0.18);
-  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-bg:      rgba(17,18,38,0.82);
   --harm-card-border:  rgba(244,63,94,0.24);
   --harm-fatal-bg:     rgba(244,63,94,0.10);
   --harm-fatal-border: rgba(244,63,94,0.40);
   --harm-fatal-strong: #ff6b7d;
-  --viewer-panel:      rgba(10,14,20,0.72);
+  --viewer-panel:      rgba(8,9,26,0.72);
 }
 
 /* ── Light theme (accents preserved) ────────────────────────── */
@@ -119,7 +119,7 @@ ul { list-style: none; }
   letter-spacing: 0.02em;
   transition: opacity 0.15s;
 }
-.nav-back:hover { color: #22D3EE; border-color: #22D3EE; text-decoration: none; }
+.nav-back:hover { color: #45E0A8; border-color: #45E0A8; text-decoration: none; }
 .nav-series {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -163,9 +163,9 @@ ul { list-style: none; }
   border-radius: 9999px;
   border: 1px solid;
 }
-.pill-gold   { color: var(--gold-bright); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.08); }
-.pill-teal   { color: var(--teal);        border-color: rgba(34,211,238,0.30);  background: rgba(34,211,238,0.06); }
-.pill-terra  { color: var(--terra);       border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-gold   { color: var(--gold-bright); border-color: rgba(255,147,0,0.35); background: rgba(255,147,0,0.08); }
+.pill-teal   { color: var(--teal);        border-color: rgba(69,224,168,0.30);  background: rgba(69,224,168,0.06); }
+.pill-terra  { color: var(--terra);       border-color: rgba(139,92,246,0.30); background: rgba(139,92,246,0.07); }
 .pill-rose   { color: var(--rose);        border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
 .pill-dim    { color: var(--fg-muted);    border-color: var(--border);          background: var(--bg-alt); }
 
@@ -391,8 +391,8 @@ ul { list-style: none; }
   border-radius: var(--r-sm);
   border: 1px solid;
 }
-.meta-node.primary  { color: var(--gold-bright); border-color: rgba(251,191,36,0.3);   background: rgba(251,191,36,0.08); font-weight: 600; }
-.meta-node.active   { color: var(--teal);         border-color: rgba(34,211,238,0.3);   background: rgba(34,211,238,0.07); }
+.meta-node.primary  { color: var(--gold-bright); border-color: rgba(255,147,0,0.3);   background: rgba(255,147,0,0.08); font-weight: 600; }
+.meta-node.active   { color: var(--teal);         border-color: rgba(69,224,168,0.3);   background: rgba(69,224,168,0.07); }
 .meta-node.inactive { color: var(--fg-muted);     border-color: var(--border);          background: var(--bg-alt); }
 .meta-node.danger   { color: var(--rose);          border-color: rgba(244,63,94,0.3);   background: rgba(244,63,94,0.07); }
 .meta-enzyme {
@@ -439,8 +439,8 @@ ul { list-style: none; }
 
 /* ── Entropy Box ────────────────────────────────────────── */
 .entropy-box {
-  background: rgba(34,211,238,0.03);
-  border: 1px solid rgba(34,211,238,0.18);
+  background: rgba(69,224,168,0.03);
+  border: 1px solid rgba(69,224,168,0.18);
   border-left: 3px solid var(--teal);
   border-radius: var(--r-md);
   padding: 1.25rem 1.4rem;
@@ -466,8 +466,8 @@ ul { list-style: none; }
 
 /* ── Adulteration Warning Box ───────────────────────────── */
 .adulterant-box {
-  background: rgba(167,139,250,0.04);
-  border: 1px solid rgba(167,139,250,0.22);
+  background: rgba(139,92,246,0.04);
+  border: 1px solid rgba(139,92,246,0.22);
   border-radius: var(--r-md);
   padding: 1.1rem 1.25rem;
   margin: 1.25rem 0;
@@ -607,8 +607,8 @@ ul { list-style: none; }
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--gold-bright);
-  background: rgba(251,191,36,0.08);
-  border: 1px solid rgba(251,191,36,0.22);
+  background: rgba(255,147,0,0.08);
+  border: 1px solid rgba(255,147,0,0.22);
   padding: 2px 8px;
   border-radius: 4px;
 }
@@ -641,7 +641,7 @@ ul { list-style: none; }
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.ngl-btn:hover { color: var(--gold-bright); border-color: rgba(251,191,36,0.30); background: rgba(251,191,36,0.06); }
+.ngl-btn:hover { color: var(--gold-bright); border-color: rgba(255,147,0,0.30); background: rgba(255,147,0,0.06); }
 .ngl-legend {
   padding: 0.75rem 1rem;
   display: flex;
@@ -786,8 +786,8 @@ table.binding-table {
   white-space: nowrap;
   letter-spacing: 0.06em;
 }
-.ab-agonist { color: var(--gold-bright); background: rgba(251,191,36,0.08);   border: 1px solid rgba(251,191,36,0.22); }
-.ab-partial { color: var(--terra);        background: rgba(167,139,250,0.08);  border: 1px solid rgba(167,139,250,0.22); }
+.ab-agonist { color: var(--gold-bright); background: rgba(255,147,0,0.08);   border: 1px solid rgba(255,147,0,0.22); }
+.ab-partial { color: var(--terra);        background: rgba(139,92,246,0.08);  border: 1px solid rgba(139,92,246,0.22); }
 .ab-prodrug { color: var(--fg-muted);      background: var(--bg-alt);           border: 1px solid var(--border); }
 .ab-antag   { color: var(--green);         background: rgba(74,222,128,0.08);   border: 1px solid rgba(74,222,128,0.22); }
 .binding-note {
@@ -1298,7 +1298,7 @@ table.binding-table {
             Contact residues (&lt;4 Å)
           </div>
           <div class="ngl-legend-item">
-            <div class="legend-dot" style="background:#FBBF24;box-shadow:0 0 4px #FBBF24"></div>
+            <div class="legend-dot" style="background:#FF9300;box-shadow:0 0 4px #FF9300"></div>
             Agonist BU72 (ball-and-stick)
           </div>
         </div>

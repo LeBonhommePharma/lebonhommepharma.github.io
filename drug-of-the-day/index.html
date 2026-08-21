@@ -15,17 +15,17 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:          #0a0e14;
-  --bg-card:     rgba(16, 20, 28, 0.85);
-  --bg-alt:      rgba(12, 16, 22, 0.55);
-  --border:      rgba(34,211,238,0.10);
-  --border-h:    rgba(34,211,238,0.26);
-  --teal:        #22D3EE;
-  --gold:        #FBBF24;
-  --terra:       #A78BFA;
+  --bg:          #08091A;
+  --bg-card:     rgba(17, 18, 38, 0.85);
+  --bg-alt:      rgba(12, 13, 30, 0.55);
+  --border:      rgba(69,224,168,0.10);
+  --border-h:    rgba(69,224,168,0.26);
+  --teal:        #45E0A8;
+  --gold:        #FF9300;
+  --terra:       #8B5CF6;
   --rose:        #f43f5e;
-  --fg:          #d4dced;
-  --fg-muted:    #8a93a8;
+  --fg:          #E4E3F5;
+  --fg-muted:    #8D8CB0;
   --fg-dim:      rgba(138,147,168,0.5);
   --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
   --font-body:   'Inter', system-ui, sans-serif;
@@ -33,7 +33,7 @@
   --r-sm:        6px;
   --r-md:        10px;
   --r-lg:        14px;
-  --nav-bg:      rgba(10,14,20,0.92);
+  --nav-bg:      rgba(8,9,26,0.92);
 }
 
 /* ── Light theme (accents preserved) ────────────────────────── */
@@ -42,7 +42,7 @@
   --bg-card:     #ffffff;
   --bg-alt:      #eef2f8;
   --border:      rgba(0,0,0,0.10);
-  --border-h:    rgba(34,211,238,0.45);
+  --border-h:    rgba(69,224,168,0.45);
   --fg:          #1e293b;
   --fg-muted:    #5a6478;
   --fg-dim:      rgba(90,100,120,0.55);
@@ -50,8 +50,8 @@
 }
 [data-theme="light"] body {
   background-image:
-    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+    linear-gradient(rgba(69,224,168,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,224,168,0.05) 1px, transparent 1px);
 }
 
 html { scroll-behavior: smooth; }
@@ -63,8 +63,8 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   background-image:
-    linear-gradient(rgba(34,211,238,0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.022) 1px, transparent 1px);
+    linear-gradient(rgba(69,224,168,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,224,168,0.022) 1px, transparent 1px);
   background-size: 40px 40px;
   min-height: 100vh;
 }
@@ -96,7 +96,7 @@ a:hover { text-decoration: none; }
   letter-spacing: 0.02em;
   transition: opacity 0.15s;
 }
-.nav-back:hover { color: #22D3EE; border-color: #22D3EE; text-decoration: none; }
+.nav-back:hover { color: #45E0A8; border-color: #45E0A8; text-decoration: none; }
 .nav-label {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -199,15 +199,15 @@ a:hover { text-decoration: none; }
   border-radius: 9999px;
   border: 1px solid;
 }
-.pill-gold    { color: var(--gold);  border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.08); }
-.pill-teal    { color: var(--teal);  border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
-.pill-terra   { color: var(--terra); border-color: rgba(167,139,250,0.28); background: rgba(167,139,250,0.07); }
+.pill-gold    { color: var(--gold);  border-color: rgba(255,147,0,0.35); background: rgba(255,147,0,0.08); }
+.pill-teal    { color: var(--teal);  border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
+.pill-terra   { color: var(--terra); border-color: rgba(139,92,246,0.28); background: rgba(139,92,246,0.07); }
 .pill-rose    { color: var(--rose);  border-color: rgba(244,63,94,0.28);  background: rgba(244,63,94,0.06); }
 .pill-dim     { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
 .pill-flagship {
   color: #fff;
-  border-color: rgba(251,191,36,0.45);
-  background: linear-gradient(135deg, rgba(251,191,36,0.16), rgba(232,213,183,0.10));
+  border-color: rgba(255,147,0,0.45);
+  background: linear-gradient(135deg, rgba(255,147,0,0.16), rgba(232,213,183,0.10));
   font-size: 10px;
 }
 
@@ -215,7 +215,7 @@ a:hover { text-decoration: none; }
 .drug-card-featured {
   display: block;
   background: var(--bg-card);
-  border: 1px solid rgba(251,191,36,0.25);
+  border: 1px solid rgba(255,147,0,0.25);
   border-radius: var(--r-lg);
   padding: 2rem 2.25rem 2.25rem;
   margin-bottom: 1rem;
@@ -228,12 +228,12 @@ a:hover { text-decoration: none; }
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(251,191,36,0.04) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(255,147,0,0.04) 0%, transparent 60%);
   pointer-events: none;
 }
 .drug-card-featured:hover {
-  border-color: rgba(251,191,36,0.50);
-  box-shadow: 0 0 32px rgba(251,191,36,0.10);
+  border-color: rgba(255,147,0,0.50);
+  box-shadow: 0 0 32px rgba(255,147,0,0.10);
   text-decoration: none;
 }
 .drug-card-featured .card-eyebrow {
@@ -258,7 +258,7 @@ a:hover { text-decoration: none; }
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(251,191,36,0.40);
+  color: rgba(255,147,0,0.40);
   margin-bottom: 1.1rem;
 }
 .drug-card-featured .card-desc {
@@ -322,8 +322,8 @@ a:hover { text-decoration: none; }
   text-decoration: none;
 }
 .drug-card:hover {
-  border-color: rgba(34,211,238,0.28);
-  box-shadow: 0 0 20px rgba(34,211,238,0.06);
+  border-color: rgba(69,224,168,0.28);
+  box-shadow: 0 0 20px rgba(69,224,168,0.06);
   text-decoration: none;
 }
 .drug-card .card-eyebrow {
@@ -366,7 +366,7 @@ a:hover { text-decoration: none; }
 /* ── Coming Soon Card ───────────────────────────────────── */
 .drug-card-soon {
   background: transparent;
-  border: 1px dashed rgba(34,211,238,0.12);
+  border: 1px dashed rgba(69,224,168,0.12);
   border-radius: var(--r-lg);
   padding: 1.1rem 1.75rem;
   margin-bottom: 1rem;
@@ -466,7 +466,7 @@ a:hover { text-decoration: none; }
   <meta name="twitter:title" content="Drug of the Day — Le Bonhomme Pharma">
   <meta name="twitter:description" content="Le Bonhomme Pharma's Drug of the Day series: rigorous pharmacology, no moralizing. Full receptor binding tables, 3D binding-site visualization, harm reduction, and entropy docking commentary.">
   <meta name="twitter:image" content="https://thebonhomme.com/assets/og-thebonhomme.png">
-  <meta name="theme-color" content="#0a0e14">
+  <meta name="theme-color" content="#08091A">
   <link rel="canonical" href="https://thebonhomme.com/drug-of-the-day/">
 </head>
 <body>
@@ -669,7 +669,7 @@ a:hover { text-decoration: none; }
     <div class="card-cta">Full pharmacology <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
   </a>
 
-  <a href="/drug-of-the-day/salvinorin-a/" class="drug-card" style="border-color:rgba(167,139,250,0.22);">
+  <a href="/drug-of-the-day/salvinorin-a/" class="drug-card" style="border-color:rgba(139,92,246,0.22);">
     <div class="card-eyebrow"><span class="pill pill-teal">#008</span><span class="pill pill-terra">Diterpene</span><span class="pill pill-dim">κ-opioid · non-serotonergic</span></div>
     <div class="card-name"><span class="accent">Salvinorin A</span></div>
     <p class="card-desc">κ-opioid full agonist · <strong>KOR K<sub>i</sub> ~1.8 nM</strong> · zero 5-HT<sub>2A</sub> · PDB 4DJH.</p>
@@ -1126,7 +1126,7 @@ a:hover { text-decoration: none; }
       <h4>3D Crystal Structures</h4>
       <p>Mol* Viewer renders the actual RCSB crystal structure — drug as ball-and-stick with valence at the primary receptor, interactive, in-browser.</p>
     </div>
-    <a href="/entropy-driven/" class="about-card" style="display:block;text-decoration:none;color:inherit;border-color:rgba(34,211,238,0.22);transition:border-color 0.2s;">
+    <a href="/entropy-driven/" class="about-card" style="display:block;text-decoration:none;color:inherit;border-color:rgba(69,224,168,0.22);transition:border-color 0.2s;">
       <div class="about-card-icon" style="color:var(--teal)">△</div>
       <h4 style="color:var(--teal)">FlexAID∆S Entropy-Driven →</h4>
       <p>Shannon entropy collapse analysis ties each binding event to the thermodynamic framework of the FlexAID∆S docking engine.</p>

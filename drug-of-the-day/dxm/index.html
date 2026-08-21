@@ -16,18 +16,18 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:          #0a0e14;
-  --bg-card:     rgba(16, 20, 28, 0.85);
-  --bg-alt:      rgba(12, 16, 22, 0.55);
-  --border:      rgba(34,211,238,0.12);
-  --border-h:    rgba(34,211,238,0.30);
-  --teal:        #22D3EE;
-  --gold:        #FBBF24;
-  --terra:       #A78BFA;
+  --bg:          #08091A;
+  --bg-card:     rgba(17, 18, 38, 0.85);
+  --bg-alt:      rgba(12, 13, 30, 0.55);
+  --border:      rgba(69,224,168,0.12);
+  --border-h:    rgba(69,224,168,0.30);
+  --teal:        #45E0A8;
+  --gold:        #FF9300;
+  --terra:       #8B5CF6;
   --rose:        #f43f5e;
   --green:       #4ade80;
-  --fg:          #d4dced;
-  --fg-muted:    #8a93a8;
+  --fg:          #E4E3F5;
+  --fg-muted:    #8D8CB0;
   --fg-dim:      rgba(138,147,168,0.5);
   --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
   --font-body:   'Inter', system-ui, sans-serif;
@@ -35,17 +35,17 @@
   --r-sm:        6px;
   --r-md:        10px;
   --r-lg:        14px;
-  --glow-teal:   0 0 20px rgba(34,211,238,0.25);
-  --glow-gold:   0 0 20px rgba(251,191,36,0.20);
-  --nav-bg:      rgba(10,14,20,0.92);
+  --glow-teal:   0 0 20px rgba(69,224,168,0.25);
+  --glow-gold:   0 0 20px rgba(255,147,0,0.20);
+  --nav-bg:      rgba(8,9,26,0.92);
   --harm-bg:           rgba(244,63,94,0.06);
   --harm-eyebrow-line: rgba(244,63,94,0.18);
-  --harm-card-bg:      rgba(16,20,28,0.82);
+  --harm-card-bg:      rgba(17,18,38,0.82);
   --harm-card-border:  rgba(244,63,94,0.24);
   --harm-fatal-bg:     rgba(244,63,94,0.10);
   --harm-fatal-border: rgba(244,63,94,0.40);
   --harm-fatal-strong: #ff6b7d;
-  --viewer-panel:      rgba(10,14,20,0.72);
+  --viewer-panel:      rgba(8,9,26,0.72);
 }
 
 /* ── Light theme (accents preserved) ────────────────────────── */
@@ -54,7 +54,7 @@
   --bg-card:     #ffffff;
   --bg-alt:      #eef2f8;
   --border:      rgba(0,0,0,0.10);
-  --border-h:    rgba(34,211,238,0.45);
+  --border-h:    rgba(69,224,168,0.45);
   --fg:          #1e293b;
   --fg-muted:    #5a6478;
   --fg-dim:      rgba(90,100,120,0.55);
@@ -70,8 +70,8 @@
 }
 [data-theme="light"] body {
   background-image:
-    linear-gradient(rgba(34,211,238,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.05) 1px, transparent 1px);
+    linear-gradient(rgba(69,224,168,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,224,168,0.05) 1px, transparent 1px);
 }
 
 html { scroll-behavior: smooth; }
@@ -83,8 +83,8 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   background-image:
-    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+    linear-gradient(rgba(69,224,168,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,224,168,0.025) 1px, transparent 1px);
   background-size: 40px 40px;
   min-height: 100vh;
 }
@@ -118,7 +118,7 @@ ul { list-style: none; }
   letter-spacing: 0.02em;
   transition: opacity 0.15s;
 }
-.nav-back:hover { color: #22D3EE; border-color: #22D3EE; text-decoration: none; }
+.nav-back:hover { color: #45E0A8; border-color: #45E0A8; text-decoration: none; }
 .nav-series {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -162,9 +162,9 @@ ul { list-style: none; }
   border-radius: 9999px;
   border: 1px solid;
 }
-.pill-gold { color: var(--gold); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
-.pill-teal { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
-.pill-terra { color: var(--terra); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.07); }
+.pill-gold { color: var(--gold); border-color: rgba(255,147,0,0.35); background: rgba(255,147,0,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(139,92,246,0.30); background: rgba(139,92,246,0.07); }
 .pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
 .pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
 
@@ -381,8 +381,8 @@ ul { list-style: none; }
   border-radius: var(--r-sm);
   border: 1px solid;
 }
-.meta-node.primary { color: var(--teal); border-color: rgba(34,211,238,0.3); background: rgba(34,211,238,0.07); font-weight: 600; }
-.meta-node.active  { color: var(--gold); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.meta-node.primary { color: var(--teal); border-color: rgba(69,224,168,0.3); background: rgba(69,224,168,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(255,147,0,0.3); background: rgba(255,147,0,0.07); }
 .meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
 .meta-enzyme {
   font-family: var(--font-mono);
@@ -521,8 +521,8 @@ ul { list-style: none; }
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--teal);
-  background: rgba(34,211,238,0.08);
-  border: 1px solid rgba(34,211,238,0.20);
+  background: rgba(69,224,168,0.08);
+  border: 1px solid rgba(69,224,168,0.20);
   padding: 2px 8px;
   border-radius: 4px;
 }
@@ -555,7 +555,7 @@ ul { list-style: none; }
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.ngl-btn:hover { color: var(--teal); border-color: rgba(34,211,238,0.30); background: rgba(34,211,238,0.06); }
+.ngl-btn:hover { color: var(--teal); border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
 .ngl-legend {
   padding: 0.75rem 1rem;
   display: flex;
@@ -656,7 +656,7 @@ table.binding-table {
 }
 .binding-table td {
   padding: 0.55rem 0.85rem;
-  border-bottom: 1px solid rgba(34,211,238,0.06);
+  border-bottom: 1px solid rgba(69,224,168,0.06);
   vertical-align: middle;
 }
 .binding-table tr:last-child td { border-bottom: none; }
@@ -701,9 +701,9 @@ table.binding-table {
   white-space: nowrap;
   letter-spacing: 0.06em;
 }
-.ab-release { color: var(--teal); background: rgba(34,211,238,0.08); border: 1px solid rgba(34,211,238,0.20); }
-.ab-agonist { color: var(--gold); background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.20); }
-.ab-inhibit { color: var(--terra); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.20); }
+.ab-release { color: var(--teal); background: rgba(69,224,168,0.08); border: 1px solid rgba(69,224,168,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(255,147,0,0.08); border: 1px solid rgba(255,147,0,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.20); }
 .ab-block   { color: var(--rose); background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.20); }
 
 .binding-note {
@@ -1137,7 +1137,7 @@ table.binding-table {
         </div>
         <div class="ngl-legend">
           <div class="ngl-legend-item">
-            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(34,211,238,0.2)"></div>
+            <div class="legend-dot" style="background:#2a5a9f;border:1px solid rgba(69,224,168,0.2)"></div>
             Receptor (GluN1/GluN2A cartoon)
           </div>
           <div class="ngl-legend-item">
@@ -1145,7 +1145,7 @@ table.binding-table {
             Pore / N-site (&lt;4 Å)
           </div>
           <div class="ngl-legend-item">
-            <div class="legend-dot" style="background:#22D3EE;box-shadow:0 0 4px #22D3EE"></div>
+            <div class="legend-dot" style="background:#45E0A8;box-shadow:0 0 4px #45E0A8"></div>
             Channel-blocker site (ligand JC9 = S-ketamine)
           </div>
         </div>

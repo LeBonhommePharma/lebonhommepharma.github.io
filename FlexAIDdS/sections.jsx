@@ -32,18 +32,18 @@ function HeroSection() {
 
         <div className="equation">
           <p className="equation-text">
-            <span style={{ color: "#FBBF24" }}>ΔG</span>
-            <span style={{ color: "#8a93a8" }}> = </span>
-            <span style={{ color: "#22D3EE" }}>ΔH</span>
-            <span style={{ color: "#8a93a8" }}> − </span>
-            <span style={{ color: "#A78BFA" }}>TΔS</span>
+            <span style={{ color: "#FF9300" }}>ΔG</span>
+            <span style={{ color: "#8D8CB0" }}> = </span>
+            <span style={{ color: "#45E0A8" }}>ΔH</span>
+            <span style={{ color: "#8D8CB0" }}> − </span>
+            <span style={{ color: "#8B5CF6" }}>TΔS</span>
           </p>
         </div>
 
         <div className="hero-stats">
-          <CountStat to={0.93} decimals={2} color="#22D3EE" label="PEARSON r (ITC-187)" />
-          <CountStat to={1.4}  decimals={1} color="#A78BFA" label="RMSE kcal/mol" />
-          <CountStat to={92}   decimals={0} suffix="%" color="#FBBF24" label="CORRECT BINDING MODE" />
+          <CountStat to={0.93} decimals={2} color="#45E0A8" label="PEARSON r (ITC-187)" />
+          <CountStat to={1.4}  decimals={1} color="#8B5CF6" label="RMSE kcal/mol" />
+          <CountStat to={92}   decimals={0} suffix="%" color="#FF9300" label="CORRECT BINDING MODE" />
         </div>
 
         <div className="hero-badges">
@@ -167,17 +167,17 @@ function BindingSection() {
     },
     {
       lbl: "Encounter",
-      color: "#22D3EE",
-      bg: "rgba(34,211,238,0.05)",
-      border: "rgba(34,211,238,0.3)",
+      color: "#45E0A8",
+      bg: "rgba(69,224,168,0.05)",
+      border: "rgba(69,224,168,0.3)",
       desc: <>The ligand <span className="kw">electrostatically encounters</span> the binding pocket. Translational entropy begins to drop as orientation locks.</>,
       ds: "+4.2", dh: "−3.1", dg: "+1.1",
     },
     {
       lbl: "Binding",
-      color: "#FBBF24",
-      bg: "rgba(251,191,36,0.05)",
-      border: "rgba(251,191,36,0.3)",
+      color: "#FF9300",
+      bg: "rgba(255,147,0,0.05)",
+      border: "rgba(255,147,0,0.3)",
       desc: <><span className="kw">Configurational entropy collapses</span> as the ligand locks into the bound pose. Enthalpic interactions dominate ΔG.</>,
       ds: "−5.4", dh: "−12.8", dg: "−7.4",
     },
@@ -214,8 +214,8 @@ function BindingSection() {
           <p style={{ fontSize: "13px", color: "var(--fg-muted)", lineHeight: 1.6 }}>{p.desc}</p>
           <div className="thermo-row">
             <div><span style={{ color: "var(--fg-muted)" }}>ΔS = </span><span style={{ color: "#EC4899" }}>{p.ds}</span></div>
-            <div><span style={{ color: "var(--fg-muted)" }}>ΔH = </span><span style={{ color: "#22D3EE" }}>{p.dh}</span></div>
-            <div><span style={{ color: "var(--fg-muted)" }}>ΔG = </span><span style={{ color: "#FBBF24", fontWeight: 700 }}>{p.dg}</span></div>
+            <div><span style={{ color: "var(--fg-muted)" }}>ΔH = </span><span style={{ color: "#45E0A8" }}>{p.dh}</span></div>
+            <div><span style={{ color: "var(--fg-muted)" }}>ΔG = </span><span style={{ color: "#FF9300", fontWeight: 700 }}>{p.dg}</span></div>
           </div>
         </div>
       </div>
@@ -235,23 +235,23 @@ function BindingDiagram({ phase }) {
     <svg viewBox="0 0 960 240" style={{ display: "block", width: "100%", height: "240px" }}>
       <defs>
         <radialGradient id="pocket-glow" cx="50%" cy="50%">
-          <stop offset="0%" stopColor="#22D3EE" stopOpacity="0.18"/>
-          <stop offset="100%" stopColor="#22D3EE" stopOpacity="0"/>
+          <stop offset="0%" stopColor="#45E0A8" stopOpacity="0.18"/>
+          <stop offset="100%" stopColor="#45E0A8" stopOpacity="0"/>
         </radialGradient>
       </defs>
       {/* Binding pocket */}
-      <ellipse cx="450" cy="140" rx="90" ry="40" fill="url(#pocket-glow)" stroke="#22D3EE" strokeOpacity="0.3" strokeWidth="1" strokeDasharray="3 3"/>
+      <ellipse cx="450" cy="140" rx="90" ry="40" fill="url(#pocket-glow)" stroke="#45E0A8" strokeOpacity="0.3" strokeWidth="1" strokeDasharray="3 3"/>
       {/* Trajectory trail */}
       {phase >= 1 && (
         <path d={phase === 1
           ? "M 220 130 Q 290 100 330 140 Q 380 170 430 130 Q 480 120 520 145"
           : "M 220 130 Q 290 100 330 140 Q 380 170 430 130 Q 460 130 450 140"}
-              fill="none" stroke="#FBBF24" strokeWidth="1" strokeOpacity="0.45" strokeDasharray="2 4"/>
+              fill="none" stroke="#FF9300" strokeWidth="1" strokeOpacity="0.45" strokeDasharray="2 4"/>
       )}
       {/* Ligand positions */}
       {positions.map((p, i) => {
         const isLast = i === positions.length - 1;
-        const c = phase === 0 ? "#EC4899" : phase === 1 ? "#22D3EE" : "#FBBF24";
+        const c = phase === 0 ? "#EC4899" : phase === 1 ? "#45E0A8" : "#FF9300";
         return (
           <g key={i} opacity={isLast ? 1 : 0.5}>
             <circle cx={p.x} cy={p.y} r={p.r} fill={c} fillOpacity={isLast ? 0.18 : 0.10}/>

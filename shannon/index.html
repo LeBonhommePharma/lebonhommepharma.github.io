@@ -7,7 +7,7 @@
   <meta name="description" content="Shannon: entropy-collapse detector for frontier LLM agents and multi-agent hubs. Same H = −Σ pᵢ log₂ pᵢ kernel as FlexAID∆S. Zero-shot evaluation-awareness and strategic-deception monitoring. &lt;1 µs per token.">
   <meta name="keywords" content="Shannon entropy, LLM safety, evaluation awareness, strategic deception, multi-agent, entropy collapse, FlexAID∆S, AI safety">
   <meta name="author" content="Le Bonhomme Pharma">
-  <meta name="theme-color" content="#0a0e14">
+  <meta name="theme-color" content="#08091A">
   <link rel="canonical" href="https://thebonhomme.com/shannon/">
 
   <meta property="og:title" content="Shannon — Entropy Collapse for Frontier Agents">
@@ -37,32 +37,32 @@
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
     :root {
-      --bg: #0a0e14;
-      --bg-panel: rgba(16, 20, 28, 0.92);
-      --bg-card: rgba(16, 20, 28, 0.80);
-      --bg-alt: rgba(12, 16, 22, 0.50);
-      --teal: #22D3EE;
-      --violet: #A78BFA;
-      --terra: #A78BFA;
-      --gold: #FBBF24;
-      --text: #d4dced;
-      --fg: #d4dced;
-      --muted: #8a93a8;
-      --fg-muted: #8a93a8;
+      --bg: #08091A;
+      --bg-panel: rgba(17, 18, 38, 0.92);
+      --bg-card: rgba(17, 18, 38, 0.80);
+      --bg-alt: rgba(12, 13, 30, 0.50);
+      --teal: #45E0A8;
+      --violet: #8B5CF6;
+      --terra: #8B5CF6;
+      --gold: #FF9300;
+      --text: #E4E3F5;
+      --fg: #E4E3F5;
+      --muted: #8D8CB0;
+      --fg-muted: #8D8CB0;
       --border: rgba(120, 190, 220, 0.12);
-      --teal-06: rgba(34,211,238,0.06);
-      --teal-08: rgba(34,211,238,0.08);
-      --teal-10: rgba(34,211,238,0.10);
-      --teal-12: rgba(34,211,238,0.12);
-      --teal-15: rgba(34,211,238,0.15);
-      --teal-20: rgba(34,211,238,0.20);
-      --terra-10: rgba(167,139,250,0.10);
-      --terra-12: rgba(167,139,250,0.12);
-      --terra-25: rgba(167,139,250,0.25);
-      --terra-35: rgba(167,139,250,0.35);
-      --gold-06: rgba(251,191,36,0.06);
-      --gold-10: rgba(251,191,36,0.10);
-      --gold-12: rgba(251,191,36,0.12);
+      --teal-06: rgba(69,224,168,0.06);
+      --teal-08: rgba(69,224,168,0.08);
+      --teal-10: rgba(69,224,168,0.10);
+      --teal-12: rgba(69,224,168,0.12);
+      --teal-15: rgba(69,224,168,0.15);
+      --teal-20: rgba(69,224,168,0.20);
+      --terra-10: rgba(139,92,246,0.10);
+      --terra-12: rgba(139,92,246,0.12);
+      --terra-25: rgba(139,92,246,0.25);
+      --terra-35: rgba(139,92,246,0.35);
+      --gold-06: rgba(255,147,0,0.06);
+      --gold-10: rgba(255,147,0,0.10);
+      --gold-12: rgba(255,147,0,0.12);
       --font-body: 'IBM Plex Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
     }
@@ -74,8 +74,8 @@
       line-height: 1.6;
       overflow-x: hidden;
       background-image:
-        linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(69,224,168,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(69,224,168,0.03) 1px, transparent 1px);
       background-size: 40px 40px;
     }
 
@@ -92,7 +92,7 @@
     }
     .skip-link:focus {
       position: fixed; left: 12px; top: 12px; z-index: 100; width: auto; height: auto;
-      padding: 8px 14px; background: var(--teal); color: #0a0e14;
+      padding: 8px 14px; background: var(--teal); color: #08091A;
       font-family: var(--font-mono); font-size: 12px; border-radius: 6px;
     }
 
@@ -161,7 +161,7 @@
     /* ── SECTIONS ── */
     .section-divider {
       height: 1px;
-      background: linear-gradient(to right, transparent, rgba(34,211,238,0.2), transparent);
+      background: linear-gradient(to right, transparent, rgba(69,224,168,0.2), transparent);
     }
     .section-label {
       font-family: var(--font-mono); font-size: 10px;
@@ -176,11 +176,11 @@
     .section-h2 .teal { color: var(--teal); }
     .section-h2 .violet { color: var(--violet); }
     .gradient-tg {
-      background: linear-gradient(135deg, #22D3EE, #FBBF24);
+      background: linear-gradient(135deg, #45E0A8, #FF9300);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
     .gradient-vg {
-      background: linear-gradient(135deg, #A78BFA, #FBBF24);
+      background: linear-gradient(135deg, #8B5CF6, #FF9300);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
     .section { padding: 4rem 0; }
@@ -200,9 +200,9 @@
     .hero .glow-blob {
       position: absolute; border-radius: 50%; pointer-events: none; filter: blur(80px);
     }
-    .hero .glow-blob.teal { top: 2.5rem; left: -200px; width: 600px; height: 600px; background: rgba(34,211,238,0.06); }
-    .hero .glow-blob.violet { bottom: 0; right: -150px; width: 500px; height: 500px; background: rgba(167,139,250,0.05); }
-    .hero .glow-blob.gold { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 800px; background: rgba(251,191,36,0.02); }
+    .hero .glow-blob.teal { top: 2.5rem; left: -200px; width: 600px; height: 600px; background: rgba(69,224,168,0.06); }
+    .hero .glow-blob.violet { bottom: 0; right: -150px; width: 500px; height: 500px; background: rgba(139,92,246,0.05); }
+    .hero .glow-blob.gold { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 800px; height: 800px; background: rgba(255,147,0,0.02); }
 
     .hero-content { position: relative; z-index: 10; max-width: 1152px; margin: 0 auto; width: 100%; text-align: center; }
 
@@ -241,8 +241,8 @@
       letter-spacing: 0.02em;
     }
     @keyframes breathe {
-      0%,100% { opacity: 0.85; transform: scale(1); text-shadow: 0 0 20px rgba(34,211,238,0.2); }
-      50%     { opacity: 1; transform: scale(1.03); text-shadow: 0 0 40px rgba(34,211,238,0.4), 0 0 60px rgba(251,191,36,0.2); }
+      0%,100% { opacity: 0.85; transform: scale(1); text-shadow: 0 0 20px rgba(69,224,168,0.2); }
+      50%     { opacity: 1; transform: scale(1.03); text-shadow: 0 0 40px rgba(69,224,168,0.4), 0 0 60px rgba(255,147,0,0.2); }
     }
     @media (prefers-reduced-motion: reduce) {
       .equation { animation: none; }
@@ -272,8 +272,8 @@
       border-radius: 3px; border: 1px solid var(--teal-20);
       background: var(--teal-06); color: var(--teal); white-space: nowrap;
     }
-    .badge.violet { border-color: rgba(167,139,250,0.46); background: var(--terra-10); color: var(--violet); }
-    .badge.gold  { border-color: rgba(251,191,36,0.46); background: var(--gold-10); color: var(--gold); }
+    .badge.violet { border-color: rgba(139,92,246,0.46); background: var(--terra-10); color: var(--violet); }
+    .badge.gold  { border-color: rgba(255,147,0,0.46); background: var(--gold-10); color: var(--gold); }
 
     .hero-ctas {
       display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 2rem;
@@ -284,8 +284,8 @@
       display: inline-flex; align-items: center; gap: 8px;
     }
     .btn-primary {
-      background: var(--teal); color: #0a0e14;
-      box-shadow: 0 0 26px color-mix(in srgb, #A78BFA 32%, transparent);
+      background: var(--teal); color: #08091A;
+      box-shadow: 0 0 26px color-mix(in srgb, #8B5CF6 32%, transparent);
     }
     .btn-outline {
       background: transparent; color: var(--text);
@@ -351,9 +351,9 @@
       padding: 1.25rem; border-radius: 12px; background: var(--bg-card);
       border: 1px solid;
     }
-    .feature-card.teal-card  { border-color: var(--teal-15); --cc: #22D3EE; }
-    .feature-card.terra-card { border-color: var(--terra-12); --cc: #A78BFA; }
-    .feature-card.gold-card  { border-color: var(--gold-12); --cc: #FBBF24; }
+    .feature-card.teal-card  { border-color: var(--teal-15); --cc: #45E0A8; }
+    .feature-card.terra-card { border-color: var(--terra-12); --cc: #8B5CF6; }
+    .feature-card.gold-card  { border-color: var(--gold-12); --cc: #FF9300; }
     .feature-card h3 {
       font-family: var(--font-mono); font-size: 14px; font-weight: 600;
       margin-bottom: 10px;
@@ -370,7 +370,7 @@
       padding: 3px 0; display: flex; gap: 8px;
     }
     .feature-card li::before {
-      content: '›'; color: rgba(34,211,238,0.45); flex-shrink: 0;
+      content: '›'; color: rgba(69,224,168,0.45); flex-shrink: 0;
     }
 
     /* ── HOW IT WORKS ── */
@@ -461,10 +461,10 @@
       background: var(--bg-card); border: 1px solid var(--border);
       border-radius: 10px; padding: 1rem 1.25rem;
       text-decoration: none; display: flex; flex-direction: column; gap: 4px;
-      --cc: #22D3EE;
+      --cc: #45E0A8;
     }
-    .eco-card.gold-card { border-color: var(--gold-12); --cc: #FBBF24; }
-    .eco-card.terra-card { border-color: var(--terra-12); --cc: #A78BFA; }
+    .eco-card.gold-card { border-color: var(--gold-12); --cc: #FF9300; }
+    .eco-card.terra-card { border-color: var(--terra-12); --cc: #8B5CF6; }
     .eco-label {
       font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--teal);
     }
@@ -477,12 +477,12 @@
       font-family: var(--font-mono); font-size: 12px;
       padding: 6px 12px; border-radius: 6px;
       border: 1px solid var(--border); color: var(--muted);
-      background: var(--bg-card); --cc: #22D3EE;
+      background: var(--bg-card); --cc: #45E0A8;
     }
 
     /* ── FOOTER ── */
     .site-footer {
-      background: rgba(10,14,20,0.9); border-top: 1px solid rgba(34,211,238,0.1);
+      background: rgba(8,9,26,0.9); border-top: 1px solid rgba(69,224,168,0.1);
     }
     .footer-inner { max-width: 1152px; margin: 0 auto; padding: 2rem 1.5rem; }
     .footer-top {
@@ -500,7 +500,7 @@
     }
     .footer-bottom {
       margin-top: 1.5rem; padding-top: 1rem; text-align: center;
-      border-top: 1px solid rgba(34,211,238,0.08);
+      border-top: 1px solid rgba(69,224,168,0.08);
     }
     .footer-cite {
       font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.6;
@@ -587,29 +587,29 @@
 
         <div class="equation" aria-label="Shannon entropy equation">
           <p class="equation-text">
-            <span style="color:#FBBF24;">H</span>
-            <span style="color:#8a93a8;"> = −Σ </span>
-            <span style="color:#22D3EE;">pᵢ</span>
-            <span style="color:#8a93a8;"> log₂ </span>
-            <span style="color:#A78BFA;">pᵢ</span>
+            <span style="color:#FF9300;">H</span>
+            <span style="color:#8D8CB0;"> = −Σ </span>
+            <span style="color:#45E0A8;">pᵢ</span>
+            <span style="color:#8D8CB0;"> log₂ </span>
+            <span style="color:#8B5CF6;">pᵢ</span>
           </p>
         </div>
 
         <div class="hero-stats">
           <div class="hero-stat">
-            <div class="hero-stat-value" style="color:#22D3EE;">94%</div>
+            <div class="hero-stat-value" style="color:#45E0A8;">94%</div>
             <div class="hero-stat-label">SHANNON COLLAPSE</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-value" style="color:#A78BFA;">&lt;1µs</div>
+            <div class="hero-stat-value" style="color:#8B5CF6;">&lt;1µs</div>
             <div class="hero-stat-label">PER TOKEN</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-value" style="color:#FBBF24;">0-shot</div>
+            <div class="hero-stat-value" style="color:#FF9300;">0-shot</div>
             <div class="hero-stat-label">EVAL AWARENESS</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-value" style="color:#d4dced;">OSS</div>
+            <div class="hero-stat-value" style="color:#E4E3F5;">OSS</div>
             <div class="hero-stat-label">OPEN SOURCE</div>
           </div>
         </div>
@@ -636,7 +636,7 @@
 
       <div class="scroll-indicator" aria-hidden="true">
         <span>Scroll to collapse</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8a93a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8D8CB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
       </div>
     </section>
 
@@ -941,8 +941,8 @@
       <div class="footer-top">
         <div class="footer-brand">
           <svg width="24" height="24" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <rect x="2" y="2" width="28" height="28" rx="6" stroke="#22D3EE" stroke-width="1.5"/>
-            <text x="16" y="21" text-anchor="middle" font-family="ui-monospace,monospace" font-size="13" font-weight="700" fill="#A78BFA">H</text>
+            <rect x="2" y="2" width="28" height="28" rx="6" stroke="#45E0A8" stroke-width="1.5"/>
+            <text x="16" y="21" text-anchor="middle" font-family="ui-monospace,monospace" font-size="13" font-weight="700" fill="#8B5CF6">H</text>
           </svg>
           Shannon<span class="delta"> · H↓</span>
         </div>

@@ -32,9 +32,9 @@ console.log('Shannon + design handoff structural suite\n');
 const ixPath = mustExist('interaction.css');
 const ix = readFileSync(ixPath, 'utf8');
 const tokenChecks = {
-  'teal #22D3EE': /--ix-teal:\s*#22D3EE/i,
-  'violet #A78BFA': /--ix-violet:\s*#A78BFA/i,
-  'gold #FBBF24': /--ix-gold:\s*#FBBF24/i,
+  'teal #45E0A8': /--ix-teal:\s*#45E0A8/i,
+  'violet #8B5CF6': /--ix-violet:\s*#8B5CF6/i,
+  'gold #FF9300': /--ix-gold:\s*#FF9300/i,
   'primary translateY(-1px)': /\.btn-primary:hover[\s\S]*?translateY\(\s*-1px\s*\)/,
   'brightness 1.06': /brightness\(\s*1\.06\s*\)/,
   'card translateY(-4px)': /translateY\(\s*-4px\s*\)/,
@@ -95,7 +95,7 @@ for (const rel of ['cv.html', 'resume.html', 'entropy-driven/index.html', 'FlexA
   }
 }
 
-// FlexAID∆S product surfaces must ship handoff hover tokens (not legacy #2a9aa8)
+// FlexAID∆S product surfaces must ship handoff hover tokens (not legacy #7FF0C4)
 // Canonical live path is /flexaid-ds/ (GitHub Pages keeps a poisoned /FlexAIDdS/ object).
 for (const dir of ['FlexAIDdS', 'flexaid-ds']) {
   const flexCss = readFileSync(join(__dirname, dir, 'styles.css'), 'utf8');
@@ -111,8 +111,8 @@ for (const dir of ['FlexAIDdS', 'flexaid-ds']) {
   else fail(`${dir} styles translateY(-1px)`);
   if (flexCss.includes('translateY(-4px)')) ok(`${dir} styles translateY(-4px)`);
   else fail(`${dir} styles translateY(-4px)`);
-  if (!/#2a9aa8/i.test(flexCss) && !/#2a9aa8/i.test(flexHtml)) ok(`${dir} has no legacy #2a9aa8`);
-  else fail(`${dir} has no legacy #2a9aa8`);
+  if (!/#7FF0C4/i.test(flexCss) && !/#7FF0C4/i.test(flexHtml)) ok(`${dir} has no legacy #7FF0C4`);
+  else fail(`${dir} has no legacy #7FF0C4`);
 }
 
 // Homepage must deep-link to the live-publishable product path

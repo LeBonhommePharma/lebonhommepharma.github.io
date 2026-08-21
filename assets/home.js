@@ -58,7 +58,7 @@
   /* ---- 2. Theme toggle -------------------------------------------------- */
   /* Palettes are the two <html data-theme> branches already in the page CSS;
      the body background values match the original _applyBodyBg(). */
-  var BODY_BG = { night: "#0a0e14", day: "#e9edf5" };
+  var BODY_BG = { night: "#08091A", day: "#e9edf5" };
   var group   = document.querySelector(".theme-toggle");
   var sun     = document.querySelector(".tg-btn.tg-sun");
   var moon    = document.querySelector(".tg-btn.tg-moon");

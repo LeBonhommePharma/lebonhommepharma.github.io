@@ -12,14 +12,14 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0e14;
-      --card: rgba(16,20,28,0.92);
-      --teal: #22D3EE;
+      --bg: #08091A;
+      --card: rgba(17,18,38,0.92);
+      --teal: #45E0A8;
       --terra: #A84B2F;
-      --gold: #FBBF24;
-      --fg: #d4dced;
-      --muted: #8a93a8;
-      --border: rgba(34,211,238,0.15);
+      --gold: #FF9300;
+      --fg: #E4E3F5;
+      --muted: #8D8CB0;
+      --border: rgba(69,224,168,0.15);
     }
     body {
       font-family: 'Inter', system-ui, sans-serif;
@@ -35,7 +35,7 @@
 
     .nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(10,14,20,0.92); backdrop-filter: blur(12px);
+      background: rgba(8,9,26,0.92); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       padding: 0 1.5rem; height: 56px; display: flex; align-items: center; gap: 1rem;
     }
@@ -53,8 +53,8 @@
     .hero .sub { color: var(--muted); max-width: 620px; margin: 0 auto 1rem; font-size: 1.05rem; }
     .tag-dotd {
       display: inline-flex; align-items: center; gap: .4rem;
-      background: rgba(251,191,36,0.1); color: #FBBF24; font-size: .72rem; padding: .15rem .6rem;
-      border-radius: 999px; border: 1px solid rgba(251,191,36,0.3); font-weight: 600; letter-spacing: .05em;
+      background: rgba(255,147,0,0.1); color: #FF9300; font-size: .72rem; padding: .15rem .6rem;
+      border-radius: 999px; border: 1px solid rgba(255,147,0,0.3); font-weight: 600; letter-spacing: .05em;
       text-transform: uppercase;
     }
 
@@ -68,7 +68,7 @@
     @media (max-width: 860px) { .beat-mic { grid-template-columns: 1fr; } }
 
     .beat-visual { position: relative; }
-    #beat-canvas { width: 100%; height: 220px; border-radius: 10px; background: #05080d; border: 1px solid rgba(34,211,238,0.1); }
+    #beat-canvas { width: 100%; height: 220px; border-radius: 10px; background: #05080d; border: 1px solid rgba(69,224,168,0.1); }
     .beat-label { font-size: .7rem; color: var(--muted); margin-top: .5rem; letter-spacing: .08em; text-transform: uppercase; }
 
     .mic-col {
@@ -81,9 +81,9 @@
       display: flex; align-items: center; justify-content: center;
       position: relative; cursor: pointer; transition: transform .2s, box-shadow .2s;
     }
-    .mic.active { border-color: #FBBF24; box-shadow: 0 0 0 8px rgba(251,191,36,0.15); transform: scale(1.02); }
+    .mic.active { border-color: #FF9300; box-shadow: 0 0 0 8px rgba(255,147,0,0.15); transform: scale(1.02); }
     .mic svg { width: 46px; height: 46px; }
-    .mic .live { position: absolute; bottom: 12px; font-size: 9px; letter-spacing: .1em; color: #FBBF24; opacity: 0; }
+    .mic .live { position: absolute; bottom: 12px; font-size: 9px; letter-spacing: .1em; color: #FF9300; opacity: 0; }
     .mic.active .live { opacity: 1; }
 
     .entropy-info h3 { font-size: 1.1rem; margin-bottom: .35rem; }
@@ -100,7 +100,7 @@
       display: flex; align-items: center; gap: .6rem; margin-bottom: .6rem;
     }
     .dotd-tag {
-      font-size: .65rem; background: rgba(251,191,36,0.15); color: #FBBF24;
+      font-size: .65rem; background: rgba(255,147,0,0.15); color: #FF9300;
       padding: .1rem .5rem; border-radius: 4px; font-weight: 700; letter-spacing: .06em;
     }
     .dotd-today { color: var(--muted); font-size: .8rem; }
@@ -112,7 +112,7 @@
       display: inline-flex; align-items: center; padding: .55rem 1.1rem; border-radius: 8px;
       font-size: .9rem; font-weight: 600; border: 1px solid var(--border);
     }
-    .btn-primary { background: var(--teal); color: #0a0e14; border-color: var(--teal); }
+    .btn-primary { background: var(--teal); color: #08091A; border-color: var(--teal); }
     .btn-ghost { color: var(--fg); }
 
     .footer { padding: 2rem 1.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .8rem; text-align: center; }
@@ -133,7 +133,7 @@
 
   <header class="hero">
     <div class="tag-dotd mono">Drug of the Day</div>
-    <h1>FlexAID<span style="color:#22D3EE">•</span> Entropy Docking</h1>
+    <h1>FlexAID<span style="color:#45E0A8">•</span> Entropy Docking</h1>
     <p class="sub mono">Genetic algorithms + full statistical mechanics. ΔG = ΔH − TΔS with Shannon configurational entropy. Daily rotating Drug of the Day entries — only one appears per day.</p>
     <div class="links">
       <a href="/entropy-docking/" class="btn btn-primary">Launch Entropy Docking</a>
@@ -163,7 +163,7 @@
             Microphone mode brings the docking ensemble to life.<br>
             Real-time signal → varying tempo &amp; amplitude.
           </div>
-          <div style="font-size:.65rem;color:#FBBF24;text-align:center;margin-top:.25rem;">TEMPO SYNC + ENTROPY SIGNAL</div>
+          <div style="font-size:.65rem;color:#FF9300;text-align:center;margin-top:.25rem;">TEMPO SYNC + ENTROPY SIGNAL</div>
         </div>
       </div>
 
@@ -281,14 +281,14 @@
         // Draw state (pose / energy basin)
         ctx.beginPath();
         ctx.arc(x, centerY + Math.sin(localPhase * Math.PI * 1.6) * (6 * amplitude), r, 0, Math.PI * 2);
-        ctx.fillStyle = i % 2 === 0 ? '#22D3EE' : (i === 3 ? '#FBBF24' : '#A84B2F');
+        ctx.fillStyle = i % 2 === 0 ? '#45E0A8' : (i === 3 ? '#FF9300' : '#A84B2F');
         ctx.globalAlpha = alpha * (0.6 + 0.4 * amplitude);
         ctx.fill();
 
         // Thin ring for ensemble
         ctx.beginPath();
         ctx.arc(x, centerY + Math.sin(localPhase * Math.PI * 1.6) * (6 * amplitude), r * 1.55, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(34,211,238,0.25)';
+        ctx.strokeStyle = 'rgba(69,224,168,0.25)';
         ctx.lineWidth = 1.5 * (window.devicePixelRatio || 1);
         ctx.globalAlpha = 0.25 + 0.35 * (1 - Math.abs(Math.sin(localPhase * Math.PI)));
         ctx.stroke();
@@ -303,13 +303,13 @@
         const extra = micActive ? Math.sin(x * 0.11 + t * 9) * 4 * amplitude : 0;
         ctx.lineTo(x, h - 28 + s + extra);
       }
-      ctx.strokeStyle = micActive ? '#FBBF24' : 'rgba(34,211,238,0.55)';
+      ctx.strokeStyle = micActive ? '#FF9300' : 'rgba(69,224,168,0.55)';
       ctx.lineWidth = 1.8 * (window.devicePixelRatio || 1);
       ctx.stroke();
 
       // Beat tick marker
       const tickX = 20 + (w - 40) * beatPhase;
-      ctx.fillStyle = micActive ? '#FBBF24' : '#22D3EE';
+      ctx.fillStyle = micActive ? '#FF9300' : '#45E0A8';
       ctx.fillRect(tickX - 1.5, h - 42, 3, 28);
 
       phase += micActive ? 0.065 * amplitude : 0.038;

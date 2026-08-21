@@ -749,51 +749,51 @@
   /* ───────── CORE PALETTE (dark-first, scientific) ───────── */
 
   /* Background ladder — near-black with cool blue cast */
-  --bg:           #0a0e14;        /* page bg                       */
-  --bg-panel:     rgba(16, 20, 28, 0.92);   /* nav / fixed panels */
-  --bg-card:      rgba(16, 20, 28, 0.80);   /* feature cards      */
-  --bg-alt:       rgba(12, 16, 22, 0.50);   /* alternating bands  */
+  --bg:           #08091A;        /* page bg                       */
+  --bg-panel:     rgba(17, 18, 38, 0.92);   /* nav / fixed panels */
+  --bg-card:      rgba(17, 18, 38, 0.80);   /* feature cards      */
+  --bg-alt:       rgba(12, 13, 30, 0.50);   /* alternating bands  */
 
   /* Brand triad — the equation ΔG = ΔH − TΔS lives in these
      colors. Each maps to a thermodynamic term and is referenced
      consistently across UI, charts, and copy.                   */
-  --teal:    #22D3EE;   /* primary    · ΔH (enthalpy)   · CTA, brand mark */
-  --terra:   #A78BFA;   /* alert/heat · TΔS (entropy)   · alerts, section labels */
-  --gold:    #FBBF24;   /* highlight  · ΔG (free energy)· stats, key results */
+  --teal:    #45E0A8;   /* primary    · ΔH (enthalpy)   · CTA, brand mark */
+  --terra:   #8B5CF6;   /* alert/heat · TΔS (entropy)   · alerts, section labels */
+  --gold:    #FF9300;   /* highlight  · ΔG (free energy)· stats, key results */
 
   /* Text */
-  --fg:       #d4dced;   /* primary text       */
-  --fg-muted: #8a93a8;   /* secondary, labels  */
+  --fg:       #E4E3F5;   /* primary text       */
+  --fg-muted: #8D8CB0;   /* secondary, labels  */
 
   /* ───────── ALPHA OVERLAYS ─────────
      The brand layers translucent washes of the triad on the
      dark bg instead of mixing solid mid-tones. Use these for
      borders, hover backgrounds, and chip fills.                 */
-  --teal-06:  rgba(34,211,238,0.06);
-  --teal-08:  rgba(34,211,238,0.08);
-  --teal-10:  rgba(34,211,238,0.10);
-  --teal-15:  rgba(34,211,238,0.15);
-  --teal-20:  rgba(34,211,238,0.20);
+  --teal-06:  rgba(69,224,168,0.06);
+  --teal-08:  rgba(69,224,168,0.08);
+  --teal-10:  rgba(69,224,168,0.10);
+  --teal-15:  rgba(69,224,168,0.15);
+  --teal-20:  rgba(69,224,168,0.20);
 
-  --terra-10: rgba(167,139,250,0.10);
-  --terra-12: rgba(167,139,250,0.12);
-  --terra-25: rgba(167,139,250,0.25);
-  --terra-35: rgba(167,139,250,0.35);
+  --terra-10: rgba(139,92,246,0.10);
+  --terra-12: rgba(139,92,246,0.12);
+  --terra-25: rgba(139,92,246,0.25);
+  --terra-35: rgba(139,92,246,0.35);
 
-  --gold-06:  rgba(251,191,36,0.06);
-  --gold-10:  rgba(251,191,36,0.10);
-  --gold-12:  rgba(251,191,36,0.12);
-  --gold-35:  rgba(251,191,36,0.35);
+  --gold-06:  rgba(255,147,0,0.06);
+  --gold-10:  rgba(255,147,0,0.10);
+  --gold-12:  rgba(255,147,0,0.12);
+  --gold-35:  rgba(255,147,0,0.35);
 
   /* ───────── SUPPORTING / KEYWORD ACCENTS ─────────
      Spectrum keywords cycle these on a slow gradient flow.     */
   --kw-entropy:  var(--terra);
   --kw-statmech: var(--teal);
   --kw-dg:       var(--gold);
-  --kw-ga:       #67E8F9;   /* lighter teal — genetic algorithm  */
-  --kw-open:     #FCD34D;   /* warm gold — open science          */
-  --kw-docking:  #5046D6;   /* lighter terra — docking           */
-  --kw-rescue:   #FDE68A;   /* light gold — binding mode rescue  */
+  --kw-ga:       #8EEFC9;   /* lighter teal — genetic algorithm  */
+  --kw-open:     #FFB84D;   /* warm gold — open science          */
+  --kw-docking:  #A78BFA;   /* lighter terra — docking           */
+  --kw-rescue:   #FFC773;   /* light gold — binding mode rescue  */
 
   /* ───────── TYPE SCALE ─────────
      Body is the brand sans-serif (IBM Plex Sans by default — see Font families
@@ -860,11 +860,11 @@
 
   /* ───────── SHADOWS / GLOWS ─────────
      The brand prefers colored glow over neutral drop-shadow.    */
-  --glow-teal:  0 0 18px rgba(34,211,238,0.30);
-  --glow-teal-strong: 0 0 24px rgba(34,211,238,0.50);
-  --glow-terra: 0 0 20px rgba(167,139,250,0.10);
-  --glow-gold:  0 0 20px rgba(251,191,36,0.10);
-  --glow-equation: 0 0 40px rgba(34,211,238,0.4), 0 0 60px rgba(251,191,36,0.2);
+  --glow-teal:  0 0 18px rgba(69,224,168,0.30);
+  --glow-teal-strong: 0 0 24px rgba(69,224,168,0.50);
+  --glow-terra: 0 0 20px rgba(139,92,246,0.10);
+  --glow-gold:  0 0 20px rgba(255,147,0,0.10);
+  --glow-equation: 0 0 40px rgba(69,224,168,0.4), 0 0 60px rgba(255,147,0,0.2);
 
   /* ───────── MOTION ─────────
      Easings used across hover, fade-in, and the keyword
@@ -879,7 +879,7 @@
 
   /* ───────── GRID BACKGROUND ─────────
      Fine teal grid at 40px, always-on under content.            */
-  --grid-line: rgba(34,211,238,0.03);
+  --grid-line: rgba(69,224,168,0.03);
   --grid-step: 40px;
 }
 
@@ -981,32 +981,32 @@ code, .mono, kbd, samp {
 <style>
   doc-page:not(:defined){visibility:hidden}
   a{transition:color .18s cubic-bezier(.16,1,.3,1),filter .18s cubic-bezier(.16,1,.3,1);}
-  a:hover{color:#22D3EE !important;filter:brightness(1.15);}
-  a:focus-visible{outline:2px solid #22D3EE;outline-offset:2px;border-radius:4px;}
+  a:hover{color:#45E0A8 !important;filter:brightness(1.15);}
+  a:focus-visible{outline:2px solid #45E0A8;outline-offset:2px;border-radius:4px;}
   @media print{a:hover{filter:none;}}
-  ::selection{background:rgba(34,211,238,0.25);}
+  ::selection{background:rgba(69,224,168,0.25);}
 </style>
 </helmet>
 <x-import component-from-global-scope="doc-page" from="/assets/doc-page.js#/doc-page.js" size="letter" margin="0" hint-size="100%,100%">
-  <div style="position:relative;background:#0a0e14;color:#d4dced;font-family:var(--c-body,'SF Pro Display',-apple-system,sans-serif);padding:0.7in 0.72in;line-height:1.55;--c-body:{{ cBody }};--c-h:{{ cH }};--c-s:{{ cS }};--c-g:{{ cG }};--c-chrome:{{ cChrome }};--c-eyebrow:{{ cEyebrow }};--c-fav:{{ cFav }};--c-alarm:{{ cAlarm }};--c-temp:{{ cTemp }};--c-ga:{{ cGa }};">
+  <div style="position:relative;background:#08091A;color:#E4E3F5;font-family:var(--c-body,'SF Pro Display',-apple-system,sans-serif);padding:0.7in 0.72in;line-height:1.55;--c-body:{{ cBody }};--c-h:{{ cH }};--c-s:{{ cS }};--c-g:{{ cG }};--c-chrome:{{ cChrome }};--c-eyebrow:{{ cEyebrow }};--c-fav:{{ cFav }};--c-alarm:{{ cAlarm }};--c-temp:{{ cTemp }};--c-ga:{{ cGa }};">
     <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
-      <div style="position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(34,211,238,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,0.03) 1px,transparent 1px);background-size:38px 38px;"></div>
+      <div style="position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(69,224,168,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(69,224,168,0.03) 1px,transparent 1px);background-size:38px 38px;"></div>
     </sc-if>
     <div style="position:relative;">
 
       <!-- HEADER -->
-      <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:16px;border-bottom:1px solid rgba(34,211,238,0.18);">
+      <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:16px;border-bottom:1px solid rgba(69,224,168,0.18);">
         <div>
-          <h1 style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:34px;line-height:1.02;letter-spacing:-0.01em;color:#d4dced;margin:0 0 9px;">Louis-Philippe <span style="color:var(--c-chrome,#22D3EE);">(LP)</span> Morency</h1>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--c-chrome,#22D3EE);">Computational pharmacologist · docking-engine author · open-science</div>
-          <div style="font-size:12px;color:#8a93a8;margin-top:3px;">PhD candidate · Najmanovich Research Group · Université de Montréal</div>
+          <h1 style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:34px;line-height:1.02;letter-spacing:-0.01em;color:#E4E3F5;margin:0 0 9px;">Louis-Philippe <span style="color:var(--c-chrome,#45E0A8);">(LP)</span> Morency</h1>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--c-chrome,#45E0A8);">Computational pharmacologist · docking-engine author · open-science</div>
+          <div style="font-size:12px;color:#8D8CB0;margin-top:3px;">PhD candidate · Najmanovich Research Group · Université de Montréal</div>
         </div>
-        <div style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.85;color:#8a93a8;white-space:nowrap;">
-          <div><a href="mailto:lp@thebonhomme.com" style="color:var(--c-chrome,#22D3EE);text-decoration:none;">lp@thebonhomme.com</a></div>
-          <div><a href="https://thebonhomme.com" target="_blank" rel="noreferrer noopener" style="color:#8a93a8;text-decoration:none;">thebonhomme.com</a></div>
-          <div><a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="color:var(--c-chrome,#22D3EE);text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><svg width="11" height="11" sc-camel-view-box="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>github.com/LeBonhommePharma</a></div>
-          <div><a href="https://linkedin.com/in/lebonhomme" target="_blank" rel="noreferrer noopener" style="color:#8a93a8;text-decoration:none;">linkedin.com/in/lebonhomme</a></div>
-          <div><a href="https://x.com/lebonhomme" target="_blank" rel="noreferrer noopener" style="color:#8a93a8;text-decoration:none;">x.com/lebonhomme</a></div>
+        <div style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.85;color:#8D8CB0;white-space:nowrap;">
+          <div><a href="mailto:lp@thebonhomme.com" style="color:var(--c-chrome,#45E0A8);text-decoration:none;">lp@thebonhomme.com</a></div>
+          <div><a href="https://thebonhomme.com" target="_blank" rel="noreferrer noopener" style="color:#8D8CB0;text-decoration:none;">thebonhomme.com</a></div>
+          <div><a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="color:var(--c-chrome,#45E0A8);text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><svg width="11" height="11" sc-camel-view-box="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>github.com/LeBonhommePharma</a></div>
+          <div><a href="https://linkedin.com/in/lebonhomme" target="_blank" rel="noreferrer noopener" style="color:#8D8CB0;text-decoration:none;">linkedin.com/in/lebonhomme</a></div>
+          <div><a href="https://x.com/lebonhomme" target="_blank" rel="noreferrer noopener" style="color:#8D8CB0;text-decoration:none;">x.com/lebonhomme</a></div>
           <div>scholar.google.com · L-P Morency</div>
           <div style="color:#5a6478;">ORCID 0009-0001-0218-4750</div>
         </div>
@@ -1014,48 +1014,48 @@ code, .mono, kbd, samp {
 
       <!-- PROFILE -->
       <section style="margin-top:20px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:10px;">// profile</div>
-        <p style="max-width:none;font-size:13px;line-height:1.62;color:#b6bfd2;margin:0;">Computational pharmacologist working at the intersection of <span style="color:var(--c-ga,#67E8F9);">genetic algorithms</span> and <span style="color:var(--c-s,#A78BFA);">statistical mechanics</span>. Main author of <span style="color:var(--c-chrome,#22D3EE);font-weight:500;">FlexAIDΔS</span>, a <span style="color:var(--c-ga,#67E8F9);">genetic-algorithm</span> docking engine that computes the full <span style="white-space:nowrap;"><span style="color:var(--c-g,#FBBF24);">ΔG</span> = <span style="color:var(--c-h,#22D3EE);">ΔH</span> − <span style="color:var(--c-s,#A78BFA);">TΔS</span></span> — the <span style="color:var(--c-s,#A78BFA);">conformational entropy</span> term included, recovering the correct <span style="color:var(--c-h,#22D3EE);">binding mode</span> where <span style="color:var(--c-h,#22D3EE);">enthalpy-only</span> scoring fails. Every result is <span style="color:var(--c-fav,#00FF96);">reproducible</span> by construction and shipped under <span style="color:var(--c-fav,#00FF96);">Apache&nbsp;2.0</span>. Anti-prohibitionist; <span style="color:var(--c-fav,#00FF96);">harm reduction</span> as applied thermodynamics. Montréal.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:10px;">// profile</div>
+        <p style="max-width:none;font-size:13px;line-height:1.62;color:#b6bfd2;margin:0;">Computational pharmacologist working at the intersection of <span style="color:var(--c-ga,#8EEFC9);">genetic algorithms</span> and <span style="color:var(--c-s,#8B5CF6);">statistical mechanics</span>. Main author of <span style="color:var(--c-chrome,#45E0A8);font-weight:500;">FlexAIDΔS</span>, a <span style="color:var(--c-ga,#8EEFC9);">genetic-algorithm</span> docking engine that computes the full <span style="white-space:nowrap;"><span style="color:var(--c-g,#FF9300);">ΔG</span> = <span style="color:var(--c-h,#45E0A8);">ΔH</span> − <span style="color:var(--c-s,#8B5CF6);">TΔS</span></span> — the <span style="color:var(--c-s,#8B5CF6);">conformational entropy</span> term included, recovering the correct <span style="color:var(--c-h,#45E0A8);">binding mode</span> where <span style="color:var(--c-h,#45E0A8);">enthalpy-only</span> scoring fails. Every result is <span style="color:var(--c-fav,#00FF96);">reproducible</span> by construction and shipped under <span style="color:var(--c-fav,#00FF96);">Apache&nbsp;2.0</span>. Anti-prohibitionist; <span style="color:var(--c-fav,#00FF96);">harm reduction</span> as applied thermodynamics. Montréal.</p>
       </section>
 
       <!-- RESEARCH INTERESTS -->
       <section style="margin-top:18px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:10px;">// research interests</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:10px;">// research interests</div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;">
           <sc-for list="{{ interests }}" as="i" hint-placeholder-count="9">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:{{ i.c }};background:rgba(34,211,238,0.05);border:1px solid rgba(34,211,238,0.13);border-radius:3px;padding:3px 8px;">{{ i.label }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:{{ i.c }};background:rgba(69,224,168,0.05);border:1px solid rgba(69,224,168,0.13);border-radius:3px;padding:3px 8px;">{{ i.label }}</span>
           </sc-for>
         </div>
       </section>
 
       <!-- EDUCATION -->
       <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// education</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// education</div>
         <sc-for list="{{ education }}" as="e" hint-placeholder-count="3">
           <div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:12px;">
             <div>
-              <div style="font-weight:600;font-size:13px;color:#d4dced;">{{ e.degree }}</div>
-              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-chrome,#22D3EE);margin-top:1px;">{{ e.school }}</div>
-              <div style="font-size:12px;color:#8a93a8;margin-top:3px;">{{ e.detail }}</div>
+              <div style="font-weight:600;font-size:13px;color:#E4E3F5;">{{ e.degree }}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-chrome,#45E0A8);margin-top:1px;">{{ e.school }}</div>
+              <div style="font-size:12px;color:#8D8CB0;margin-top:3px;">{{ e.detail }}</div>
             </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8a93a8;white-space:nowrap;">{{ e.dates }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8D8CB0;white-space:nowrap;">{{ e.dates }}</div>
           </div>
         </sc-for>
       </section>
 
       <!-- RESEARCH EXPERIENCE -->
       <section style="margin-top:20px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// research &amp; engineering experience</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// research &amp; engineering experience</div>
         <sc-for list="{{ experience }}" as="x" hint-placeholder-count="4">
           <div style="margin-bottom:15px;break-inside:avoid;">
             <div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline;">
-              <span style="font-weight:600;font-size:13px;color:#d4dced;">{{ x.role }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8a93a8;white-space:nowrap;">{{ x.dates }}</span>
+              <span style="font-weight:600;font-size:13px;color:#E4E3F5;">{{ x.role }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8D8CB0;white-space:nowrap;">{{ x.dates }}</span>
             </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-chrome,#22D3EE);margin:2px 0 6px;">{{ x.org }}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-chrome,#45E0A8);margin:2px 0 6px;">{{ x.org }}</div>
             <ul style="margin:0;padding:0;list-style:none;">
               <sc-for list="{{ x.points }}" as="p" hint-placeholder-count="2">
-                <li style="position:relative;padding-left:16px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:3px;"><span style="position:absolute;left:0;color:rgba(34,211,238,0.5);">›</span>{{ p }}</li>
+                <li style="position:relative;padding-left:16px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:3px;"><span style="position:absolute;left:0;color:rgba(69,224,168,0.5);">›</span>{{ p }}</li>
               </sc-for>
             </ul>
           </div>
@@ -1064,13 +1064,13 @@ code, .mono, kbd, samp {
 
       <!-- SOFTWARE -->
       <section style="margin-top:20px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// software &amp; open source</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// software &amp; open source</div>
         <sc-for list="{{ software }}" as="sw" hint-placeholder-count="5">
           <div style="margin-bottom:12px;break-inside:avoid;">
             <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
               <span style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:{{ sw.c }};">{{ sw.name }}</span>
               <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#5a6478;">{{ sw.stack }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--c-g,#FBBF24);border:1px solid rgba(251,191,36,0.35);border-radius:3px;padding:1px 6px;">{{ sw.license }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--c-g,#FF9300);border:1px solid rgba(255,147,0,0.35);border-radius:3px;padding:1px 6px;">{{ sw.license }}</span>
             </div>
             <div style="font-size:12px;line-height:1.55;color:#9aa4b8;margin-top:3px;">{{ sw.desc }}</div>
           </div>
@@ -1079,29 +1079,29 @@ code, .mono, kbd, samp {
 
       <!-- BENCHMARKS -->
       <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// benchmarks &amp; technical results</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(34,211,238,0.12);border:1px solid rgba(34,211,238,0.15);border-radius:8px;overflow:hidden;margin-bottom:12px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// benchmarks &amp; technical results</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(69,224,168,0.12);border:1px solid rgba(69,224,168,0.15);border-radius:8px;overflow:hidden;margin-bottom:12px;">
           <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
             <div style="background:#0d1119;padding:12px 14px;">
               <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:23px;line-height:1;color:{{ s.c }};font-variant-numeric:tabular-nums;">{{ s.value }}</div>
-              <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#8a93a8;margin-top:6px;">{{ s.label }}</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#8D8CB0;margin-top:6px;">{{ s.label }}</div>
             </div>
           </sc-for>
         </div>
         <sc-raw-table style="width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;">
           <sc-raw-thead>
-            <sc-raw-tr style="border-bottom:1px solid rgba(34,211,238,0.2);">
-              <sc-raw-th style="text-align:left;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8a93a8;font-weight:500;padding:0 0 6px;">Benchmark</sc-raw-th>
-              <sc-raw-th style="text-align:left;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8a93a8;font-weight:500;padding:0 0 6px;">Metric</sc-raw-th>
-              <sc-raw-th style="text-align:right;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8a93a8;font-weight:500;padding:0 0 6px;">Result</sc-raw-th>
+            <sc-raw-tr style="border-bottom:1px solid rgba(69,224,168,0.2);">
+              <sc-raw-th style="text-align:left;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8D8CB0;font-weight:500;padding:0 0 6px;">Benchmark</sc-raw-th>
+              <sc-raw-th style="text-align:left;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8D8CB0;font-weight:500;padding:0 0 6px;">Metric</sc-raw-th>
+              <sc-raw-th style="text-align:right;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8D8CB0;font-weight:500;padding:0 0 6px;">Result</sc-raw-th>
             </sc-raw-tr>
           </sc-raw-thead>
           <sc-raw-tbody>
             <sc-for list="{{ benchRows }}" as="r" hint-placeholder-count="3">
-              <sc-raw-tr style="border-bottom:1px solid rgba(34,211,238,0.08);">
-                <sc-raw-td style="font-size:11px;color:#d4dced;padding:6px 0;">{{ r.bench }}</sc-raw-td>
+              <sc-raw-tr style="border-bottom:1px solid rgba(69,224,168,0.08);">
+                <sc-raw-td style="font-size:11px;color:#E4E3F5;padding:6px 0;">{{ r.bench }}</sc-raw-td>
                 <sc-raw-td style="font-size:11px;color:#9aa4b8;padding:6px 0;">{{ r.metric }}</sc-raw-td>
-                <sc-raw-td style="font-size:11px;color:var(--c-g,#FBBF24);padding:6px 0;text-align:right;font-variant-numeric:tabular-nums;">{{ r.result }}</sc-raw-td>
+                <sc-raw-td style="font-size:11px;color:var(--c-g,#FF9300);padding:6px 0;text-align:right;font-variant-numeric:tabular-nums;">{{ r.result }}</sc-raw-td>
               </sc-raw-tr>
             </sc-for>
           </sc-raw-tbody>
@@ -1110,39 +1110,39 @@ code, .mono, kbd, samp {
 
       <!-- PUBLICATIONS -->
       <section style="margin-top:20px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// publications</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// publications</div>
 
         <sc-if value="{{ showPreprints }}" hint-placeholder-val="{{ true }}">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a8;margin:0 0 8px;">preprints &amp; in preparation</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8D8CB0;margin:0 0 8px;">preprints &amp; in preparation</div>
           <ol style="margin:0 0 14px;padding:0;list-style:none;">
             <sc-for list="{{ preprints }}" as="pub" hint-placeholder-count="2">
               <li style="position:relative;padding-left:26px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:9px;break-inside:avoid;">
-                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8a93a8);">{{ pub.n }}</span>
-                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8a93a8;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8a93a8);">{{ pub.year }}</span>
+                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8D8CB0);">{{ pub.n }}</span>
+                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8D8CB0;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8D8CB0);">{{ pub.year }}</span>
               </li>
             </sc-for>
           </ol>
         </sc-if>
 
         <sc-if value="{{ showPeer }}" hint-placeholder-val="{{ true }}">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a8;margin:0 0 8px;">peer-reviewed</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8D8CB0;margin:0 0 8px;">peer-reviewed</div>
           <ol style="margin:0 0 14px;padding:0;list-style:none;">
             <sc-for list="{{ peerReviewed }}" as="pub" hint-placeholder-count="5">
               <li style="position:relative;padding-left:26px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:9px;break-inside:avoid;">
-                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8a93a8);">{{ pub.n }}</span>
-                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8a93a8;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8a93a8);">{{ pub.year }}</span>
+                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8D8CB0);">{{ pub.n }}</span>
+                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8D8CB0;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8D8CB0);">{{ pub.year }}</span>
               </li>
             </sc-for>
           </ol>
         </sc-if>
 
         <sc-if value="{{ showKeynotes }}" hint-placeholder-val="{{ true }}">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8a93a8;margin:0 0 8px;">invited talks &amp; conference keynotes</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8D8CB0;margin:0 0 8px;">invited talks &amp; conference keynotes</div>
           <ol style="margin:0;padding:0;list-style:none;">
             <sc-for list="{{ keynotes }}" as="pub" hint-placeholder-count="5">
               <li style="position:relative;padding-left:26px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:9px;break-inside:avoid;">
-                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8a93a8);">{{ pub.n }}</span>
-                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8a93a8;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8a93a8);">{{ pub.year }}</span>
+                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8D8CB0);">{{ pub.n }}</span>
+                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8D8CB0;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8D8CB0);">{{ pub.year }}</span>
               </li>
             </sc-for>
           </ol>
@@ -1151,10 +1151,10 @@ code, .mono, kbd, samp {
 
       <!-- TALKS & TEACHING -->
       <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// talks &amp; teaching</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// talks &amp; teaching</div>
         <sc-for list="{{ talks }}" as="t" hint-placeholder-count="3">
           <div style="display:flex;gap:12px;margin-bottom:7px;">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-ga,#67E8F9);white-space:nowrap;flex-shrink:0;width:82px;">{{ t.when }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-ga,#8EEFC9);white-space:nowrap;flex-shrink:0;width:82px;">{{ t.when }}</span>
             <span style="font-size:12px;line-height:1.5;color:#9aa4b8;">{{ t.what }}</span>
           </div>
         </sc-for>
@@ -1162,13 +1162,13 @@ code, .mono, kbd, samp {
 
       <!-- SKILLS -->
       <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// technical skills</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// technical skills</div>
         <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="4">
           <div style="display:flex;gap:12px;margin-bottom:8px;align-items:baseline;">
             <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:{{ sk.c }};white-space:nowrap;flex-shrink:0;width:96px;">{{ sk.group }}</span>
             <div style="display:flex;flex-wrap:wrap;gap:5px;">
               <sc-for list="{{ sk.items }}" as="it" hint-placeholder-count="4">
-                <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:{{ sk.c }};background:rgba(34,211,238,0.05);border:1px solid rgba(34,211,238,0.13);border-radius:3px;padding:2px 7px;">{{ it }}</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:{{ sk.c }};background:rgba(69,224,168,0.05);border:1px solid rgba(69,224,168,0.13);border-radius:3px;padding:2px 7px;">{{ it }}</span>
               </sc-for>
             </div>
           </div>
@@ -1177,29 +1177,29 @@ code, .mono, kbd, samp {
 
       <!-- AWARDS -->
       <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// awards &amp; funding</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// awards &amp; funding</div>
         <sc-for list="{{ awards }}" as="a" hint-placeholder-count="3">
           <div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:8px;">
             <div>
               <div style="font-weight:600;font-size:12.5px;color:{{ a.c }};">{{ a.name }}</div>
-              <div style="font-size:11.5px;color:#8a93a8;">{{ a.body }}</div>
+              <div style="font-size:11.5px;color:#8D8CB0;">{{ a.body }}</div>
             </div>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8a93a8;white-space:nowrap;">{{ a.year }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8D8CB0;white-space:nowrap;">{{ a.year }}</span>
           </div>
         </sc-for>
       </section>
 
       <!-- WRITING -->
       <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#A78BFA);margin-bottom:12px;">// writing &amp; advocacy</div>
-        <p style="max-width:none;font-size:12px;line-height:1.6;color:#9aa4b8;margin:0 0 8px;border-left:2px solid var(--c-g,#FBBF24);padding-left:11px;">Book in progress — housing, organized crime, and <span style="color:var(--c-fav,#00FF96);">harm reduction</span> in Montréal. The same physics that lowers a binding free-energy barrier lowers the social barrier to care: systems seek lower free energy; the job is to lower it.</p>
-        <p style="max-width:none;font-size:12px;line-height:1.6;color:#9aa4b8;margin:0;border-left:2px solid var(--c-h,#22D3EE);padding-left:11px;">Drug of the Day — a rotating, rigorous <span style="color:var(--c-fav,#00FF96);">harm-reduction</span> pharmacology brief published at thebonhomme.com. Mechanism over moralising.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// writing &amp; advocacy</div>
+        <p style="max-width:none;font-size:12px;line-height:1.6;color:#9aa4b8;margin:0 0 8px;border-left:2px solid var(--c-g,#FF9300);padding-left:11px;">Book in progress — housing, organized crime, and <span style="color:var(--c-fav,#00FF96);">harm reduction</span> in Montréal. The same physics that lowers a binding free-energy barrier lowers the social barrier to care: systems seek lower free energy; the job is to lower it.</p>
+        <p style="max-width:none;font-size:12px;line-height:1.6;color:#9aa4b8;margin:0;border-left:2px solid var(--c-h,#45E0A8);padding-left:11px;">Drug of the Day — a rotating, rigorous <span style="color:var(--c-fav,#00FF96);">harm-reduction</span> pharmacology brief published at thebonhomme.com. Mechanism over moralising.</p>
       </section>
 
       <!-- FOOTER -->
-      <div style="margin-top:22px;padding-top:10px;border-top:1px solid rgba(34,211,238,0.15);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#5a6478;">
+      <div style="margin-top:22px;padding-top:10px;border-top:1px solid rgba(69,224,168,0.15);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#5a6478;">
         <span>Le Bonhomme Pharma · Little Burgundy · Montréal · Québec</span>
-        <span><span style="color:var(--c-g,#FBBF24);">ΔG</span> = <span style="color:var(--c-h,#22D3EE);">ΔH</span> − <span style="color:var(--c-s,#A78BFA);">TΔS</span></span>
+        <span><span style="color:var(--c-g,#FF9300);">ΔG</span> = <span style="color:var(--c-h,#45E0A8);">ΔH</span> − <span style="color:var(--c-s,#8B5CF6);">TΔS</span></span>
       </div>
 
     </div>
@@ -1211,14 +1211,14 @@ class Component extends DCLogic {
   renderVals() {
     const mode = this.props.colorCoding ?? "expressive";
     const M = {
-      strict:     { chrome: "#8a93a8", eyebrow: "#6b6480", fav: "#8a93a8", alarm: "#8a93a8", temp: "#8a93a8", ga: "#8a93a8" },
+      strict:     { chrome: "#8D8CB0", eyebrow: "#6b6480", fav: "#8D8CB0", alarm: "#8D8CB0", temp: "#8D8CB0", ga: "#8D8CB0" },
       balanced:   { chrome: "#5f9aa6", eyebrow: "#8f80c4", fav: "#5fae86", alarm: "#cf8f8b", temp: "#cf9e6e", ga: "#63aec2" },
-      expressive: { chrome: "#22D3EE", eyebrow: "#A78BFA", fav: "#00FF96", alarm: "#F87171", temp: "#FF7D0A", ga: "#67E8F9" },
+      expressive: { chrome: "#45E0A8", eyebrow: "#8B5CF6", fav: "#00FF96", alarm: "#F87171", temp: "#FF7D0A", ga: "#8EEFC9" },
     };
     const c = M[mode] || M.expressive;
-    const V = { h: "var(--c-h,#22D3EE)", s: "var(--c-s,#A78BFA)", g: "var(--c-g,#FBBF24)", fav: "var(--c-fav,#00FF96)", alarm: "var(--c-alarm,#F87171)", temp: "var(--c-temp,#FF7D0A)", ga: "var(--c-ga,#67E8F9)" };
+    const V = { h: "var(--c-h,#45E0A8)", s: "var(--c-s,#8B5CF6)", g: "var(--c-g,#FF9300)", fav: "var(--c-fav,#00FF96)", alarm: "var(--c-alarm,#F87171)", temp: "var(--c-temp,#FF7D0A)", ga: "var(--c-ga,#8EEFC9)" };
     return {
-      cH: "#22D3EE", cS: "#A78BFA", cG: "#FBBF24",
+      cH: "#45E0A8", cS: "#8B5CF6", cG: "#FF9300",
       cChrome: c.chrome, cEyebrow: c.eyebrow, cFav: c.fav, cAlarm: c.alarm, cTemp: c.temp, cGa: c.ga,
       cBody: ({ "SF Pro": "'SF Pro Display',-apple-system,'Helvetica Neue',sans-serif", "Geist": "'Geist','SF Pro Display',sans-serif", "Manrope": "'Manrope','SF Pro Display',sans-serif", "Atkinson Hyperlegible": "'Atkinson Hyperlegible','SF Pro Display',sans-serif", "IBM Plex Sans": "'IBM Plex Sans','SF Pro Display',sans-serif" })[this.props.bodyFont ?? "SF Pro"] || "'SF Pro Display',-apple-system,'Helvetica Neue',sans-serif",
       showGrid: this.props.showGrid ?? true,
@@ -1308,8 +1308,8 @@ class Component extends DCLogic {
       ],
       awards: [
         { name: "Anthropic Open Source Program", body: "Recognition for open-source contributions to the open scientific-software ecosystem \u2014 FlexAID\u0394S, Shannon.", year: "2026", c: "var(--c-fav,#00FF96)" },
-        { name: "Médaille du Lieutenant-Gouverneur du Québec (bronze)", body: "Cabinet du Lieutenant-gouverneur du Québec \u2014 academic & civic merit.", year: "\u2014", c: "var(--c-g,#FBBF24)" },
-        { name: "Doctoral research fellowship", body: "Fonds de recherche du Québec \u2014 Nature et technologies (FRQ-NT).", year: "PhD", c: "var(--c-g,#FBBF24)" },
+        { name: "Médaille du Lieutenant-Gouverneur du Québec (bronze)", body: "Cabinet du Lieutenant-gouverneur du Québec \u2014 academic & civic merit.", year: "\u2014", c: "var(--c-g,#FF9300)" },
+        { name: "Doctoral research fellowship", body: "Fonds de recherche du Québec \u2014 Nature et technologies (FRQ-NT).", year: "PhD", c: "var(--c-g,#FF9300)" },
         { name: "Open-source contribution recognition", body: "GitHub Arctic Code Vault Contributor; multi-year maintainer across the Najmanovich Research Group / Le Bonhomme Pharma stack.", year: "\u2014", c: "var(--c-fav,#00FF96)" },
       ],
     };

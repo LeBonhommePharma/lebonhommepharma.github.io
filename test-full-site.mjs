@@ -144,9 +144,9 @@ function validateInteractionAndShannon() {
   }
   const ix = readFileSync(ixPath, 'utf8');
   const checks = [
-    ['token teal', /--ix-teal:\s*#22D3EE/i],
-    ['token violet', /--ix-violet:\s*#A78BFA/i],
-    ['token gold', /--ix-gold:\s*#FBBF24/i],
+    ['token teal', /--ix-teal:\s*#45E0A8/i],
+    ['token violet', /--ix-violet:\s*#8B5CF6/i],
+    ['token gold', /--ix-gold:\s*#FF9300/i],
     ['primary hover lift -1px', /translateY\(\s*-1px\s*\)/],
     ['primary hover brightness 1.06', /brightness\(\s*1\.06\s*\)/],
     ['card hover lift -4px', /translateY\(\s*-4px\s*\)/],
@@ -178,7 +178,7 @@ function validateInteractionAndShannon() {
   else fail('shannon loads interaction.css');
   if (/thebonhomme\.com\/shannon/.test(sh)) ok('shannon canonical URL');
   else fail('shannon canonical URL');
-  if (/#22D3EE/i.test(sh) && /#A78BFA/i.test(sh) && /#FBBF24/i.test(sh)) {
+  if (/#45E0A8/i.test(sh) && /#8B5CF6/i.test(sh) && /#FF9300/i.test(sh)) {
     ok('shannon uses triad tokens');
   } else {
     fail('shannon uses triad tokens');
@@ -213,8 +213,8 @@ function validateInteractionAndShannon() {
     }
     if (flexCss.includes('brightness(1.06)')) ok(`${dir} styles.css brightness(1.06)`);
     else fail(`${dir} styles.css brightness(1.06)`);
-    if (!/#2a9aa8/i.test(flexCss)) ok(`${dir} styles.css has no #2a9aa8`);
-    else fail(`${dir} styles.css has no #2a9aa8`);
+    if (!/#7FF0C4/i.test(flexCss)) ok(`${dir} styles.css has no #7FF0C4`);
+    else fail(`${dir} styles.css has no #7FF0C4`);
   }
 }
 
