@@ -199,7 +199,45 @@ SF Pro Display is Apple's, carried over from the bound design system's
 `_ds/…/fonts/` directory; only the four weights the board and the token
 package use (400/500/600/700) are included.
 
-## A separate defect in the logo, not introduced here
+## The logo's entropy fan — restored
+
+The mark is documented as *"five rotated copies of a 3-atom V-shaped ligand
+[sharing] a single pivot point"*. In `logo-flexaid-ds.svg` all five groups
+carried the same path, `M 13 26 L 20 18 L 27 26`, with **no transform** and no
+stylesheet anywhere targeting `.ghost-a` / `.ghost-b`. They stacked exactly on
+the bound pose, so the logo drew as a single ligand and the entropy fan — the
+whole idea of the mark — was invisible.
+
+The opacities gave the intent away: `0.18 / 0.36 / 0.36 / 0.18` around a solid
+core is a symmetric outer/inner fade, which is meaningless for shapes drawn on
+top of each other.
+
+**The geometry is derived, not invented.** `assets/favicon-flexaid-ds.svg` is
+the sibling mark — same path, same 40×40 viewBox — and it already fanned
+correctly with `rotate(±35 20 22)`. So the logo takes that pivot `(20, 22)`
+and that outer spread `35°`, with the inner pair at half, `17.5°`:
+
+| group | opacity | transform |
+|---|---|---|
+| `ghost-a` | 0.18 | `rotate(-35 20 22)` |
+| `ghost-b` | 0.36 | `rotate(-17.5 20 22)` |
+| `ghost-c` | 0.36 | `rotate(17.5 20 22)` |
+| `ghost-d` | 0.18 | `rotate(35 20 22)` |
+| `core` | 1 | none — the bound pose does not move |
+
+`assets/flexaid-logo.js` builds the same mark animated and uses `fan = 58`.
+That was tried first and rejected on the evidence: 58° is tuned for a taller,
+narrower ligand in a 100×100 box, and applied to this wide shallow V it swings
+the outer poses near-horizontal — the mark reads as a blob, badly so at 16px.
+The favicon's 35° is the same artwork in the same coordinate system, and
+matching it also makes the two marks consistent, which they previously were
+not.
+
+Colours and opacities are untouched; the diff is four `transform` attributes
+per file. This predates the palette work — at `b3829e2` the paths were already
+identical and transform-free.
+
+## Historical note
 
 The mark is documented as *"five rotated copies of a 3-atom V-shaped ligand
 [sharing] a single pivot point"* — four ghosts at decreasing opacity tracing
