@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Color &amp; Type Pairings — FlexAID∆S</title>
+<meta name="description" content="Six rounds of colour and type exploration for the FlexAID∆S design system, converging on palette v2: seven key colours, each carrying a thermodynamic quantity.">
+<link rel="stylesheet" href="css/board.css">
+</head>
+<body>
+
+<header class="toolbar">
+  <span class="toolbar-brand">FlexAID<span class="delta">∆S</span> · colour &amp; type pairings</span>
+  <label class="toggle"><input type="checkbox" id="t-grid" checked> grid</label>
+  <label class="toggle"><input type="checkbox" id="t-applied" checked> applied</label>
+  <label class="toggle"><input type="checkbox" id="t-spec" checked> token specs</label>
+</header>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════════════
+     Palette · current state — 6a is canonical
+     ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s-6a">
+
+  <div class="intro">
+    <div class="eyebrow">// palette · current state</div>
+    <h2>Final palette — seven key colors, crayon-sourced</h2>
+    <p>Built on <a href="#5a">5a</a>, and now sourced from the macOS crayon box throughout: a firetruck red <span class="hex" style="color:#F5232B">#F5232B</span> for temperature, Aqua <span class="hex" style="color:#00A2FF">#00A2FF</span> for the vibrational term, Strawberry <span class="hex" style="color:#FF2F92">#FF2F92</span> for the receptor, and Magnesium for the baseline. Splitting T from ΔS means the equation can now be read term by term in color: cherry for the temperature scalar, violet for the entropy it multiplies. Contrast is measured against the ink so you can see which hues carry 10px mono labels and which are display-only. No yellow, no cyan, no salmon.</p>
+  </div>
+
+  <article class="opt opt--wide" id="6a">
+    <header class="opt-head">
+      <span class="badge">6a</span>
+      <span class="opt-title">FlexAID∆S palette · v2 · canonical</span>
+    </header>
+
+    <div class="panel">
+      <div class="panel-grid" aria-hidden="true"></div>
+      <div class="panel-body">
+
+        <div class="eq-row">
+          <div class="equation">
+            <span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-t">T</span><span class="t-ds">ΔS</span> − <span class="t-t">T</span><span class="t-dsv">ΔS_vib</span>
+          </div>
+          <div class="eq-readouts">
+            <span class="chip" style="--chip-fg:#F5232B;--chip-bg:rgba(245,35,43,0.10);--chip-edge:rgba(245,35,43,0.32)">T = 298 K</span>
+            <span class="chip" style="--chip-fg:#FF9300;--chip-bg:rgba(255,147,0,0.10);--chip-edge:rgba(255,147,0,0.32)">ΔG = −8.42 kcal/mol</span>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="block-label">// key colors · seven, each carrying a quantity</div>
+          <div class="keys">
+
+            <div class="key" style="--chip:#45E0A8;--chip-glow:0 0 20px rgba(69,224,168,0.25)">
+              <div class="key-chip"></div>
+              <div class="key-name">Mint</div>
+              <div class="key-hex">#45E0A8</div>
+              <div class="key-role">ΔH · enthalpy · brand primary</div>
+              <div class="key-contrast">11.7:1 · labels ok</div>
+            </div>
+
+            <div class="key" style="--chip:#8B5CF6;--chip-glow:0 0 20px rgba(139,92,246,0.25)">
+              <div class="key-chip"></div>
+              <div class="key-name">Violet</div>
+              <div class="key-hex">#8B5CF6</div>
+              <div class="key-role">ΔS · configurational entropy</div>
+              <div class="key-contrast">4.7:1 · labels ok</div>
+            </div>
+
+            <div class="key" style="--chip:#FF9300;--chip-glow:0 0 20px rgba(255,147,0,0.25)">
+              <div class="key-chip"></div>
+              <div class="key-name">Tangerine</div>
+              <div class="key-hex">#FF9300</div>
+              <div class="key-role">ΔG · free energy · stats</div>
+              <div class="key-contrast">8.9:1 · labels ok</div>
+            </div>
+
+            <div class="key" style="--chip:#F5232B;--chip-glow:0 0 20px rgba(245,35,43,0.28);--contrast-color:#FF6B6B">
+              <div class="key-chip"></div>
+              <div class="key-name">Cherry</div>
+              <div class="key-hex">#F5232B</div>
+              <div class="key-role">T · temperature · firetruck · hot end</div>
+              <div class="key-contrast">4.9:1 · 12px and up</div>
+            </div>
+
+            <div class="key" style="--chip:#00A2FF;--chip-glow:0 0 20px rgba(0,162,255,0.22)">
+              <div class="key-chip"></div>
+              <div class="key-name">Aqua</div>
+              <div class="key-hex">#00A2FF</div>
+              <div class="key-role">ΔS_vib · vibrational · tENCoM</div>
+              <div class="key-contrast">7.2:1 · labels ok</div>
+            </div>
+
+            <div class="key" style="--chip:#FF2F92;--chip-glow:0 0 20px rgba(255,47,146,0.25)">
+              <div class="key-chip"></div>
+              <div class="key-name">Strawberry</div>
+              <div class="key-hex">#FF2F92</div>
+              <div class="key-role">receptor · pocket · eyebrows</div>
+              <div class="key-contrast">5.7:1 · labels ok</div>
+            </div>
+
+            <div class="key" style="--chip:#DCDCE4">
+              <div class="key-chip"></div>
+              <div class="key-name">Magnesium</div>
+              <div class="key-hex">#DCDCE4</div>
+              <div class="key-role">baseline · apo · reference line</div>
+              <div class="key-contrast">14.5:1 · labels ok</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="block-label">// temperature · diverging cool→hot ramp · b-factor convention</div>
+          <div class="t-bar"></div>
+          <div class="t-stops">
+            <div class="t-stop" style="--stop:#00A2FF;--stop-edge:rgba(0,162,255,0.55)"><span class="t-stop-k">77 K</span><span class="t-stop-label">00A2FF · cryo</span></div>
+            <div class="t-stop" style="--stop:#7FD0FF;--stop-edge:rgba(127,208,255,0.45)"><span class="t-stop-k">200 K</span><span class="t-stop-label">7FD0FF · cold</span></div>
+            <div class="t-stop" style="--stop:#DCDCE4;--stop-edge:rgba(220,220,228,0.50)"><span class="t-stop-k">298 K</span><span class="t-stop-label">DCDCE4 · ambient</span></div>
+            <div class="t-stop" style="--stop:#FF7A5C;--stop-edge:rgba(255,122,92,0.45)"><span class="t-stop-k">310 K</span><span class="t-stop-label">FF7A5C · physiological</span></div>
+            <div class="t-stop" style="--stop:#F5232B;--stop-edge:rgba(245,35,43,0.55)"><span class="t-stop-k">350 K+</span><span class="t-stop-label">F5232B · denaturing</span></div>
+          </div>
+          <div class="block-note">This is the ramp crystallographers already read — PyMOL colors the crystallographic temperature factor blue through white to red, so cool-to-hot needs no legend. It also keeps the equation's hues out of it: violet, mint and tangerine mean ΔS, ΔH and ΔG, and can't double as temperature stops without muddying both. Only the two anchors are key colors — aqua at the cold end, firetruck at the hot end, magnesium as the ambient reference — and firetruck stays the color of the T symbol itself.</div>
+        </div>
+
+        <div class="split">
+          <div class="block">
+            <div class="block-label">// state · reuses key hues, severity by brightness</div>
+            <div class="chips">
+              <span class="chip" style="--chip-fg:#45E0A8;--chip-bg:rgba(69,224,168,0.10);--chip-edge:rgba(69,224,168,0.30)">pass · converged</span>
+              <span class="chip" style="--chip-fg:#FF2F92;--chip-bg:rgba(255,47,146,0.12);--chip-edge:rgba(255,47,146,0.35)">warn · low confidence</span>
+              <span class="chip" style="--chip-fg:#FF6B6B;--chip-bg:rgba(245,35,43,0.14);--chip-edge:rgba(245,35,43,0.40)">fail · clash · collapse</span>
+            </div>
+            <div class="block-note">Strawberry to cherry is a severity ramp, not two unrelated reds — magenta means caution, pure red means stop. Cherry doubles as temperature because T never appears in a status chip.</div>
+          </div>
+
+          <div class="block">
+            <div class="block-label">// surfaces · ink to panel</div>
+            <div class="ramp" style="--ramp-h:44px;--ramp-r:6px">
+              <div class="ramp-cell" style="--chip:#08091A;--ramp-border:1px solid rgba(255,255,255,0.07)"><div class="ramp-swatch"></div><span class="ramp-label">08091A · ink</span></div>
+              <div class="ramp-cell" style="--chip:rgba(12,13,30,0.55);--ramp-border:1px solid rgba(139,92,246,0.10)"><div class="ramp-swatch"></div><span class="ramp-label">band · 55%</span></div>
+              <div class="ramp-cell" style="--chip:rgba(17,18,38,0.82);--ramp-border:1px solid rgba(139,92,246,0.20)"><div class="ramp-swatch"></div><span class="ramp-label">card · 82%</span></div>
+              <div class="ramp-cell" style="--chip:#E4E3F5"><div class="ramp-swatch"></div><span class="ramp-label">E4E3F5 · fg</span></div>
+              <div class="ramp-cell" style="--chip:#8D8CB0"><div class="ramp-swatch"></div><span class="ramp-label">8D8CB0 · muted</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="block-label">// series ramp · ordered by energy along the binding coordinate</div>
+          <div class="ramp">
+            <div class="ramp-cell" style="--chip:#DCDCE4"><div class="ramp-swatch"></div><span class="ramp-label">DCDCE4 · apo</span></div>
+            <div class="ramp-cell" style="--chip:#8B5CF6"><div class="ramp-swatch"></div><span class="ramp-label">8B5CF6 · ΔS</span></div>
+            <div class="ramp-cell" style="--chip:#FF2F92"><div class="ramp-swatch"></div><span class="ramp-label">FF2F92 · pocket</span></div>
+            <div class="ramp-cell" style="--chip:#00A2FF"><div class="ramp-swatch"></div><span class="ramp-label">00A2FF · ΔS_vib</span></div>
+            <div class="ramp-cell" style="--chip:#45E0A8"><div class="ramp-swatch"></div><span class="ramp-label">45E0A8 · ΔH</span></div>
+            <div class="ramp-cell" style="--chip:#FF9300"><div class="ramp-swatch"></div><span class="ramp-label">FF9300 · ΔG</span></div>
+          </div>
+          <div class="block-note">The order is thermodynamic, not chromatic: the ramp walks the binding coordinate — apo baseline, unbound ligand where ΔS dominates, first pocket contact, vibrational rigidification, contacts formed where ΔH dominates, converged ΔG. Position carries energy, so a series legend reads as a reaction path. Firetruck stays out of it on purpose — it is a scalar and a failure signal, never a data class. Magnesium #DCDCE4 sits just under body text in brightness, so a reference line reads as neutral data without out-shouting the terms it is compared against.</div>
+        </div>
+
+        <div class="applied applied--ruled" style="--rule-top:rgba(139,92,246,0.16);padding-top:24px">
+          <div class="block-label">// applied · 5a chrome with the full set</div>
+          <div class="applied-strip">
+            <span class="btn btn--primary">Get started</span>
+            <span class="btn btn--outline">Benchmarks</span>
+            <span class="btn btn--outline" style="--out-edge:rgba(69,224,168,0.35);--out-fg:#45E0A8">Dock a ligand</span>
+            <span class="stat-inline">0.93</span>
+            <span class="stat-inline-label">Pearson r</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="spec spec--wide">
+      <div>key 7 · ΔH 45E0A8 · ΔS 8B5CF6 · ΔG FF9300 · T F5232B + cool→hot ramp · ΔS_vib 00A2FF · receptor FF2F92 · baseline DCDCE4</div>
+      <div>type · JetBrains Mono 700 headings and data · SF Pro Display 400 prose</div>
+      <div>retired · gold FBBF24 · pale gold FDE68A · cyan 22D3EE · salmon C2456F · wine DA2F63 · steel 6E7C99 · maraschino FF2600 (orange cast)</div>
+    </div>
+  </article>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     Exploration 05 — refined, yellow retired
+     ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s-5">
+
+  <div class="intro">
+    <div class="eyebrow">// exploration 05 — refined, yellow retired</div>
+    <h2>Four survivors, every note applied</h2>
+    <p>Rules taken from your notes and applied to all four: gold and pale yellow are retired system-wide — ΔG is now Tangerine <span class="hex" style="color:#FF9300">#FF9300</span>, the mandarin orange from the macOS crayon box. No serif prose. Burgundy is an accent, never the lead. The all-mono terminal is gone. Amber-as-primary is gone too, so cyan never has to sit against it — where a warm primary is wanted, tangerine does that job itself. Two further corrections: ΔH in 5a moves off cyan to mint, and the burgundy accent is shifted to Strawberry <span class="hex" style="color:#FF2F92">#FF2F92</span> — same family, far more chroma, and no salmon left in it.</p>
+    <div class="refs">
+      <span>Reference by id in chat:</span>
+      <a href="#5a">5a ultraviolet</a>
+      <a href="#5b">5b burgundy notebook</a>
+      <a href="#5c">5c fluorescence</a>
+      <a href="#5d">5d warm graphite</a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- 5a · Ultraviolet — tangerine ΔG -->
+    <article class="opt" id="5a">
+      <header class="opt-head">
+        <span class="badge">5a</span>
+        <span class="opt-title">Ultraviolet — tangerine ΔG</span>
+      </header>
+      <p class="opt-axis">Cyan retired: ΔH is now mint. Against indigo it separates from violet far better than cyan did, and it stops competing with the legacy teal brand.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(139,92,246,0.16)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#08091A"></div>
+          <div style="background:#8B5CF6"></div>
+          <div style="background:#45E0A8"></div>
+          <div style="background:#FF9300"></div>
+          <div style="background:#E4E3F5"></div>
+        </div>
+        <div class="spec-hexes"><span>08091A</span><span>8B5CF6</span><span>45E0A8</span><span>FF9300</span><span>E4E3F5</span></div>
+        <div class="spec-type">
+          <div>display &amp; data · JetBrains Mono 700</div>
+          <div>prose · SF Pro Display 400</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 5b · Burgundy notebook — accent only -->
+    <article class="opt" id="5b">
+      <header class="opt-head">
+        <span class="badge">5b</span>
+        <span class="opt-title">Burgundy notebook — accent only</span>
+      </header>
+      <p class="opt-axis">Burgundy pushed off salmon — same hue family, higher chroma and lower lightness, so it reads wine rather than pink. Labels and TΔS only; cyan keeps the brand.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(255,47,146,0.14)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout callout--note">
+              <div class="note-label">// note</div>
+              <div class="callout-line">Recovering the correct binding mode <span class="num">92%</span> of the time when enthalpy-only scoring fails.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#0b0910"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#FF2F92"></div>
+          <div style="background:#FF9300"></div>
+          <div style="background:#e8e0e5"></div>
+        </div>
+        <div class="spec-hexes"><span>0B0910</span><span>22D3EE</span><span>FF2F92</span><span>FF9300</span><span>E8E0E5</span></div>
+        <div class="spec-type">
+          <div>display &amp; data · JetBrains Mono 700</div>
+          <div>prose · Atkinson Hyperlegible 400</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 5c · Fluorescence — tangerine ΔG -->
+    <article class="opt" id="5c">
+      <header class="opt-head">
+        <span class="badge">5c</span>
+        <span class="opt-title">Fluorescence — tangerine ΔG</span>
+      </header>
+      <p class="opt-axis">1d retuned. Space Grotesk headline, Manrope prose, mono data. Tangerine replaces the amber, which sharpens the split from magenta.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(0,229,255,0.12)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#070B12"></div>
+          <div style="background:#00E5FF"></div>
+          <div style="background:#FF3D9A"></div>
+          <div style="background:#FF9300"></div>
+          <div style="background:#e2e8f5"></div>
+        </div>
+        <div class="spec-hexes"><span>070B12</span><span>00E5FF</span><span>FF3D9A</span><span>FF9300</span><span>E2E8F5</span></div>
+        <div class="spec-type">
+          <div>display · Space Grotesk 700 · −0.02em</div>
+          <div>prose · Manrope 400 · data JetBrains Mono</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 5d · Warm graphite — three voices -->
+    <article class="opt" id="5d">
+      <header class="opt-head">
+        <span class="badge">5d</span>
+        <span class="opt-title">Warm graphite — three voices</span>
+      </header>
+      <p class="opt-axis">2d's warm ink with 3d's three-voice structure: Instrument Serif display, SF Pro prose, mono data. Tangerine leads, burgundy takes TΔS, teal is measured values only.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw kw--solid">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--solid kw--solid-b">conformational entropy</span> via a full statistical mechanics framework — recovering the correct binding mode 92% of the time when enthalpy-only scoring fails.</p>
+          <div class="stats stats--ruled">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied">
+            <div class="callout callout--note">
+              <div class="note-label">// note</div>
+              <div class="callout-line">Zero-copy batch scoring via VoronoiCFBatch and OpenMP.</div>
+            </div>
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#101010"></div>
+          <div style="background:#FF9300"></div>
+          <div style="background:#FF2F92"></div>
+          <div style="background:#4FB8C9"></div>
+          <div style="background:#EDE7DD"></div>
+        </div>
+        <div class="spec-hexes"><span>101010</span><span>FF9300</span><span>FF2F92</span><span>4FB8C9</span><span>EDE7DD</span></div>
+        <div class="spec-type">
+          <div>display · Instrument Serif 400 · 38px</div>
+          <div>prose · SF Pro Display · numbers · JetBrains Mono</div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     Exploration 04 — extending the palette
+     ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s-4">
+
+  <div class="intro">
+    <div class="eyebrow">// exploration 04 — extending the palette</div>
+    <h2>Six key colors, each carrying a quantity</h2>
+    <p>Not fixed — the palette goes from three to six, and each addition carries a real quantity rather than a mood. ΔH is mint, TΔS violet, ΔG tangerine; the three new ones are ΔS_vib (the tENCoM vibrational term, until now uncolored), the receptor and its pocket, and the baseline or apo reference. Yellow is gone from every layer, and the series ramp is ordered by energy rather than by hue — it walks the binding coordinate from apo baseline to converged ΔG.</p>
+  </div>
+
+  <article class="opt opt--wide" id="4a">
+    <header class="opt-head">
+      <span class="badge">4a</span>
+      <span class="opt-title">Six key colors · state · series</span>
+    </header>
+
+    <div class="panel">
+      <div class="panel-grid" aria-hidden="true"></div>
+      <div class="panel-body">
+
+        <div class="split">
+          <div class="block">
+            <div class="block-label">// key · six colors, six jobs</div>
+            <div class="key-rows">
+              <div class="key-row" style="--chip:#45E0A8"><div class="key-row-chip"></div><span class="key-row-name">ΔH · enthalpy</span><span class="key-row-hex">45E0A8</span></div>
+              <div class="key-row" style="--chip:#8B5CF6"><div class="key-row-chip"></div><span class="key-row-name">TΔS · configurational entropy</span><span class="key-row-hex">8B5CF6</span></div>
+              <div class="key-row" style="--chip:#FF9300"><div class="key-row-chip"></div><span class="key-row-name">ΔG · free energy</span><span class="key-row-hex">FF9300</span></div>
+              <div class="key-row" style="--chip:#00A2FF"><div class="key-row-chip"></div><span class="key-row-name">ΔS_vib · vibrational · tENCoM <span class="new">new</span></span><span class="key-row-hex">00A2FF</span></div>
+              <div class="key-row" style="--chip:#FF2F92"><div class="key-row-chip"></div><span class="key-row-name">receptor · pocket · labels <span class="new">new</span></span><span class="key-row-hex">FF2F92</span></div>
+              <div class="key-row" style="--chip:#DCDCE4"><div class="key-row-chip"></div><span class="key-row-name">baseline · apo · reference <span class="new">new</span></span><span class="key-row-hex">DCDCE4</span></div>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label">// new · state layer</div>
+            <div class="key-rows">
+              <div class="key-row" style="--chip:#45E0A8"><div class="key-row-chip"></div><span class="key-row-name">pass · converged · gate cleared</span><span class="key-row-hex">45E0A8</span></div>
+              <div class="key-row" style="--chip:#FF2F92"><div class="key-row-chip"></div><span class="key-row-name">warn · low confidence</span><span class="key-row-hex">FF2F92</span></div>
+              <div class="key-row" style="--chip:#FF2D2D"><div class="key-row-chip"></div><span class="key-row-name">fail · clash · entropy collapse</span><span class="key-row-hex">FF2D2D</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="block-label">// series ramp · ordered by energy, apo → converged ΔG</div>
+          <div class="ramp">
+            <div class="ramp-cell" style="--chip:#DCDCE4"><div class="ramp-swatch"></div><span class="ramp-label">DCDCE4 · apo</span></div>
+            <div class="ramp-cell" style="--chip:#8B5CF6"><div class="ramp-swatch"></div><span class="ramp-label">8B5CF6 · ΔS</span></div>
+            <div class="ramp-cell" style="--chip:#FF2F92"><div class="ramp-swatch"></div><span class="ramp-label">FF2F92 · pocket</span></div>
+            <div class="ramp-cell" style="--chip:#00A2FF"><div class="ramp-swatch"></div><span class="ramp-label">00A2FF · ΔS_vib</span></div>
+            <div class="ramp-cell" style="--chip:#45E0A8"><div class="ramp-swatch"></div><span class="ramp-label">45E0A8 · ΔH</span></div>
+            <div class="ramp-cell" style="--chip:#FF9300"><div class="ramp-swatch"></div><span class="ramp-label">FF9300 · ΔG</span></div>
+          </div>
+        </div>
+
+        <div class="applied split applied--ruled" style="--rule-top:rgba(139,92,246,0.16);padding-top:24px">
+          <div class="block">
+            <div class="block-label">// state layer, applied</div>
+            <div class="chips">
+              <span class="chip" style="--chip-pad:5px 10px;--chip-fg:#45E0A8;--chip-bg:rgba(69,224,168,0.10);--chip-edge:rgba(69,224,168,0.30)">gate 6 · passed</span>
+              <span class="chip" style="--chip-pad:5px 10px;--chip-fg:#FF2F92;--chip-bg:rgba(255,47,146,0.12);--chip-edge:rgba(255,47,146,0.35)">cf spread · wide</span>
+              <span class="chip" style="--chip-pad:5px 10px;--chip-fg:#FF2D2D;--chip-bg:rgba(255,45,45,0.10);--chip-edge:rgba(255,45,45,0.32)">3 poses · clash</span>
+            </div>
+            <div class="table">
+              <div class="table-head">
+                <span class="col--wide">Target</span><span class="col--dg col--r">ΔG</span><span class="col col--r">RMSD</span><span class="col col--r">State</span>
+              </div>
+              <div class="table-row">
+                <span class="col--wide lead">1stp</span><span class="col--dg col--r" style="color:#FF9300">−8.42</span><span class="col col--r">0.71</span><span class="col col--r" style="color:#45E0A8">pass</span>
+              </div>
+              <div class="table-row">
+                <span class="col--wide lead">2ayr</span><span class="col--dg col--r" style="color:#FF9300">−6.10</span><span class="col col--r">1.94</span><span class="col col--r" style="color:#FF2F92">warn</span>
+              </div>
+              <div class="table-row">
+                <span class="col--wide lead">1hvr</span><span class="col--dg col--r" style="color:#FF9300">−3.85</span><span class="col col--r">4.12</span><span class="col col--r" style="color:#FF2D2D">fail</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label">// series ramp, applied · ΔG along the binding coordinate</div>
+            <div class="chart">
+              <div class="chart-bar" style="--h:14%;--chip:#DCDCE4;--fade:rgba(220,220,228,0.25)"></div>
+              <div class="chart-bar" style="--h:30%;--chip:#8B5CF6;--fade:rgba(139,92,246,0.25)"></div>
+              <div class="chart-bar" style="--h:48%;--chip:#FF2F92;--fade:rgba(255,47,146,0.25)"></div>
+              <div class="chart-bar" style="--h:62%;--chip:#00A2FF;--fade:rgba(0,162,255,0.25)"></div>
+              <div class="chart-bar" style="--h:82%;--chip:#45E0A8;--fade:rgba(69,224,168,0.25)"></div>
+              <div class="chart-bar" style="--h:100%;--chip:#FF9300;--fade:rgba(255,147,0,0.25)"></div>
+            </div>
+            <div class="chart-labels">
+              <span>apo</span><span>unbound</span><span>pocket</span><span>ΔS_vib</span><span>ΔH</span><span>ΔG</span>
+            </div>
+            <div class="block-note">Bar depth is |ΔG| along the same coordinate the colors encode, so hue and height say the same thing. Six is the ceiling, and the first step is the neutral baseline — only five ever compete for attention.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="spec spec--wide">
+      <div>key 6 · ΔH 45E0A8 · TΔS 8B5CF6 · ΔG FF9300 · ΔS_vib 00A2FF · receptor FF2F92 · baseline DCDCE4</div>
+      <div>state 3 · pass and warn reuse key hues · fail FF2D2D is the only color outside the key set</div>
+      <div>series 6 · ordered by energy · apo → ΔS → pocket → ΔS_vib → ΔH → ΔG · no yellow anywhere</div>
+    </div>
+  </article>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     Exploration 03 — keepers, repaired
+     ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s-3">
+
+  <div class="intro">
+    <div class="eyebrow">// exploration 03 — keepers, repaired</div>
+    <h2>Three keepers, two of them repaired</h2>
+    <p>Serif is out and burgundy stays an accent rather than a lead, so no preprint and no burgundy-led option here. <a href="#3b">3b</a> is the ultraviolet palette on canon type. <a href="#3c">3c</a> is the terminal with the enhancements it was missing — entropy meter, ruled benchmark table, code callout. <a href="#3d">3d</a> answers the monotony charge: the datasheet keeps its amber and its uppercase grotesk headline, but prose and data get their own distinct voices and the scale contrast is pushed hard.</p>
+    <div class="refs">
+      <span>Reference by id in chat:</span>
+      <a href="#3b">3b ultraviolet</a>
+      <a href="#3c">3c terminal+</a>
+      <a href="#3d">3d datasheet+</a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- 3b · Ultraviolet — canon type -->
+    <article class="opt" id="3b">
+      <header class="opt-head">
+        <span class="badge">3b</span>
+        <span class="opt-title">Ultraviolet — canon type</span>
+      </header>
+      <p class="opt-axis">The palette you picked, on the brand's own type: indigo ink, violet brand and action, cyan enthalpy, pale gold free energy.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(139,92,246,0.16)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#08091A"></div>
+          <div style="background:#8B5CF6"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#FDE68A"></div>
+          <div style="background:#E4E3F5"></div>
+        </div>
+        <div class="spec-hexes"><span>08091A</span><span>8B5CF6</span><span>22D3EE</span><span>FDE68A</span><span>E4E3F5</span></div>
+        <div class="spec-type">
+          <div>display &amp; data · JetBrains Mono 700</div>
+          <div>prose · SF Pro Display 400</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3c · Terminal+ — enhanced -->
+    <article class="opt" id="3c">
+      <header class="opt-head">
+        <span class="badge">3c</span>
+        <span class="opt-title">Terminal+ — enhanced</span>
+      </header>
+      <p class="opt-axis">Still two hues and mono only. Added: the entropy meter, a ruled benchmark table with mono headers, a code callout, and weight contrast from 300 to 700.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="meter" aria-hidden="true"><div class="meter-marker"></div></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw kw--solid">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--solid kw--solid-b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="table">
+            <div class="table-head">
+              <span class="col--wide">Set</span><span class="col col--r">n</span><span class="col--dg col--r">Pearson r</span><span class="col--rmse col--r">RMSE</span>
+            </div>
+            <div class="table-row">
+              <span class="col--wide lead">ITC-187</span><span class="col col--r">187</span><span class="col--dg col--r" style="color:#FBBF24">0.93</span><span class="col--rmse col--r">1.4</span>
+            </div>
+            <div class="table-row">
+              <span class="col--wide lead">Astex Diverse</span><span class="col col--r">85</span><span class="col--dg col--r">0.88</span><span class="col--rmse col--r">1.6</span>
+            </div>
+            <div class="table-row">
+              <span class="col--wide lead">CASF-2016</span><span class="col col--r">285</span><span class="col--dg col--r">0.84</span><span class="col--rmse col--r">1.9</span>
+            </div>
+          </div>
+          <div class="applied">
+            <div class="callout callout--note code">
+              <div><span class="sigil">$</span> flexaidds dock <span class="flag">--receptor</span> 1stp.pdb <span class="flag">--ligand</span> btn.mol2</div>
+              <div><span class="sigil">→</span> best_cf <span class="val-dg">−8.42</span> kcal/mol · TΔS <span class="val-fg">1.13</span> · 92% mode</div>
+            </div>
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#05070a"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#64748b"></div>
+          <div style="background:#FBBF24"></div>
+          <div style="background:#cfe3e8"></div>
+        </div>
+        <div class="spec-hexes"><span>05070A</span><span>22D3EE</span><span>64748B</span><span>FBBF24</span><span>CFE3E8</span></div>
+        <div class="spec-type">
+          <div>one family, four weights · 300 / 400 / 500 / 700</div>
+          <div>added · entropy meter · ruled table · code callout</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3d · Datasheet+ — three voices -->
+    <article class="opt" id="3d">
+      <header class="opt-head">
+        <span class="badge">3d</span>
+        <span class="opt-title">Datasheet+ — three voices</span>
+      </header>
+      <p class="opt-axis">The monotony fix: Archivo keeps only the uppercase headline, prose goes back to SF Pro, mono owns every number, and the scale jumps 10px → 40px.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven<br>docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw kw--solid">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--solid kw--solid-b">conformational entropy</span> via a full statistical mechanics framework — recovering the correct binding mode 92% of the time when enthalpy-only scoring fails.</p>
+          <div class="stats stats--ruled">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied">
+            <div class="callout callout--note">
+              <div class="note-label">// note</div>
+              <div class="callout-line">Zero-copy batch scoring via VoronoiCFBatch and OpenMP.</div>
+            </div>
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#0D1013"></div>
+          <div style="background:#FFB020"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#8B929B"></div>
+          <div style="background:#E8EAED"></div>
+        </div>
+        <div class="spec-hexes"><span>0D1013</span><span>FFB020</span><span>22D3EE</span><span>8B929B</span><span>E8EAED</span></div>
+        <div class="spec-type">
+          <div>headline · Archivo 700 uppercase · −0.035em</div>
+          <div>prose · SF Pro Display · numbers · JetBrains Mono</div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     Exploration 02 — four kinds of pairing
+     ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s-2">
+
+  <div class="intro">
+    <div class="eyebrow">// exploration 02 — color &amp; type pairings</div>
+    <h2>Four different kinds of pairing</h2>
+    <p>Round one only swapped accents inside one formula. This round changes the formula itself — a serif carries the headline, a single grotesk carries everything, an expressive mono replaces JetBrains, a neutral warm ink drops the blue cast. Structure stays system-true: dark surfaces, 1px hairlines, 8px radii, glow over shadow, mono for numbers.</p>
+    <div class="refs">
+      <span>Reference by id in chat:</span>
+      <a href="#2a">2a preprint</a>
+      <a href="#2b">2b datasheet</a>
+      <a href="#2c">2c ultraviolet</a>
+      <a href="#2d">2d warm graphite</a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- 2a · Preprint — serif leads -->
+    <article class="opt" id="2a">
+      <header class="opt-head">
+        <span class="badge">2a</span>
+        <span class="opt-title">Preprint — serif leads</span>
+      </header>
+      <p class="opt-axis">Axis: an arXiv paper that learned web design. Serif headline and serif prose, mono strictly for data. Neutral hairlines, teal spent only on action.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <em>enthalpy</em> alone. FlexAID∆S adds <em>conformational entropy</em> via a full statistical mechanics framework — recovering the correct binding mode <span class="num">92%</span> of the time.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(237,241,247,0.08)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line">Voronoi contact function for shape complementarity</div>
+              <div class="callout-line">Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#0B0D10"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#C08A9E"></div>
+          <div style="background:#FBBF24"></div>
+          <div style="background:#EDF1F7"></div>
+        </div>
+        <div class="spec-hexes"><span>0B0D10</span><span>22D3EE</span><span>C08A9E</span><span>FBBF24</span><span>EDF1F7</span></div>
+        <div class="spec-type">
+          <div>display &amp; prose · Newsreader 500 / 400</div>
+          <div>data &amp; labels · JetBrains Mono 500</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2b · Datasheet — one family, amber-led -->
+    <article class="opt" id="2b">
+      <header class="opt-head">
+        <span class="badge">2b</span>
+        <span class="opt-title">Datasheet — one family, amber-led</span>
+      </header>
+      <p class="opt-axis">Axis: a component datasheet. One grotesk does headline and prose, amber becomes primary, teal demoted to data, mono shrinks to labels.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven<br>molecular docking</div>
+          <p class="prose">Most docking engines optimize <strong class="kw kw--solid">enthalpy</strong> alone. FlexAID∆S adds <strong class="kw kw--solid kw--solid-b">conformational entropy</strong> via a full statistical mechanics framework.</p>
+          <div class="stats stats--ruled">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line">Voronoi contact function for shape complementarity</div>
+              <div class="callout-line">Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#0D1013"></div>
+          <div style="background:#FFB020"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#8B929B"></div>
+          <div style="background:#E8EAED"></div>
+        </div>
+        <div class="spec-hexes"><span>0D1013</span><span>FFB020</span><span>22D3EE</span><span>8B929B</span><span>E8EAED</span></div>
+        <div class="spec-type">
+          <div>display &amp; prose · Archivo 700 / 400 · −0.03em</div>
+          <div>labels &amp; data · JetBrains Mono 500</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2c · Ultraviolet — expressive mono -->
+    <article class="opt" id="2c">
+      <header class="opt-head">
+        <span class="badge">2c</span>
+        <span class="opt-title">Ultraviolet — expressive mono</span>
+      </header>
+      <p class="opt-axis">Axis: keeps the mono-heading rule but changes the mono. Space Mono's odd terminals against a neutral grotesk, indigo ink, entropy promoted to primary.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(139,92,246,0.16)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout callout--edge">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#08091A"></div>
+          <div style="background:#8B5CF6"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#FDE68A"></div>
+          <div style="background:#E4E3F5"></div>
+        </div>
+        <div class="spec-hexes"><span>08091A</span><span>8B5CF6</span><span>22D3EE</span><span>FDE68A</span><span>E4E3F5</span></div>
+        <div class="spec-type">
+          <div>display &amp; data · Space Mono 700</div>
+          <div>prose · Public Sans 400</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2d · Warm graphite — no blue cast -->
+    <article class="opt" id="2d">
+      <header class="opt-head">
+        <span class="badge">2d</span>
+        <span class="opt-title">Warm graphite — no blue cast</span>
+      </header>
+      <p class="opt-axis">Axis: drops the cool cast entirely. Neutral graphite ink, cream text, high-contrast serif display, terracotta primary, teal kept only for measured values.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw kw--solid">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--solid kw--solid-b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(216,102,63,0.16)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#101010"></div>
+          <div style="background:#D8663F"></div>
+          <div style="background:#4FB8C9"></div>
+          <div style="background:#E3B04B"></div>
+          <div style="background:#EDE7DD"></div>
+        </div>
+        <div class="spec-hexes"><span>101010</span><span>D8663F</span><span>4FB8C9</span><span>E3B04B</span><span>EDE7DD</span></div>
+        <div class="spec-type">
+          <div>display · Instrument Serif 400 · 38px</div>
+          <div>prose · Manrope 400 · data JetBrains Mono</div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     Exploration 01 — four pairings on one specimen
+     ══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s-1">
+
+  <div class="intro">
+    <div class="eyebrow">// exploration 01 — color &amp; type pairings</div>
+    <h2>Four pairings on one specimen</h2>
+    <p>Same specimen four times — wordmark, hero equation, prose with spectrum keywords, stat row, applied controls. What stays fixed: dark-first surfaces, 1px alpha borders, 8px card radii, colored glow instead of drop shadow, mono for data. What varies: the accent triad, the background ink, and which family carries headings versus prose.</p>
+    <div class="refs">
+      <span>Reference by id in chat:</span>
+      <a href="#1a">1a canon</a>
+      <a href="#1b">1b burgundy</a>
+      <a href="#1c">1c terminal</a>
+      <a href="#1d">1d fluorescence</a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- 1a · Canon — navy instrument -->
+    <article class="opt" id="1a">
+      <header class="opt-head">
+        <span class="badge">1a</span>
+        <span class="opt-title">Canon — navy instrument</span>
+      </header>
+      <p class="opt-axis">Axis: the shipping system, unchanged. Violet entropy accent, mono headings, SF Pro prose.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(34,211,238,0.10)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#0A0E14"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#A78BFA"></div>
+          <div style="background:#FBBF24"></div>
+          <div style="background:#d4dced"></div>
+        </div>
+        <div class="spec-hexes"><span>0A0E14</span><span>22D3EE</span><span>A78BFA</span><span>FBBF24</span><span>D4DCED</span></div>
+        <div class="spec-type">
+          <div>display &amp; data · JetBrains Mono 700</div>
+          <div>prose · SF Pro Display 400</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 1b · Burgundy notebook -->
+    <article class="opt" id="1b">
+      <header class="opt-head">
+        <span class="badge">1b</span>
+        <span class="opt-title">Burgundy notebook</span>
+      </header>
+      <p class="opt-axis">Axis: entropy accent back to the original terra burgundy, warm ink, humanist prose face.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(194,69,111,0.14)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#0b0910"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#C2456F"></div>
+          <div style="background:#E8B33C"></div>
+          <div style="background:#e8e0e5"></div>
+        </div>
+        <div class="spec-hexes"><span>0B0910</span><span>22D3EE</span><span>C2456F</span><span>E8B33C</span><span>E8E0E5</span></div>
+        <div class="spec-type">
+          <div>display &amp; data · JetBrains Mono 700</div>
+          <div>prose · Atkinson Hyperlegible 400</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 1c · Terminal — mono only -->
+    <article class="opt" id="1c">
+      <header class="opt-head">
+        <span class="badge">1c</span>
+        <span class="opt-title">Terminal — mono only</span>
+      </header>
+      <p class="opt-axis">Axis: maximal restraint. One hue plus gold, entropy term demoted to slate, prose set in mono 300.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw kw--solid">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--solid kw--solid-b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(34,211,238,0.10)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout callout--edge">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#05070a"></div>
+          <div style="background:#22D3EE"></div>
+          <div style="background:#64748b"></div>
+          <div style="background:#FBBF24"></div>
+          <div style="background:#cfe3e8"></div>
+        </div>
+        <div class="spec-hexes"><span>05070A</span><span>22D3EE</span><span>64748B</span><span>FBBF24</span><span>CFE3E8</span></div>
+        <div class="spec-type">
+          <div>display &amp; data · JetBrains Mono 700 · −0.02em</div>
+          <div>prose · JetBrains Mono 300 · 1.75</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 1d · Fluorescence — sans display -->
+    <article class="opt" id="1d">
+      <header class="opt-head">
+        <span class="badge">1d</span>
+        <span class="opt-title">Fluorescence — sans display</span>
+      </header>
+      <p class="opt-axis">Axis: headings leave mono. Microscopy-grade saturation, Space Grotesk titles, mono reserved for data.</p>
+      <div class="panel">
+        <div class="panel-grid" aria-hidden="true"></div>
+        <div class="panel-body">
+          <div class="wordmark-row">
+            <span class="brand">FlexAID<span class="delta">∆S</span></span>
+            <span class="eyebrow">// why flexaid∆s</span>
+          </div>
+          <div class="equation"><span class="t-dg">ΔG</span> = <span class="t-dh">ΔH</span> − <span class="t-ds">TΔS</span></div>
+          <div class="headline">Entropy-driven molecular docking</div>
+          <p class="prose">Most docking engines optimize <span class="kw">enthalpy</span> alone. FlexAID∆S adds <span class="kw kw--b">conformational entropy</span> via a full statistical mechanics framework.</p>
+          <div class="stats">
+            <div class="stat"><div class="stat-value">0.93</div><div class="stat-label">Pearson r</div></div>
+            <div class="stat"><div class="stat-value">92%</div><div class="stat-label">Binding mode</div></div>
+            <div class="stat"><div class="stat-value">1.4</div><div class="stat-label">RMSE kcal/mol</div></div>
+          </div>
+          <div class="applied applied--ruled" style="--rule-top:rgba(0,229,255,0.12)">
+            <div class="btn-row">
+              <span class="btn btn--primary">Get started</span>
+              <span class="btn btn--outline">Benchmarks</span>
+            </div>
+            <div class="callout">
+              <div class="callout-title">Scoring kernel</div>
+              <div class="callout-line"><span class="chev">›</span> Voronoi contact function for shape complementarity</div>
+              <div class="callout-line"><span class="chev">›</span> Dead-end elimination torsion pruning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <div class="spec-swatches">
+          <div style="background:#070B12"></div>
+          <div style="background:#00E5FF"></div>
+          <div style="background:#FF3D9A"></div>
+          <div style="background:#FFC53D"></div>
+          <div style="background:#e2e8f5"></div>
+        </div>
+        <div class="spec-hexes"><span>070B12</span><span>00E5FF</span><span>FF3D9A</span><span>FFC53D</span><span>E2E8F5</span></div>
+        <div class="spec-type">
+          <div>display · Space Grotesk 700 · −0.02em</div>
+          <div>prose · Manrope 400 · data stays JetBrains Mono</div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+</main>
+
+<script src="js/board.js"></script>
+</body>
+</html>

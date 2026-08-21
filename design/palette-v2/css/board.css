@@ -1,0 +1,1793 @@
+/* ============================================================
+   FlexAID∆S — Color & Type Pairings board
+   Le Bonhomme Pharma · Montréal
+
+   Runtime-free recreation of `Color & Type Pairings.dc.html`.
+   The prototype carried every value as an inline style on a
+   <x-dc> template driven by support.js; here the structure that
+   is shared across the fifteen specimen cards lives in real
+   rules, and each option contributes only what actually differs
+   — its palette, as custom properties, plus the handful of type
+   decisions that make it a distinct pairing. The two wide
+   palette panels, 4a and 6a, add their own blocks on top.
+
+   Values are transcribed from the prototype unchanged. The four
+   deliberate corrections are noted in ../README.md.
+   ============================================================ */
+
+@import url('./fonts.css');
+@import url('../packages/flexaidds-tokens/tokens.css');
+
+/* ─────────────────────────────────────────────────────────────
+   1 · Page chrome
+   ───────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+a { color: #45E0A8; text-decoration: none; }
+a:hover { color: #8EEFC9; }
+
+/* The prototype's two signature animations, verbatim. */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); text-shadow: none; }
+  50% {
+    transform: scale(1.03);
+    text-shadow: 0 0 40px rgba(69, 224, 168, 0.35), 0 0 60px rgba(255, 147, 0, 0.18);
+  }
+}
+
+@keyframes spectrum {
+  from { background-position: 0% 50%; }
+  to { background-position: 260% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2 · Toolbar — the prototype's three <sc-if> props, made real
+   ───────────────────────────────────────────────────────────── */
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 48px;
+  background: rgba(8, 9, 26, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.16);
+}
+
+.toolbar-brand {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--mint);
+  margin-right: auto;
+}
+
+.toolbar-brand .delta { color: var(--tangerine); }
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 30px;
+  height: 16px;
+  margin: 0;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 9999px;
+  background: rgba(12, 13, 30, 0.55);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out);
+}
+
+.toggle input::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--fg-muted);
+  transition: transform var(--dur-fast) var(--ease-out),
+              background var(--dur-fast) var(--ease-out);
+}
+
+.toggle input:checked {
+  background: rgba(69, 224, 168, 0.16);
+  border-color: rgba(69, 224, 168, 0.45);
+}
+
+.toggle input:checked::after {
+  transform: translateX(14px);
+  background: var(--mint);
+}
+
+.toggle input:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+}
+
+.toggle:has(input:checked) { color: var(--fg); }
+
+/* Defaults match the prototype's `?? true`; the toggles switch them off. */
+.no-grid .panel-grid { display: none; }
+.no-applied .applied { display: none; }
+.no-spec .spec { display: none; }
+
+/* ─────────────────────────────────────────────────────────────
+   3 · Sections
+   ───────────────────────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 56px 48px 80px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--section-edge, transparent);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 960px;
+}
+
+.intro .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--section-accent, var(--fg-muted));
+}
+
+.intro h2 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  text-wrap: balance;
+}
+
+.intro p {
+  margin: 0;
+  max-width: 68ch;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+.intro .hex {
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.refs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #6E6C8A;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 36px;
+  align-items: flex-start;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   4 · Specimen card shell
+   Every option is this shape; the palette arrives as custom
+   properties from section 6.
+   ───────────────────────────────────────────────────────────── */
+
+.opt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 560px;
+  scroll-margin-top: 72px;
+}
+
+.opt--wide { width: 1156px; }
+
+.opt-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 7px;
+  border-radius: 3px;
+  background: var(--badge-bg);
+  color: var(--badge-fg);
+}
+
+.opt-title {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.opt-axis {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #6E6C8A;
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+  background: var(--ink);
+  padding: var(--panel-pad, 30px);
+  box-shadow: var(--panel-shadow);
+}
+
+.panel-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.panel-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--body-gap, 22px);
+}
+
+/* Wordmark row */
+
+.wordmark-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  font-family: var(--brand-font, var(--font-mono));
+  font-size: var(--brand-size, 22px);
+  font-weight: var(--brand-weight, 700);
+  letter-spacing: var(--brand-ls, 0.02em);
+  color: var(--brand);
+}
+
+.brand .delta { color: var(--delta); }
+
+.panel .eyebrow {
+  font-family: var(--eyebrow-font, var(--font-mono));
+  font-size: 10px;
+  font-weight: var(--eyebrow-weight, 500);
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--eyebrow);
+}
+
+/* Equation — the brand's signature motion */
+
+.equation {
+  font-family: var(--eq-font, var(--font-mono));
+  font-size: var(--eq-size, 26px);
+  font-weight: var(--eq-weight, 700);
+  letter-spacing: var(--eq-ls, 0);
+  color: var(--fg);
+  animation: breathe 4s ease-in-out infinite;
+  transform-origin: left center;
+}
+
+.t-dg { color: var(--c-dg); }
+.t-dh { color: var(--c-dh); }
+.t-ds { color: var(--c-ds); }
+.t-t { color: var(--c-t); }
+.t-dsv { color: var(--c-dsv); }
+
+/* Headline */
+
+.headline {
+  font-family: var(--head-font, var(--font-mono));
+  font-size: var(--head-size, 19px);
+  font-weight: var(--head-weight, 700);
+  line-height: var(--head-lh, 1.2);
+  letter-spacing: var(--head-ls, 0);
+  text-transform: var(--head-case, none);
+  color: var(--fg);
+}
+
+/* Prose + the spectrum-flow keywords */
+
+.prose {
+  margin: 0;
+  font-family: var(--prose-font, var(--font-body));
+  font-size: var(--prose-size, 15px);
+  font-weight: var(--prose-weight, 400);
+  line-height: var(--prose-lh, 1.6);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.kw {
+  font-weight: var(--kw-weight, 600);
+  background-image: var(--kw-grad);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: spectrum 8.5s linear infinite;
+}
+
+.kw--b { background-image: var(--kw-grad-b); }
+
+/* Options that spend a flat color on keywords instead of the flow. */
+.kw--solid {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  animation: none;
+  color: var(--kw-color);
+}
+
+.kw--solid-b { color: var(--kw-color-b); }
+
+.prose em {
+  font-style: italic;
+  color: var(--kw-color);
+}
+
+.prose .num {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--c-dg);
+}
+
+/* Stats */
+
+.stats {
+  display: flex;
+  gap: 32px;
+  padding-top: 2px;
+}
+
+.stat-value {
+  font-family: var(--stat-font, var(--font-mono));
+  font-size: var(--stat-size, 32px);
+  font-weight: var(--stat-weight, 700);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat:nth-child(1) .stat-value { color: var(--stat-1); }
+.stat:nth-child(2) .stat-value { color: var(--stat-2); }
+.stat:nth-child(3) .stat-value { color: var(--stat-3); }
+
+.stat-label {
+  margin-top: var(--stat-label-mt, 5px);
+  font-family: var(--stat-font, var(--font-mono));
+  font-size: var(--stat-label-size, 10px);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Ruled stat row — 2b, 3d, 5d set their numbers between hairlines. */
+
+.stats--ruled {
+  gap: 0;
+  padding-top: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.stats--ruled .stat {
+  flex: 1;
+  padding: 14px 0;
+}
+
+.stats--ruled .stat + .stat {
+  padding-left: 18px;
+  border-left: 1px solid var(--rule-soft);
+}
+
+/* Applied block */
+
+.applied {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.applied--ruled {
+  border-top: 1px solid var(--rule-top);
+  padding-top: 20px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  font-family: var(--btn-font, var(--font-mono));
+  font-size: var(--btn-size, 12px);
+  letter-spacing: var(--btn-ls, 0);
+  text-transform: var(--btn-case, none);
+  padding: var(--btn-pad, 9px 16px);
+  border-radius: 8px;
+}
+
+.btn--primary {
+  font-weight: var(--btn-primary-weight, 600);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: var(--btn-glow);
+}
+
+.btn--outline {
+  font-weight: var(--btn-outline-weight, 500);
+  border: 1px solid var(--out-edge);
+  color: var(--out-fg);
+}
+
+/* Callouts — three shapes across the board. */
+
+.callout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--callout-gap, 9px);
+  background: var(--callout-bg);
+  border: 1px solid var(--callout-edge);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+
+/* 1c, 2c — accent edge only, rounded on the open side. */
+.callout--edge {
+  border: none;
+  border-left: 3px solid var(--callout-accent);
+  border-radius: 0 8px 8px 0;
+}
+
+/* 3d, 5b, 5d — the `// note` block. 3c's code callout shares the shape. */
+.callout--note {
+  border: none;
+  border-left: 3px solid var(--callout-accent);
+  border-radius: 0;
+  padding: 14px 16px;
+  gap: 6px;
+}
+
+.callout-title {
+  font-family: var(--callout-title-font, var(--font-mono));
+  font-size: var(--callout-title-size, 13px);
+  font-weight: var(--callout-title-weight, 600);
+  letter-spacing: var(--callout-title-ls, 0);
+  text-transform: var(--callout-title-case, none);
+  color: var(--callout-title-color);
+}
+
+.note-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--callout-accent);
+}
+
+.callout-line {
+  font-family: var(--callout-line-font, var(--font-body));
+  font-size: var(--callout-line-size, 13px);
+  font-weight: var(--callout-line-weight, 400);
+  line-height: var(--callout-line-lh, 1.55);
+  color: var(--muted);
+}
+
+.chev { color: var(--chev); }
+
+/* Token spec strip */
+
+.spec {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--spec-edge);
+  border-radius: 8px;
+  background: var(--spec-bg);
+  padding: 14px 16px;
+}
+
+.spec-swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.spec-swatches > div {
+  flex: 1;
+  height: 26px;
+  border-radius: 3px;
+}
+
+.spec-swatches > div:first-child {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.spec-hexes {
+  display: flex;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: var(--spec-hex);
+}
+
+.spec-hexes span { flex: 1; }
+
+.spec-type {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--spec-type);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   5 · Panel-scale blocks — used by the wide 4a / 6a specimens
+   ───────────────────────────────────────────────────────────── */
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--block-gap, 14px);
+}
+
+.block-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.block-note {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--fg-muted);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--split-gap, 30px);
+}
+
+/* Key-color swatch grid (6a) */
+
+.keys {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+}
+
+.key {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.key-chip {
+  height: 92px;
+  border-radius: 8px;
+  background: var(--chip);
+  box-shadow: var(--chip-glow, none);
+}
+
+.key-name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--chip);
+}
+
+.key-hex {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg);
+}
+
+.key-role {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--fg-muted);
+}
+
+.key-contrast {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--contrast-color, var(--chip));
+}
+
+/* Key-color list rows (4a) */
+
+.key-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.key-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.10);
+  padding-bottom: 8px;
+}
+
+.key-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.key-row-chip {
+  width: 34px;
+  height: 24px;
+  border-radius: 3px;
+  background: var(--chip);
+}
+
+.key-row-name {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg);
+}
+
+.key-row-name .new { color: var(--tangerine); }
+
+.key-row-hex {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+/* Temperature ramp */
+
+.t-bar {
+  height: 34px;
+  border-radius: 9999px;
+  background: var(--t-ramp);
+  box-shadow: 0 0 22px rgba(245, 35, 43, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+.t-stops {
+  display: flex;
+  gap: 8px;
+}
+
+.t-stop {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-top: 1px solid var(--stop-edge);
+  padding-top: 8px;
+}
+
+.t-stop-k {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--stop);
+  font-variant-numeric: tabular-nums;
+}
+
+.t-stop-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  color: var(--fg-muted);
+}
+
+/* Chips / state row */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: var(--chip-pad, 6px 11px);
+  border-radius: 3px;
+  color: var(--chip-fg);
+  background: var(--chip-bg);
+  border: 1px solid var(--chip-edge);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Surface and series ramps */
+
+.ramp {
+  display: flex;
+  gap: 8px;
+}
+
+.ramp-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ramp-swatch {
+  height: var(--ramp-h, 28px);
+  border-radius: var(--ramp-r, 3px);
+  background: var(--chip);
+  border: var(--ramp-border, none);
+}
+
+.ramp-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+
+/* Data table (3c benchmarks, 4a targets) */
+
+.table {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-head {
+  display: flex;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--table-head, var(--fg-muted));
+  border-bottom: 1px solid var(--table-rule);
+  padding-bottom: 7px;
+}
+
+.table-row {
+  display: flex;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--table-fg, var(--fg));
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid var(--table-rule-soft);
+  padding: 9px 0;
+}
+
+.table-row:last-child { border-bottom: none; }
+
+.table-row .lead { color: var(--table-lead, var(--fg-muted)); }
+
+/* Column weights — the prototype's per-cell flex ratios. */
+.col { flex: 1; }
+.col--wide { flex: 1.6; }
+.col--dg { flex: 1.2; }
+.col--rmse { flex: 1.4; }
+.col--r { text-align: right; }
+
+/* Bar chart (4a) */
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 132px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.20);
+}
+
+.chart-bar {
+  flex: 1;
+  height: var(--h);
+  background: linear-gradient(to top, var(--fade), var(--chip));
+  border-radius: 3px 3px 0 0;
+}
+
+.chart-labels {
+  display: flex;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  color: var(--fg-muted);
+}
+
+.chart-labels span {
+  flex: 1;
+  text-align: center;
+}
+
+/* Entropy meter (3c) */
+
+.meter {
+  position: absolute;
+  top: 30px;
+  right: 22px;
+  bottom: 30px;
+  width: 8px;
+  border-radius: 9999px;
+  background: linear-gradient(to top,
+    rgba(34, 211, 238, 0.55),
+    rgba(100, 116, 139, 0.35) 55%,
+    rgba(251, 191, 36, 0.65));
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.20);
+}
+
+.meter-marker {
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  top: 38%;
+  height: 2px;
+  background: #FBBF24;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.7);
+}
+
+/* Wide-panel spec strip */
+
+.spec--wide {
+  gap: 6px;
+  background: rgba(17, 18, 38, 0.55);
+  border-color: rgba(139, 92, 246, 0.16);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+/* Applied strip inside a wide panel */
+
+.applied-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.applied-strip .stat-inline {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--tangerine);
+  font-variant-numeric: tabular-nums;
+  margin-left: 6px;
+}
+
+.applied-strip .stat-inline-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+/* Equation header row inside a wide panel */
+
+.eq-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.eq-row .equation { font-size: 30px; }
+
+.eq-readouts {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   6 · Per-option palettes
+   One block per specimen. Only what differs from the shell.
+   ───────────────────────────────────────────────────────────── */
+
+/* ---------- 6a · FlexAID∆S palette v2 · canonical ---------- */
+
+#s-6a { --section-edge: rgba(69, 224, 168, 0.16); --section-accent: var(--mint); }
+
+[id="6a"] {
+  --badge-bg: #45E0A8;
+  --badge-fg: #08091A;
+  --ink: #08091A;
+  --edge: rgba(139, 92, 246, 0.20);
+  --panel-shadow: 0 0 24px rgba(139, 92, 246, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(139, 92, 246, 0.05);
+  --panel-pad: 32px;
+  --body-gap: 30px;
+  --muted: var(--fg-muted);
+  --c-dg: var(--tangerine);
+  --c-dh: var(--mint);
+  --c-t: var(--firetruck);
+  --c-ds: var(--violet);
+  --c-dsv: var(--aqua);
+  --btn-bg: var(--violet);
+  --btn-fg: #08091A;
+  --btn-glow: var(--glow-violet);
+  --out-edge: var(--tangerine-35);
+  --out-fg: var(--fg);
+}
+
+/* ---------- 5a · Ultraviolet — tangerine ΔG ---------- */
+
+#s-5 { --section-edge: rgba(255, 147, 0, 0.16); --section-accent: var(--tangerine); }
+
+[id="5a"] {
+  --badge-bg: #8B5CF6;
+  --badge-fg: #08091A;
+  --ink: #08091A;
+  --edge: rgba(139, 92, 246, 0.20);
+  --panel-shadow: 0 0 24px rgba(139, 92, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(139, 92, 246, 0.05);
+  --muted: #8D8CB0;
+  --brand: #8B5CF6;
+  --delta: #FF9300;
+  --eyebrow: #45E0A8;
+  --c-dg: #FF9300;
+  --c-dh: #45E0A8;
+  --c-ds: #8B5CF6;
+  --kw-grad: linear-gradient(90deg, #45E0A8, #8B5CF6, #FF9300, #45E0A8);
+  --kw-grad-b: linear-gradient(90deg, #8B5CF6, #FF9300, #45E0A8, #8B5CF6);
+  --stat-1: #FF9300;
+  --stat-2: #E4E3F5;
+  --stat-3: #45E0A8;
+  --rule-top: rgba(139, 92, 246, 0.16);
+  --btn-bg: #8B5CF6;
+  --btn-fg: #08091A;
+  --btn-glow: 0 0 20px rgba(139, 92, 246, 0.40);
+  --out-edge: rgba(255, 147, 0, 0.35);
+  --out-fg: #E4E3F5;
+  --callout-bg: rgba(17, 18, 38, 0.82);
+  --callout-edge: rgba(139, 92, 246, 0.20);
+  --callout-title-color: #8B5CF6;
+  --chev: rgba(255, 147, 0, 0.65);
+  --spec-edge: rgba(139, 92, 246, 0.16);
+  --spec-bg: rgba(17, 18, 38, 0.55);
+  --spec-hex: #8D8CB0;
+  --spec-type: #8D8CB0;
+}
+
+/* ---------- 5b · Burgundy notebook — accent only ---------- */
+
+[id="5b"] {
+  --badge-bg: #FF2F92;
+  --badge-fg: #0b0910;
+  --ink: #0b0910;
+  --edge: rgba(255, 47, 146, 0.20);
+  --panel-shadow: 0 0 20px rgba(255, 47, 146, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --grid: rgba(255, 47, 146, 0.05);
+  --fg: #e8e0e5;
+  --muted: #9c8d96;
+  --brand: #22D3EE;
+  --delta: #FF9300;
+  --eyebrow: #FF2F92;
+  --c-dg: #FF9300;
+  --c-dh: #22D3EE;
+  --c-ds: #FF2F92;
+  --prose-font: 'Atkinson Hyperlegible', sans-serif;
+  --prose-lh: 1.65;
+  --kw-weight: 700;
+  --kw-grad: linear-gradient(90deg, #22D3EE, #FF2F92, #FF9300, #22D3EE);
+  --kw-grad-b: linear-gradient(90deg, #FF2F92, #FF9300, #22D3EE, #FF2F92);
+  --stat-1: #FF9300;
+  --stat-2: #e8e0e5;
+  --stat-3: #22D3EE;
+  --rule-top: rgba(255, 47, 146, 0.14);
+  --btn-bg: #22D3EE;
+  --btn-fg: #0b0910;
+  --btn-glow: 0 0 18px rgba(34, 211, 238, 0.28);
+  --out-edge: rgba(255, 47, 146, 0.35);
+  --out-fg: #e8e0e5;
+  --callout-bg: rgba(24, 17, 22, 0.85);
+  --callout-accent: #FF2F92;
+  --callout-line-font: 'Atkinson Hyperlegible', sans-serif;
+  --spec-edge: rgba(255, 47, 146, 0.14);
+  --spec-bg: rgba(24, 17, 22, 0.55);
+  --spec-hex: #8a7c85;
+  --spec-type: #9c8d96;
+}
+
+/* ---------- 5c · Fluorescence — tangerine ΔG ---------- */
+
+[id="5c"] {
+  --badge-bg: #00E5FF;
+  --badge-fg: #070B12;
+  --ink: #070B12;
+  --edge: rgba(0, 229, 255, 0.16);
+  --panel-shadow: 0 0 24px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(0, 229, 255, 0.045);
+  --fg: #e2e8f5;
+  --muted: #8895ad;
+  --brand: #00E5FF;
+  --delta: #FF9300;
+  --eyebrow: #FF3D9A;
+  --c-dg: #FF9300;
+  --c-dh: #00E5FF;
+  --c-ds: #FF3D9A;
+  --head-font: 'Space Grotesk', sans-serif;
+  --head-size: 24px;
+  --head-lh: 1.1;
+  --head-ls: -0.02em;
+  --prose-font: 'Manrope', sans-serif;
+  --prose-lh: 1.65;
+  --kw-weight: 700;
+  --kw-grad: linear-gradient(90deg, #00E5FF, #FF3D9A, #FF9300, #00E5FF);
+  --kw-grad-b: linear-gradient(90deg, #FF3D9A, #FF9300, #00E5FF, #FF3D9A);
+  --stat-1: #FF9300;
+  --stat-2: #e2e8f5;
+  --stat-3: #00E5FF;
+  --rule-top: rgba(0, 229, 255, 0.12);
+  --btn-font: 'Space Grotesk', sans-serif;
+  --btn-size: 13px;
+  --btn-primary-weight: 700;
+  --btn-bg: #00E5FF;
+  --btn-fg: #070B12;
+  --btn-glow: 0 0 20px rgba(0, 229, 255, 0.35);
+  --out-edge: rgba(255, 147, 0, 0.35);
+  --out-fg: #e2e8f5;
+  --callout-bg: rgba(14, 19, 30, 0.82);
+  --callout-edge: rgba(0, 229, 255, 0.16);
+  --callout-title-font: 'Space Grotesk', sans-serif;
+  --callout-title-size: 14px;
+  --callout-title-weight: 700;
+  --callout-title-color: #00E5FF;
+  --callout-line-font: 'Manrope', sans-serif;
+  --chev: rgba(255, 61, 154, 0.7);
+  --spec-edge: rgba(0, 229, 255, 0.12);
+  --spec-bg: rgba(14, 19, 30, 0.55);
+  --spec-hex: #8895ad;
+  --spec-type: #8895ad;
+}
+
+/* ---------- 5d · Warm graphite — three voices ---------- */
+
+[id="5d"] {
+  --badge-bg: #FF9300;
+  --badge-fg: #101010;
+  --ink: #101010;
+  --edge: rgba(255, 147, 0, 0.18);
+  --panel-shadow: 0 0 22px rgba(255, 147, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(237, 231, 221, 0.028);
+  --body-gap: 20px;
+  --fg: #EDE7DD;
+  --muted: #A39A8E;
+  --brand-size: 20px;
+  --brand: #EDE7DD;
+  --delta: #FF9300;
+  --eyebrow: #FF2F92;
+  --eq-size: 25px;
+  --c-dg: #FF9300;
+  --c-dh: #4FB8C9;
+  --c-ds: #FF2F92;
+  --head-font: 'Instrument Serif', serif;
+  --head-size: 38px;
+  --head-weight: 400;
+  --head-lh: 1.05;
+  --head-ls: -0.01em;
+  --kw-color: #4FB8C9;
+  --kw-color-b: #FF9300;
+  --stat-size: 28px;
+  --stat-label-size: 9.5px;
+  --stat-label-mt: 7px;
+  --stat-1: #FF9300;
+  --stat-2: #EDE7DD;
+  --stat-3: #4FB8C9;
+  --rule: rgba(255, 147, 0, 0.18);
+  --rule-soft: rgba(255, 147, 0, 0.12);
+  --btn-bg: #FF9300;
+  --btn-fg: #101010;
+  --btn-glow: 0 0 18px rgba(255, 147, 0, 0.32);
+  --out-edge: rgba(237, 231, 221, 0.18);
+  --out-fg: #EDE7DD;
+  --callout-bg: rgba(26, 24, 22, 0.86);
+  --callout-accent: #FF9300;
+  --spec-edge: rgba(255, 147, 0, 0.16);
+  --spec-bg: rgba(26, 24, 22, 0.55);
+  --spec-hex: #A39A8E;
+  --spec-type: #A39A8E;
+}
+
+/* ---------- 4a · Six key colors · state · series ---------- */
+
+#s-4 { --section-edge: rgba(139, 92, 246, 0.14); --section-accent: #A78BFA; }
+
+[id="4a"] {
+  --badge-bg: #8B5CF6;
+  --badge-fg: #08091A;
+  --ink: #08091A;
+  --edge: rgba(139, 92, 246, 0.20);
+  --panel-shadow: 0 0 24px rgba(139, 92, 246, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(139, 92, 246, 0.05);
+  --body-gap: 26px;
+  --split-gap: 26px;
+  --block-gap: 12px;
+  --table-rule: rgba(139, 92, 246, 0.20);
+  --table-rule-soft: rgba(139, 92, 246, 0.08);
+  --ramp-h: 30px;
+}
+
+/* ---------- 3b · Ultraviolet — canon type ---------- */
+
+#s-3 { --section-edge: rgba(139, 92, 246, 0.14); --section-accent: #A78BFA; }
+
+[id="3b"] {
+  --badge-bg: #8B5CF6;
+  --badge-fg: #08091A;
+  --ink: #08091A;
+  --edge: rgba(139, 92, 246, 0.20);
+  --panel-shadow: 0 0 24px rgba(139, 92, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(139, 92, 246, 0.05);
+  --muted: #8D8CB0;
+  --brand: #8B5CF6;
+  --delta: #FDE68A;
+  --eyebrow: #22D3EE;
+  --c-dg: #FDE68A;
+  --c-dh: #22D3EE;
+  --c-ds: #8B5CF6;
+  --kw-grad: linear-gradient(90deg, #22D3EE, #8B5CF6, #FDE68A, #22D3EE);
+  --kw-grad-b: linear-gradient(90deg, #8B5CF6, #FDE68A, #22D3EE, #8B5CF6);
+  --stat-1: #FDE68A;
+  --stat-2: #E4E3F5;
+  --stat-3: #22D3EE;
+  --rule-top: rgba(139, 92, 246, 0.16);
+  --btn-bg: #8B5CF6;
+  --btn-fg: #08091A;
+  --btn-glow: 0 0 20px rgba(139, 92, 246, 0.40);
+  --out-edge: rgba(139, 92, 246, 0.28);
+  --out-fg: #E4E3F5;
+  --callout-bg: rgba(17, 18, 38, 0.82);
+  --callout-edge: rgba(139, 92, 246, 0.20);
+  --callout-title-color: #8B5CF6;
+  --chev: rgba(139, 92, 246, 0.6);
+  --spec-edge: rgba(139, 92, 246, 0.16);
+  --spec-bg: rgba(17, 18, 38, 0.55);
+  --spec-hex: #8D8CB0;
+  --spec-type: #8D8CB0;
+}
+
+/* ---------- 3c · Terminal+ — enhanced ---------- */
+
+[id="3c"] {
+  --badge-bg: #22D3EE;
+  --badge-fg: #05070a;
+  --ink: #05070a;
+  --edge: rgba(34, 211, 238, 0.14);
+  --panel-shadow: 0 0 22px rgba(34, 211, 238, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --grid: rgba(34, 211, 238, 0.05);
+  --panel-pad: 30px 54px 30px 30px;
+  --body-gap: 20px;
+  --fg: #cfe3e8;
+  --muted: #6f8792;
+  --brand: #22D3EE;
+  --delta: #FBBF24;
+  --eyebrow: #64748b;
+  --eq-size: 27px;
+  --eq-ls: -0.02em;
+  --c-dg: #FBBF24;
+  --c-dh: #22D3EE;
+  --c-ds: #64748b;
+  --head-ls: -0.02em;
+  --prose-font: var(--font-mono);
+  --prose-size: 14px;
+  --prose-weight: 300;
+  --prose-lh: 1.75;
+  --kw-weight: 500;
+  --kw-color: #22D3EE;
+  --kw-color-b: #FBBF24;
+  --table-head: #64748b;
+  --table-rule: rgba(34, 211, 238, 0.18);
+  --table-rule-soft: rgba(34, 211, 238, 0.07);
+  --table-fg: #cfe3e8;
+  --table-lead: #6f8792;
+  --btn-bg: #22D3EE;
+  --btn-fg: #05070a;
+  --btn-glow: 0 0 18px rgba(34, 211, 238, 0.30);
+  --out-edge: rgba(34, 211, 238, 0.20);
+  --out-fg: #cfe3e8;
+  --callout-bg: rgba(10, 14, 19, 0.90);
+  --callout-accent: #22D3EE;
+  --spec-edge: rgba(34, 211, 238, 0.10);
+  --spec-bg: rgba(10, 14, 19, 0.55);
+  --spec-hex: #6f8792;
+  --spec-type: #6f8792;
+}
+
+/* 3c boxes its eyebrow rather than leaving it bare. */
+[id="3c"] .eyebrow {
+  border: 1px solid rgba(34, 211, 238, 0.14);
+  border-radius: 3px;
+  padding: 3px 7px;
+}
+
+/* The code callout runs as mono lines rather than title + bullets,
+   so the lines sit on their line-height with no extra gap. */
+[id="3c"] .code {
+  gap: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.8;
+  color: #6f8792;
+}
+
+[id="3c"] .code .sigil { color: #64748b; }
+[id="3c"] .code .flag { color: #22D3EE; }
+[id="3c"] .code .val-dg { color: #FBBF24; }
+[id="3c"] .code .val-fg { color: #cfe3e8; }
+
+/* ---------- 3d · Datasheet+ — three voices ---------- */
+
+[id="3d"] {
+  --badge-bg: #FFB020;
+  --badge-fg: #0D1013;
+  --ink: #0D1013;
+  --edge: rgba(255, 176, 32, 0.16);
+  --panel-shadow: 0 0 20px rgba(255, 176, 32, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --grid: rgba(255, 176, 32, 0.035);
+  --body-gap: 20px;
+  --fg: #E8EAED;
+  --muted: #8B929B;
+  --brand-size: 20px;
+  --brand: #E8EAED;
+  --delta: #FFB020;
+  --eyebrow: #22D3EE;
+  --eq-size: 24px;
+  --eq-weight: 400;
+  --c-dg: #FFB020;
+  --c-dh: #22D3EE;
+  --c-ds: #8B929B;
+  --head-font: 'Archivo', sans-serif;
+  --head-size: 40px;
+  --head-lh: 0.98;
+  --head-ls: -0.035em;
+  --head-case: uppercase;
+  --kw-color: #22D3EE;
+  --kw-color-b: #FFB020;
+  --stat-size: 28px;
+  --stat-label-size: 9.5px;
+  --stat-label-mt: 7px;
+  --stat-1: #FFB020;
+  --stat-2: #E8EAED;
+  --stat-3: #22D3EE;
+  --rule: rgba(255, 176, 32, 0.16);
+  --rule-soft: rgba(255, 176, 32, 0.12);
+  --btn-font: 'Archivo', sans-serif;
+  --btn-ls: 0.06em;
+  --btn-case: uppercase;
+  --btn-pad: 10px 18px;
+  --btn-primary-weight: 700;
+  --btn-outline-weight: 600;
+  --btn-bg: #FFB020;
+  --btn-fg: #0D1013;
+  --btn-glow: 0 0 18px rgba(255, 176, 32, 0.30);
+  --out-edge: rgba(255, 176, 32, 0.24);
+  --out-fg: #E8EAED;
+  --callout-bg: rgba(20, 24, 28, 0.85);
+  --callout-accent: #FFB020;
+  --spec-edge: rgba(255, 176, 32, 0.14);
+  --spec-bg: rgba(20, 24, 28, 0.55);
+  --spec-hex: #8B929B;
+  --spec-type: #8B929B;
+}
+
+/* ---------- 2a · Preprint — serif leads ---------- */
+
+#s-2 { --section-edge: rgba(34, 211, 238, 0.10); --section-accent: #A78BFA; }
+
+[id="2a"] {
+  --badge-bg: #EDF1F7;
+  --badge-fg: #0B0D10;
+  --ink: #0B0D10;
+  --edge: rgba(237, 241, 247, 0.10);
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(237, 241, 247, 0.025);
+  --fg: #EDF1F7;
+  --muted: #B4BCCA;
+  --brand-size: 20px;
+  --brand: #EDF1F7;
+  --delta: #FBBF24;
+  --eyebrow: #C08A9E;
+  --eq-size: 24px;
+  --eq-weight: 500;
+  --c-dg: #FBBF24;
+  --c-dh: #22D3EE;
+  --c-ds: #C08A9E;
+  --head-font: 'Newsreader', serif;
+  --head-size: 29px;
+  --head-weight: 500;
+  --head-lh: 1.15;
+  --head-ls: -0.015em;
+  --prose-font: 'Newsreader', serif;
+  --prose-size: 17px;
+  --prose-lh: 1.65;
+  --kw-color: #EDF1F7;
+  --stat-size: 30px;
+  --stat-weight: 500;
+  --stat-label-mt: 6px;
+  --stat-1: #FBBF24;
+  --stat-2: #EDF1F7;
+  --stat-3: #EDF1F7;
+  --rule-top: rgba(237, 241, 247, 0.08);
+  --btn-bg: #22D3EE;
+  --btn-fg: #0B0D10;
+  --btn-glow: 0 0 18px rgba(34, 211, 238, 0.25);
+  --out-edge: rgba(237, 241, 247, 0.16);
+  --out-fg: #EDF1F7;
+  --callout-bg: rgba(18, 21, 26, 0.85);
+  --callout-edge: rgba(237, 241, 247, 0.10);
+  --callout-gap: 8px;
+  --callout-title-size: 12px;
+  --callout-title-ls: 0.08em;
+  --callout-title-case: uppercase;
+  --callout-title-color: #22D3EE;
+  --callout-line-font: 'Newsreader', serif;
+  --callout-line-size: 15px;
+  --callout-line-lh: 1.5;
+  --spec-edge: rgba(237, 241, 247, 0.08);
+  --spec-bg: rgba(18, 21, 26, 0.55);
+  --spec-hex: #97A0B0;
+  --spec-type: #97A0B0;
+}
+
+[id="2a"] .stat-label { color: #97A0B0; }
+
+/* ---------- 2b · Datasheet — one family, amber-led ---------- */
+
+[id="2b"] {
+  --badge-bg: #FFB020;
+  --badge-fg: #0D1013;
+  --ink: #0D1013;
+  --edge: rgba(255, 176, 32, 0.16);
+  --panel-shadow: 0 0 20px rgba(255, 176, 32, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --grid: rgba(255, 176, 32, 0.035);
+  --fg: #E8EAED;
+  --muted: #8B929B;
+  --brand-font: 'Archivo', sans-serif;
+  --brand-size: 21px;
+  --brand-ls: -0.01em;
+  --brand: #E8EAED;
+  --delta: #FFB020;
+  --eyebrow: #8B929B;
+  --eq-size: 25px;
+  --c-dg: #FFB020;
+  --c-dh: #22D3EE;
+  --c-ds: #8B929B;
+  --head-font: 'Archivo', sans-serif;
+  --head-size: 25px;
+  --head-lh: 1.1;
+  --head-ls: -0.03em;
+  --head-case: uppercase;
+  --prose-font: 'Archivo', sans-serif;
+  --prose-lh: 1.6;
+  --kw-weight: 600;
+  --kw-color: #FFB020;
+  --kw-color-b: #E8EAED;
+  --stat-size: 28px;
+  --stat-label-mt: 6px;
+  --stat-1: #FFB020;
+  --stat-2: #E8EAED;
+  --stat-3: #E8EAED;
+  --rule: rgba(255, 176, 32, 0.16);
+  --rule-soft: rgba(255, 176, 32, 0.12);
+  --btn-font: 'Archivo', sans-serif;
+  --btn-ls: 0.06em;
+  --btn-case: uppercase;
+  --btn-pad: 10px 18px;
+  --btn-primary-weight: 700;
+  --btn-outline-weight: 600;
+  --btn-bg: #FFB020;
+  --btn-fg: #0D1013;
+  --btn-glow: 0 0 18px rgba(255, 176, 32, 0.30);
+  --out-edge: rgba(255, 176, 32, 0.24);
+  --out-fg: #E8EAED;
+  --callout-bg: rgba(20, 24, 28, 0.85);
+  --callout-edge: rgba(255, 176, 32, 0.16);
+  --callout-title-size: 10px;
+  --callout-title-weight: 500;
+  --callout-title-ls: 0.15em;
+  --callout-title-case: uppercase;
+  --callout-title-color: #FFB020;
+  --callout-line-font: 'Archivo', sans-serif;
+  --callout-line-size: 14px;
+  --callout-line-lh: 1.5;
+  --spec-edge: rgba(255, 176, 32, 0.14);
+  --spec-bg: rgba(20, 24, 28, 0.55);
+  --spec-hex: #8B929B;
+  --spec-type: #8B929B;
+}
+
+/* ---------- 2c · Ultraviolet — expressive mono ---------- */
+
+[id="2c"] {
+  --badge-bg: #8B5CF6;
+  --badge-fg: #08091A;
+  --ink: #08091A;
+  --edge: rgba(139, 92, 246, 0.20);
+  --panel-shadow: 0 0 24px rgba(139, 92, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(139, 92, 246, 0.05);
+  --muted: #8D8CB0;
+  --brand-font: 'Space Mono', monospace;
+  --brand-size: 21px;
+  --brand-ls: 0;
+  --brand: #8B5CF6;
+  --delta: #FDE68A;
+  --eyebrow-font: 'Space Mono', monospace;
+  --eyebrow-weight: 700;
+  --eyebrow: #22D3EE;
+  --eq-font: 'Space Mono', monospace;
+  --c-dg: #FDE68A;
+  --c-dh: #22D3EE;
+  --c-ds: #8B5CF6;
+  --head-font: 'Space Mono', monospace;
+  --head-size: 20px;
+  --head-lh: 1.25;
+  --prose-font: 'Public Sans', sans-serif;
+  --prose-lh: 1.65;
+  --kw-weight: 700;
+  --kw-grad: linear-gradient(90deg, #22D3EE, #8B5CF6, #FDE68A, #22D3EE);
+  --kw-grad-b: linear-gradient(90deg, #8B5CF6, #FDE68A, #22D3EE, #8B5CF6);
+  --stat-font: 'Space Mono', monospace;
+  --stat-size: 30px;
+  --stat-label-mt: 6px;
+  --stat-1: #FDE68A;
+  --stat-2: #E4E3F5;
+  --stat-3: #E4E3F5;
+  --rule-top: rgba(139, 92, 246, 0.16);
+  --btn-font: 'Space Mono', monospace;
+  --btn-primary-weight: 700;
+  --btn-outline-weight: 400;
+  --btn-bg: #8B5CF6;
+  --btn-fg: #08091A;
+  --btn-glow: 0 0 20px rgba(139, 92, 246, 0.40);
+  --out-edge: rgba(139, 92, 246, 0.28);
+  --out-fg: #E4E3F5;
+  --callout-bg: rgba(17, 18, 38, 0.82);
+  --callout-accent: #8B5CF6;
+  --callout-title-font: 'Space Mono', monospace;
+  --callout-title-weight: 700;
+  --callout-title-color: #22D3EE;
+  --callout-line-font: 'Public Sans', sans-serif;
+  --chev: rgba(139, 92, 246, 0.6);
+  --spec-edge: rgba(139, 92, 246, 0.16);
+  --spec-bg: rgba(17, 18, 38, 0.55);
+  --spec-hex: #8D8CB0;
+  --spec-type: #8D8CB0;
+}
+
+/* ---------- 2d · Warm graphite — no blue cast ---------- */
+
+[id="2d"] {
+  --badge-bg: #D8663F;
+  --badge-fg: #101010;
+  --ink: #101010;
+  --edge: rgba(216, 102, 63, 0.18);
+  --panel-shadow: 0 0 20px rgba(216, 102, 63, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(237, 231, 221, 0.028);
+  --fg: #EDE7DD;
+  --muted: #A39A8E;
+  --brand-size: 20px;
+  --brand: #EDE7DD;
+  --delta: #E3B04B;
+  --eyebrow: #D8663F;
+  --eq-size: 25px;
+  --c-dg: #E3B04B;
+  --c-dh: #4FB8C9;
+  --c-ds: #D8663F;
+  --head-font: 'Instrument Serif', serif;
+  --head-size: 38px;
+  --head-weight: 400;
+  --head-lh: 1.05;
+  --head-ls: -0.01em;
+  --prose-font: 'Manrope', sans-serif;
+  --prose-lh: 1.65;
+  --kw-color: #4FB8C9;
+  --kw-color-b: #D8663F;
+  --stat-size: 30px;
+  --stat-label-mt: 6px;
+  --stat-1: #E3B04B;
+  --stat-2: #EDE7DD;
+  --stat-3: #EDE7DD;
+  --rule-top: rgba(216, 102, 63, 0.16);
+  --btn-bg: #D8663F;
+  --btn-fg: #101010;
+  --btn-glow: 0 0 18px rgba(216, 102, 63, 0.30);
+  --out-edge: rgba(237, 231, 221, 0.18);
+  --out-fg: #EDE7DD;
+  --callout-bg: rgba(26, 24, 22, 0.86);
+  --callout-edge: rgba(216, 102, 63, 0.18);
+  --callout-title-font: 'Instrument Serif', serif;
+  --callout-title-size: 19px;
+  --callout-title-weight: 400;
+  --callout-title-color: #D8663F;
+  --callout-line-font: 'Manrope', sans-serif;
+  --chev: rgba(216, 102, 63, 0.6);
+  --spec-edge: rgba(216, 102, 63, 0.16);
+  --spec-bg: rgba(26, 24, 22, 0.55);
+  --spec-hex: #A39A8E;
+  --spec-type: #A39A8E;
+}
+
+/* ---------- 1a · Canon — navy instrument ---------- */
+
+#s-1 { --section-accent: #A78BFA; }
+
+/* 1a is the only card on the board that is deliberately NOT inked in
+   v2 indigo — it documents the v1 navy that v2 replaced, which is the
+   whole reason it sits next to 5a and 6a. See ../README.md. */
+[id="1a"] {
+  --badge-bg: #22D3EE;
+  --badge-fg: #0a0e14;
+  --ink: #0A0E14;
+  --edge: rgba(34, 211, 238, 0.15);
+  --panel-shadow: 0 0 20px rgba(34, 211, 238, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --grid: rgba(34, 211, 238, 0.04);
+  --muted: #8D8CB0;
+  --brand: #22D3EE;
+  --delta: #FBBF24;
+  --eyebrow: #A78BFA;
+  --c-dg: #FBBF24;
+  --c-dh: #22D3EE;
+  --c-ds: #A78BFA;
+  --kw-grad: linear-gradient(90deg, #22D3EE, #A78BFA, #FBBF24, #22D3EE);
+  --kw-grad-b: linear-gradient(90deg, #A78BFA, #FBBF24, #22D3EE, #A78BFA);
+  --stat-1: #FBBF24;
+  --stat-2: #E4E3F5;
+  --stat-3: #E4E3F5;
+  --rule-top: rgba(34, 211, 238, 0.10);
+  --btn-bg: #22D3EE;
+  --btn-fg: #0a0e14;
+  --btn-glow: 0 0 18px rgba(34, 211, 238, 0.30);
+  --out-edge: rgba(34, 211, 238, 0.20);
+  --out-fg: #E4E3F5;
+  --callout-bg: rgba(16, 20, 28, 0.80);
+  --callout-edge: rgba(34, 211, 238, 0.15);
+  --callout-title-color: #22D3EE;
+  --chev: rgba(34, 211, 238, 0.4);
+  --spec-edge: rgba(34, 211, 238, 0.10);
+  --spec-bg: rgba(16, 20, 28, 0.55);
+  --spec-hex: #6E6C8A;
+  --spec-type: #8D8CB0;
+}
+
+/* ---------- 1b · Burgundy notebook ---------- */
+
+[id="1b"] {
+  --badge-bg: #C2456F;
+  --badge-fg: #0b0910;
+  --ink: #0b0910;
+  --edge: rgba(194, 69, 111, 0.20);
+  --panel-shadow: 0 0 20px rgba(194, 69, 111, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --grid: rgba(194, 69, 111, 0.05);
+  --fg: #e8e0e5;
+  --muted: #9c8d96;
+  --brand: #22D3EE;
+  --delta: #E8B33C;
+  --eyebrow: #C2456F;
+  --c-dg: #E8B33C;
+  --c-dh: #22D3EE;
+  --c-ds: #C2456F;
+  --prose-font: 'Atkinson Hyperlegible', sans-serif;
+  --prose-lh: 1.65;
+  --kw-weight: 700;
+  --kw-grad: linear-gradient(90deg, #22D3EE, #C2456F, #E8B33C, #22D3EE);
+  --kw-grad-b: linear-gradient(90deg, #C2456F, #E8B33C, #22D3EE, #C2456F);
+  --stat-1: #E8B33C;
+  --stat-2: #e8e0e5;
+  --stat-3: #e8e0e5;
+  --rule-top: rgba(194, 69, 111, 0.14);
+  --btn-bg: #22D3EE;
+  --btn-fg: #0b0910;
+  --btn-glow: 0 0 18px rgba(34, 211, 238, 0.28);
+  --out-edge: rgba(194, 69, 111, 0.35);
+  --out-fg: #e8e0e5;
+  --callout-bg: rgba(24, 17, 22, 0.85);
+  --callout-edge: rgba(194, 69, 111, 0.20);
+  --callout-title-color: #C2456F;
+  --callout-line-font: 'Atkinson Hyperlegible', sans-serif;
+  --chev: rgba(194, 69, 111, 0.55);
+  --spec-edge: rgba(194, 69, 111, 0.14);
+  --spec-bg: rgba(24, 17, 22, 0.55);
+  --spec-hex: #8a7c85;
+  --spec-type: #9c8d96;
+}
+
+/* ---------- 1c · Terminal — mono only ---------- */
+
+[id="1c"] {
+  --badge-bg: #22D3EE;
+  --badge-fg: #05070a;
+  --ink: #05070a;
+  --edge: rgba(34, 211, 238, 0.12);
+  --panel-shadow: 0 0 20px rgba(34, 211, 238, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --grid: rgba(34, 211, 238, 0.05);
+  --fg: #cfe3e8;
+  --muted: #6f8792;
+  --brand: #22D3EE;
+  --delta: #FBBF24;
+  --eyebrow: #64748b;
+  --eq-ls: -0.02em;
+  --c-dg: #FBBF24;
+  --c-dh: #22D3EE;
+  --c-ds: #64748b;
+  --head-ls: -0.02em;
+  --prose-font: var(--font-mono);
+  --prose-size: 14px;
+  --prose-weight: 300;
+  --prose-lh: 1.75;
+  --kw-weight: 500;
+  --kw-color: #22D3EE;
+  --kw-color-b: #FBBF24;
+  --stat-1: #FBBF24;
+  --stat-2: #cfe3e8;
+  --stat-3: #cfe3e8;
+  --rule-top: rgba(34, 211, 238, 0.10);
+  --btn-bg: #22D3EE;
+  --btn-fg: #05070a;
+  --btn-glow: 0 0 18px rgba(34, 211, 238, 0.30);
+  --out-edge: rgba(34, 211, 238, 0.20);
+  --out-fg: #cfe3e8;
+  --callout-bg: rgba(10, 14, 19, 0.90);
+  --callout-accent: #22D3EE;
+  --callout-title-color: #22D3EE;
+  --callout-line-font: var(--font-mono);
+  --callout-line-size: 12px;
+  --callout-line-weight: 300;
+  --callout-line-lh: 1.8;
+  --chev: rgba(34, 211, 238, 0.4);
+  --spec-edge: rgba(34, 211, 238, 0.10);
+  --spec-bg: rgba(10, 14, 19, 0.55);
+  --spec-hex: #6f8792;
+  --spec-type: #6f8792;
+}
+
+/* ---------- 1d · Fluorescence — sans display ---------- */
+
+[id="1d"] {
+  --badge-bg: #00E5FF;
+  --badge-fg: #070B12;
+  --ink: #070B12;
+  --edge: rgba(0, 229, 255, 0.16);
+  --panel-shadow: 0 0 24px rgba(0, 229, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grid: rgba(0, 229, 255, 0.045);
+  --fg: #e2e8f5;
+  --muted: #8895ad;
+  --brand: #00E5FF;
+  --delta: #FFC53D;
+  --eyebrow: #FF3D9A;
+  --c-dg: #FFC53D;
+  --c-dh: #00E5FF;
+  --c-ds: #FF3D9A;
+  --head-font: 'Space Grotesk', sans-serif;
+  --head-size: 24px;
+  --head-lh: 1.1;
+  --head-ls: -0.02em;
+  --prose-font: 'Manrope', sans-serif;
+  --prose-lh: 1.65;
+  --kw-weight: 700;
+  --kw-grad: linear-gradient(90deg, #00E5FF, #FF3D9A, #FFC53D, #00E5FF);
+  --kw-grad-b: linear-gradient(90deg, #FF3D9A, #FFC53D, #00E5FF, #FF3D9A);
+  --stat-1: #FFC53D;
+  --stat-2: #e2e8f5;
+  --stat-3: #e2e8f5;
+  --rule-top: rgba(0, 229, 255, 0.12);
+  --btn-font: 'Space Grotesk', sans-serif;
+  --btn-size: 13px;
+  --btn-primary-weight: 700;
+  --btn-bg: #00E5FF;
+  --btn-fg: #070B12;
+  --btn-glow: 0 0 20px rgba(0, 229, 255, 0.35);
+  --out-edge: rgba(0, 229, 255, 0.22);
+  --out-fg: #e2e8f5;
+  --callout-bg: rgba(14, 19, 30, 0.82);
+  --callout-edge: rgba(0, 229, 255, 0.16);
+  --callout-title-font: 'Space Grotesk', sans-serif;
+  --callout-title-size: 14px;
+  --callout-title-weight: 700;
+  --callout-title-color: #00E5FF;
+  --callout-line-font: 'Manrope', sans-serif;
+  --chev: rgba(255, 61, 154, 0.6);
+  --spec-edge: rgba(0, 229, 255, 0.12);
+  --spec-bg: rgba(14, 19, 30, 0.55);
+  --spec-hex: #8895ad;
+  --spec-type: #8895ad;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   7 · Narrow viewports
+   The board is a fixed-width design surface; below the point
+   where a 560px card plus gutters stops fitting, cards go full
+   width and the wide 4a / 6a panels scroll rather than squash.
+   ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 1300px) {
+  .opt--wide {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .opt--wide .panel { min-width: 1156px; }
+  .opt--wide .spec { min-width: 1156px; }
+}
+
+@media (max-width: 720px) {
+  .section { padding: 40px 20px 56px; }
+  .toolbar { padding: 12px 20px; }
+  .opt { width: 100%; }
+  .opt-title { white-space: normal; }
+}

@@ -1,0 +1,145 @@
+/* ============================================================
+   @flexaidds/tokens — semantic element styles
+   Le Bonhomme Pharma · Montréal
+
+   Optional companion to `tokens.css`. Drop both into a page and
+   bare HTML comes out looking like FlexAID∆S with no per-element
+   overrides. Import `tokens.css` first — every value here
+   resolves through it.
+
+       <link rel="stylesheet" href="tokens.css">
+       <link rel="stylesheet" href="elements.css">
+
+   Consuming a design system that already styles elements? Take
+   `tokens.css` alone; this file is the part that has opinions.
+   ============================================================ */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg);
+  background: var(--bg);
+  /* The signature violet graph paper — always on, very low
+     contrast; it reads as a grid only when looked for. */
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: var(--grid-step) var(--grid-step);
+}
+
+/* Headings are mono. This is the move that defines the brand. */
+
+h1, .h1 {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-700);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-flat);
+  color: var(--fg);
+  text-wrap: balance;
+}
+
+h2, .h2 {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-700);
+  line-height: var(--lh-snug);
+  color: var(--fg);
+  text-wrap: balance;
+}
+
+h3, .h3 {
+  font-family: var(--font-mono);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-600);
+  color: var(--fg);
+  text-wrap: balance;
+}
+
+p {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg-muted);
+  max-width: 72ch;
+  text-wrap: pretty;
+}
+
+a { color: var(--mint); }
+a:hover { color: var(--kw-ga); }
+
+code, .mono, kbd, samp {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+/* Section eyebrow — lowercase, `//` comment syntax, strawberry.
+   The brand's most distinctive content-design choice. */
+.eyebrow, .section-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-tag);
+  font-weight: var(--fw-500);
+  letter-spacing: var(--tracking-tag);
+  text-transform: uppercase;
+  color: var(--strawberry);
+}
+
+/* Stat block — oversized mono number under a tiny tracked label. */
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: var(--fw-700);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--tangerine);
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-tag);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-top: var(--sp-1);
+}
+
+/* Equation terms — the identity reads term by term in color. */
+.eq-dg  { color: var(--tangerine); }
+.eq-dh  { color: var(--mint); }
+.eq-t   { color: var(--firetruck); }
+.eq-ds  { color: var(--violet); }
+.eq-dsv { color: var(--aqua); }
+
+/* State */
+.state-pass { color: var(--state-pass); }
+.state-warn { color: var(--state-warn); }
+.state-fail { color: var(--state-fail-text); }
+
+/* Brand wordmark — mint mark, tangerine ∆S. */
+.brand {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-700);
+  letter-spacing: 0.02em;
+  color: var(--mint);
+}
+
+.brand .delta { color: var(--tangerine); }
+
+/* Tables put their numbers on a tabular figure. */
+table { font-variant-numeric: tabular-nums; }
+
+th {
+  font-family: var(--font-mono);
+  font-size: var(--fs-tag);
+  font-weight: var(--fw-500);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  text-align: left;
+}

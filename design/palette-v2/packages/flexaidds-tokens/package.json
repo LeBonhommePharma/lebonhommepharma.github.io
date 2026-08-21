@@ -1,0 +1,39 @@
+{
+  "name": "@flexaidds/tokens",
+  "version": "2.0.0",
+  "description": "FlexAID∆S palette v2 — seven key colors, each carrying a thermodynamic quantity, plus type, spacing, radii, glow and the energy-ordered series ramp.",
+  "keywords": [
+    "design-tokens",
+    "flexaidds",
+    "molecular-docking",
+    "thermodynamics",
+    "palette"
+  ],
+  "author": "Le Bonhomme Pharma · Montréal",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./tokens.js",
+  "module": "./tokens.js",
+  "types": "./tokens.d.ts",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./tokens.d.ts",
+      "default": "./tokens.js"
+    },
+    "./tokens.css": "./tokens.css",
+    "./elements.css": "./elements.css",
+    "./tokens.json": "./tokens.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "tokens.js",
+    "tokens.d.ts",
+    "tokens.css",
+    "elements.css",
+    "tokens.json",
+    "README.md"
+  ]
+}
