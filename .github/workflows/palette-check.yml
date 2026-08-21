@@ -1,0 +1,46 @@
+name: Palette v2 check
+
+# Catches FlexAID∆S palette v1 creeping back into the site.
+#
+# WHY A SEPARATE WORKFLOW
+# -----------------------
+# Same reasoning as linkcheck.yml: pages.yml is the transit bot's publish path
+# and publish-transit.yml is the bot itself. Neither should grow a job that can
+# wedge an automated push. This runs on its own and blocks nothing but PRs.
+#
+# WHY THE SELF-TEST STEP IS SEPARATE FROM THE SCAN
+# ------------------------------------------------
+# The v2 migration was originally verified with `grep -E '…(?![0-9A-Fa-f])'`.
+# POSIX ERE has no lookahead, so it matched nothing and reported a clean tree
+# it had never inspected. Two further false-pass modes turned up while building
+# this: a case-sensitive pattern against mixed-case hexes, and grep suppressing
+# output as "binary file matches" on a stream containing non-UTF-8 bytes.
+#
+# All three failed silently and all three looked like success. So the self-test
+# runs first and as its own step: if the patterns stop matching known-bad
+# fixtures, this job goes red on that alone, before any tree is scanned. A
+# green scan is only meaningful if the checks are known to still work.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  palette:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Proves the patterns can still fail. If this step is red, the scan
+      # below tells you nothing and must not be trusted.
+      - name: Self-test the checks
+        run: ./scripts/check-palette-v2.sh --self-test
+
+      - name: Scan for palette v1
+        run: ./scripts/check-palette-v2.sh

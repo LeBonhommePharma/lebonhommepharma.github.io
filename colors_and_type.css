@@ -9,9 +9,11 @@
    tangerine — the binding to ΔH / TΔS / ΔG is unchanged, only
    the hues moved.
 
+   palette-check-ignore-start
    Retired — do not reintroduce: gold #FBBF24, pale gold #FDE68A,
    any yellow, cyan #22D3EE, salmon #C2456F, wine #DA2F63,
    steel #6E7C99, maraschino #FF2600, snow #FFFFFF.
+   palette-check-ignore-end
 
    The full board this came from, with the reasoning per round,
    is at /design/palette-v2/.
