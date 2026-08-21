@@ -2412,7 +2412,7 @@ function refreshPaint() {
     ink: css.getPropertyValue("--ink").trim() || "#2b2723",
     gold: css.getPropertyValue("--gold").trim() || "#d97706",
     sodium: css.getPropertyValue("--sodium").trim() || "#0e7490",
-    terra: css.getPropertyValue("--terra").trim() || "#8b1a4a",
+    terra: css.getPropertyValue("--terra").trim() || "#8B5CF6",
     tunnel: css.getPropertyValue("--tunnel").trim() || "#4b5563",
     tunnelHi: css.getPropertyValue("--tunnel-hi").trim() || "#8b949e",
     dot: css.getPropertyValue("--dot").trim() || "#fff8ee",
@@ -2854,7 +2854,7 @@ function draw() {
     if (vx < -8 || vy < -8 || vx > w + 8 || vy > h + 8) continue;
     const hot = !focus || focus.has(veh);
     ctx.globalAlpha = hot ? 1 : 0.32;
-    // --terra, not a literal: night lifts it to #c62a63 for contrast on #0d1219.
+    // --terra, not a literal: night lifts it to #A78BFA for contrast on #0d1219.
     ctx.fillStyle = terra;
     ctx.beginPath();
     ctx.arc(vx, vy, hot ? 5.6 : 5.2, 0, Math.PI * 2);

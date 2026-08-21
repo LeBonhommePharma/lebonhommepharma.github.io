@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="build-sha" content="149cd54a56743f916d143aa8e24c4f3c208f3e44" />
+    <meta name="build-sha" content="ca76ab6f81e2da7c9e261df3fb36e449f2eabffd" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Rive. Horaires RTC, STLévis, STM et STL, sans abonnement</title>
     <meta
@@ -13,7 +13,7 @@
     <link rel="manifest" href="./manifest.json" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Rive" />
-    <meta name="theme-color" content="#0a0e14" />
+    <meta name="theme-color" content="#08091A" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.openfreemap.org; font-src 'self' data:; connect-src 'self' https://api.stm.info https://quebec.publicbikesystem.net https://gbfs.velobixi.com https://overpass-api.de https://overpass.kumi.systems https://tiles.openfreemap.org https://api.open-meteo.com https://air-quality-api.open-meteo.com; worker-src 'self' blob:;" />
     <link rel="preload" href="./fonts/Outfit-Regular.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="preload" href="./fonts/IBMPlexMono-Regular.ttf" as="font" type="font/ttf" crossorigin />
@@ -61,7 +61,7 @@
         --muted: #55677a;
         --sodium: #0e7490;
         --gold: #a35a09;
-        --terra: #8b1a4a;
+        --terra: #8B5CF6;
         --glass: rgb(247 250 252 / 0.9);
         --stage: #dce4ec;
         --chip: #0e7490;
@@ -98,57 +98,57 @@
       }
       html.night {
         --ink: #e4eef6;
-        --paper: #0a0e14;
+        --paper: #08091A;
         --muted: #8fa4b4;
-        --sodium: #22d3ee;
-        --gold: #fbbf24;
-        --terra: #c62a63;
-        --glass: rgb(16 20 28 / 0.86);
+        --sodium: #45E0A8;
+        --gold: #FF9300;
+        --terra: #A78BFA;
+        --glass: rgb(17 18 38 / 0.86);
         --stage: #0d1219;
-        --chip: #22d3ee;
+        --chip: #45E0A8;
         --chip-ink: #05222b;
-        --well: rgb(34 211 238 / 0.07);
-        --well-hi: rgb(34 211 238 / 0.13);
-        --hair: rgb(34 211 238 / 0.18);
-        --hair-soft: rgb(34 211 238 / 0.1);
+        --well: rgb(69 224 168 / 0.07);
+        --well-hi: rgb(69 224 168 / 0.13);
+        --hair: rgb(69 224 168 / 0.18);
+        --hair-soft: rgb(69 224 168 / 0.1);
         --sheen: inset 0 1px 0 rgb(255 255 255 / 0.03);
         --edge: rgb(228 238 246 / 0.2);
         --dot: #dfe9f0;
-        --dot-edge: #0a0e14;
-        --metro: #0a0e14;
-        --metro-edge: #fbbf24;
+        --dot-edge: #08091A;
+        --metro: #08091A;
+        --metro-edge: #FF9300;
         --tunnel: #6b7280;
         --tunnel-hi: #6b7280;
         --shadow: none;
-        --ring: #22d3ee;
+        --ring: #45E0A8;
         color-scheme: dark;
       }
       @media (prefers-color-scheme: dark) {
         :root:not(.day) {
           --ink: #e4eef6;
-          --paper: #0a0e14;
+          --paper: #08091A;
           --muted: #8fa4b4;
-          --sodium: #22d3ee;
-          --gold: #fbbf24;
-          --terra: #c62a63;
-          --glass: rgb(16 20 28 / 0.86);
+          --sodium: #45E0A8;
+          --gold: #FF9300;
+          --terra: #A78BFA;
+          --glass: rgb(17 18 38 / 0.86);
           --stage: #0d1219;
-          --chip: #22d3ee;
+          --chip: #45E0A8;
           --chip-ink: #05222b;
-          --well: rgb(34 211 238 / 0.07);
-          --well-hi: rgb(34 211 238 / 0.13);
-          --hair: rgb(34 211 238 / 0.18);
-          --hair-soft: rgb(34 211 238 / 0.1);
+          --well: rgb(69 224 168 / 0.07);
+          --well-hi: rgb(69 224 168 / 0.13);
+          --hair: rgb(69 224 168 / 0.18);
+          --hair-soft: rgb(69 224 168 / 0.1);
           --sheen: inset 0 1px 0 rgb(255 255 255 / 0.03);
           --edge: rgb(228 238 246 / 0.2);
           --dot: #dfe9f0;
-          --dot-edge: #0a0e14;
-          --metro: #0a0e14;
-          --metro-edge: #fbbf24;
+          --dot-edge: #08091A;
+          --metro: #08091A;
+          --metro-edge: #FF9300;
           --tunnel: #6b7280;
           --tunnel-hi: #6b7280;
           --shadow: none;
-          --ring: #22d3ee;
+          --ring: #45E0A8;
           color-scheme: dark;
         }
       }
@@ -158,7 +158,7 @@
       }
       @media (prefers-contrast: more) {
         :root, html.day { --glass: #f3f6f9; --hair: rgb(14 116 144 / 0.5); --muted: #33465a; }
-        html.night, :root:not(.day) { --glass: #0b1017; --hair: rgb(34 211 238 / 0.45); --muted: #b6c7d4; }
+        html.night, :root:not(.day) { --glass: #0b1017; --hair: rgb(69 224 168 / 0.45); --muted: #b6c7d4; }
       }
       * { box-sizing: border-box; }
       html, body {
