@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-26T03:19:42.760Z",
+  "builtAt": "2026-08-26T07:08:59.321Z",
   "cities": [
     {
       "city": "quebec",
@@ -70,11 +70,11 @@
       ],
       "zoom": 12.1,
       "counts": {
-        "routes": 558,
-        "stops": 17735,
-        "trips": 171623,
-        "services": 107,
-        "timetableStops": 17663
+        "routes": 460,
+        "stops": 14889,
+        "trips": 166482,
+        "services": 104,
+        "timetableStops": 14820
       },
       "agencies": [
         {
@@ -112,9 +112,9 @@
       "timezone": "America/Toronto",
       "lang": "FR",
       "phone": "819-564-2687",
-      "updated": "",
-      "start": "",
-      "end": "",
+      "updated": "20260622",
+      "start": "20260622",
+      "end": "20261220",
       "version": "",
       "attribution": "Horaires et parcours STS Sherbrooke, données ouvertes.",
       "licenseUrl": "https://www.sts.qc.ca/a-propos/la-sts/donnees-ouvertes/",
