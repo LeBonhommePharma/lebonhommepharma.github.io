@@ -9,6 +9,12 @@ name: Publish /transit
 # That makes the whole pipeline token-free. See DEPLOY.md.
 
 on:
+  # Also run when this publisher definition changes. This gives us a
+  # credential-free immediate kick when an upstream publish is waiting on the
+  # delayed GitHub schedule; normal Transit updates still use dispatch/schedule.
+  push:
+    paths:
+      - .github/workflows/publish-transit.yml
   # Instant publish. Transit's own workflow sends this once APEX_DISPATCH_TOKEN
   # exists; until then, use the schedule below or run this manually.
   repository_dispatch:
