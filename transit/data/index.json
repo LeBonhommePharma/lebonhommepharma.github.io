@@ -1,5 +1,5 @@
 {
-  "builtAt": "2026-08-19T06:34:16.404Z",
+  "builtAt": "2026-08-26T03:19:42.760Z",
   "cities": [
     {
       "city": "quebec",
@@ -10,11 +10,11 @@
       "timezone": "America/Montreal",
       "lang": "fr",
       "phone": "+1-418-627-2511",
-      "updated": "20260817",
-      "start": "20260615",
+      "updated": "20260824",
+      "start": "20260824",
       "end": "20261220",
       "version": "",
-      "attribution": "Intègre les Informations publiques du Réseau de transport de la Capitale. Horaires et parcours STLévis, données ouvertes.",
+      "attribution": "Informations publiques du Réseau de transport de la Capitale. Horaires et parcours STLévis, données ouvertes.",
       "licenseUrl": "https://www.rtcquebec.ca/donnees-ouvertes",
       "sourceUrl": "https://cdn.rtcquebec.ca/Site_Internet/DonneesOuvertes/googletransit.zip",
       "center": [
@@ -23,18 +23,18 @@
       ],
       "zoom": 12.4,
       "counts": {
-        "routes": 271,
-        "stops": 6124,
-        "trips": 77588,
-        "services": 56,
-        "timetableStops": 5938
+        "routes": 263,
+        "stops": 6005,
+        "trips": 78938,
+        "services": 33,
+        "timetableStops": 5762
       },
       "agencies": [
         {
           "id": "RTC",
           "name": "Réseau de transport de la capitale (RTC)",
           "url": "https://www.rtcquebec.ca",
-          "attribution": "Intègre les Informations publiques du Réseau de transport de la Capitale.",
+          "attribution": "Informations publiques du Réseau de transport de la Capitale.",
           "licenseUrl": "https://www.rtcquebec.ca/donnees-ouvertes",
           "sourceUrl": "https://cdn.rtcquebec.ca/Site_Internet/DonneesOuvertes/googletransit.zip"
         },

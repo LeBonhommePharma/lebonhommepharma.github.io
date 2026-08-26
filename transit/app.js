@@ -427,6 +427,21 @@ function liveStops() {
   return mergeStopsWithDetours(state.atlas.stops, liveDetours());
 }
 
+function activeDetourForRoute(routeId) {
+  return liveDetours().find((d) => !d.routeId || d.routeId === routeId) || null;
+}
+
+function detourAlertHtml(detour, stop) {
+  if (!detour) return "";
+  const title = detour.title || "Détour en cours";
+  const description = detour.description || "Le parcours est temporairement modifié.";
+  const closed = stop && (detour.skipStopIds || []).includes(stop.id);
+  const stopLine = closed ? `Arrêt temporairement non desservi : ${escapeHtml(stop.name)}. ` : "";
+  const source = typeof detour.sourceUrl === "string" && detour.sourceUrl.startsWith("https://") ? detour.sourceUrl : "";
+  const sourceLink = source ? ` <a href="${escapeHtml(source)}" rel="noopener">Avis RTC</a>` : "";
+  return `<div class="alert" role="status"><strong>${escapeHtml(title)}</strong><br>${stopLine}${escapeHtml(description)}${sourceLink}</div>`;
+}
+
 function findStop(id) {
   return liveStops().find((s) => s.id === id) || state.atlas?.stops.find((s) => s.id === id);
 }
@@ -849,6 +864,9 @@ function parseRealtimePayload(raw) {
         skipStopIds: Array.isArray(row.skipStopIds) ? row.skipStopIds.filter((id) => typeof id === "string").slice(0, 5000).map((id) => id.slice(0, 128)) : [],
         extraMinutes: Number.isFinite(Number(row.extraMinutes)) ? Number(row.extraMinutes) : undefined,
         tempStops: parseTempStops(row.tempStops || row.temporaryStops || row.addedStops),
+        title: typeof row.title === "string" ? row.title.slice(0, 128) : undefined,
+        description: typeof (row.description || row.text || row.summary) === "string" ? String(row.description || row.text || row.summary).slice(0, 512) : undefined,
+        sourceUrl: typeof (row.sourceUrl || row.source_url || row.url) === "string" ? String(row.sourceUrl || row.source_url || row.url).slice(0, 128) : undefined,
         from: epochMs(row.from ?? row.start ?? row.validFrom),
         until: epochMs(row.until ?? row.end ?? row.validUntil),
       });
@@ -1718,14 +1736,15 @@ function renderDue() {
   const official = applyTripUpdatesToDue(scheduled, state.tripUpdates || [], now);
   const fused = fuseSelectedRoute(official[0]?.depart ?? now);
   const due = applyFusedEtaToDue(official, fused, now);
+  const notice = detourAlertHtml(activeDetourForRoute(state.routeId));
   state.fusedVehicle = fused;
   box.hidden = false;
   if (!due.length) {
-    box.innerHTML = `<h2>Prochains</h2><p class="lead">Aucun passage de cette ligne à ${formatClock(now)} près d'ici.</p>`;
+    box.innerHTML = notice + `<h2>Prochains</h2><p class="lead">Aucun passage de cette ligne à ${formatClock(now)} près d'ici.</p>`;
     return;
   }
   box.innerHTML =
-    `<h2>Prochains</h2><p class="lead">À ${formatClock(now)}, près de toi. Horaires officiels.</p>` +
+    notice + `<h2>Prochains</h2><p class="lead">À ${formatClock(now)}, près de toi. Horaires officiels.</p>` +
     due
       .map(
         (row) => `<div class="row">
@@ -2333,11 +2352,14 @@ function openStop(stop) {
   const now = clockMinutes();
   const active = activeServiceIndexes(state.atlas, new Date());
   const rows = scheduleAtStop(state.atlas, state.timetable, stop, now, active);
+  const detour = (stop.routes || []).map((routeId) => activeDetourForRoute(routeId)).find(Boolean);
+  const notice = detourAlertHtml(detour, stop);
   const board = document.getElementById("board");
   board.hidden = false;
   const watchHref = watchUrl(stop, rows);
   board.innerHTML = `<h2>${escapeHtml(stop.name)}</h2>
     <p class="lead">Passages à ${formatClock(now)}. Tu n'as pas besoin d'être sur le quai.</p>
+    ${notice}
     ${
       rows.length === 0
         ? `<p class="lead">Aucun passage restant aujourd'hui.</p>`
