@@ -304,7 +304,14 @@ code, .mono, kbd, samp {
   letter-spacing: 0.02em;
 }
 .brand .delta { color: var(--gold); }
-.brand .terra { color: var(--terra); 
+.brand .terra { color: var(--terra); }
+
+/* Fix: STATE / SERIES / TEMPERATURE tokens must live at :root. They were
+   nested inside the .brand .terra rule above — its closing brace was missing —
+   so --series-*, --state-* and --t-* resolved only on a .brand .terra element
+   and fell back to invalid everywhere else. Closing .brand .terra and opening
+   :root here restores them site-wide. */
+:root {
   /* ───────── STATE ─────────
      Severity reads by brightness, never by yellow. Magenta means
      caution, pure red means stop.                                */

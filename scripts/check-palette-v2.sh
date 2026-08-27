@@ -49,6 +49,12 @@ BINARY_RE='\.(png|jpe?g|gif|ico|pdf|woff2?|ttf|otf|zip)$'
 V1_HEX='22D3EE|FBBF24|FDE68A|8B1A4A|0a0e14|d4dced|8a93a8|67E8F9|FCD34D|5046D6|2a9aa8|C2456F|DA2F63|6E7C99|FF2600'
 # Matches #RRGGBB and #RRGGBBAA, but never a longer hex run.
 HEX_RE="(?i)#(${V1_HEX})([0-9A-Fa-f]{2})?(?![0-9A-Fa-f])"
+# The same retired hexes in JS colour-int form (0xRRGGBB) — Three.js / Mol*
+# scene, background and fog colours. The #-only HEX_RE never sees these: a
+# 0x0a0e14 viewer background and a 0x22D3EE ligand shipped straight through the
+# v2 sweep because a checker that forbids "#22D3EE" says nothing about
+# "0x22D3EE". No alpha suffix — colour ints are 0xRRGGBB.
+HEX0X_RE="(?i)0x(${V1_HEX})(?![0-9A-Fa-f])"
 # rgb()/rgba(), comma- or space-separated. The space form is how the v2 sweep
 # first missed `rgb(34 211 238 / 0.07)` in the Transit atlas.
 RGB_RE='rgba?\(\s*(34[\s,]+211[\s,]+238|251[\s,]+191[\s,]+36|167[\s,]+139[\s,]+250|139[\s,]+26[\s,]+74|10[\s,]+14[\s,]+20|16[\s,]+20[\s,]+28|12[\s,]+16[\s,]+22)\b'
@@ -82,6 +88,8 @@ self_test() {
     "RGB_RE|rgb(34 211 238 / 0.07)|space-separated rgb"
     "RGB_RE|rgba(251,191,36,0.35)|comma rgba, no spaces"
     "BINDINGS_RE|  --terra: #A78BFA;|v2 hex re-bound to the v1 quantity"
+    "HEX0X_RE|scene.fog = new THREE.FogExp2(0x0a0e14, 0.015)|0x-form v1 ink"
+    "HEX0X_RE|backgroundColor: light ? 0xffffff : 0x22D3EE|0x-form v1 cyan"
   )
   for c in "${cases[@]}"; do
     IFS='|' read -r pat input label <<<"$c"
@@ -96,6 +104,8 @@ self_test() {
     "HEX_RE|#45E0A8|v2 mint"
     "HEX_RE|#22D3EEFF00|longer hex run, not a colour"
     "BINDINGS_RE|  --kw-docking: #A78BFA;|legitimate v2 token"
+    "HEX0X_RE|0x45E0A8|v2 mint in 0x form"
+    "HEX0X_RE|0x0a0e1400|longer 0x run, not a colour int"
   )
   for c in "${negatives[@]}"; do
     IFS='|' read -r pat input label <<<"$c"
@@ -145,6 +155,7 @@ scan() {
 }
 
 scan "$HEX_RE"      "no retired v1 hex literals"
+scan "$HEX0X_RE"    "no retired v1 hex in 0x form (JS colour ints)"
 scan "$RGB_RE"      "no v1 rgb()/rgba() triples"
 scan "$BINDINGS_RE" "no v2 colour bound to a v1 quantity"
 
