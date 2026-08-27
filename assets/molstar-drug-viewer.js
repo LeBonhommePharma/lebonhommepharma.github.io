@@ -465,7 +465,7 @@
         type: 'molecular-surface',
         typeParams: { alpha: 0.14, includeHydrogens: false, doubleSided: true },
         color: 'uniform',
-        colorParams: { value: 0x45E0A8 },
+        colorParams: { value: 0xFF2F92 },
       });
     }).then(function (repr) {
       surfaceReprs.set(viewer, repr);

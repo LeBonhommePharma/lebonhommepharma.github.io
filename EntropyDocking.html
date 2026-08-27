@@ -18,6 +18,15 @@
     --glow-gold: rgba(255, 147, 0, 0.4);
     --glow-terra: rgba(139, 92, 246, 0.4);
     --glow-teal: rgba(69, 224, 168, 0.4);
+
+    /* Mirrors colors_and_type.css. These pages are deliberately
+       self-contained and do not link the site stylesheet, so the tokens are
+       restated here rather than imported. Keep in sync. */
+    --firetruck:       #F5232B;   /* T · temperature · hot anchor      */
+    --state-pass:      #45E0A8;   /* mint                              */
+    --state-warn:      #FF2F92;   /* strawberry                        */
+    --state-fail:      #F5232B;   /* firetruck                         */
+    --state-fail-text: #FF6B6B;   /* lifted for small labels           */
   }
 
   body {
@@ -173,6 +182,9 @@
   .metric-val.gold { color: var(--gold); }
   .metric-val.terra { color: var(--terra); }
   .metric-val.teal { color: var(--teal); }
+  /* T is a temperature, not a member of the dG group. 13px clears the
+     12px floor firetruck needs — it has no contrast headroom. */
+  .metric-val.firetruck { color: var(--firetruck); }
 
   .sigma-bar {
     width: 100%;
@@ -483,7 +495,7 @@
     <h3>Thermodynamic State</h3>
     <div class="metric-row">
       <span class="metric-label">T (BPM→K)</span>
-      <span class="metric-val gold" id="tempK">300.0 K</span>
+      <span class="metric-val firetruck" id="tempK">300.0 K</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">ΔG_bind</span>
@@ -506,7 +518,7 @@
       <span class="metric-val terra" id="sigmaIrr">0.142 k_B</span>
     </div>
     <div class="sigma-bar">
-      <div class="sigma-fill" id="sigmaFill" style="width:14.2%; background: var(--terra);"></div>
+      <div class="sigma-fill" id="sigmaFill" style="width:14.2%; background: var(--state-fail);"></div>
     </div>
     <div class="metric-row" style="margin-top:10px;">
       <span class="metric-label">Landauer bits</span>
@@ -523,7 +535,7 @@
     </div>
     <div class="metric-row">
       <span class="metric-label">S_config</span>
-      <span class="metric-val gold" id="sConfig">4.87 bits</span>
+      <span class="metric-val terra" id="sConfig">4.87 bits</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">I(music;mol)</span>
@@ -909,6 +921,53 @@ function buildEnergyGrid() {
   scene.add(energyField);
 }
 
+// --- v2 TEMPERATURE RAMP ---
+// Receptor atoms are coloured by simulation temperature. This is the v2
+// temperature scale, which deliberately excludes mint/violet/tangerine —
+// those mean dH, dS and dG and nothing else.
+//   aqua #00A2FF 77K · #7FD0FF 200K · magnesium #DCDCE4 298K
+//   · #FF7A5C 310K · firetruck #F5232B 350K+
+// tempFactor 0..1 maps linearly across the five stops.
+// Interpolation is in Oklab so the sweep holds a even perceptual rate and
+// does not sag through the mid-tones the way a plain sRGB lerp does.
+const T_RAMP = [0x00A2FF, 0x7FD0FF, 0xDCDCE4, 0xFF7A5C, 0xF5232B];
+
+function srgbToOklab(hex) {
+  const f = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const r = f((hex >> 16) & 255), g = f((hex >> 8) & 255), b = f(hex & 255);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+          1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+          0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s];
+}
+
+function oklabToSrgb(L, A, B) {
+  const cube = (v) => v * v * v;
+  const l = cube(L + 0.3963377774 * A + 0.2158037573 * B);
+  const m = cube(L - 0.1055613458 * A - 0.0638541728 * B);
+  const s = cube(L - 0.0894841775 * A - 1.2914855480 * B);
+  const enc = (c) => {
+    const v = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(Math.max(c, 0), 1 / 2.4) - 0.055;
+    return Math.max(0, Math.min(255, Math.round(v * 255)));
+  };
+  return (enc(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s) << 16)
+       | (enc(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s) << 8)
+       |  enc(-0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s);
+}
+
+const T_RAMP_LAB = T_RAMP.map(srgbToOklab);
+
+function tempRampHex(t) {
+  const x = Math.min(1, Math.max(0, t)) * (T_RAMP_LAB.length - 1);
+  const i = Math.min(T_RAMP_LAB.length - 2, Math.floor(x));
+  const k = x - i, a = T_RAMP_LAB[i], b = T_RAMP_LAB[i + 1];
+  return oklabToSrgb(a[0] + (b[0] - a[0]) * k,
+                     a[1] + (b[1] - a[1]) * k,
+                     a[2] + (b[2] - a[2]) * k);
+}
+
 // --- ANIMATION ---
 function animate() {
   requestAnimationFrame(animate);
@@ -959,15 +1018,16 @@ function animate() {
   });
 
   // --- RECEPTOR BREATHING ---
+  // One ramp evaluation per frame: tempFactor is global, not per atom.
+  const tempHex = tempRampHex(tempFactor);
   receptorAtoms.forEach((atom, i) => {
     const bp = atom.userData.basePos;
     const breathe = 1 + Math.sin(STATE.time * 1.5 + i * 0.3) * tempFactor * 0.15;
     atom.position.set(bp[0] * breathe, bp[1] * breathe, bp[2] * breathe);
     atom.material.opacity = atom.userData.baseOpacity + STATE.ligandProgress * 0.15;
 
-    // Color shift based on temperature
-    const hue = 0.5 - tempFactor * 0.15; // teal → greenish when hot
-    atom.material.color.setHSL(hue, 0.6, 0.35);
+    // Colour by simulation temperature, across the v2 temperature ramp
+    atom.material.color.setHex(tempHex);
   });
 
   // Binding site glow
@@ -1031,8 +1091,9 @@ function updateHUD() {
 
   el('sigmaIrr').textContent = STATE.sigmaIrr.toFixed(3) + ' k_B';
   el('sigmaFill').style.width = Math.min(100, STATE.sigmaIrr * 100) + '%';
-  el('sigmaFill').style.background = STATE.sigmaIrr < 0.01 ? '#45E0A8' :
-    STATE.sigmaIrr < 0.1 ? '#FF9300' : '#8B5CF6';
+  // Severity is a state, not a quantity: sigma_irr -> 0 is closure.
+  el('sigmaFill').style.background = STATE.sigmaIrr < 0.01 ? 'var(--state-pass)' :
+    STATE.sigmaIrr < 0.1 ? 'var(--state-warn)' : 'var(--state-fail)';
 
   el('landauerBits').textContent = STATE.landauerBits.toFixed(3);
 
