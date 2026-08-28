@@ -327,22 +327,150 @@
   /* Structure provenance — what the scene is actually showing.
      Deliberately neutral grey: mint/violet/tangerine are ΔH/ΔS/ΔG and are not
      spent on chrome. */
+  /* Camera affordances. The grab cursor only appears once the scene has been
+     engaged, so before that the page still looks like a page you can scroll. */
+  body.cam-engaged #canvas3d { cursor: grab; }
+  body.cam-dragging #canvas3d { cursor: grabbing; }
+
+  .mouse-hint {
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    opacity: .75;
+  }
+  @media (max-width: 720px) { .mouse-hint { display: none; } }
+
+  /* ── provenance hint bubble ────────────────────────────────────────────
+     This was flat white text lying on the scene. It is the most credible
+     content on the page — what the atoms on screen actually are and where
+     they came from — so it is now presented as a hint you can dismiss and
+     call back, rather than permanent furniture competing with the molecule.
+
+     Anchored bottom-left and capped in width so it never reaches the pocket,
+     which sits centre-stage; the ligand's approach path runs along the centre
+     x-axis and is not crossed by anything here. */
   .provenance {
     position: absolute;
     left: 16px;
     bottom: 16px;
-    max-width: 360px;
+    width: min(380px, calc(100vw - 32px));
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--violet-20);
+    border-radius: var(--r-lg);
+    padding: 12px 14px 13px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    line-height: 1.7;
+    font-size: 9.5px;
+    line-height: 1.75;
     letter-spacing: 0.4px;
-    color: rgba(224, 224, 224, 0.38);
-    pointer-events: none;
+    color: var(--fg-muted);
+    pointer-events: auto;
+    transform-origin: 0 100%;
+    transition: opacity var(--dur-med, .25s) var(--ease-out, ease),
+                transform var(--dur-med, .25s) var(--ease-out, ease);
   }
 
+  /* The tail. Two stacked triangles so the 1px border reads through it. */
+  .provenance::after {
+    content: '';
+    position: absolute;
+    left: 22px; bottom: -7px;
+    border: 7px solid transparent;
+    border-top-color: var(--bg-card);
+    border-bottom: 0;
+    filter: drop-shadow(0 1px 0 var(--violet-20));
+  }
+
+  .provenance[hidden] { display: none; }
+
+  .provenance.is-closing { opacity: 0; transform: scale(.96) translateY(4px); }
+
+  .prov-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+
+  .prov-eyebrow {
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--strawberry);
+    white-space: nowrap;
+  }
+
+  /* Real button, not a styled div — it is focusable and labelled. */
+  .prov-close {
+    margin-left: auto;
+    flex: none;
+    width: 20px; height: 20px;
+    display: grid; place-items: center;
+    background: transparent;
+    border: 1px solid var(--violet-20);
+    border-radius: var(--r-pill);
+    color: var(--fg-muted);
+    font: inherit;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color var(--dur-fast, .15s) ease, border-color var(--dur-fast, .15s) ease;
+  }
+  .prov-close:hover { color: var(--fg); border-color: var(--strawberry); }
+  .prov-close:focus-visible { outline: 2px solid var(--strawberry); outline-offset: 2px; }
+
   .provenance .prov-id {
-    color: rgba(224, 224, 224, 0.72);
+    color: var(--fg);
     letter-spacing: 1.5px;
+  }
+
+  /* The way back. Always reachable, never covering anything. */
+  .prov-reopen {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--violet-20);
+    border-radius: var(--r-pill);
+    color: var(--fg-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: color var(--dur-fast, .15s) ease, border-color var(--dur-fast, .15s) ease;
+  }
+  .prov-reopen:hover { color: var(--fg); border-color: var(--strawberry); }
+  .prov-reopen:focus-visible { outline: 2px solid var(--strawberry); outline-offset: 2px; }
+  .prov-reopen[hidden] { display: none; }
+
+  /* Narrow: a bottom sheet rather than a floating card. Capped and scrollable
+     so a long provenance block can never eat the viewport or push the
+     controls off-screen. */
+  @media (max-width: 720px) {
+    .provenance {
+      left: 8px; right: 8px; bottom: 8px;
+      width: auto;
+      max-height: 38vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      font-size: 9px;
+    }
+    .provenance::after { display: none; }
+    .prov-reopen { left: 8px; bottom: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .provenance { transition: none; }
   }
 
   /* Instructions overlay */
@@ -498,6 +626,7 @@
   </div>
 
   <div class="start-hint">CLICK ANYWHERE TO BEGIN — PLAY MUSIC IN APPLE MUSIC</div>
+  <div class="mouse-hint">drag to orbit · scroll to zoom · shift-drag or middle-drag to pan · double-click to centre</div>
   <div class="le-bonhomme">Le Bonhomme Pharma — Make Crack Great Again</div>
 </div>
 
@@ -546,7 +675,7 @@
     </div>
     <div class="metric-row">
       <span class="metric-label">K_D</span>
-      <span class="metric-val gold" id="kdVal">0.9 nM</span>
+      <span class="metric-val gold" id="kdVal">1.12 µM</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">σ_irr</span>
@@ -587,9 +716,16 @@
     <div class="sigma-bar">
       <div class="sigma-fill" id="sciFill" style="width:44%; background: var(--teal);"></div>
     </div>
+    <!-- θ needs a concentration. [L] is shown because it is an assumption,
+         not a measurement — a saturation curve with a hidden [L] is not a
+         result. Change [L] and θ moves; that is the point of printing it. -->
     <div class="metric-row" style="margin-top:10px;">
-      <span class="metric-label">Binding %</span>
-      <span class="metric-val gold" id="bindPct">62%</span>
+      <span class="metric-label">[L] stated</span>
+      <span class="metric-val" id="ligConc">1.00 µM</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-label">θ bound</span>
+      <span class="metric-val gold" id="bindPct">47.2%</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">Crooks cycle</span>
@@ -606,6 +742,9 @@
       <input type="range" min="40" max="200" value="120" id="bpmSlider" style="width:160px; accent-color: var(--gold); display:none;">
       <button class="ctrl-btn terra" id="btnCrooks">CROOKS FLIP</button>
       <button class="ctrl-btn" id="btnReset">RESET σ</button>
+      <!-- Also the escape hatch: returns the camera to the auto-orbit, so a
+           user who has zoomed somewhere confusing is never stuck there. -->
+      <button class="ctrl-btn" id="btnView">RESET VIEW</button>
     </div>
   </div>
 
@@ -621,12 +760,23 @@
     <span>REV</span>
   </div>
 
-  <!-- What the scene is actually showing -->
-  <div class="provenance">
+  <!-- What the scene is actually showing. Every fact here is unchanged from
+       the flat caption it replaces; only the presentation moved. -->
+  <div class="provenance" id="provenance" role="note" aria-labelledby="prov-eyebrow">
+    <div class="prov-head">
+      <span class="prov-eyebrow" id="prov-eyebrow">// what you're looking at</span>
+      <button type="button" class="prov-close" id="provClose"
+              aria-label="Dismiss the provenance note">×</button>
+    </div>
     <span class="prov-id">1S3V</span> — human dihydrofolate reductase, 1.80 Å · ligand TQD<br>
     atom positions from a FlexAID∆S docked pose · arm7_temp13 · CF −153.07, rank 1 of 151 · spyRMSD 1.0686 Å<br>
     583 receptor atoms (whole residues ≤ 10 Å) · 27 ligand atoms · 29 bonds from the pose's own CONECT records
   </div>
+
+  <button type="button" class="prov-reopen" id="provReopen" hidden
+          aria-label="Show the provenance note — what this scene is showing">
+    <span aria-hidden="true">?</span> what is this
+  </button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -646,7 +796,7 @@ const STATE = {
   deltaG: -8.2,
   deltaH: -12.4,
   minusTdS: 4.2,
-  kd: 0.9e-9,
+  kd: 1.118e-6,        // molar — exp(ΔG/RT) at the 300 K seed below
   sigmaIrr: 0.142,
   landauerBits: 0.205,
   sAudio: 3.21,
@@ -654,7 +804,10 @@ const STATE = {
   mutualInfo: 1.42,
   diDt: -0.023,
   sci: 0.44,
-  bindingPct: 0.62,
+  // Two different things that used to be one. See updateThermo().
+  bindDrive: 0.62,      // animation weight only — NOT an observable
+  ligandConc: 1e-6,     // [L], molar — a STATED assumption, shown in the HUD
+  thetaBound: 0.47,     // θ = [L]/([L]+K_D) — the actual fraction bound
   crooksDirection: 1, // 1 = forward, -1 = reverse
   crooksPhase: 0, // 0-1 cycle progress
   isManual: false,
@@ -668,6 +821,53 @@ const STATE = {
   totalWorkRev: 0,
 };
 
+// Gas constant in the same units as every energy on this page (kcal/mol).
+// Full precision: at 298 K the truncated 1.987e-3 shifts RT by ~1e-4 kcal/mol,
+// which is invisible in ΔG but not free in an exponent.
+const R_KCAL = 1.98720425e-3;
+
+// --- K_D formatting ---
+// Renders a molar dissociation constant in whatever unit actually fits it.
+//
+// The previous ladder had two independent faults. It multiplied by 1e6 and
+// labelled the result "mM" — for a molar input that factor yields µM, so a real
+// millimolar value printed 1000× small under the wrong name. And it had no µM
+// branch at all, so the micromolar range this complex actually binds in fell
+// through to an unguarded pM catch-all, where `.toFixed(1)` rounded anything
+// weaker than ~50 pM to the string "0.0 pM".
+//
+// So: one table, each entry its own true multiplier, and a significant-figure
+// rule rather than a fixed decimal count — a real number can never round to
+// zero, because the unit is chosen so the mantissa is always ≥ 1.
+function fmtKd(molar) {
+  if (!isFinite(molar) || molar <= 0) return '—';
+  const UNITS = [
+    [1,     'M' ], [1e-3,  'mM'], [1e-6,  'µM'],
+    [1e-9,  'nM'], [1e-12, 'pM'], [1e-15, 'fM']
+  ];
+  for (let i = 0; i < UNITS.length; i++) {
+    const [scale, name] = UNITS[i];
+    if (molar >= scale || i === UNITS.length - 1) {
+      const v = molar / scale;
+      return (v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2)) + ' ' + name;
+    }
+  }
+}
+
+// Percentages get the same treatment as fmtKd, for the same reason. A fixed
+// `.toFixed(1)` renders θ = 2.9e-4 as "0.0%" — a real value announcing itself
+// as zero, which is the exact defect that made K_D read "0.0 pM". Significant
+// figures instead of fixed decimals, and the top of the range is a strict
+// inequality because θ = [L]/([L]+K_D) < 1 at every finite concentration.
+function fmtPct(theta) {
+  const p = theta * 100;
+  if (!isFinite(p) || p <= 0) return '0%';
+  if (p >= 99.95) return '>99.9%';
+  if (p >= 10) return p.toFixed(1) + '%';
+  if (p >= 1) return p.toFixed(2) + '%';
+  return Number(p.toPrecision(2)) + '%';
+}
+
 // --- BPM → Temperature mapping ---
 // 60 BPM → 250K (cold), 120 BPM → 310K (physiological), 180 BPM → 400K (hot)
 function bpmToTemp(bpm) {
@@ -677,8 +877,7 @@ function bpmToTemp(bpm) {
 // Temperature → thermodynamic quantities
 function updateThermo() {
   const T = STATE.temperature;
-  const R = 1.987e-3; // kcal/(mol·K)
-  const beta = 1 / (R * T);
+  const R = R_KCAL; // kcal/(mol·K)
 
   // Van't Hoff: ΔG = ΔH - TΔS
   // Reference: ΔH = -12.4, ΔS = -14.1 cal/(mol·K) at 300K
@@ -695,10 +894,37 @@ function updateThermo() {
   STATE.deltaG = dG;
   STATE.deltaH = dH_T;
   STATE.minusTdS = -T * dS_T;
-  STATE.kd = Math.exp(dG / (R * T)) * 1e-9; // nM base
+  // K_D in MOLAR, and nothing else.
+  //
+  // This line used to read `Math.exp(dG / (R * T)) * 1e-9; // nM base`, which
+  // was wrong by exactly 1e9. With ΔG in kcal/mol and R in kcal/(mol·K), the
+  // exponential is already K_D/c° against the 1 M standard state — i.e. it IS
+  // molar. The extra 1e-9 re-read that molar number as if it were nanomolar,
+  // so a genuine 0.96 µM affinity was stored as 9.6e-16 and rendered "0.0 pM".
+  // The standard state is what carries the unit here; there is no second
+  // conversion to apply. See fmtKd() for the display side of the same bug.
+  STATE.kd = Math.exp(dG / (R * T));
 
-  // Binding probability from Boltzmann
-  STATE.bindingPct = 1 / (1 + Math.exp(dG / (R * T) + 5)); // sigmoidal
+  // ── fraction bound vs. animation drive ────────────────────────────────
+  // These were the same variable, and that conflation is what put a confident
+  // "100%" on screen. Separating them:
+  //
+  // bindDrive is the old expression, 1/(1+exp(ΔG/RT + 5)). It is a logistic
+  // easing curve used to pace the ligand's approach in animate(). The "+5" is
+  // a display offset with no physical referent, which is exactly why this must
+  // never be labelled as an observable. At ΔG/RT ≈ −13.9 the exponential
+  // underflows and it saturates at 1.0 — that, and NOT the K_D defect, is what
+  // rendered "Binding 100%". The two were always algebraically independent:
+  // this line has never referenced STATE.kd.
+  STATE.bindDrive = 1 / (1 + Math.exp(dG / (R * T) + 5));
+
+  // θ is the real thing: a saturation isotherm, which requires a ligand
+  // concentration. The model had none — no [L] existed anywhere in this file —
+  // so "Binding %" was not a wrong number, it was a quantity with no referent.
+  // [L] is now an explicit STATE field and is rendered next to θ in the HUD, so
+  // the assumption is declared rather than smuggled. θ < 1 strictly, at any
+  // finite [L].
+  STATE.thetaBound = STATE.ligandConc / (STATE.ligandConc + STATE.kd);
 
   // Configurational entropy
   STATE.sConfig = Math.max(0, 6.5 - 0.005 * (T - 300) + Math.sin(STATE.time * 0.3) * 0.2);
@@ -741,8 +967,12 @@ function updateThermo() {
   // Irreversible entropy production: σ_irr = ⟨W_fwd⟩ + ⟨W_rev⟩ - 2ΔG
   const sigma = Math.abs(STATE.totalWorkFwd + STATE.totalWorkRev - 2 * Math.abs(dG) * 0.01);
   STATE.sigmaIrr = sigma;
-  STATE.landauerBits = sigma / (1.38e-23 * Math.log(2)) * 1e20; // scaled for display
-  STATE.landauerBits = Math.min(sigma / 0.693, 2.0); // practical: σ / ln2
+  // σ is already in units of k_B, so the Landauer conversion is just / ln 2.
+  // (A dead first assignment used to sit here, dividing by k_B in J/K and then
+  // rescaling by 1e20 to compensate; it was overwritten on the very next line
+  // and never reached the HUD. Removed — it computed nothing and only made the
+  // real relation harder to see.)
+  STATE.landauerBits = Math.min(sigma / Math.LN2, 2.0);
 
   // Crooks phase advancement
   STATE.crooksPhase += 0.002 * (1 + Math.abs(STATE.deltaBpm) * 0.1);
@@ -807,8 +1037,9 @@ function initThreeJS() {
   scene.fog = new THREE.FogExp2(0x08091A, 0.015);
 
   camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 2, 12);
-  camera.lookAt(0, 0, 0);
+  camInit();                       // pivot = POCKET_CENTER, not the origin
+  camera.position.set(CAM.home.x, CAM.home.y + 2, CAM.home.z + 12);
+  camera.lookAt(CAM.home);
 
   clock = new THREE.Clock();
 
@@ -1084,19 +1315,14 @@ function animate() {
   STATE.temperature = bpmToTemp(STATE.bpm);
   updateThermo();
 
-  // Camera orbit
-  const camAngle = STATE.time * 0.08;
-  const camRadius = 12 + Math.sin(STATE.time * 0.2) * 2;
-  camera.position.x = Math.cos(camAngle) * camRadius;
-  camera.position.z = Math.sin(camAngle) * camRadius;
-  camera.position.y = 2 + Math.sin(STATE.time * 0.15) * 1.5;
-  camera.lookAt(0, 0, 0);
+  // Camera — auto-orbit until the user grabs it, then hands-off. See CAM.
+  updateCamera();
 
   // --- LIGAND MOVEMENT ---
   // Target position based on binding state
   const bindTarget = STATE.crooksDirection > 0 ?
-    Math.max(0, STATE.ligandProgress - dt * 0.3 * (1 - STATE.bindingPct)) :
-    Math.min(1, STATE.ligandProgress + dt * 0.3 * STATE.bindingPct);
+    Math.max(0, STATE.ligandProgress - dt * 0.3 * (1 - STATE.bindDrive)) :
+    Math.min(1, STATE.ligandProgress + dt * 0.3 * STATE.bindDrive);
 
   // Temperature modulates exploration vs commitment
   const tempFactor = (STATE.temperature - 250) / 150; // 0 at cold, 1 at hot
@@ -1190,9 +1416,7 @@ function updateHUD() {
   el('deltaG').textContent = STATE.deltaG.toFixed(1) + ' kcal/mol';
   el('deltaH').textContent = STATE.deltaH.toFixed(1) + ' kcal/mol';
   el('minusTdS').textContent = (STATE.minusTdS >= 0 ? '+' : '') + STATE.minusTdS.toFixed(1) + ' kcal/mol';
-  el('kdVal').textContent = STATE.kd > 1e-6 ? (STATE.kd * 1e6).toFixed(1) + ' mM' :
-    STATE.kd > 1e-9 ? (STATE.kd * 1e9).toFixed(1) + ' nM' :
-    (STATE.kd * 1e12).toFixed(1) + ' pM';
+  el('kdVal').textContent = fmtKd(STATE.kd);
 
   el('sigmaIrr').textContent = STATE.sigmaIrr.toFixed(3) + ' k_B';
   el('sigmaFill').style.width = Math.min(100, STATE.sigmaIrr * 100) + '%';
@@ -1208,7 +1432,8 @@ function updateHUD() {
   el('diDt').textContent = STATE.diDt.toFixed(3) + ' bits/K';
   el('sciVal').textContent = STATE.sci.toFixed(2);
   el('sciFill').style.width = STATE.sci * 100 + '%';
-  el('bindPct').textContent = (STATE.bindingPct * 100).toFixed(0) + '%';
+  el('bindPct').textContent = fmtPct(STATE.thetaBound);
+  el('ligConc').textContent = fmtKd(STATE.ligandConc);
 
   el('crooksCycle').textContent = STATE.crooksDirection > 0 ? 'FWD →' : '← REV';
   el('crooksCycle').style.color = STATE.crooksDirection > 0 ? '#FF9300' : '#8B5CF6';
@@ -1401,7 +1626,248 @@ function simulateBPM() {
 }
 
 // --- CONTROLS ---
+// ── camera: PyMOL / Mol*-style mouse control ───────────────────────────────
+// Hand-rolled on purpose. THREE.OrbitControls is NOT in the r128 core bundle
+// this page loads from cdnjs — it lives in examples/js, which is not fetched.
+// Verified in-browser: THREE.OrbitControls === undefined, while THREE.Raycaster
+// and THREE.Spherical (all this needs) are present. Adding a second <script>
+// for controls would be a 404 waiting to happen, so the ~60 lines below stand
+// in for it.
+//
+// PIVOT: POCKET_CENTER, not the world origin. The receptor is built with every
+// atom offset by POCKET_CENTER, so the complex is centred there and (0,0,0) is
+// 2 units off it — orbiting the origin would swing the molecule across frame.
+// The pre-existing auto-orbit had this same off-by-a-pocket and now shares the
+// corrected pivot.
+//
+// INTERACTION vs. THE AUTO-ANIMATION — the choice, stated:
+// the auto-orbit runs until you touch it, then stops for good and hands you the
+// camera; RESET VIEW gives it back. Resuming automatically after an idle timer
+// was the alternative and it is wrong for this scene — the camera would drift
+// off your pose while you were reading the panels. The ligand's binding walk is
+// untouched either way: only the camera is handed over, the run keeps running.
+const CAM = {
+  target: null, home: null,
+  radius: 14, theta: 0.6, phi: Math.PI / 2.3,
+  user: false, drag: null, lastX: 0, lastY: 0
+};
+const CAM_MIN_R = 3.5, CAM_MAX_R = 60;
+
+function camClamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+
+function camInit() {
+  CAM.home = new THREE.Vector3(POCKET_CENTER[0], POCKET_CENTER[1], POCKET_CENTER[2]);
+  CAM.target = CAM.home.clone();
+}
+
+function updateCamera() {
+  if (!CAM.user) {
+    const a = STATE.time * 0.08;
+    const r = 12 + Math.sin(STATE.time * 0.2) * 2;
+    camera.position.set(
+      CAM.home.x + Math.cos(a) * r,
+      CAM.home.y + 2 + Math.sin(STATE.time * 0.15) * 1.5,
+      CAM.home.z + Math.sin(a) * r
+    );
+    camera.lookAt(CAM.home);
+    return;
+  }
+  const sp = Math.sin(CAM.phi), cp = Math.cos(CAM.phi);
+  camera.position.set(
+    CAM.target.x + CAM.radius * sp * Math.sin(CAM.theta),
+    CAM.target.y + CAM.radius * cp,
+    CAM.target.z + CAM.radius * sp * Math.cos(CAM.theta)
+  );
+  camera.lookAt(CAM.target);
+}
+
+// Seed the spherical frame from wherever the auto-orbit happens to be, so
+// grabbing the scene does not snap the view to a canned angle.
+function camEngage() {
+  if (CAM.user) return;
+  const off = camera.position.clone().sub(CAM.target);
+  const len = off.length() || 14;
+  CAM.radius = camClamp(len, CAM_MIN_R, CAM_MAX_R);
+  CAM.theta = Math.atan2(off.x, off.z);
+  CAM.phi = Math.acos(camClamp(off.y / len, -1, 1));
+  CAM.user = true;
+  document.body.classList.add('cam-engaged');
+  const btn = document.getElementById('btnView');
+  if (btn) btn.classList.add('active');
+}
+
+function camReset() {
+  CAM.user = false;
+  CAM.drag = null;
+  CAM.target.copy(CAM.home);
+  document.body.classList.remove('cam-engaged', 'cam-dragging');
+  const btn = document.getElementById('btnView');
+  if (btn) btn.classList.remove('active');
+}
+
+function camPan(dx, dy) {
+  const h = renderer.domElement.clientHeight || window.innerHeight;
+  const perPx = 2 * CAM.radius * Math.tan((camera.fov * Math.PI / 180) / 2) / h;
+  const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
+  const up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
+  CAM.target.addScaledVector(right, -dx * perPx).addScaledVector(up, dy * perPx);
+}
+
+function initCameraControls() {
+  const canvas = document.getElementById('canvas3d');
+  if (!canvas || !camera) return;
+
+  // Mouse only. A one-finger drag on a canvas that covers the whole viewport
+  // would swallow the page scroll on a phone and strand the reader in the
+  // scene, so touch pointers are never captured here.
+  const isMouse = (e) => e.pointerType === 'mouse' || e.pointerType === undefined;
+
+  canvas.addEventListener('pointerdown', (e) => {
+    if (!isMouse(e)) return;
+    const pan = e.button === 1 || (e.button === 0 && e.shiftKey);
+    if (e.button !== 0 && e.button !== 1) return;
+    camEngage();
+    CAM.drag = pan ? 'pan' : 'orbit';
+    CAM.lastX = e.clientX; CAM.lastY = e.clientY;
+    document.body.classList.add('cam-dragging');
+    // Capture is an optimisation — it keeps the drag alive when the cursor
+    // leaves the element. It throws NotFoundError for a pointer id the browser
+    // has no active record of, and an exception here would skip the
+    // preventDefault below and leave the drag half-initialised. Dragging still
+    // works without it, so a failure is not worth propagating.
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* non-fatal */ }
+    e.preventDefault();               // middle-drag autoscroll, text selection
+  });
+
+  canvas.addEventListener('pointermove', (e) => {
+    if (!CAM.drag || !isMouse(e)) return;
+    const dx = e.clientX - CAM.lastX, dy = e.clientY - CAM.lastY;
+    CAM.lastX = e.clientX; CAM.lastY = e.clientY;
+    if (CAM.drag === 'orbit') {
+      CAM.theta -= dx * 0.006;
+      // Clamped off the poles: crossing them flips the up-vector and the model
+      // appears to snap upside down mid-drag, which PyMOL does not do.
+      CAM.phi = camClamp(CAM.phi - dy * 0.006, 0.02, Math.PI - 0.02);
+    } else {
+      camPan(dx, dy);
+    }
+  });
+
+  const endDrag = (e) => {
+    if (!CAM.drag) return;
+    CAM.drag = null;
+    document.body.classList.remove('cam-dragging');
+    if (e && e.pointerId != null && canvas.hasPointerCapture(e.pointerId)) {
+      canvas.releasePointerCapture(e.pointerId);
+    }
+  };
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+  canvas.addEventListener('contextmenu', (e) => { if (CAM.user) e.preventDefault(); });
+
+  // Zoom, without stealing the page.
+  //
+  // This canvas is position:fixed across the whole viewport, so "pointer is
+  // over the canvas" is true almost everywhere and is NOT on its own a safe
+  // condition to preventDefault on — doing that would trap a first-time reader
+  // at the top of the page with no way to scroll to the content below.
+  // So the wheel only zooms once you have deliberately grabbed the scene, and
+  // it hands the page back as soon as you have scrolled past the scene.
+  function wheelShouldZoom() {
+    return CAM.user && window.scrollY < window.innerHeight * 0.6;
+  }
+  canvas.addEventListener('wheel', (e) => {
+    if (!wheelShouldZoom()) return;   // page scrolls normally
+    e.preventDefault();
+    const k = Math.pow(1.0015, e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY);
+    CAM.radius = camClamp(CAM.radius * k, CAM_MIN_R, CAM_MAX_R);
+  }, { passive: false });
+
+  // Double-click recentres on the atom under the cursor, else on the ligand.
+  const ray = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  canvas.addEventListener('dblclick', (e) => {
+    if (!isMouse(e)) return;
+    camEngage();
+    const rect = canvas.getBoundingClientRect();
+    ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    ray.setFromCamera(ndc, camera);
+    const hits = ray.intersectObjects(receptorAtoms.concat(ligandAtoms), false);
+    if (hits.length) {
+      hits[0].object.getWorldPosition(CAM.target);
+    } else {
+      // No atom under the cursor — fall back to the ligand where it currently
+      // is, not the pocket, so a double-click on empty space still frames the
+      // thing the scene is about.
+      ligandGroup ? ligandGroup.getWorldPosition(CAM.target) : CAM.target.copy(CAM.home);
+    }
+    e.preventDefault();
+  });
+}
+
+// ── provenance hint ────────────────────────────────────────────────────────
+// Dismiss is remembered so the note does not nag on every visit, but the way
+// back is always on screen — a hint you cannot reopen is just a deleted hint.
+// Storage is best-effort: private modes throw on access, and a note that
+// cannot remember its own state is still a working note.
+const PROV_KEY = 'lbp.entropy-docking.provenance-dismissed';
+
+function provStore(v) {
+  try { v === null ? localStorage.removeItem(PROV_KEY) : localStorage.setItem(PROV_KEY, v); }
+  catch (e) { /* private mode — the note simply reappears next visit */ }
+}
+function provWasDismissed() {
+  try { return localStorage.getItem(PROV_KEY) === '1'; } catch (e) { return false; }
+}
+
+function initProvenanceHint() {
+  const card = document.getElementById('provenance');
+  const closeBtn = document.getElementById('provClose');
+  const reopenBtn = document.getElementById('provReopen');
+  if (!card || !closeBtn || !reopenBtn) return;
+
+  const REDUCED = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function show() {
+    card.hidden = false;
+    card.classList.remove('is-closing');
+    reopenBtn.hidden = true;
+    provStore(null);
+    closeBtn.focus();
+  }
+
+  function hide() {
+    const done = () => {
+      card.hidden = true;
+      card.classList.remove('is-closing');
+      reopenBtn.hidden = false;
+    };
+    provStore('1');
+    if (REDUCED) { done(); return; }
+    card.classList.add('is-closing');
+    // Fall back to a timer rather than trusting transitionend to fire: if the
+    // element is display:none'd by something else mid-transition the event
+    // never arrives and the card would be stranded half-faded.
+    setTimeout(done, 220);
+  }
+
+  closeBtn.addEventListener('click', hide);
+  reopenBtn.addEventListener('click', show);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !card.hidden) hide();
+  });
+
+  if (provWasDismissed()) { card.hidden = true; reopenBtn.hidden = false; }
+}
+
 function initControls() {
+  initProvenanceHint();
+  initCameraControls();
+  const btnView = document.getElementById('btnView');
+  if (btnView) btnView.addEventListener('click', camReset);
   const btnAuto = document.getElementById('btnAuto');
   const btnManual = document.getElementById('btnManual');
   const slider = document.getElementById('bpmSlider');
@@ -1489,11 +1955,91 @@ document.getElementById('instructions').addEventListener('click', async () => {
 <section id="live-run" class="section fade-section">
   <div class="container" style="max-width:900px">
     <div class="eyebrow" style="margin-bottom:14px">// see it run</div>
-    <h2 style="font-family:var(--font-mono);font-weight:var(--fw-700);margin:0 0 10px">Live synthetic run</h2>
-    <p style="margin:0 0 24px">A docking run walking the binding coordinate. Each stage is coloured by its place on the series ramp — apo baseline, unbound &Delta;S, first pocket contact, rigidification &Delta;S_vib, contacts &Delta;H, converged &Delta;G — so the output reads as a reaction path rather than a log.</p>
-    <div data-flexaidds-tui></div>
+    <h2 style="font-family:var(--font-mono);font-weight:var(--fw-700);margin:0 0 10px">Live run — 1S3V</h2>
+    <p style="margin:0 0 24px">The complex in the scene above, walked as a reaction path. Each stage is coloured by its place on the series ramp — apo baseline, unbound &Delta;S, first pocket contact, rigidification &Delta;S_vib, contacts &Delta;H, converged &Delta;G — and each one prints when the scene's own binding coordinate actually reaches it, carrying the value at the crossing. Structural counts and pose provenance are from the docked pose; the thermodynamics are the same live state the panels read.</p>
+    <div data-flexaidds-tui data-tui-profile="entropy-docking"></div>
   </div>
 </section>
+<!-- ═══════════ TUI PROFILE — the complex actually in the scene ═══════════
+     assets/tui.js ships to four pages and must not know which one it is on,
+     so it exposes a registry instead of branching on the pathname. This is the
+     only page that registers a profile; the other three get the default queue
+     unchanged.
+
+     What goes in a terminal that is NOT already in the two HUD panels: the
+     panels are an instantaneous readout, good at "what is true right now".
+     A terminal is good at ORDER. So this prints the crossing log — each stage
+     fires when the scene's own binding coordinate reaches it and reports the
+     value AT that crossing — plus the structural and provenance facts the
+     panels have no room for (atom, residue and bond counts, campaign arm, CF,
+     rank, RMSD). Nothing here is invented: structure comes from the pose asset
+     and thermodynamics from the same live STATE the panels read. -->
+<script>
+(function () {
+  var POSE = window.ENTROPY_DOCKING_POSE;
+  if (!POSE) return;                       // no data, no profile — default runs
+
+  var live = function () { return (typeof STATE !== 'undefined') ? STATE : null; };
+  var n1 = function (v) { return (v >= 0 ? '+' : '') + v.toFixed(1); };
+  var kd = function (v) { return (typeof fmtKd === 'function') ? fmtKd(v) : v.toExponential(2) + ' M'; };
+  var pct = function (v) { return (typeof fmtPct === 'function') ? fmtPct(v) : (v * 100).toFixed(1) + '%'; };
+
+  var src = POSE.source, trim = POSE.trim;
+  var nLig = POSE.ligand.elem.length, nBond = POSE.ligand.bonds.length;
+
+  window.FLEXAIDDS_TUI_PROFILES = window.FLEXAIDDS_TUI_PROFILES || {};
+  window.FLEXAIDDS_TUI_PROFILES['entropy-docking'] = function () {
+    return {
+      title: 'flexaidds — ' + POSE.pdb_id + ' · live coordinate',
+      list: [{
+        key: POSE.pdb_id,
+        cmd: '$ flexaidds inspect --pose ' + src.arm + '/' + src.restart + '/' + src.pose_file + ' --coord live',
+        banner: 'FlexAID∆S · ' + POSE.pdb_id + ' human dihydrofolate reductase 1.80 Å · ligand ' + POSE.ligand_resname,
+        equation: true,
+        temperature: function () {
+          var s = live();
+          return s ? s.temperature.toFixed(1) + ' K' : '298 K';
+        },
+        // The scene's reaction coordinate: 0 = free in solvent, 1 = docked.
+        coord: function () {
+          var s = live();
+          return s ? s.ligandProgress : 1;
+        },
+        steps: [
+          { label: 'apo baseline', detail: function () {
+              return trim.atoms + ' receptor atoms · ' + trim.residues + ' residues ≤ ' +
+                     trim.cutoff_angstrom + ' Å';
+            } },
+          { label: 'unbound · ΔS', detail: function () {
+              var s = live();
+              return s ? 'S_config ' + s.sConfig.toFixed(2) + ' bits · θ ' + pct(s.thetaBound) : '—';
+            } },
+          { label: 'pocket contact', detail: function () {
+              return nLig + ' ligand atoms · ' + nBond + ' bonds from the pose CONECT records';
+            } },
+          { label: 'rigidification · ΔS_vib', detail: function () {
+              var s = live();
+              return s ? 'σ_irr ' + s.sigmaIrr.toFixed(3) + ' k_B · ' +
+                         s.landauerBits.toFixed(3) + ' Landauer bits' : '—';
+            } },
+          { label: 'contacts formed · ΔH', detail: function () {
+              var s = live();
+              return s ? 'ΔH ' + s.deltaH.toFixed(1) + ' kcal/mol · −TΔS ' + n1(s.minusTdS) : '—';
+            } },
+          { label: 'converged · ΔG', detail: function () {
+              var s = live();
+              return s ? 'ΔG ' + s.deltaG.toFixed(1) + ' kcal/mol · K_D ' + kd(s.kd) : '—';
+            } }
+        ],
+        done: function () {
+          return 'CF ' + src.cf.toFixed(2) + '   rank ' + src.cf_rank + '/' + src.cf_rank_of +
+                 '   spyRMSD ' + src.rmsd_spyrmsd_angstrom + ' Å   ' + src.arm;
+        }
+      }]
+    };
+  };
+})();
+</script>
 <script src="/assets/tui.js" defer></script>
 </body>
 </html>
