@@ -58,6 +58,14 @@ HEX0X_RE="(?i)0x(${V1_HEX})(?![0-9A-Fa-f])"
 # rgb()/rgba(), comma- or space-separated. The space form is how the v2 sweep
 # first missed `rgb(34 211 238 / 0.07)` in the Transit atlas.
 RGB_RE='rgba?\(\s*(34[\s,]+211[\s,]+238|251[\s,]+191[\s,]+36|167[\s,]+139[\s,]+250|139[\s,]+26[\s,]+74|10[\s,]+14[\s,]+20|16[\s,]+20[\s,]+28|12[\s,]+16[\s,]+22)\b'
+# The same retired colours as a 24-bit ANSI escape (\033[38;2;R;G;Bm). Terminal
+# code writes hues as decimal triplets separated by SEMICOLONS, which neither
+# HEX_RE nor RGB_RE can see — RGB_RE only knows rgb()/rgba() with commas or
+# spaces. A file full of wrong terminal colours would have reported a clean
+# pass. Same lesson as the 0x form: a checker only forbids the spellings it
+# knows about.
+ANSI_RE='38;2;(34;211;238|251;191;36|10;14;20|253;230;138|194;69;111|218;47;99|110;124;153|255;38;0|212;220;237|138;147;168)(?![0-9])'
+
 # A v2 colour bound to the quantity it meant in v1 is still a v1 palette.
 BINDINGS_RE='--terra:\s*#A78BFA'
 
@@ -90,6 +98,8 @@ self_test() {
     "BINDINGS_RE|  --terra: #A78BFA;|v2 hex re-bound to the v1 quantity"
     "HEX0X_RE|scene.fog = new THREE.FogExp2(0x0a0e14, 0.015)|0x-form v1 ink"
     "HEX0X_RE|backgroundColor: light ? 0xffffff : 0x22D3EE|0x-form v1 cyan"
+    "ANSI_RE|printf(\"\\033[38;2;34;211;238mCF\\033[0m\")|v1 cyan as a 24-bit ANSI triplet"
+    "ANSI_RE|#  define COL_GOLD \"\\033[38;2;251;191;36m\"|v1 gold as a 24-bit ANSI triplet"
   )
   for c in "${cases[@]}"; do
     IFS='|' read -r pat input label <<<"$c"
@@ -106,6 +116,9 @@ self_test() {
     "BINDINGS_RE|  --kw-docking: #A78BFA;|legitimate v2 token"
     "HEX0X_RE|0x45E0A8|v2 mint in 0x form"
     "HEX0X_RE|0x0a0e1400|longer 0x run, not a colour int"
+    "ANSI_RE|\\033[38;2;69;224;168m|v2 mint in ANSI form (correctly ignored)"
+    "ANSI_RE|38;2;139;92;246|v2 violet in ANSI form"
+    "ANSI_RE|38;2;34;211;2380|longer digit run, not the retired triplet"
   )
   for c in "${negatives[@]}"; do
     IFS='|' read -r pat input label <<<"$c"
@@ -157,6 +170,7 @@ scan() {
 scan "$HEX_RE"      "no retired v1 hex literals"
 scan "$HEX0X_RE"    "no retired v1 hex in 0x form (JS colour ints)"
 scan "$RGB_RE"      "no v1 rgb()/rgba() triples"
+scan "$ANSI_RE"     "no retired v1 hue as a 24-bit ANSI triplet"
 scan "$BINDINGS_RE" "no v2 colour bound to a v1 quantity"
 
 echo
