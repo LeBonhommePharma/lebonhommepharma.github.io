@@ -82,3 +82,38 @@ family, no v2 equivalent, not v1 drift). A blind hex sweep would have wrecked th
 from `colors_and_type.css` (each entry carries `"definedIn": "colors_and_type.css"`).
 Its 86 token records are stale v1, but the v2 CSS is uploaded, so the app regenerates
 them. Hand-writing 146 entries would risk schema errors for no gain.
+
+### Done — third pass: site snapshots refreshed ("all webpages")
+
+The project's `FlexAIDdS/` and `LeBonhommePharma/` trees are **curated UI-kit pages**,
+not verbatim site copies: no site chrome, React *development* builds with SRI hashes,
+and a `__bundler_thumbnail` template. `LeBonhommePharma/index.html` is itself a
+`@dsCard` (group "Brand"). So they cannot simply be overwritten with the site's files —
+the relative paths differ (`../assets/`, `../theme.css`, `/interaction.css` on the site).
+
+What the JSX **is**, though, is a verbatim-but-stale copy of the site's UI kit (same
+header comment; the site had since gained `ExploreSection`). Refreshed:
+
+- `FlexAIDdS/{app,components,sections}.jsx` + `styles.css` ← the merged site. Verified
+  safe first: the site sources' three external deps all degrade gracefully in the kit —
+  `molstar` is only a `<div id="molstar-viewer" />` placeholder, the repo-stats spans use
+  `?.textContent || "0"` with `.catch(() => {})`, and `mountFlexLogo` is guarded by
+  `if (!window.mountFlexLogo) return`.
+- `FlexAIDdS/index.html`, `LeBonhommePharma/index.html` — only the hardcoded v1
+  `__bundler_thumbnail` SVGs swapped to v2 (ink, mint, violet, tangerine, fg, muted).
+  Everything else left byte-identical, `@dsCard` marker preserved.
+- Five nested `colors_and_type.css` copies replaced with the 146-token v2 set, font
+  paths adjusted per depth (`../fonts/` at depth 1, `../../fonts/` at depth 2).
+
+**Why the kits already rendered v2 tokens before this:** their `styles.css` does
+`@import url('../colors_and_type.css')`, which resolves to the project ROOT file — fixed
+in the first pass. The nested copies were stale leftovers, replaced for correctness.
+
+### Still outstanding
+- `preview/*.html` (30 cards) — need re-authoring, not sweeping (see above).
+- `*.vercel.css` variants (`FlexAIDdS/`, `LeBonhommePharma/`) — deliberately untouched:
+  unread, unknown deploy purpose, and their font paths may differ. Check before editing.
+- `ui_kits/website/`, `reference/thebonhomme.com/`, `deploy_github/` — further snapshot
+  trees, not refreshed this pass.
+- `LeBonhommePharma/{app,components,sections}.jsx` — no current site source to refresh
+  from; the site's root `index.html` is now a bundler shell, not JSX.
