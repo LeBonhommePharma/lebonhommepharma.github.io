@@ -32,14 +32,14 @@ cd "$(dirname "$0")/.."
 #   style.css            the design guide states this is a separate burgundy
 #                        exploration and NOT the live look
 #   assets/index-*.css   hashed build artifact, source not in this repo
-#   this script           it must contain v1 hexes — they are the fixtures the
+#   scripts/              the guards must contain v1 hexes — they are the fixtures the
 #                         self-test asserts against. A checker that cannot
 #                         name what it forbids cannot prove it still works.
 #                         (This exclusion was found the honest way: the script
 #                         passed locally while untracked, because git ls-files
 #                         lists only tracked files, then failed in CI once
 #                         committed. Test under the conditions CI will use.)
-EXCLUDE_RE='^(design/palette-v2/|transit/|style\.css$|assets/index-[A-Za-z0-9_-]+\.css$|scripts/check-palette-v2\.sh$)'
+EXCLUDE_RE='^(design/palette-v2/|transit/|style\.css$|assets/index-[A-Za-z0-9_-]+\.css$|scripts/)'
 BINARY_RE='\.(png|jpe?g|gif|ico|pdf|woff2?|ttf|otf|zip)$'
 
 # ── the v1 palette, in every syntax it is written in ─────────────────────

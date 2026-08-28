@@ -8,21 +8,19 @@
   <link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM\+Plex\+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/tokens.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #08091A;
-      --card: rgba(17,18,38,0.92);
-      --teal: #45E0A8;
-      --terra: #A84B2F;
-      --gold: #FF9300;
-      --fg: #E4E3F5;
-      --muted: #8D8CB0;
-      --border: rgba(69,224,168,0.15);
+  --card: rgba(17,18,38,0.92);
+  --teal: #45E0A8;
+  --gold: #FF9300;
+  --muted: #8D8CB0;
+  --border: rgba(69,224,168,0.15);
     }
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       background: var(--bg);
       color: var(--fg);
       line-height: 1.6;
@@ -281,7 +279,7 @@
         // Draw state (pose / energy basin)
         ctx.beginPath();
         ctx.arc(x, centerY + Math.sin(localPhase * Math.PI * 1.6) * (6 * amplitude), r, 0, Math.PI * 2);
-        ctx.fillStyle = i % 2 === 0 ? '#45E0A8' : (i === 3 ? '#FF9300' : '#A84B2F');
+        ctx.fillStyle = i % 2 === 0 ? '#45E0A8' : (i === 3 ? '#FF9300' : '#8B5CF6');
         ctx.globalAlpha = alpha * (0.6 + 0.4 * amplitude);
         ctx.fill();
 
@@ -376,5 +374,16 @@
       boot();
     }
   </script>
+
+<!-- FlexAID∆S TUI — a synthetic docking run, coloured by the series ramp -->
+<section id="live-run" class="section fade-section">
+  <div class="container" style="max-width:900px">
+    <div class="eyebrow" style="margin-bottom:14px">// see it run</div>
+    <h2 style="font-family:var(--font-mono);font-weight:var(--fw-700);margin:0 0 10px">Live synthetic run</h2>
+    <p style="margin:0 0 24px">A docking run walking the binding coordinate. Each stage is coloured by its place on the series ramp — apo baseline, unbound &Delta;S, first pocket contact, rigidification &Delta;S_vib, contacts &Delta;H, converged &Delta;G — so the output reads as a reaction path rather than a log.</p>
+    <div data-flexaidds-tui></div>
+  </div>
+</section>
+<script src="/assets/tui.js" defer></script>
 </body>
 </html>

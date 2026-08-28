@@ -9,70 +9,54 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
 
 <style>
 /* ── Reset & Base ───────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:          #08091A;
-  --bg-card:     rgba(17, 18, 38, 0.85);
-  --bg-alt:      rgba(12, 13, 30, 0.55);
-  --border:      rgba(232,213,183,0.10);
-  --border-h:    rgba(232,213,183,0.28);
-  --teal:        #45E0A8;
-  --gold:        #E8D5B7;
-  --gold-bright: #FF9300;
-  --terra:       #8B5CF6;
-  --rose:        #f43f5e;
-  --green:       #4ade80;
-  --fg:          #E4E3F5;
-  --fg-muted:    #8D8CB0;
-  --fg-dim:      rgba(138,147,168,0.5);
-  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
-  --font-body:   'Inter', system-ui, sans-serif;
-  --nav-h:       52px;
-  --r-sm:        6px;
-  --r-md:        10px;
-  --r-lg:        14px;
-  --glow-gold:   0 0 24px rgba(232,213,183,0.20);
-  --glow-teal:   0 0 20px rgba(69,224,168,0.18);
-  --nav-bg:      rgba(8,9,26,0.92);
-  --harm-bg:           rgba(244,63,94,0.06);
-  --harm-eyebrow-line: rgba(244,63,94,0.18);
-  --harm-card-bg:      rgba(17,18,38,0.82);
-  --harm-card-border:  rgba(244,63,94,0.24);
-  --harm-fatal-bg:     rgba(244,63,94,0.10);
-  --harm-fatal-border: rgba(244,63,94,0.40);
-  --harm-fatal-strong: #ff6b7d;
-  --viewer-panel:      rgba(8,9,26,0.72);
+  --border: rgba(69, 224, 168, 0.12);
+  --border-h: rgba(69, 224, 168, 0.30);
+  --gold-bright: var(--tangerine);
+  --rose: var(--state-warn);
+  --green: var(--state-pass);
+  --fg-dim: rgba(138,147,168,0.5);
+  --nav-h: 52px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --glow-gold: var(--glow-tangerine);
+  --glow-teal: var(--glow-mint);
+  --nav-bg: rgba(8,9,26,0.92);
+  --harm-bg: rgba(255, 47, 146, 0.06);
+  --harm-eyebrow-line: rgba(255, 47, 146, 0.18);
+  --harm-card-bg: var(--bg-card);
+  --harm-card-border: rgba(255, 47, 146, 0.24);
+  --harm-fatal-bg: var(--firetruck-10);
+  --harm-fatal-border: var(--firetruck-40);
+  --harm-fatal-strong: var(--state-fail-text);
+  --viewer-panel: rgba(8,9,26,0.72);
 }
 
 /* ── Light theme (accents preserved) ────────────────────────── */
 [data-theme="light"] {
-  --bg:          #f4f6fb;
-  --bg-card:     #ffffff;
-  --bg-alt:      #eef2f8;
-  --border:      rgba(0,0,0,0.10);
-  --border-h:    rgba(232,213,183,0.55);
-  --fg:          #1e293b;
-  --fg-muted:    #5a6478;
-  --fg-dim:      rgba(90,100,120,0.55);
-  --nav-bg:      rgba(255,255,255,0.88);
-  --harm-bg:           rgba(254,226,226,0.72);
-  --harm-eyebrow-line: rgba(220,38,38,0.28);
-  --harm-card-bg:      #ffffff;
-  --harm-card-border:  rgba(220,38,38,0.32);
-  --harm-fatal-bg:     rgba(254,202,202,0.92);
-  --harm-fatal-border: rgba(185,28,28,0.48);
-  --harm-fatal-strong: #be123c;
-  --viewer-panel:      rgba(255,255,255,0.96);
+  --border: rgba(0,0,0,0.10);
+  --border-h: rgba(69, 224, 168, 0.55);
+  --fg-dim: rgba(90,100,120,0.55);
+  --nav-bg: rgba(255,255,255,0.88);
+  --harm-bg: rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(245, 35, 43, 0.28);
+  --harm-card-bg: #ffffff;
+  --harm-card-border: var(--firetruck-32);
+  --harm-fatal-bg: rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(245, 35, 43, 0.48);
+  --viewer-panel: rgba(255,255,255,0.96);
 }
 [data-theme="light"] body {
   background-image:
-    linear-gradient(rgba(232,213,183,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232,213,183,0.06) 1px, transparent 1px);
+    linear-gradient(rgba(69, 224, 168, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69, 224, 168, 0.06) 1px, transparent 1px);
 }
 
 html { scroll-behavior: smooth; }
@@ -84,8 +68,8 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   background-image:
-    linear-gradient(rgba(232,213,183,0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232,213,183,0.018) 1px, transparent 1px);
+    linear-gradient(rgba(69, 224, 168, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69, 224, 168, 0.018) 1px, transparent 1px);
   background-size: 40px 40px;
   min-height: 100vh;
 }
@@ -166,12 +150,12 @@ ul { list-style: none; }
 .pill-gold   { color: var(--gold-bright); border-color: rgba(255,147,0,0.35); background: rgba(255,147,0,0.08); }
 .pill-teal   { color: var(--teal);        border-color: rgba(69,224,168,0.30);  background: rgba(69,224,168,0.06); }
 .pill-terra  { color: var(--terra);       border-color: rgba(139,92,246,0.30); background: rgba(139,92,246,0.07); }
-.pill-rose   { color: var(--rose);        border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-rose   { color: var(--rose);        border-color: rgba(255, 47, 146, 0.30);   background: rgba(255, 47, 146, 0.06); }
 .pill-dim    { color: var(--fg-muted);    border-color: var(--border);          background: var(--bg-alt); }
 .pill-flagship {
   color: #fff;
-  border-color: rgba(232,213,183,0.50);
-  background: linear-gradient(135deg, rgba(232,213,183,0.15), rgba(255,147,0,0.12));
+  border-color: rgba(69, 224, 168, 0.50);
+  background: linear-gradient(135deg, rgba(69, 224, 168, 0.15), rgba(255,147,0,0.12));
   font-size: 11px;
   letter-spacing: 0.12em;
 }
@@ -193,7 +177,7 @@ ul { list-style: none; }
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(232,213,183,0.55);
+  color: rgba(69, 224, 168, 0.55);
   margin-bottom: 0.9rem;
 }
 
@@ -400,7 +384,7 @@ ul { list-style: none; }
 .meta-node.primary  { color: var(--gold-bright); border-color: rgba(255,147,0,0.3);   background: rgba(255,147,0,0.08); font-weight: 600; }
 .meta-node.active   { color: var(--teal);         border-color: rgba(69,224,168,0.3);   background: rgba(69,224,168,0.07); }
 .meta-node.inactive { color: var(--fg-muted);     border-color: var(--border);          background: var(--bg-alt); }
-.meta-node.danger   { color: var(--rose);          border-color: rgba(244,63,94,0.3);   background: rgba(244,63,94,0.07); }
+.meta-node.danger   { color: var(--rose);          border-color: rgba(255, 47, 146, 0.3);   background: rgba(255, 47, 146, 0.07); }
 .meta-enzyme {
   font-family: var(--font-mono);
   font-size: 9.5px;
@@ -697,7 +681,7 @@ table.binding-table {
 }
 .binding-table td {
   padding: 0.55rem 0.85rem;
-  border-bottom: 1px solid rgba(232,213,183,0.05);
+  border-bottom: 1px solid rgba(69, 224, 168, 0.05);
   vertical-align: middle;
 }
 .binding-table tr:last-child td { border-bottom: none; }
@@ -743,7 +727,7 @@ table.binding-table {
 }
 .ab-block   { color: var(--gold-bright); background: rgba(255,147,0,0.08);   border: 1px solid rgba(255,147,0,0.22); }
 .ab-inhibit { color: var(--terra);        background: rgba(139,92,246,0.08);  border: 1px solid rgba(139,92,246,0.22); }
-.ab-channel { color: var(--rose);          background: rgba(244,63,94,0.08);   border: 1px solid rgba(244,63,94,0.22); }
+.ab-channel { color: var(--rose);          background: rgba(255, 47, 146, 0.08);   border: 1px solid rgba(255, 47, 146, 0.22); }
 .binding-note {
   padding: 0.6rem 1rem;
   font-size: 10.5px;
@@ -1199,7 +1183,7 @@ table.binding-table {
       <p style="max-width:none;">Evidence-based, non-moralistic. Tramadol is often mis-sold as a "mild, safe" opioid — its real dangers (seizures, serotonin syndrome, genotype-dependent respiratory depression) are different from and in some ways less predictable than those of classical opioids.</p>
 
       <div class="fatal-box">
-        <strong>FATAL COMBINATIONS:</strong> MAOIs (irreversible/reversible — serotonin toxicity + hyperadrenergic crisis; contraindicated, and within 14 days of stopping) · SSRIs / SNRIs / TCAs / triptans / linezolid / methylene blue (serotonin syndrome) · benzodiazepines · alcohol · gabapentinoids · other opioids (additive respiratory depression — extreme in CYP2D6 ultrarapid metabolizers). Check every interaction at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+        <strong>FATAL COMBINATIONS:</strong> MAOIs (irreversible/reversible — serotonin toxicity + hyperadrenergic crisis; contraindicated, and within 14 days of stopping) · SSRIs / SNRIs / TCAs / triptans / linezolid / methylene blue (serotonin syndrome) · benzodiazepines · alcohol · gabapentinoids · other opioids (additive respiratory depression — extreme in CYP2D6 ultrarapid metabolizers). Check every interaction at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:var(--state-fail-text)">TripSit Combo</a>.
       </div>
 
       <div class="harm-grid">

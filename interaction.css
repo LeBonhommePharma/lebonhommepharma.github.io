@@ -5,10 +5,12 @@
    Loaded by every page: <link rel="stylesheet" href="/interaction.css">
    (bundled pages inline this same text, and style.css @imports it).
 
+   palette-check-ignore-start
    Interaction colours are pinned to the triad here rather than to each
    page's local --teal/--violet/--gold, because a few pages carry an older
    palette (e.g. /entropy-driven/ has --teal:#20808D). Pinning is what makes
    the highlight identical everywhere. Resting colours are untouched.
+   palette-check-ignore-end
 
    Dark-first. Triad only: teal #45E0A8, violet #8B5CF6, gold #FF9300.
    ========================================================================== */

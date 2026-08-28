@@ -9,64 +9,48 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
 
 <style>
 /* ── Reset & Base ───────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:          #08091A;
-  --bg-card:     rgba(17, 18, 38, 0.85);
-  --bg-alt:      rgba(12, 13, 30, 0.55);
-  --border:      rgba(69,224,168,0.12);
-  --border-h:    rgba(69,224,168,0.30);
-  --teal:        #45E0A8;
-  --gold:        #FF9300;
-  --terra:       #8B5CF6;
-  --rose:        #f43f5e;
-  --green:       #4ade80;
-  --fg:          #E4E3F5;
-  --fg-muted:    #8D8CB0;
-  --fg-dim:      rgba(138,147,168,0.5);
-  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
-  --font-body:   'Inter', system-ui, sans-serif;
-  --nav-h:       52px;
-  --r-sm:        6px;
-  --r-md:        10px;
-  --r-lg:        14px;
-  --glow-teal:   0 0 20px rgba(69,224,168,0.25);
-  --glow-gold:   0 0 20px rgba(255,147,0,0.20);
-  --nav-bg:      rgba(8,9,26,0.92);
-  --harm-bg:           rgba(244,63,94,0.06);
-  --harm-eyebrow-line: rgba(244,63,94,0.18);
-  --harm-card-bg:      rgba(17,18,38,0.82);
-  --harm-card-border:  rgba(244,63,94,0.24);
-  --harm-fatal-bg:     rgba(244,63,94,0.10);
-  --harm-fatal-border: rgba(244,63,94,0.40);
-  --harm-fatal-strong: #ff6b7d;
-  --viewer-panel:      rgba(8,9,26,0.72);
+  --border: rgba(69, 224, 168, 0.12);
+  --border-h: rgba(69, 224, 168, 0.30);
+  --rose: var(--state-warn);
+  --green: var(--state-pass);
+  --fg-dim: rgba(138,147,168,0.5);
+  --nav-h: 52px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --glow-teal: var(--glow-mint);
+  --glow-gold: var(--glow-tangerine);
+  --nav-bg: rgba(8,9,26,0.92);
+  --harm-bg: rgba(255, 47, 146, 0.06);
+  --harm-eyebrow-line: rgba(255, 47, 146, 0.18);
+  --harm-card-bg: var(--bg-card);
+  --harm-card-border: rgba(255, 47, 146, 0.24);
+  --harm-fatal-bg: var(--firetruck-10);
+  --harm-fatal-border: var(--firetruck-40);
+  --harm-fatal-strong: var(--state-fail-text);
+  --viewer-panel: rgba(8,9,26,0.72);
 }
 
 /* ── Light theme (accents preserved) ────────────────────────── */
 [data-theme="light"] {
-  --bg:          #f4f6fb;
-  --bg-card:     #ffffff;
-  --bg-alt:      #eef2f8;
-  --border:      rgba(0,0,0,0.10);
-  --border-h:    rgba(69,224,168,0.45);
-  --fg:          #1e293b;
-  --fg-muted:    #5a6478;
-  --fg-dim:      rgba(90,100,120,0.55);
-  --nav-bg:      rgba(255,255,255,0.85);
-  --harm-bg:           rgba(254,226,226,0.72);
-  --harm-eyebrow-line: rgba(220,38,38,0.28);
-  --harm-card-bg:      #ffffff;
-  --harm-card-border:  rgba(220,38,38,0.32);
-  --harm-fatal-bg:     rgba(254,202,202,0.92);
-  --harm-fatal-border: rgba(185,28,28,0.48);
-  --harm-fatal-strong: #be123c;
-  --viewer-panel:      rgba(255,255,255,0.96);
+  --border: rgba(0,0,0,0.10);
+  --border-h: rgba(69,224,168,0.45);
+  --fg-dim: rgba(90,100,120,0.55);
+  --nav-bg: rgba(255,255,255,0.85);
+  --harm-bg: rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(245, 35, 43, 0.28);
+  --harm-card-bg: #ffffff;
+  --harm-card-border: var(--firetruck-32);
+  --harm-fatal-bg: rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(245, 35, 43, 0.48);
+  --viewer-panel: rgba(255,255,255,0.96);
 }
 [data-theme="light"] body {
   background-image:
@@ -165,7 +149,7 @@ ul { list-style: none; }
 .pill-gold { color: var(--gold); border-color: rgba(255,147,0,0.35); background: rgba(255,147,0,0.07); }
 .pill-teal { color: var(--teal); border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
 .pill-terra { color: var(--terra); border-color: rgba(139,92,246,0.30); background: rgba(139,92,246,0.07); }
-.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-rose  { color: var(--rose);  border-color: rgba(255, 47, 146, 0.30);   background: rgba(255, 47, 146, 0.06); }
 .pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
 
 .hero-name {
@@ -1046,7 +1030,7 @@ table.binding-table {
       <p style="max-width:none;">Evidence-based, non-moralistic. Harmine is broadly low-toxicity on its own, but as an MAO-A inhibitor it creates the exact same drug and food interactions as any MAOI. The most common real-world ayahuasca casualties are not from DMT — they are from combining the brew with an SSRI/SNRI, or from an undisclosed serotonergic drug.</p>
 
       <div class="fatal-box">
-        <strong>FATAL COMBINATIONS:</strong> SSRIs / SNRIs / TCAs (fluoxetine, sertraline, venlafaxine, etc.) · tramadol · meperidine · dextromethorphan (DXM) · other MAOIs · triptans · St John's Wort → <strong>serotonin syndrome</strong>. Tyramine-rich foods (aged cheese, cured/fermented meats, fermented soy, tap beer) · stimulants/sympathomimetics (amphetamine, cocaine, pseudoephedrine, MDMA) → <strong>hypertensive crisis</strong>. Check every combination at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+        <strong>FATAL COMBINATIONS:</strong> SSRIs / SNRIs / TCAs (fluoxetine, sertraline, venlafaxine, etc.) · tramadol · meperidine · dextromethorphan (DXM) · other MAOIs · triptans · St John's Wort → <strong>serotonin syndrome</strong>. Tyramine-rich foods (aged cheese, cured/fermented meats, fermented soy, tap beer) · stimulants/sympathomimetics (amphetamine, cocaine, pseudoephedrine, MDMA) → <strong>hypertensive crisis</strong>. Check every combination at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:var(--state-fail-text)">TripSit Combo</a>.
       </div>
 
       <div class="harm-grid">
@@ -1100,7 +1084,7 @@ table.binding-table {
             <li>Not a controlled substance in most jurisdictions, but the DMT it enables usually is</li>
             <li>Screen participants for cardiac disease, uncontrolled hypertension, and psychiatric medication</li>
             <li>Disclose ALL medications and supplements to a facilitator — including OTC cold/cough remedies</li>
-            <li>Test brew botany/adulterants where possible: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">DanceSafe</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit</a></li>
+            <li>Test brew botany/adulterants where possible: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer" style="color:var(--state-fail-text)">DanceSafe</a> · <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer" style="color:var(--state-fail-text)">TripSit</a></li>
           </ul>
         </div>
       </div>

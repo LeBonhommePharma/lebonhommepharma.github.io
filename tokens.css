@@ -257,3 +257,36 @@
   --dur-breathe:  4s;
   --dur-spectrum: 8.5s;
 }
+
+/* ───────── LIGHT THEME ─────────
+   The site ships a light toggle (theme.js sets data-theme pre-paint,
+   theme.css owns the toggle component). Only the surface and text
+   tokens move — the seven key colors are the system and do not
+   change with the theme, so a chart or an equation reads the same
+   in either mode. Alpha washes lift slightly because the same
+   opacity over a light ground reads weaker. */
+[data-theme="light"] {
+  --bg:       #f4f6fb;
+  --bg-panel: rgba(255, 255, 255, 0.88);
+  --bg-card:  #ffffff;
+  --bg-alt:   #eef2f8;
+
+  --fg:       #1e293b;
+  --fg-muted: #5a6478;
+
+  --grid-line: rgba(139, 92, 246, 0.06);
+
+  --mint-06: rgba(69, 224, 168, 0.08);
+  --mint-08: rgba(69, 224, 168, 0.10);
+  --mint-10: rgba(69, 224, 168, 0.14);
+  --mint-15: rgba(69, 224, 168, 0.22);
+  --mint-20: rgba(69, 224, 168, 0.28);
+  --mint-30: rgba(69, 224, 168, 0.38);
+
+  /* Failure text goes DARKER on a light ground, not lighter. #FF6B6B
+     is a lift for DARK mode (7.11:1 on the ink) and collapses to
+     2.57:1 on #f4f6fb — below AA. #BE123C is the value the drug pages
+     had already arrived at independently in their own light blocks,
+     promoted here so every page inherits it. */
+  --state-fail-text: #BE123C;   /* 5.81:1 on --bg */
+}

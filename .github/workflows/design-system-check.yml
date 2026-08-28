@@ -1,0 +1,51 @@
+name: Design system check
+
+# Catches pages that have left the FlexAID∆S design system.
+#
+# WHY THIS IS SEPARATE FROM palette-check.yml
+# -------------------------------------------
+# palette-check.yml forbids the retired v1 hexes. That is necessary and not
+# sufficient — it only knows the colours v1 used. Two real drifts sat in the
+# tree for months while it stayed green:
+#
+# palette-check-ignore-start
+#     --terra: #A84B2F   (/flexaid/)                rust, in the TΔS slot
+#     --gold:  #E8D5B7   (10 drug-of-the-day pages) sand, in the ΔG slot
+# palette-check-ignore-end
+#
+# Neither hex was ever a v1 colour, so neither was forbidden. But a key colour
+# in the wrong quantity is exactly the drift the palette work existed to end.
+#
+# The root cause was duplication: 90 of 92 pages restated the tokens in their
+# own :root instead of linking them, so there were 90 places for a value to
+# rot. Check 1 forbids that duplication at the source; checks 2 and 3 catch a
+# rebind or an off-system typeface in whatever local block remains.
+#
+# Same structure as palette-check.yml, for the same reason: the self-test runs
+# first and as its own step, so a pattern that has stopped matching turns this
+# job red on its own — before any tree is scanned. A green scan means nothing
+# unless the checks are known to still be able to fail.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  design-system:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Proves the patterns can still fail. If this step is red, the scan
+      # below tells you nothing and must not be trusted.
+      - name: Self-test the checks
+        run: ./scripts/check-design-system.sh --self-test
+
+      - name: Scan for design-system drift
+        run: ./scripts/check-design-system.sh

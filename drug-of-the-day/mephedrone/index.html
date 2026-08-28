@@ -9,64 +9,48 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
 
 <style>
 /* ── Reset & Base ───────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:          #08091A;
-  --bg-card:     rgba(17, 18, 38, 0.85);
-  --bg-alt:      rgba(12, 13, 30, 0.55);
-  --border:      rgba(69,224,168,0.12);
-  --border-h:    rgba(69,224,168,0.30);
-  --teal:        #45E0A8;
-  --gold:        #FF9300;
-  --terra:       #8B5CF6;
-  --rose:        #f43f5e;
-  --green:       #4ade80;
-  --fg:          #E4E3F5;
-  --fg-muted:    #8D8CB0;
-  --fg-dim:      rgba(138,147,168,0.5);
-  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
-  --font-body:   'Inter', system-ui, sans-serif;
-  --nav-h:       52px;
-  --r-sm:        6px;
-  --r-md:        10px;
-  --r-lg:        14px;
-  --glow-teal:   0 0 20px rgba(69,224,168,0.25);
-  --glow-gold:   0 0 20px rgba(255,147,0,0.20);
-  --nav-bg:      rgba(8,9,26,0.92);
-  --harm-bg:           rgba(244,63,94,0.06);
-  --harm-eyebrow-line: rgba(244,63,94,0.18);
-  --harm-card-bg:      rgba(17,18,38,0.82);
-  --harm-card-border:  rgba(244,63,94,0.24);
-  --harm-fatal-bg:     rgba(244,63,94,0.10);
-  --harm-fatal-border: rgba(244,63,94,0.40);
-  --harm-fatal-strong: #ff6b7d;
-  --viewer-panel:      rgba(8,9,26,0.72);
+  --border: rgba(69, 224, 168, 0.12);
+  --border-h: rgba(69, 224, 168, 0.30);
+  --rose: var(--state-warn);
+  --green: var(--state-pass);
+  --fg-dim: rgba(138,147,168,0.5);
+  --nav-h: 52px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --glow-teal: var(--glow-mint);
+  --glow-gold: var(--glow-tangerine);
+  --nav-bg: rgba(8,9,26,0.92);
+  --harm-bg: rgba(255, 47, 146, 0.06);
+  --harm-eyebrow-line: rgba(255, 47, 146, 0.18);
+  --harm-card-bg: var(--bg-card);
+  --harm-card-border: rgba(255, 47, 146, 0.24);
+  --harm-fatal-bg: var(--firetruck-10);
+  --harm-fatal-border: var(--firetruck-40);
+  --harm-fatal-strong: var(--state-fail-text);
+  --viewer-panel: rgba(8,9,26,0.72);
 }
 
 /* ── Light theme (accents preserved) ────────────────────────── */
 [data-theme="light"] {
-  --bg:          #f4f6fb;
-  --bg-card:     #ffffff;
-  --bg-alt:      #eef2f8;
-  --border:      rgba(0,0,0,0.10);
-  --border-h:    rgba(69,224,168,0.45);
-  --fg:          #1e293b;
-  --fg-muted:    #5a6478;
-  --fg-dim:      rgba(90,100,120,0.55);
-  --nav-bg:      rgba(255,255,255,0.85);
-  --harm-bg:           rgba(254,226,226,0.72);
-  --harm-eyebrow-line: rgba(220,38,38,0.28);
-  --harm-card-bg:      #ffffff;
-  --harm-card-border:  rgba(220,38,38,0.32);
-  --harm-fatal-bg:     rgba(254,202,202,0.92);
-  --harm-fatal-border: rgba(185,28,28,0.48);
-  --harm-fatal-strong: #be123c;
-  --viewer-panel:      rgba(255,255,255,0.96);
+  --border: rgba(0,0,0,0.10);
+  --border-h: rgba(69,224,168,0.45);
+  --fg-dim: rgba(90,100,120,0.55);
+  --nav-bg: rgba(255,255,255,0.85);
+  --harm-bg: rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(245, 35, 43, 0.28);
+  --harm-card-bg: #ffffff;
+  --harm-card-border: var(--firetruck-32);
+  --harm-fatal-bg: rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(245, 35, 43, 0.48);
+  --viewer-panel: rgba(255,255,255,0.96);
 }
 [data-theme="light"] body {
   background-image:
@@ -165,7 +149,7 @@ ul { list-style: none; }
 .pill-gold { color: var(--gold); border-color: rgba(255,147,0,0.35); background: rgba(255,147,0,0.07); }
 .pill-teal { color: var(--teal); border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
 .pill-terra { color: var(--terra); border-color: rgba(139,92,246,0.30); background: rgba(139,92,246,0.07); }
-.pill-rose  { color: var(--rose);  border-color: rgba(244,63,94,0.30);   background: rgba(244,63,94,0.06); }
+.pill-rose  { color: var(--rose);  border-color: rgba(255, 47, 146, 0.30);   background: rgba(255, 47, 146, 0.06); }
 .pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
 
 .hero-name {
@@ -704,7 +688,7 @@ table.binding-table {
 .ab-release { color: var(--teal); background: rgba(69,224,168,0.08); border: 1px solid rgba(69,224,168,0.20); }
 .ab-agonist { color: var(--gold); background: rgba(255,147,0,0.08); border: 1px solid rgba(255,147,0,0.20); }
 .ab-inhibit { color: var(--terra); background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.20); }
-.ab-block   { color: var(--rose); background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.20); }
+.ab-block   { color: var(--rose); background: rgba(255, 47, 146, 0.08); border: 1px solid rgba(255, 47, 146, 0.20); }
 
 .binding-note {
   padding: 0.6rem 1rem;
@@ -1056,7 +1040,7 @@ table.binding-table {
       <p style="max-width:none;">Evidence-based, non-moralistic. Prohibition did not make this molecule safer — it pushed it into an unregulated market where dose, purity and identity are unknown. Accurate information reduces harm; slogans do not.</p>
 
       <div class="fatal-box">
-        <strong>FATAL / HIGH-DANGER COMBINATIONS:</strong> MAOIs (serotonin toxicity — mephedrone is a serotonin releaser) · other serotonergic releasers/SSRIs at high load (serotonin syndrome) · other stimulants — cocaine, amphetamine, MDMA (additive cardiotoxicity, hyperthermia, vasoconstriction) · alcohol &amp; depressants mask the comedown and drive further redosing. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:#ff6b7d">TripSit Combo</a>.
+        <strong>FATAL / HIGH-DANGER COMBINATIONS:</strong> MAOIs (serotonin toxicity — mephedrone is a serotonin releaser) · other serotonergic releasers/SSRIs at high load (serotonin syndrome) · other stimulants — cocaine, amphetamine, MDMA (additive cardiotoxicity, hyperthermia, vasoconstriction) · alcohol &amp; depressants mask the comedown and drive further redosing. Check interactions at <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer" style="color:var(--state-fail-text)">TripSit Combo</a>.
       </div>
 
       <div class="harm-grid">

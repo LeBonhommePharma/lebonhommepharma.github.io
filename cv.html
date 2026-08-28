@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html><head>
+<link rel="stylesheet" href="/tokens.css">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="/assets/cv/dc-runtime.js"></script>
@@ -746,141 +747,33 @@
 @font-face { font-family: 'SF Pro Display'; font-weight: 900; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Black.woff2") format('woff2'); }
 
 :root {
-  /* ───────── CORE PALETTE (dark-first, scientific) ───────── */
-
-  /* Background ladder — near-black with cool blue cast */
-  --bg:           #08091A;        /* page bg                       */
-  --bg-panel:     rgba(17, 18, 38, 0.92);   /* nav / fixed panels */
-  --bg-card:      rgba(17, 18, 38, 0.80);   /* feature cards      */
-  --bg-alt:       rgba(12, 13, 30, 0.50);   /* alternating bands  */
-
-  /* Brand triad — the equation ΔG = ΔH − TΔS lives in these
-     colors. Each maps to a thermodynamic term and is referenced
-     consistently across UI, charts, and copy.                   */
-  --teal:    #45E0A8;   /* primary    · ΔH (enthalpy)   · CTA, brand mark */
-  --terra:   #8B5CF6;   /* alert/heat · TΔS (entropy)   · alerts, section labels */
-  --gold:    #FF9300;   /* highlight  · ΔG (free energy)· stats, key results */
-
-  /* Text */
-  --fg:       #E4E3F5;   /* primary text       */
-  --fg-muted: #8D8CB0;   /* secondary, labels  */
-
-  /* ───────── ALPHA OVERLAYS ─────────
-     The brand layers translucent washes of the triad on the
-     dark bg instead of mixing solid mid-tones. Use these for
-     borders, hover backgrounds, and chip fills.                 */
-  --teal-06:  rgba(69,224,168,0.06);
-  --teal-08:  rgba(69,224,168,0.08);
-  --teal-10:  rgba(69,224,168,0.10);
-  --teal-15:  rgba(69,224,168,0.15);
-  --teal-20:  rgba(69,224,168,0.20);
-
+  --bg-card: rgba(17, 18, 38, 0.80);
+  --bg-alt: rgba(12, 13, 30, 0.50);
+  --teal: #45E0A8;
+  --terra: #8B5CF6;
+  --gold: #FF9300;
+  --teal-06: rgba(69,224,168,0.06);
+  --teal-08: rgba(69,224,168,0.08);
+  --teal-10: rgba(69,224,168,0.10);
+  --teal-15: rgba(69,224,168,0.15);
+  --teal-20: rgba(69,224,168,0.20);
   --terra-10: rgba(139,92,246,0.10);
   --terra-12: rgba(139,92,246,0.12);
   --terra-25: rgba(139,92,246,0.25);
   --terra-35: rgba(139,92,246,0.35);
-
-  --gold-06:  rgba(255,147,0,0.06);
-  --gold-10:  rgba(255,147,0,0.10);
-  --gold-12:  rgba(255,147,0,0.12);
-  --gold-35:  rgba(255,147,0,0.35);
-
-  /* ───────── SUPPORTING / KEYWORD ACCENTS ─────────
-     Spectrum keywords cycle these on a slow gradient flow.     */
-  --kw-entropy:  var(--terra);
+  --gold-06: rgba(255,147,0,0.06);
+  --gold-10: rgba(255,147,0,0.10);
+  --gold-12: rgba(255,147,0,0.12);
+  --gold-35: rgba(255,147,0,0.35);
+  --kw-entropy: var(--terra);
   --kw-statmech: var(--teal);
-  --kw-dg:       var(--gold);
-  --kw-ga:       #8EEFC9;   /* lighter teal — genetic algorithm  */
-  --kw-open:     #FFB84D;   /* warm gold — open science          */
-  --kw-docking:  #A78BFA;   /* lighter terra — docking           */
-  --kw-rescue:   #FFC773;   /* light gold — binding mode rescue  */
-
-  /* ───────── TYPE SCALE ─────────
-     Body is the brand sans-serif (IBM Plex Sans by default — see Font families
-     card for live candidate options). Everything else (headings, badges, code,
-     stats) is JetBrains Mono. This is unusual but deliberate —
-     the brand reads as "lab notebook with prose between
-     equations".                                                */
-
-  --font-body: 'SF Pro Display', 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-
-  /* Sizes */
-  --fs-hero:   7rem;     /* clamp down at small viewports        */
-  --fs-h1:     3.5rem;
-  --fs-h2:     1.75rem;
-  --fs-h3:     1.125rem;
-  --fs-body:   1rem;
-  --fs-sm:     0.875rem;
-  --fs-xs:     0.75rem;
-  --fs-tag:    0.625rem;  /* 10px — section labels, badges      */
-  --fs-meta:   0.5rem;    /* 8px  — entropy meter labels        */
-
-  /* Weights — body never bolder than 600; mono goes to 700 */
-  --fw-300: 300; /* @kind font */
-  --fw-400: 400; /* @kind font */
-  --fw-500: 500; /* @kind font */
-  --fw-600: 600; /* @kind font */
-  --fw-700: 700; /* @kind font */
-
-  /* Tracking */
-  --tracking-tight: -0.02em;
-  --tracking-flat:  0;
-  --tracking-wide:  0.08em;
-  --tracking-label: 0.15em;
-  --tracking-tag:   0.20em;
-  --tracking-meta:  0.30em;
-
-  /* Line heights */
-  --lh-tight: 1.05; /* @kind font */
-  --lh-snug:  1.15; /* @kind font */
-  --lh-body:  1.60; /* @kind font */
-  --lh-code:  1.80; /* @kind font */
-
-  /* ───────── SPACING ───────── (8-pt soft grid) */
-  --sp-1:  0.25rem;
-  --sp-2:  0.5rem;
-  --sp-3:  0.75rem;
-  --sp-4:  1rem;
-  --sp-5:  1.25rem;
-  --sp-6:  1.5rem;
-  --sp-8:  2rem;
-  --sp-10: 2.5rem;
-  --sp-12: 3rem;
-  --sp-16: 4rem;
-  --sp-20: 5rem;
-  --sp-24: 6rem;
-
-  /* ───────── RADIUS ───────── conservative; cards 8px, pills 9999 */
-  --r-xs:   3px;        /* badges, chips                          */
-  --r-sm:   6px;        /* small buttons                          */
-  --r-md:   8px;        /* cards, default                         */
-  --r-lg:   12px;       /* hero panels                            */
-  --r-pill: 9999px;     /* entropy meter bar                      */
-
-  /* ───────── SHADOWS / GLOWS ─────────
-     The brand prefers colored glow over neutral drop-shadow.    */
-  --glow-teal:  0 0 18px rgba(69,224,168,0.30);
+  --kw-dg: var(--gold);
+  --glow-teal: 0 0 18px rgba(69,224,168,0.30);
   --glow-teal-strong: 0 0 24px rgba(69,224,168,0.50);
   --glow-terra: 0 0 20px rgba(139,92,246,0.10);
-  --glow-gold:  0 0 20px rgba(255,147,0,0.10);
+  --glow-gold: 0 0 20px rgba(255,147,0,0.10);
   --glow-equation: 0 0 40px rgba(69,224,168,0.4), 0 0 60px rgba(255,147,0,0.2);
-
-  /* ───────── MOTION ─────────
-     Easings used across hover, fade-in, and the keyword
-     spectrum animation.                                         */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
-  --ease-in-out: ease-in-out; /* @kind other */
-  --dur-fast: 0.18s; /* @kind other */
-  --dur-base: 0.25s; /* @kind other */
-  --dur-slow: 0.7s; /* @kind other */
-  --dur-breathe: 4s; /* @kind other */
-  --dur-spectrum: 8.5s; /* @kind other */
-
-  /* ───────── GRID BACKGROUND ─────────
-     Fine teal grid at 40px, always-on under content.            */
   --grid-line: rgba(69,224,168,0.03);
-  --grid-step: 40px;
 }
 
 /* ───────── SEMANTIC ELEMENT STYLES ─────────
