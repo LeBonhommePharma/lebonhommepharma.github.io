@@ -18,15 +18,16 @@
       }
     }
   </script>
+  <link rel="stylesheet" href="/tokens.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-    :root { --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;600;700&amp;display=swap');
+    :root { --font-sans: var(--font-body); }
     body { font-family: var(--font-sans); }
     .prose-custom p { margin-bottom: 1.1em; line-height: 1.65; }
     .section-head { letter-spacing: -0.015em; }
     .audit-card { transition: border-color .1s ease; }
     .audit-card:hover { border-color: #475569; }
-    .metric { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .metric { font-family: var(--font-mono); }
   </style>
 <link rel="stylesheet" href="/interaction.css">
 </head>

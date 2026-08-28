@@ -1,215 +1,43 @@
 /* ============================================================
-   FlexAID∆S Design System — Colors & Type — v2
+   FlexAID∆S Design System — Colors & Type
    Le Bonhomme Pharma · Montréal
    Source: thebonhomme.com (live production site)
 
-   Palette v2. Seven key colors, each carrying a thermodynamic
-   quantity. --teal / --terra / --gold are kept as the names the
-   site already uses, but they now resolve to mint / violet /
-   tangerine — the binding to ΔH / TΔS / ΔG is unchanged, only
-   the hues moved.
+   This file is the design system's ELEMENT layer. The tokens it
+   resolves against live in `tokens.css` (the @flexaidds/tokens
+   package, published under design/palette-v2/packages/) and are
+   imported below — they are defined in exactly one place so a
+   page can never drift from the system by restating them.
+
+   Link `tokens.css` alone for the tokens with no opinions about
+   your markup. Link this file when you also want bare HTML to
+   come out looking like FlexAID∆S: mono headings, the violet
+   graph-paper body, .eyebrow, .stat-value, .brand.
 
    palette-check-ignore-start
    Retired — do not reintroduce: gold #FBBF24, pale gold #FDE68A,
    any yellow, cyan #22D3EE, salmon #C2456F, wine #DA2F63,
    steel #6E7C99, maraschino #FF2600, snow #FFFFFF.
    palette-check-ignore-end
-
-   The full board this came from, with the reasoning per round,
-   is at /design/palette-v2/.
    ============================================================ */
 
+@import url('./tokens.css');
+
 /* --- FONTS -----------------------------------------------------
-   The brand uses two Google Fonts. No local TTFs are bundled —
-   import via the standard Google Fonts stylesheet.
+   Two families, both from Google. JetBrains Mono carries headings,
+   stats, badges, eyebrows, code and every number; IBM Plex Sans is
+   for prose only.
 
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+   SF Pro Display leads --font-body and is picked up on Apple
+   devices that have it locally. It is deliberately NOT @font-face'd
+   here: there is no /fonts directory at the site root, so a
+   self-hosted block would 404 on every page load. IBM Plex Sans is
+   the shipped web fallback.
    ------------------------------------------------------------ */
-
-/* ───────── SELF-HOSTED BRAND FONT (disabled: no fonts/ dir in site/; use Google IBM Plex Sans) ─────────
-   SF Pro Display (Apple) — committed body & display sans.
-   Self-hosted from /fonts; replaces IBM Plex Sans as --font-body.
-   Commented to avoid 404s. Body falls back to IBM Plex Sans from Google link in HTML.
-*/
-/*
-@font-face { font-family: 'SF Pro Display'; font-weight: 100; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Ultralight.otf') format('opentype'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 200; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Thin.otf') format('opentype'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 300; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Light.otf') format('opentype'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 400; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Regular.otf') format('opentype'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 500; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Medium.otf') format('opentype'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 600; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Semibold.otf') format('opentype'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 700; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Bold.otf') format('opentype'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 800; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Heavy.otf') format('opentype'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 900; font-style: normal; font-display: swap; src: url('../fonts/SF-Pro-Display-Black.otf') format('opentype'); }
-*/
-
-:root {
-  /* ───────── CORE PALETTE (dark-first, scientific) ───────── */
-
-  /* Background ladder — indigo ink, not navy */
-  --bg:           #08091A;        /* page bg                       */
-  --bg-panel:     rgba(17, 18, 38, 0.92);   /* nav / fixed panels */
-  --bg-card:      rgba(17, 18, 38, 0.80);   /* feature cards      */
-  --bg-alt:       rgba(12, 13, 30, 0.50);   /* alternating bands  */
-
-  /* Brand triad — the equation ΔG = ΔH − TΔS lives in these
-     colors. Each maps to a thermodynamic term and is referenced
-     consistently across UI, charts, and copy.                   */
-  --mint:       #45E0A8;   /* ΔH · enthalpy · brand primary      11.7:1 */
-  --violet:     #8B5CF6;   /* ΔS · configurational entropy        4.7:1 */
-  --tangerine:  #FF9300;   /* ΔG · free energy · stats            8.9:1 */
-  --firetruck:  #F5232B;   /* T  · temperature · hot anchor       4.9:1
-                              hold to 12px and up — no headroom */
-  --aqua:       #00A2FF;   /* ΔS_vib · vibrational · tENCoM       7.2:1 */
-  --strawberry: #FF2F92;   /* receptor · pocket · eyebrows        5.7:1 */
-  --magnesium:  #DCDCE4;   /* baseline · apo · reference line    14.5:1 */
-
-  /* The names the site already uses, pointed at v2. Every existing
-     rule keeps resolving; nothing needs a rename to work.        */
-  --teal:    var(--mint);        /* primary    · ΔH (enthalpy)   · CTA, brand mark */
-  --terra:   var(--violet);      /* alert/heat · TΔS (entropy)   · alerts, section labels */
-  --gold:    var(--tangerine);   /* highlight  · ΔG (free energy)· stats, key results */
-
-  /* Text */
-  --fg:       #E4E3F5;   /* primary text       */
-  --fg-muted: #8D8CB0;   /* secondary, labels  */
-
-  /* ───────── ALPHA OVERLAYS ─────────
-     The brand layers translucent washes of the triad on the
-     dark bg instead of mixing solid mid-tones. Use these for
-     borders, hover backgrounds, and chip fills.                 */
-  --teal-06:  rgba(69,224,168,0.06);
-  --teal-08:  rgba(69,224,168,0.08);
-  --teal-10:  rgba(69,224,168,0.10);
-  --teal-15:  rgba(69,224,168,0.15);
-  --teal-20:  rgba(69,224,168,0.20);
-
-  --terra-10: rgba(139,92,246,0.10);
-  --terra-12: rgba(139,92,246,0.12);
-  --terra-25: rgba(139,92,246,0.25);
-  --terra-35: rgba(139,92,246,0.35);
-
-  --gold-06:  rgba(255,147,0,0.06);
-  --gold-10:  rgba(255,147,0,0.10);
-  --gold-12:  rgba(255,147,0,0.12);
-  --gold-35:  rgba(255,147,0,0.35);
-
-  /* ───────── SUPPORTING / KEYWORD ACCENTS ─────────
-     Spectrum keywords cycle these on a slow gradient flow.     */
-  --kw-entropy:  var(--terra);
-  --kw-statmech: var(--teal);
-  --kw-dg:       var(--gold);
-  --kw-ga:       #8EEFC9;   /* lighter mint — genetic algorithm  */
-  --kw-open:     #FFB84D;   /* lighter tangerine — open science  */
-  --kw-docking:  #A78BFA;   /* lighter violet — docking          */
-  --kw-rescue:   #FFC773;   /* pale tangerine — binding rescue   */
-
-  /* ───────── TYPE SCALE ─────────
-     Body is the brand sans-serif (IBM Plex Sans by default — see Font families
-     card for live candidate options). Everything else (headings, badges, code,
-     stats) is JetBrains Mono. This is unusual but deliberate —
-     the brand reads as "lab notebook with prose between
-     equations".                                                */
-
-  --font-body: 'SF Pro Display', 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-
-  /* Sizes */
-  --fs-hero:   7rem;     /* clamp down at small viewports        */
-  --fs-h1:     3.5rem;
-  --fs-h2:     1.75rem;
-  --fs-h3:     1.125rem;
-  --fs-body:   1rem;
-  --fs-sm:     0.875rem;
-  --fs-xs:     0.75rem;
-  --fs-tag:    0.625rem;  /* 10px — section labels, badges      */
-  --fs-meta:   0.5rem;    /* 8px  — entropy meter labels        */
-
-  /* Weights — body never bolder than 600; mono goes to 700 */
-  --fw-300: 300;
-  --fw-400: 400;
-  --fw-500: 500;
-  --fw-600: 600;
-  --fw-700: 700;
-
-  /* Tracking */
-  --tracking-tight: -0.02em;
-  --tracking-flat:  0;
-  --tracking-wide:  0.08em;
-  --tracking-label: 0.15em;
-  --tracking-tag:   0.20em;
-  --tracking-meta:  0.30em;
-
-  /* Line heights */
-  --lh-tight: 1.05;     /* hero                                  */
-  --lh-snug:  1.15;     /* headings                              */
-  --lh-body:  1.60;     /* paragraphs                            */
-  --lh-code:  1.80;     /* code blocks                           */
-
-  /* ───────── SPACING ───────── (8-pt soft grid) */
-  --sp-1:  0.25rem;
-  --sp-2:  0.5rem;
-  --sp-3:  0.75rem;
-  --sp-4:  1rem;
-  --sp-5:  1.25rem;
-  --sp-6:  1.5rem;
-  --sp-8:  2rem;
-  --sp-10: 2.5rem;
-  --sp-12: 3rem;
-  --sp-16: 4rem;
-  --sp-20: 5rem;
-  --sp-24: 6rem;
-
-  /* ───────── RADIUS ───────── conservative; cards 8px, pills 9999 */
-  --r-xs:   3px;        /* badges, chips                          */
-  --r-sm:   6px;        /* small buttons                          */
-  --r-md:   8px;        /* cards, default                         */
-  --r-lg:   12px;       /* hero panels                            */
-  --r-pill: 9999px;     /* entropy meter bar                      */
-
-  /* ───────── SHADOWS / GLOWS ─────────
-     The brand prefers colored glow over neutral drop-shadow.    */
-  --glow-teal:  0 0 18px rgba(69,224,168,0.30);
-  --glow-teal-strong: 0 0 24px rgba(69,224,168,0.50);
-  --glow-terra: 0 0 20px rgba(139,92,246,0.10);
-  --glow-gold:  0 0 20px rgba(255,147,0,0.10);
-  --glow-equation: 0 0 40px rgba(69,224,168,0.4), 0 0 60px rgba(255,147,0,0.2);
-
-  /* ───────── MOTION ─────────
-     Easings used across hover, fade-in, and the keyword
-     spectrum animation.                                         */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: ease-in-out;
-  --dur-fast: 0.18s;
-  --dur-base: 0.25s;
-  --dur-slow: 0.7s;
-  --dur-breathe: 4s;     /* equation breathe                     */
-  --dur-spectrum: 8.5s;  /* keyword color flow                   */
-
-  /* ───────── GRID BACKGROUND ─────────
-     Fine teal grid at 40px, always-on under content.            */
-  --grid-line: rgba(69,224,168,0.03);
-  --grid-step: 40px;
-}
-
-/* ───────── LIGHT THEME (canonical via theme.js) ───────── */
-[data-theme="light"] {
-  --bg:           #f4f6fb;
-  --bg-panel:     rgba(255, 255, 255, 0.88);
-  --bg-card:      #ffffff;
-  --bg-alt:       #eef2f8;
-  --fg:           #1e293b;
-  --fg-muted:     #5a6478;
-  --grid-line:    rgba(69, 224, 168, 0.06);
-  --teal-06:      rgba(69, 224, 168, 0.08);
-  --teal-08:      rgba(69, 224, 168, 0.10);
-  --teal-10:      rgba(69, 224, 168, 0.14);
-  --teal-12:      rgba(69, 224, 168, 0.18);
-  --teal-15:      rgba(69, 224, 168, 0.22);
-  --teal-20:      rgba(69, 224, 168, 0.28);
-}
 
 /* ───────── SEMANTIC ELEMENT STYLES ─────────
    Apply these to bare HTML in design output. They reproduce the
@@ -305,49 +133,3 @@ code, .mono, kbd, samp {
 }
 .brand .delta { color: var(--gold); }
 .brand .terra { color: var(--terra); }
-
-/* Fix: STATE / SERIES / TEMPERATURE tokens must live at :root. They were
-   nested inside the .brand .terra rule above — its closing brace was missing —
-   so --series-*, --state-* and --t-* resolved only on a .brand .terra element
-   and fell back to invalid everywhere else. Closing .brand .terra and opening
-   :root here restores them site-wide. */
-:root {
-  /* ───────── STATE ─────────
-     Severity reads by brightness, never by yellow. Magenta means
-     caution, pure red means stop.                                */
-  --state-pass:      var(--mint);
-  --state-warn:      var(--strawberry);
-  --state-fail:      var(--firetruck);
-  --state-fail-text: #FF6B6B;   /* lifted for small labels   7.1:1 */
-
-  /* ───────── SERIES RAMP ─────────
-     Ordered by ENERGY along the binding coordinate, not by hue or
-     wavelength, so position in a legend means something and a
-     series reads as a reaction path. Firetruck stays out: it is a
-     scalar and a failure signal, never a data class. Six is the
-     ceiling, and the first step is a neutral baseline.           */
-  --series-1: var(--magnesium);   /* apo baseline               */
-  --series-2: var(--violet);      /* unbound · ΔS dominates     */
-  --series-3: var(--strawberry);  /* first pocket contact       */
-  --series-4: var(--aqua);        /* rigidification · ΔS_vib    */
-  --series-5: var(--mint);        /* contacts formed · ΔH       */
-  --series-6: var(--tangerine);   /* converged · ΔG             */
-
-  /* ───────── TEMPERATURE RAMP ─────────
-     Diverging cool→hot, the B-factor convention PyMOL and Chimera
-     already use for the crystallographic temperature factor — so
-     it needs no legend. Keeps the equation's hues out of it, which
-     is what lets violet, mint and tangerine mean ΔS, ΔH and ΔG
-     and nothing else.                                            */
-  --t-cryo:     var(--aqua);        /*  77 K */
-  --t-cold:     #7FD0FF;            /* 200 K */
-  --t-ambient:  var(--magnesium);   /* 298 K · reference */
-  --t-physio:   #FF7A5C;            /* 310 K */
-  --t-denature: var(--firetruck);   /* 350 K+ */
-  --t-ramp: linear-gradient(90deg,
-              var(--t-cryo)      0%,
-              var(--t-cold)     24%,
-              var(--t-ambient)  50%,
-              var(--t-physio)   76%,
-              var(--t-denature) 100%);
-}

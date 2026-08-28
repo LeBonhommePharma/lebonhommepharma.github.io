@@ -4,29 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ENTROPY DOCKING — Shannon × Music × Molecular AR/VR</title>
+<link rel="stylesheet" href="/tokens.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --gold: #FF9300;
-    --terra: #8B5CF6;
-    --teal: #45E0A8;
-    --deep: #08091A;
-    --panel: rgba(8, 9, 26, 0.85);
-    --glow-gold: rgba(255, 147, 0, 0.4);
-    --glow-terra: rgba(139, 92, 246, 0.4);
-    --glow-teal: rgba(69, 224, 168, 0.4);
-
-    /* Mirrors colors_and_type.css. These pages are deliberately
-       self-contained and do not link the site stylesheet, so the tokens are
-       restated here rather than imported. Keep in sync. */
-    --firetruck:       #F5232B;   /* T · temperature · hot anchor      */
-    --state-pass:      #45E0A8;   /* mint                              */
-    --state-warn:      #FF2F92;   /* strawberry                        */
-    --state-fail:      #F5232B;   /* firetruck                         */
-    --state-fail-text: #FF6B6B;   /* lifted for small labels           */
+  --gold: #FF9300;
+  --terra: #8B5CF6;
+  --teal: #45E0A8;
+  --deep: #08091A;
+  --panel: rgba(8, 9, 26, 0.85);
+  --glow-gold: rgba(255, 147, 0, 0.4);
+  --glow-terra: rgba(139, 92, 246, 0.4);
+  --glow-teal: rgba(69, 224, 168, 0.4);
+  --state-pass: #45E0A8;
+  --state-warn: #FF2F92;
+  --state-fail: #F5232B;
   }
 
   body {
@@ -1489,5 +1484,16 @@ document.getElementById('instructions').addEventListener('click', async () => {
   drawWaveform();
 });
 </script>
+
+<!-- FlexAID∆S TUI — a synthetic docking run, coloured by the series ramp -->
+<section id="live-run" class="section fade-section">
+  <div class="container" style="max-width:900px">
+    <div class="eyebrow" style="margin-bottom:14px">// see it run</div>
+    <h2 style="font-family:var(--font-mono);font-weight:var(--fw-700);margin:0 0 10px">Live synthetic run</h2>
+    <p style="margin:0 0 24px">A docking run walking the binding coordinate. Each stage is coloured by its place on the series ramp — apo baseline, unbound &Delta;S, first pocket contact, rigidification &Delta;S_vib, contacts &Delta;H, converged &Delta;G — so the output reads as a reaction path rather than a log.</p>
+    <div data-flexaidds-tui></div>
+  </div>
+</section>
+<script src="/assets/tui.js" defer></script>
 </body>
 </html>

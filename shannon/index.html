@@ -26,8 +26,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <link rel="stylesheet" href="/tokens.css">
   <link rel="stylesheet" href="../theme.css">
   <link rel="stylesheet" href="/interaction.css">
   <script src="../theme.js"></script>
@@ -37,34 +38,28 @@
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
     :root {
-      --bg: #08091A;
-      --bg-panel: rgba(17, 18, 38, 0.92);
-      --bg-card: rgba(17, 18, 38, 0.80);
-      --bg-alt: rgba(12, 13, 30, 0.50);
-      --teal: #45E0A8;
-      --violet: #8B5CF6;
-      --terra: #8B5CF6;
-      --gold: #FF9300;
-      --text: #E4E3F5;
-      --fg: #E4E3F5;
-      --muted: #8D8CB0;
-      --fg-muted: #8D8CB0;
-      --border: rgba(120, 190, 220, 0.12);
-      --teal-06: rgba(69,224,168,0.06);
-      --teal-08: rgba(69,224,168,0.08);
-      --teal-10: rgba(69,224,168,0.10);
-      --teal-12: rgba(69,224,168,0.12);
-      --teal-15: rgba(69,224,168,0.15);
-      --teal-20: rgba(69,224,168,0.20);
-      --terra-10: rgba(139,92,246,0.10);
-      --terra-12: rgba(139,92,246,0.12);
-      --terra-25: rgba(139,92,246,0.25);
-      --terra-35: rgba(139,92,246,0.35);
-      --gold-06: rgba(255,147,0,0.06);
-      --gold-10: rgba(255,147,0,0.10);
-      --gold-12: rgba(255,147,0,0.12);
-      --font-body: 'IBM Plex Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  --bg-card: rgba(17, 18, 38, 0.80);
+  --bg-alt: rgba(12, 13, 30, 0.50);
+  --teal: #45E0A8;
+  --terra: #8B5CF6;
+  --gold: #FF9300;
+  --text: #E4E3F5;
+  --muted: #8D8CB0;
+  --border: rgba(120, 190, 220, 0.12);
+  --teal-06: rgba(69,224,168,0.06);
+  --teal-08: rgba(69,224,168,0.08);
+  --teal-10: rgba(69,224,168,0.10);
+  --teal-12: rgba(69,224,168,0.12);
+  --teal-15: rgba(69,224,168,0.15);
+  --teal-20: rgba(69,224,168,0.20);
+  --terra-10: rgba(139,92,246,0.10);
+  --terra-12: rgba(139,92,246,0.12);
+  --terra-25: rgba(139,92,246,0.25);
+  --terra-35: rgba(139,92,246,0.35);
+  --gold-06: rgba(255,147,0,0.06);
+  --gold-10: rgba(255,147,0,0.10);
+  --gold-12: rgba(255,147,0,0.12);
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
     }
 
     body {
@@ -907,7 +902,17 @@
     <div class="section-divider"></div>
 
     <!-- ═══════════ ECOSYSTEM ═══════════ -->
-    <section id="ecosystem" class="section alt fade-section">
+    
+<!-- FlexAID∆S TUI — a synthetic docking run, coloured by the series ramp -->
+<section id="live-run" class="section fade-section">
+  <div class="container" style="max-width:900px">
+    <div class="eyebrow" style="margin-bottom:14px">// see it run</div>
+    <h2 style="font-family:var(--font-mono);font-weight:var(--fw-700);margin:0 0 10px">Live synthetic run</h2>
+    <p style="margin:0 0 24px">A docking run walking the binding coordinate. Each stage is coloured by its place on the series ramp — apo baseline, unbound &Delta;S, first pocket contact, rigidification &Delta;S_vib, contacts &Delta;H, converged &Delta;G — so the output reads as a reaction path rather than a log.</p>
+    <div data-flexaidds-tui></div>
+  </div>
+</section>
+<section id="ecosystem" class="section alt fade-section">
       <div class="container">
         <p class="section-label">// ecosystem</p>
         <h2 class="section-h2">Related <span class="gold">work</span></h2>
@@ -1026,5 +1031,6 @@
     }
   })();
   </script>
+<script src="/assets/tui.js" defer></script>
 </body>
 </html>

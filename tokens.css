@@ -1,0 +1,286 @@
+/* ============================================================
+   @flexaidds/tokens — FlexAID∆S palette v2
+   Le Bonhomme Pharma · Montréal
+
+   The approved palette from `Color & Type Pairings.dc.html`,
+   option 6a. Seven key colors, each bound to a thermodynamic
+   quantity; the binding is the system, so a key color is never
+   reassigned to a different quantity.
+
+       ΔG = ΔH − TΔS − TΔS_vib
+
+   Load this before your own styles. It defines tokens only —
+   no element rules, so it cannot fight a consuming stylesheet.
+   For the semantic element styles the design system ships
+   (body grid, .eyebrow, .stat-value, .brand), see `elements.css`.
+
+   Contrast ratios below are measured against the ink (#08091A)
+   and computed from the WCAG 2.1 relative-luminance formula;
+   two differ from the numbers printed on the board — see
+   ../../README.md, "Corrections".
+
+   Retired — do not reintroduce:
+     gold #FBBF24 · pale gold #FDE68A · any yellow · cyan #22D3EE
+     salmon #C2456F · wine #DA2F63 · steel #6E7C99
+     maraschino #FF2600 (orange cast) · snow #FFFFFF (too loud)
+   ============================================================ */
+
+:root {
+  /* ───────── SURFACES ─────────
+     Indigo ink, never navy. Panels are translucent washes of
+     the ink rather than solid mid-tones, so the grid shows
+     through. */
+  --bg:       #08091A;                  /* page ink                */
+  --bg-panel: rgba(17, 18, 38, 0.92);   /* nav, fixed panels       */
+  --bg-card:  rgba(17, 18, 38, 0.82);   /* cards                   */
+  --bg-alt:   rgba(12, 13, 30, 0.55);   /* alternating bands       */
+
+  --fg:       #E4E3F5;                  /* body text     15.60:1   */
+  --fg-muted: #8D8CB0;                  /* secondary      6.12:1   */
+
+  /* ───────── KEY COLORS ─────────
+     Semantic, not decorative. Each carries a quantity. */
+  --mint:       #45E0A8;   /* ΔH · enthalpy · brand primary      11.73:1 */
+  --violet:     #8B5CF6;   /* ΔS · configurational entropy        4.66:1 */
+  --tangerine:  #FF9300;   /* ΔG · free energy · stats            8.86:1 */
+  --firetruck:  #F5232B;   /* T  · temperature · hot anchor       4.85:1 */
+  --aqua:       #00A2FF;   /* ΔS_vib · vibrational · tENCoM       7.15:1 */
+  --strawberry: #FF2F92;   /* receptor · pocket · eyebrows        5.71:1 */
+  --magnesium:  #DCDCE4;   /* baseline · apo · reference line    14.47:1 */
+
+  /* Violet (4.66:1) and firetruck (4.85:1) clear WCAG AA for
+     normal text but have no headroom. Hold firetruck to 12px
+     and up; prefer --state-fail-text for small failure labels. */
+
+  /* Legacy aliases — v1 rules keep resolving. */
+  --teal:  var(--mint);        /* was #22D3EE · ΔH  */
+  --terra: var(--violet);      /* was #8B1A4A · TΔS */
+  --gold:  var(--tangerine);   /* was #FBBF24 · ΔG  */
+
+  /* ───────── ALPHA OVERLAYS ─────────
+     Borders, chip fills, hover washes. Named by key color and
+     percentage; the v1 teal / terra / gold spellings are kept
+     as aliases below. */
+  --mint-06:       rgba(69, 224, 168, 0.06);
+  --mint-08:       rgba(69, 224, 168, 0.08);
+  --mint-10:       rgba(69, 224, 168, 0.10);
+  --mint-15:       rgba(69, 224, 168, 0.15);
+  --mint-20:       rgba(69, 224, 168, 0.20);
+  --mint-30:       rgba(69, 224, 168, 0.30);
+
+  --violet-10:     rgba(139, 92, 246, 0.10);
+  --violet-12:     rgba(139, 92, 246, 0.12);
+  --violet-16:     rgba(139, 92, 246, 0.16);
+  --violet-20:     rgba(139, 92, 246, 0.20);
+  --violet-25:     rgba(139, 92, 246, 0.25);
+  --violet-35:     rgba(139, 92, 246, 0.35);
+  --violet-40:     rgba(139, 92, 246, 0.40);
+
+  --tangerine-06:  rgba(255, 147, 0, 0.06);
+  --tangerine-10:  rgba(255, 147, 0, 0.10);
+  --tangerine-12:  rgba(255, 147, 0, 0.12);
+  --tangerine-35:  rgba(255, 147, 0, 0.35);
+
+  --firetruck-10:  rgba(245, 35, 43, 0.10);
+  --firetruck-14:  rgba(245, 35, 43, 0.14);
+  --firetruck-32:  rgba(245, 35, 43, 0.32);
+  --firetruck-40:  rgba(245, 35, 43, 0.40);
+
+  --aqua-10:       rgba(0, 162, 255, 0.10);
+  --aqua-20:       rgba(0, 162, 255, 0.20);
+
+  --strawberry-12: rgba(255, 47, 146, 0.12);
+  --strawberry-30: rgba(255, 47, 146, 0.30);
+  --strawberry-35: rgba(255, 47, 146, 0.35);
+
+  /* v1 alpha spellings */
+  --teal-06:  var(--mint-06);
+  --teal-08:  var(--mint-08);
+  --teal-10:  var(--mint-10);
+  --teal-15:  var(--mint-15);
+  --teal-20:  var(--mint-20);
+  --teal-30:  var(--mint-30);
+  --terra-10: var(--violet-10);
+  --terra-12: var(--violet-12);
+  --terra-16: var(--violet-16);
+  --terra-20: var(--violet-20);
+  --terra-25: var(--violet-25);
+  --terra-35: var(--violet-35);
+  --terra-40: var(--violet-40);
+  --gold-06:  var(--tangerine-06);
+  --gold-10:  var(--tangerine-10);
+  --gold-12:  var(--tangerine-12);
+  --gold-35:  var(--tangerine-35);
+
+  /* ───────── KEYWORD ACCENTS ─────────
+     The spectrum-flow keywords cycle these. No yellow: warm
+     accents lean tangerine. */
+  --kw-entropy:  var(--violet);
+  --kw-statmech: var(--mint);
+  --kw-dg:       var(--tangerine);
+  --kw-ga:       #8EEFC9;   /* lighter mint      · genetic algorithm */
+  --kw-open:     #FFB84D;   /* lighter tangerine · open science      */
+  --kw-docking:  #A78BFA;   /* lighter violet    · docking           */
+  --kw-rescue:   #FFC773;   /* pale tangerine    · binding rescue    */
+
+  /* ───────── STATE ─────────
+     Reuses key hues; severity reads by brightness, never by
+     yellow. Magenta means caution, pure red means stop. */
+  --state-pass:      var(--mint);
+  --state-warn:      var(--strawberry);
+  --state-fail:      var(--firetruck);
+  --state-fail-text: #FF6B6B;   /* lifted for small labels   7.11:1 */
+
+  /* ───────── SERIES RAMP ─────────
+     Ordered by ENERGY along the binding coordinate, not by hue
+     or wavelength — position in a legend means something
+     thermodynamic, so a series reads as a reaction path.
+     Firetruck stays out: it is a scalar and a failure signal,
+     never a data class. Six is the ceiling. */
+  --series-1: var(--magnesium);   /* apo baseline               */
+  --series-2: var(--violet);      /* unbound · ΔS dominates     */
+  --series-3: var(--strawberry);  /* first pocket contact       */
+  --series-4: var(--aqua);        /* rigidification · ΔS_vib    */
+  --series-5: var(--mint);        /* contacts formed · ΔH       */
+  --series-6: var(--tangerine);   /* converged · ΔG             */
+
+  /* ───────── TEMPERATURE RAMP ─────────
+     Diverging cool→hot, matching the B-factor convention PyMOL
+     and Chimera use for the crystallographic temperature
+     factor — so it needs no legend for a crystallographer. The
+     equation's hues stay out of it, which keeps violet, mint
+     and tangerine meaning ΔS, ΔH and ΔG and nothing else. */
+  --t-cryo:     var(--aqua);        /*  77 K · cryo          */
+  --t-cold:     #7FD0FF;            /* 200 K · cold          */
+  --t-ambient:  var(--magnesium);   /* 298 K · ambient       */
+  --t-physio:   #FF7A5C;            /* 310 K · physiological */
+  --t-denature: var(--firetruck);   /* 350 K+ · denaturing   */
+  --t-ramp: linear-gradient(90deg,
+              var(--t-cryo)      0%,
+              var(--t-cold)     24%,
+              var(--t-ambient)  50%,
+              var(--t-physio)   76%,
+              var(--t-denature) 100%);
+
+  /* ───────── GLOW ─────────
+     Elevation is colored glow and translucency, never a
+     neutral drop shadow. */
+  --glow-mint:      0 0 20px rgba(69, 224, 168, 0.25);
+  --glow-mint-soft: 0 0 18px rgba(69, 224, 168, 0.30);
+  --glow-mint-hard: 0 0 24px rgba(69, 224, 168, 0.50);
+  --glow-violet:    0 0 20px rgba(139, 92, 246, 0.40);
+  --glow-tangerine: 0 0 20px rgba(255, 147, 0, 0.25);
+  --glow-firetruck: 0 0 22px rgba(245, 35, 43, 0.16);
+  --glow-equation:  0 0 40px rgba(69, 224, 168, 0.35),
+                    0 0 60px rgba(255, 147, 0, 0.18);
+  --inset-sheen:    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* v1 glow spellings */
+  --glow-teal:        var(--glow-mint-soft);
+  --glow-teal-strong: var(--glow-mint-hard);
+  --glow-terra:       var(--glow-violet);
+  --glow-gold:        var(--glow-tangerine);
+
+  /* ───────── GRID ───────── violet graph paper on indigo */
+  --grid-line: rgba(139, 92, 246, 0.05);
+  --grid-step: 40px;
+
+  /* ───────── TYPE ─────────
+     Two families. JetBrains Mono carries headings, stats,
+     badges, eyebrows, code and every number; the sans is for
+     prose only. Serif prose was explicitly rejected. */
+  --font-body: 'SF Pro Display', 'IBM Plex Sans', -apple-system,
+               BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  --fs-hero: 7rem;
+  --fs-h1:   3.5rem;
+  --fs-h2:   1.75rem;
+  --fs-h3:   1.125rem;
+  --fs-body: 1rem;
+  --fs-sm:   0.875rem;
+  --fs-xs:   0.75rem;
+  --fs-tag:  0.625rem;   /* 10px · eyebrows, badges, stat labels */
+  --fs-meta: 0.5rem;     /*  8px · entropy meter labels          */
+
+  --fw-300: 300;
+  --fw-400: 400;
+  --fw-500: 500;
+  --fw-600: 600;
+  --fw-700: 700;
+
+  --tracking-tight: -0.02em;
+  --tracking-flat:   0;
+  --tracking-wide:   0.08em;
+  --tracking-label:  0.15em;
+  --tracking-tag:    0.20em;
+  --tracking-meta:   0.30em;
+
+  --lh-tight: 1.05;
+  --lh-snug:  1.15;
+  --lh-body:  1.60;
+  --lh-code:  1.80;
+
+  /* ───────── SPACING ───────── 8-pt soft grid */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-5:  1.25rem;
+  --sp-6:  1.5rem;
+  --sp-8:  2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-20: 5rem;
+  --sp-24: 6rem;
+
+  /* ───────── RADIUS ───────── */
+  --r-xs:   3px;      /* badges, chips     */
+  --r-sm:   6px;      /* small buttons     */
+  --r-md:   8px;      /* cards, default    */
+  --r-lg:   12px;     /* hero panels       */
+  --r-pill: 9999px;   /* meters, capsules  */
+
+  /* ───────── MOTION ───────── */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: ease-in-out;
+  --dur-fast:     0.18s;
+  --dur-base:     0.25s;
+  --dur-slow:     0.7s;
+  --dur-breathe:  4s;
+  --dur-spectrum: 8.5s;
+}
+
+/* ───────── LIGHT THEME ─────────
+   The site ships a light toggle (theme.js sets data-theme pre-paint,
+   theme.css owns the toggle component). Only the surface and text
+   tokens move — the seven key colors are the system and do not
+   change with the theme, so a chart or an equation reads the same
+   in either mode. Alpha washes lift slightly because the same
+   opacity over a light ground reads weaker. */
+[data-theme="light"] {
+  --bg:       #f4f6fb;
+  --bg-panel: rgba(255, 255, 255, 0.88);
+  --bg-card:  #ffffff;
+  --bg-alt:   #eef2f8;
+
+  --fg:       #1e293b;
+  --fg-muted: #5a6478;
+
+  --grid-line: rgba(139, 92, 246, 0.06);
+
+  --mint-06: rgba(69, 224, 168, 0.08);
+  --mint-08: rgba(69, 224, 168, 0.10);
+  --mint-10: rgba(69, 224, 168, 0.14);
+  --mint-15: rgba(69, 224, 168, 0.22);
+  --mint-20: rgba(69, 224, 168, 0.28);
+  --mint-30: rgba(69, 224, 168, 0.38);
+
+  /* Failure text goes DARKER on a light ground, not lighter. #FF6B6B
+     is a lift for DARK mode (7.11:1 on the ink) and collapses to
+     2.57:1 on #f4f6fb — below AA. #BE123C is the value the drug pages
+     had already arrived at independently in their own light blocks,
+     promoted here so every page inherits it. */
+  --state-fail-text: #BE123C;   /* 5.81:1 on --bg */
+}
