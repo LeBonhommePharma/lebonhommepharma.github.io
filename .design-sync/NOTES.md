@@ -117,3 +117,29 @@ in the first pass. The nested copies were stale leftovers, replaced for correctn
   trees, not refreshed this pass.
 - `LeBonhommePharma/{app,components,sections}.jsx` — no current site source to refresh
   from; the site's root `index.html` is now a bundler shell, not JSX.
+
+### Done — fourth pass: the export zip's guidelines card
+
+`~/Downloads/Color & Type Pairings.zip` is the whole design-project export, not just
+`_ds/`. Took exactly one file from it:
+
+- `guidelines/palette-v2.card.html` — a v2-clean seven-swatch card carrying a real
+  `@dsCard group="Colors" name="FlexAID∆S palette v2"` marker. New `guidelines/` dir in
+  the project, so pure addition. Its stylesheet link was repointed from `../styles.css`
+  to `../colors_and_type.css`: all 11 tokens it uses (`--mint`, `--violet`, `--tangerine`,
+  `--firetruck`, `--aqua`, `--strawberry`, `--magnesium`, `--bg`, `--fg`, `--fg-muted`,
+  `--font-mono`) were verified present there.
+
+**Deliberately NOT taken from the zip:**
+- `styles.css` — the zip's is two `@import` lines. The project has its OWN live root
+  `styles.css`, listed in `_ds_manifest.json` `globalCssPaths` alongside
+  `colors_and_type.css`. Uploading the zip's would have destroyed it.
+- `tokens/colors.css`, `tokens/typography.css` — those 146 values are already canonical
+  in the project's `colors_and_type.css`. Adding a second copy would recreate exactly the
+  two-sources-of-truth duplication that caused the site's drift in the first place.
+- `flexaidds-palette-v2.css`, `Color & Type Pairings.dc.html`, `CLAUDE.md`, `readme.md`,
+  `SKILL.md` — the design project's own files, not DS assets. The project already has a
+  different `SKILL.md` (its agent manifest); do not overwrite it with the zip's.
+
+This card supersedes the v1 story in `preview/colors-triad.html` ("Cyan · Magenta ·
+Amber"), which is still outstanding.
