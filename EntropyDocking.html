@@ -329,6 +329,27 @@
     transition: all 0.3s;
   }
 
+  /* Structure provenance — what the scene is actually showing.
+     Deliberately neutral grey: mint/violet/tangerine are ΔH/ΔS/ΔG and are not
+     spent on chrome. */
+  .provenance {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    max-width: 360px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    line-height: 1.7;
+    letter-spacing: 0.4px;
+    color: rgba(224, 224, 224, 0.38);
+    pointer-events: none;
+  }
+
+  .provenance .prov-id {
+    color: rgba(224, 224, 224, 0.72);
+    letter-spacing: 1.5px;
+  }
+
   /* Instructions overlay */
   #instructions {
     position: fixed;
@@ -585,9 +606,17 @@
     <div class="cycle-dot" id="dot6" style="background: rgba(224,224,224,0.1);"></div>
     <span>REV</span>
   </div>
+
+  <!-- What the scene is actually showing -->
+  <div class="provenance">
+    <span class="prov-id">1S3V</span> — human dihydrofolate reductase, 1.80 Å · ligand TQD<br>
+    atom positions from a FlexAID∆S docked pose · arm7_temp13 · CF −153.07, rank 1 of 151 · spyRMSD 1.0686 Å<br>
+    583 receptor atoms (whole residues ≤ 10 Å) · 27 ligand atoms · 29 bonds from the pose's own CONECT records
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="/assets/entropy-docking-1s3v.js"></script>
 <script>
 // ============================================================================
 // ENTROPY DOCKING — Le Bonhomme Pharma
@@ -715,6 +744,43 @@ let receptorMesh, ligandGroup, particleSystem;
 let bindingSiteSphere, energyField;
 let receptorAtoms = [], ligandAtoms = [];
 
+// --- REAL COORDINATES ---------------------------------------------------
+// Every atom position below comes from assets/entropy-docking-1s3v.js: the
+// 1S3V crystal receptor (human DHFR, 1.80 Å) and the FlexAID∆S docked pose of
+// TQD from campaign arm arm7_temp13 (CF -153.07, rank 1 of 151, spyRMSD
+// 1.0686 Å). Ångström, origin at the docked-ligand centroid, rigid-body
+// rotated so the pocket mouth faces +x — which is the direction the ligand
+// flies in from, so it enters the opening instead of the back wall.
+// Nothing here invents geometry. If the file did not load we stop, rather
+// than quietly drawing a made-up pocket under a caption that claims 1S3V.
+const POSE = window.ENTROPY_DOCKING_POSE;
+if (!POSE) {
+  throw new Error('entropy-docking: /assets/entropy-docking-1s3v.js did not load — ' +
+                  'refusing to render a synthetic pocket behind a real-pose caption.');
+}
+
+const UNITS_PER_ANGSTROM = 0.14;   // scene units per Å
+const POCKET_CENTER = [-2, 0, 0];  // where the pocket sits, = the docked ligand target
+
+// Van der Waals radii (Å). Balls are drawn at a fraction of these, so size
+// carries element identity instead of the Math.random() it used to.
+const VDW = { H: 1.20, C: 1.70, N: 1.55, O: 1.52, S: 1.80, P: 1.80,
+              F: 1.47, CL: 1.75, BR: 1.85, I: 1.98 };
+const RECEPTOR_BALL = 0.40;  // pocket reads as a translucent cloud, no sticks
+const LIGAND_BALL   = 0.28;  // ball-and-stick proportions, so the bonds show
+
+// CPK/Jmol element colours, the same scheme assets/molstar-drug-viewer.js gets
+// from Mol*'s 'element-symbol' — including its carbon lift to 0xE8E8E8 so
+// carbon reads against ink. The ligand carries the chemistry; the receptor
+// carries the thermodynamics via the v2 temperature ramp further down. No
+// mint/violet/tangerine touches an atom: those are ΔH, ΔS and ΔG.
+const CPK = { H: 0xFFFFFF, C: 0xE8E8E8, N: 0x3050F8, O: 0xFF0D0D, S: 0xFFFF30,
+              P: 0xFF8000, F: 0x90E050, CL: 0x1FF01F, BR: 0xA62929, I: 0x940094 };
+
+function ballRadius(sym, frac) {
+  return (VDW[sym.toUpperCase()] || 1.70) * frac * UNITS_PER_ANGSTROM;
+}
+
 function initThreeJS() {
   const canvas = document.getElementById('canvas3d');
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -769,34 +835,46 @@ function initThreeJS() {
 }
 
 function buildReceptor() {
-  // Receptor as a cluster of translucent spheres forming a pocket
+  // Receptor: the real 1S3V pocket — every whole residue with an atom within
+  // 10 Å of the docked ligand. 69 residues, 583 heavy atoms, waters and the
+  // two crystallographic sulfates dropped.
   const receptorGroup = new THREE.Group();
 
-  const pocketPositions = [
-    [-2, -1, 0], [-1.5, 0.5, -1], [-2.5, 0, 1], [-1, -1.5, -0.5],
-    [-2, 1, 0.5], [-3, -0.5, 0], [-1.5, -0.5, 1.5], [-2.5, 1, -0.5],
-    [-1, 0, -1.5], [-3, 0.5, -1], [-2, -1.5, 1], [-1.5, 1.5, 0],
-    [-3, -1, -0.5], [-2.5, -1, 1.5], [-1, 1, 1], [-2, 0, -2],
-    [-3.5, 0, 0], [-1, -0.5, 2], [-2.5, 1.5, 1], [-1.5, -2, 0],
-  ];
+  const R = POSE.receptor;
+  const n = R.elem.length;
 
-  pocketPositions.forEach((pos, i) => {
-    const radius = 0.3 + Math.random() * 0.4;
-    const geo = new THREE.SphereGeometry(radius, 16, 16);
-    const mat = new THREE.MeshPhysicalMaterial({
-      transparent: true,
-      opacity: 0.35,
-      roughness: 0.3,
-      metalness: 0.1,
-      clearcoat: 0.5,
-      clearcoatRoughness: 0.3,
-    });
-    const mesh = new THREE.Mesh(geo, mat);
+  // One material for all of them. The animation drives every receptor atom to
+  // the SAME colour and the SAME opacity on every frame — that is what the v2
+  // temperature ramp means — so sharing is pixel-identical to 583 clones and
+  // costs one uniform upload instead of 583.
+  const mat = new THREE.MeshPhysicalMaterial({
+    transparent: true,
+    opacity: 0.35,
+    roughness: 0.3,
+    metalness: 0.1,
+    clearcoat: 0.5,
+    clearcoatRoughness: 0.3,
+  });
+
+  // Radius depends only on the element, so there are four geometries, not 583.
+  const geoFor = {};
+
+  for (let i = 0; i < n; i++) {
+    const sym = R.symbols[R.elem[i]];
+    if (!geoFor[sym]) {
+      geoFor[sym] = new THREE.SphereGeometry(ballRadius(sym, RECEPTOR_BALL), 16, 16);
+    }
+    const pos = [
+      R.xyz[i * 3]     * UNITS_PER_ANGSTROM + POCKET_CENTER[0],
+      R.xyz[i * 3 + 1] * UNITS_PER_ANGSTROM + POCKET_CENTER[1],
+      R.xyz[i * 3 + 2] * UNITS_PER_ANGSTROM + POCKET_CENTER[2],
+    ];
+    const mesh = new THREE.Mesh(geoFor[sym], mat);
     mesh.position.set(pos[0], pos[1], pos[2]);
-    mesh.userData = { basePos: [...pos], baseOpacity: 0.35, baseRadius: radius };
+    mesh.userData = { basePos: pos, baseOpacity: 0.35 };
     receptorGroup.add(mesh);
     receptorAtoms.push(mesh);
-  });
+  }
 
   // Binding site glow
   const bsGeo = new THREE.SphereGeometry(1.2, 32, 32);
@@ -820,41 +898,54 @@ function buildReceptor() {
 function buildLigand() {
   ligandGroup = new THREE.Group();
 
-  // Ligand as a small molecule — aromatic ring + pharmacophore groups
-  const ligandPositions = [
-    [0, 0, 0], [0.6, 0.3, 0.2], [-0.3, 0.5, -0.2],
-    [0.2, -0.5, 0.3], [-0.4, -0.3, -0.4], [0.5, -0.2, -0.3],
-  ];
+  // Ligand: TQD, a hexahydroquinazoline-2,4-diamine antifolate. 27 heavy
+  // atoms, positioned by the docked pose, local coordinates centred on the
+  // ligand centroid — so when ligandGroup reaches POCKET_CENTER the ligand
+  // sits where FlexAID∆S actually put it relative to the receptor.
+  const L = POSE.ligand;
+  const n = L.elem.length;
 
-  const ligandColors = [0xA84B2F, 0xc85a3a, 0xD4A843, 0xa03820, 0xb8652e, 0xD4A843];
+  const local = [];
+  for (let i = 0; i < n; i++) {
+    local.push([
+      L.xyz[i * 3]     * UNITS_PER_ANGSTROM,
+      L.xyz[i * 3 + 1] * UNITS_PER_ANGSTROM,
+      L.xyz[i * 3 + 2] * UNITS_PER_ANGSTROM,
+    ]);
+  }
 
-  ligandPositions.forEach((pos, i) => {
-    const r = 0.15 + Math.random() * 0.12;
-    const geo = new THREE.SphereGeometry(r, 12, 12);
-    const mat = new THREE.MeshPhysicalMaterial({
-      color: ligandColors[i],
-      roughness: 0.2,
-      metalness: 0.3,
-      clearcoat: 0.8,
-      emissive: ligandColors[i],
-      emissiveIntensity: 0.4,
-    });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(pos[0], pos[1], pos[2]);
+  // One material and one geometry per element — CPK colour, element radius.
+  const matFor = {}, geoFor = {};
+
+  for (let i = 0; i < n; i++) {
+    const sym = L.symbols[L.elem[i]];
+    if (!matFor[sym]) {
+      const c = CPK[sym.toUpperCase()] !== undefined ? CPK[sym.toUpperCase()] : CPK.C;
+      matFor[sym] = new THREE.MeshPhysicalMaterial({
+        color: c,
+        roughness: 0.2,
+        metalness: 0.3,
+        clearcoat: 0.8,
+        emissive: c,
+        emissiveIntensity: 0.4,
+      });
+      geoFor[sym] = new THREE.SphereGeometry(ballRadius(sym, LIGAND_BALL), 12, 12);
+    }
+    const mesh = new THREE.Mesh(geoFor[sym], matFor[sym]);
+    mesh.position.set(local[i][0], local[i][1], local[i][2]);
     ligandGroup.add(mesh);
     ligandAtoms.push(mesh);
-  });
+  }
 
-  // Bonds between ligand atoms
-  const bonds = [[0,1],[0,2],[0,3],[0,4],[1,5],[3,5]];
-  bonds.forEach(([a, b]) => {
-    const pa = new THREE.Vector3(...ligandPositions[a]);
-    const pb = new THREE.Vector3(...ligandPositions[b]);
+  // Bonds from the pose's own CONECT records — read, not guessed from distance.
+  const bondMat = new THREE.MeshBasicMaterial({ color: 0xA84B2F, transparent: true, opacity: 0.6 });
+  L.bonds.forEach(([a, b]) => {
+    const pa = new THREE.Vector3(local[a][0], local[a][1], local[a][2]);
+    const pb = new THREE.Vector3(local[b][0], local[b][1], local[b][2]);
     const dir = new THREE.Vector3().subVectors(pb, pa);
     const len = dir.length();
     const geo = new THREE.CylinderGeometry(0.03, 0.03, len, 6);
-    const mat = new THREE.MeshBasicMaterial({ color: 0xA84B2F, transparent: true, opacity: 0.6 });
-    const bond = new THREE.Mesh(geo, mat);
+    const bond = new THREE.Mesh(geo, bondMat);
     bond.position.copy(pa).add(dir.multiplyScalar(0.5));
     bond.lookAt(pb);
     bond.rotateX(Math.PI / 2);
