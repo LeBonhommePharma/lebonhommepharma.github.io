@@ -19,10 +19,12 @@
    two differ from the numbers printed on the board — see
    ../../README.md, "Corrections".
 
+   palette-check-ignore-start
    Retired — do not reintroduce:
      gold #FBBF24 · pale gold #FDE68A · any yellow · cyan #22D3EE
      salmon #C2456F · wine #DA2F63 · steel #6E7C99
      maraschino #FF2600 (orange cast) · snow #FFFFFF (too loud)
+   palette-check-ignore-end
    ============================================================ */
 
 :root {
@@ -52,10 +54,14 @@
      normal text but have no headroom. Hold firetruck to 12px
      and up; prefer --state-fail-text for small failure labels. */
 
-  /* Legacy aliases — v1 rules keep resolving. */
+  /* Legacy aliases — v1 rules keep resolving.
+     palette-check-ignore-start
+     The comments below name the v1 hex each alias replaced; that is a
+     record of the migration, not a use of the colour.  */
   --teal:  var(--mint);        /* was #22D3EE · ΔH  */
   --terra: var(--violet);      /* was #8B1A4A · TΔS */
   --gold:  var(--tangerine);   /* was #FBBF24 · ΔG  */
+  /* palette-check-ignore-end */
 
   /* ───────── ALPHA OVERLAYS ─────────
      Borders, chip fills, hover washes. Named by key color and

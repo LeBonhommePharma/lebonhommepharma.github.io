@@ -8,8 +8,10 @@ name: Design system check
 # sufficient — it only knows the colours v1 used. Two real drifts sat in the
 # tree for months while it stayed green:
 #
+# palette-check-ignore-start
 #     --terra: #A84B2F   (/flexaid/)                rust, in the TΔS slot
 #     --gold:  #E8D5B7   (10 drug-of-the-day pages) sand, in the ΔG slot
+# palette-check-ignore-end
 #
 # Neither hex was ever a v1 colour, so neither was forbidden. But a key colour
 # in the wrong quantity is exactly the drift the palette work existed to end.
