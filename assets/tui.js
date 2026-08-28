@@ -41,25 +41,84 @@
 
   var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Astex Diverse Set entries. Ligand codes and figures are synthetic.
-  var QUEUE = [
+  // Four synthetic sessions, one per surface of the toolchain. Numbers are
+  // illustrative and the titlebar says "synthetic" — the benchmark figures are
+  // kept consistent with the published ones so nothing here contradicts the
+  // rest of the site.
+  //
+  // Every session is a list of steps coloured by the SERIES ramp, in energy
+  // order along the binding coordinate. Step count varies per session, so the
+  // meter and the [n/N] index are both derived from steps.length — never a
+  // hardcoded 6.
+  var DOCK_TARGETS = [
     { pdb: '1S3V', lig: 'NAD', s0: '4.812', ds: '-0.341', contacts: 14, buried: 62, dsv: '-0.089', dh: '-11.204', dg: '-8.42', rmsd: '0.94', pose: 3 },
     { pdb: '1UNL', lig: 'LGS', s0: '5.117', ds: '-0.298', contacts: 11, buried: 57, dsv: '-0.112', dh: '-10.061', dg: '-7.68', rmsd: '1.21', pose: 1 },
-    { pdb: '1YGC', lig: '905', s0: '4.463', ds: '-0.402', contacts: 17, buried: 71, dsv: '-0.074', dh: '-12.930', dg: '-9.15', rmsd: '0.62', pose: 2 },
-    { pdb: '2BM2', lig: 'PM2', s0: '5.004', ds: '-0.355', contacts: 13, buried: 60, dsv: '-0.097', dh: '-10.788', dg: '-8.03', rmsd: '1.07', pose: 5 },
-    { pdb: '1R55', lig: '827', s0: '4.688', ds: '-0.319', contacts: 12, buried: 58, dsv: '-0.101', dh: '-9.994', dg: '-7.41', rmsd: '1.44', pose: 4 }
+    { pdb: '1YGC', lig: '905', s0: '4.463', ds: '-0.402', contacts: 17, buried: 71, dsv: '-0.074', dh: '-12.930', dg: '-9.15', rmsd: '0.62', pose: 2 }
   ];
 
-  function stages(t) {
-    return [
-      { n: 1, tok: 'series-1', label: 'apo baseline',          detail: 'S = ' + t.s0 + ' nats' },
-      { n: 2, tok: 'series-2', label: 'unbound · ΔS',          detail: 'ΔS = ' + t.ds + ' kcal/mol·K' },
-      { n: 3, tok: 'series-3', label: 'pocket contact',        detail: t.contacts + ' contacts · ' + t.buried + '% buried' },
-      { n: 4, tok: 'series-4', label: 'rigidification · ΔS_vib', detail: 'ΔS_vib = ' + t.dsv },
-      { n: 5, tok: 'series-5', label: 'contacts formed · ΔH',  detail: 'ΔH = ' + t.dh + ' kcal/mol' },
-      { n: 6, tok: 'series-6', label: 'converged · ΔG',        detail: 'ΔG = ' + t.dg + ' kcal/mol' }
-    ];
+  function dockSession(t) {
+    return {
+      key: 'dock ' + t.pdb,
+      cmd: '$ flexaidds dock --receptor ' + t.pdb + '.pdb --ligand ' + t.lig + '.mol2 --entropy shannon',
+      banner: 'FlexAID∆S 2.0.3 · entropy-driven docking',
+      equation: true,
+      steps: [
+        { label: 'apo baseline',              detail: 'S = ' + t.s0 + ' nats' },
+        { label: 'unbound · ΔS',              detail: 'ΔS = ' + t.ds + ' kcal/mol·K' },
+        { label: 'pocket contact',            detail: t.contacts + ' contacts · ' + t.buried + '% buried' },
+        { label: 'rigidification · ΔS_vib',   detail: 'ΔS_vib = ' + t.dsv },
+        { label: 'contacts formed · ΔH',      detail: 'ΔH = ' + t.dh + ' kcal/mol' },
+        { label: 'converged · ΔG',            detail: 'ΔG = ' + t.dg + ' kcal/mol' }
+      ],
+      done: 'RMSD ' + t.rmsd + ' Å   pose ' + t.pose + '/20   ΔG ' + t.dg + ' kcal/mol'
+    };
   }
+
+  var SESSIONS = [
+    dockSession(DOCK_TARGETS[0]),
+    {
+      key: 'DatasetRunner',
+      cmd: '$ flexaidds-benchmark --set astex --n 85 --seed 7 --out bench/astex85',
+      banner: 'DatasetRunner · Astex Diverse 85 · deterministic seed',
+      steps: [
+        { label: 'dataset prepared',          detail: '85 / 85 targets fetched' },
+        { label: 'receptors typed',           detail: 'apo strip · hydrogens added' },
+        { label: 'pockets detected',          detail: 'GetCleft · top-3 per target' },
+        { label: 'docking · ΔS_vib',          detail: 'tENCoM normal modes' },
+        { label: 'rescoring · ΔH',            detail: 'Voronoi CF · OpenMP batch' },
+        { label: 'scored · ΔG',               detail: 'top-1 ≤ 2 Å: 82 / 85' }
+      ],
+      done: 'top-1 96.4%   median RMSD 1.08 Å   85 targets'
+    },
+    {
+      key: 'flexaidds (python)',
+      cmd: '$ python -m flexaidds results/1s3v --best-mode',
+      banner: 'flexaidds 2.0.3 · binding-mode summary',
+      steps: [
+        { label: 'results directory',         detail: 'results/1s3v' },
+        { label: 'binding modes · ΔS',        detail: '12 parsed · 20 poses each' },
+        { label: 'temperature · T',           detail: '298 K' },
+        { label: 'enthalpy · ΔH',             detail: '-11.204 kcal/mol' },
+        { label: 'free energy · ΔG',          detail: '-8.42 kcal/mol' }
+      ],
+      done: 'mode_id 3   rank 1   best_cf -42.7   claim_validity proxy_only'
+    },
+    {
+      key: 'NATURaL cofolding',
+      cmd: '$ natural_hammerhead --organism ecoli --rnap --cofold',
+      banner: 'NATURaL · co-transcriptional DualAssembly (RNAP)',
+      steps: [
+        { label: 'nascent chain',             detail: '43 nt transcribed' },
+        { label: 'RNAP tunnel',               detail: '8 nt occluded · Nudler 2012' },
+        { label: 'pause sites',               detail: '3 detected · k_el < 20% hmean' },
+        { label: 'nucleation seeds',          detail: '2 RNA hairpin · 1 G-quad' },
+        { label: 'co-folding · P_fold',       detail: '0.71 at stem II' }
+      ],
+      done: 'hammerhead folded   ΔG_fold -18.6 kcal/mol'
+    },
+    dockSession(DOCK_TARGETS[1]),
+    dockSession(DOCK_TARGETS[2])
+  ];
 
   var CSS = [
     '[data-flexaidds-tui]{--tui-pad:clamp(16px,3vw,24px);font-family:var(--font-mono,monospace)}',
@@ -188,32 +247,39 @@
                     '<span class="tui-t" style="margin-left:2.5em">T = 298 K</span>';
     }
 
-    async function run(t) {
+    async function run(sess) {
+      try {
       clear();
       state.removeAttribute('data-done');
       state.textContent = '● RUNNING';
       cover.style.left = '0%';
 
-      await type('$ flexaidds dock --receptor ' + t.pdb + '.pdb --ligand ' + t.lig + '.mol2 --entropy shannon', 'tui-cmd');
+      await type(sess.cmd, 'tui-cmd');
       if (!alive) return;
       await wait(320);
-      line('tui-dim').textContent = '  FlexAID∆S 2.0.0 · entropy-driven docking';
-      equation();
+      line('tui-dim').textContent = '  ' + sess.banner;
+      if (sess.equation) equation();
       line().textContent = '';
 
-      var st = stages(t);
-      for (var i = 0; i < st.length && alive; i++) {
+      // Step count is per session, so the index and the meter both derive from
+      // steps.length. An earlier build hardcoded 6 and would have mislabelled
+      // every five-step session as [n/6] while the meter never reached the end.
+      var st = sess.steps, total = st.length;
+      for (var i = 0; i < total && alive; i++) {
         await wait(REDUCED ? 0 : 460);
         if (!alive) return;
-        var s = st[i];
+        var s = st[i], n = i + 1;
         var l = line('tui-row');
-        l.appendChild(el('span', 'tui-idx', '[' + s.n + '/6]'));
+        l.appendChild(el('span', 'tui-idx', '[' + n + '/' + total + ']'));
         var tag = el('span', 'tui-name', s.label);
-        // The stage colour is its series token — the ramp, in energy order.
-        tag.style.color = 'var(--' + s.tok + ')';
+        // Colour by position on the series ramp. With fewer than six steps the
+        // ramp is sampled across its full range rather than truncated, so a
+        // five-step run still ends on tangerine (converged · ΔG).
+        var tok = total === 1 ? 6 : Math.round(1 + (n - 1) * (5 / (total - 1)));
+        tag.style.color = 'var(--series-' + tok + ')';
         l.appendChild(tag);
         l.appendChild(el('span', 'tui-val', s.detail));
-        cover.style.left = ((s.n / 6) * 100).toFixed(1) + '%';
+        cover.style.left = ((n / total) * 100).toFixed(1) + '%';
       }
       if (!alive) return;
 
@@ -223,21 +289,22 @@
       var okTag = el('span', null, '  ● CONVERGED');
       okTag.style.color = 'var(--series-6)';
       done.appendChild(okTag);
-      done.appendChild(el('span', 'tui-dim', '   RMSD ' + t.rmsd + ' Å   pose ' + t.pose + '/20   ΔG ' + t.dg + ' kcal/mol'));
+      done.appendChild(el('span', 'tui-dim', '   ' + sess.done));
       state.textContent = '● CONVERGED';
       state.setAttribute('data-done', '1');
 
       if (REDUCED) return;               // one frame, no loop
       await wait(2600);
       if (!alive) return;
-      // Dequeue the next target rather than replaying this one: a queue that
-      // has more work does the work. Watching it twice shows something new.
+      // Dequeue the next session rather than replaying this one: the toolchain
+      // has more than one surface, so watching it twice shows a different one.
       var nxt = line('tui-dim');
-      nxt.textContent = '  next in queue → ' + QUEUE[(idx + 1) % QUEUE.length].pdb + ' …';
+      nxt.textContent = '  next in queue → ' + SESSIONS[(idx + 1) % SESSIONS.length].key + ' …';
       await wait(1100);
       if (!alive) return;
-      idx = (idx + 1) % QUEUE.length;
-      run(QUEUE[idx]);
+      idx = (idx + 1) % SESSIONS.length;
+      run(SESSIONS[idx]);
+      } catch (err) { /* a stopped run unwinds here; nothing to report */ }
     }
 
     var self = {
@@ -247,7 +314,7 @@
       start: function () {
         if (running) return;
         running = true; alive = true;
-        run(QUEUE[idx]);
+        run(SESSIONS[idx]);
       },
       stop: function () {
         running = false; alive = false;

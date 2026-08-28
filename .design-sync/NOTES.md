@@ -42,6 +42,7 @@ marketing page — bare `function` declarations, no exports, no build — not a 
   fonts exist in the project) and all 16 `@kind` annotations. No deletes were in the plan.
 
 ### Still on v1 — not yet touched
+<!-- palette-check-ignore-start -->
 - `_ds_bundle.js` — ~138 hardcoded v1 hexes (54× `#22D3EE`, 50× `#FBBF24`, 34× `#A78BFA`).
   A CSS token swap cannot reach JS literals. NOTE: round-tripping a large generated bundle
   through a model context risks silent corruption; `get_file` also caps at 256 KiB and can
@@ -67,6 +68,7 @@ corrupted the project. Always patch that file from a local export, never from `g
   34 `#A78BFA`→violet, 12 `#EC4899`→violet (the Diffusion/ΔS phase accent — same quantity),
   16 `#8a93a8`→`#8D8CB0`, 1 `#D4569E`→mint (`--color-accent` fallback), 1 `#B5AEC8`→
   `#8D8CB0`, plus 32 rgb triples. `node --check` passes; all 360 changed diff lines
+<!-- palette-check-ignore-end -->
   contain a colour (zero collateral edits); byte delta −12 matches the arithmetic exactly.
 - `README.md` — palette sections rewritten for v2: the triad table became the seven
   key colors with contrast ratios, background/grid/layering facts corrected, and a note
