@@ -24,13 +24,24 @@
   --state-fail: #F5232B;
   }
 
+  /* NOT overflow:hidden / height:100vh.
+     Those date from when this page was the scene and nothing else, and
+     `overflow` on body propagates to the viewport — with them set, the
+     document cannot scroll at all. #live-run was added afterwards and is the
+     ONLY in-flow element on the page: canvas, splash and HUD are all fixed.
+     So the section laid out at y=0, underneath the fixed canvas, and no
+     scroll offset could reach it — elementFromPoint at the centre of its
+     paragraph returned #canvas3d. It was not overlapped, it was buried.
+     The camera code already assumes a scrollable page and says so three
+     times; see wheelShouldZoom() and the pointerdown comment.
+     width is 100% and not 100vw so the scrollbar cannot induce a sideways
+     scroll of its own. */
   body {
     background: var(--deep);
     color: #e0e0e0;
     font-family: 'Space Grotesk', sans-serif;
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
+    width: 100%;
   }
 
   #canvas3d {
@@ -157,8 +168,14 @@
     font-family: 'Space Grotesk', sans-serif;
   }
 
+  /* wrap, never shrink. A label that shrinks to fit is a label that gets
+     skipped, and "[L] stated" is the referent for θ two rows down — if it
+     truncates on a phone the assumption has gone invisible, which is the
+     defect θ was rebuilt to end. Wrapping to a second line costs a row and
+     keeps the words. No font-size floor is lowered to make anything fit. */
   .metric-row {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: baseline;
     margin-bottom: 10px;
@@ -566,6 +583,41 @@
     position: absolute;
     bottom: 20px;
   }
+
+  /* ── the live-run section ──────────────────────────────────────────────
+     The scene owns the first viewport; the section begins after it. Two
+     things are needed and neither is decorative:
+
+     margin-top gives the document something to scroll. Every other element
+     here is fixed, so without it the page is exactly one viewport tall and
+     the section sits at y=0 with nowhere to scroll to.
+
+     z-index lifts it over #canvas3d (z-index:1, position:fixed). Without it
+     the canvas paints on top and the section stays invisible even once you
+     can scroll to it — being reachable and being visible are separate
+     failures and this page had both. #hud is z-index:10 and still paints
+     over this; that overlap is what the observer at the foot of the page
+     handles.
+
+     .container carries margin:0 auto in the site stylesheets, but this page
+     links only tokens.css and interaction.css, so the class resolves to
+     nothing here and the cap is applied inline. Centre it explicitly.
+
+     The 40px past 100vh is the observer's lead-in, and the 24px of padding
+     is the content's clearance. Neither is styling. The HUD's lowest
+     furniture (.bottom-bar, .provenance) sits 16px off the viewport floor —
+     8px on the narrow layout — so the section's TEXT can only reach it at
+     scrollY > 40 + 16 + 24. The observer hides the HUD at scrollY > 40.
+     Deriving the gap that way rather than eyeballing it is what keeps the
+     two apart on a short viewport as well as a tall one. */
+  #live-run {
+    position: relative;
+    z-index: 2;
+    margin-top: calc(100vh + 40px);
+    padding: 24px 16px 72px;
+  }
+
+  #live-run .container { margin-inline: auto; }
 </style>
 <link rel="stylesheet" href="/interaction.css">
   <meta name="description" content="Interactive entropy docking: music tempo drives simulation temperature, tempo change triggers Shannon Energy Collapse, and Crooks round-trip closure measures irreversibility. Dock the ligand by controlling the beat.">
@@ -2010,9 +2062,15 @@ document.getElementById('instructions').addEventListener('click', async () => {
               return trim.atoms + ' receptor atoms · ' + trim.residues + ' residues ≤ ' +
                      trim.cutoff_angstrom + ' Å';
             } },
+          // θ never travels without [L]. The HUD prints the two side by side,
+          // but this terminal is a whole viewport further down the page, so a
+          // bare θ here is a saturation figure with its concentration nowhere
+          // on screen — the same defect, one scroll region over, that printing
+          // [L] in the panel was meant to end. It carries its own referent.
           { label: 'unbound · ΔS', detail: function () {
               var s = live();
-              return s ? 'S_config ' + s.sConfig.toFixed(2) + ' bits · θ ' + pct(s.thetaBound) : '—';
+              return s ? 'S_config ' + s.sConfig.toFixed(2) + ' bits · θ ' +
+                         pct(s.thetaBound) + ' at [L] ' + kd(s.ligandConc) : '—';
             } },
           { label: 'pocket contact', detail: function () {
               return nLig + ' ligand atoms · ' + nBond + ' bonds from the pose CONECT records';
@@ -2038,6 +2096,75 @@ document.getElementById('instructions').addEventListener('click', async () => {
       }]
     };
   };
+})();
+</script>
+<!-- ═══════════ THE HUD STEPS ASIDE FOR THE SECTION ═══════════
+     #hud is position:fixed at width/height 100% with z-index 10. That is a
+     viewport slot, and padding the section cannot vacate it: padding moves
+     the content out from under the panels and leaves the panels exactly
+     where they were, still sitting over the scene's flanks. Only taking the
+     HUD out of the viewport addresses the cause rather than the symptom.
+
+     WHY THIS IS SAFE — the HUD is a pure sink.
+     Checked before writing it, because hiding a live readout is only free
+     if nothing is reading it:
+       · updateHUD() assigns textContent and style on ~20 nodes and never
+         reads one back. The four other DOM writes on this page (trackName,
+         trackArtist) are assignments too.
+       · the TUI profile above reads STATE — the object — through live().
+         It never touches the HUD's DOM, so the terminal keeps printing the
+         same numbers whether the panels are on screen or not.
+       · assets/tui.js's 900 ms sweep() supervisor keys on isConnected for
+         the mount and its window. display:none does not change isConnected,
+         and #hud is not an ancestor of the mount in any case, so the
+         supervisor cannot notice this.
+     Nothing observes the HUD, so nothing misses it while it is away.
+
+     THE THRESHOLD IS "BEFORE IT CAN COLLIDE", NOT "HALFWAY DOWN".
+     The first attempt hid the HUD once the section had climbed past
+     0.6 × innerHeight, to match wheelShouldZoom(). Measurement rejected it.
+     .bottom-bar, .cycle-indicator and .provenance are anchored to the BOTTOM
+     of the viewport, so they collide as soon as the section's top rises above
+     the fold, not halfway up it: at 1440×900 the probe still found
+     .bottom-bar over the terminal by 600×102px at scrollY 450. A threshold
+     that fires halfway ships the overlap for the first half.
+     So the geometry is derived instead — see the #live-run rule. The section
+     clears the fold by 40px and its text by another 24px, while the lowest
+     HUD furniture stops 16px above the viewport floor (8px narrow). Plain
+     intersection therefore fires at scrollY > 40, and the earliest possible
+     text collision is scrollY > 80. No frame in which the two coexist is
+     ever painted, at any viewport height.
+
+     This does not fight wheelShouldZoom(). While the camera is engaged the
+     wheel zooms and does not scroll, so an engaged reader never trips it; a
+     reader who is scrolling has decided to leave the scene.
+
+     WHY IT ARMS ON THE SPLASH CLICK rather than at parse time.
+     An observer delivers one callback for the initial state as soon as it
+     observes. At parse time the HUD is still display:none by markup, so that
+     callback has to be ignored — and the section's intersection never
+     changes on its own afterwards, so the ignored one is the ONLY callback
+     that will ever arrive and the HUD is never hidden at all. The first
+     version of this had exactly that bug and the probe caught it: hud=block
+     at every offset, which is worse than the overlap it replaced. Arming
+     after the click makes the initial callback the useful one.
+
+     No IntersectionObserver means no observer and the HUD simply stays —
+     today's behaviour, so an old browser loses the improvement and gains no
+     new defect. -->
+<script>
+(function () {
+  var hud     = document.getElementById('hud');
+  var section = document.getElementById('live-run');
+  var splash  = document.getElementById('instructions');
+  if (!hud || !section || !splash || !('IntersectionObserver' in window)) return;
+
+  splash.addEventListener('click', function () {
+    new IntersectionObserver(function (entries) {
+      var last = entries[entries.length - 1];
+      hud.style.display = last.isIntersecting ? 'none' : 'block';
+    }).observe(section);
+  }, { once: true });
 })();
 </script>
 <script src="/assets/tui.js" defer></script>
