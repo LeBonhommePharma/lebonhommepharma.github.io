@@ -184,6 +184,19 @@ function BindingSection() {
   ];
   const p = phases[phase];
 
+  // Publish the phase the reader is on so the TUI below can use it as a real
+  // reaction coordinate. This section is the only control on the page that
+  // moves along the binding path, so it is the only honest coordinate here —
+  // the panel prints a stage when the reader actually crosses it, and reports
+  // the value at that crossing. Read-only for the consumer; nothing outside
+  // this component may write it back.
+  useEffectS(() => {
+    window.FLEXAIDDS_BINDING = {
+      i: phase, n: phases.length,
+      lbl: p.lbl, ds: p.ds, dh: p.dh, dg: p.dg,
+    };
+  }, [phase]);
+
   return (
     <section id="binding" className="section">
       <div className="container" style={{ maxWidth: "960px" }}>
@@ -265,6 +278,36 @@ function BindingDiagram({ phase }) {
         );
       })}
     </svg>
+  );
+}
+
+// ─── LIVE RUN (TUI) ───
+// The panels above are an instantaneous readout — good at "what is true right
+// now". A terminal is good at ORDER. So this prints the crossing log: each
+// stage fires when the binding walk above actually reaches it and reports the
+// value AT that crossing, then a second session walks the build and the
+// benchmark record. Every figure comes from elsewhere on this page; the
+// profile that supplies them is registered in index.html.
+//
+// The mount is a plain div React never fills. tui.js owns its subtree and its
+// own 900 ms supervisor rebuilds the panel if a re-render detaches it.
+function LiveRunSection() {
+  return (
+    <section id="live-run" className="section">
+      <div className="container" style={{ maxWidth: "960px" }}>
+        <SectionHeader eyebrow="see it run">
+          Live <span className="t-gold">Run</span>
+        </SectionHeader>
+        <p className="binding-blurb">
+          The same pipeline as a <span className="kw">reaction path</span>. Each stage is coloured by its place on the
+          series ramp — apo baseline, unbound ΔS, pocket contact, rigidification ΔS_vib, contacts ΔH, converged ΔG — and
+          the thermodynamic stages print <span className="kw">when the binding walk above reaches them</span>, carrying
+          the value at the crossing. Step through <span className="kw">Diffusion → Encounter → Binding</span> and the run
+          follows you. The second session in the queue is the build and the benchmark record.
+        </p>
+        <div data-flexaidds-tui data-tui-profile="flexaid-ds" />
+      </div>
+    </section>
   );
 }
 
@@ -518,4 +561,4 @@ function ExploreSection() {
   );
 }
 
-Object.assign(window, { HeroSection, WhySection, FeaturesSection, ArchSection, BindingSection, InstallSection, BenchmarksSection, ModulesSection, RepoStatsSection, Footer, ExploreSection });
+Object.assign(window, { HeroSection, WhySection, FeaturesSection, ArchSection, BindingSection, LiveRunSection, InstallSection, BenchmarksSection, ModulesSection, RepoStatsSection, Footer, ExploreSection });

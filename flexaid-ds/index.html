@@ -68,5 +68,125 @@
   <script type="text/babel" src="components.jsx"></script>
   <script type="text/babel" src="sections.jsx"></script>
   <script type="text/babel" src="app.jsx"></script>
+
+  <!-- ═══════════ TUI PROFILE — this engine, this page's own numbers ═══════════
+       assets/tui.js ships to several pages and must not know which one it is
+       on, so it exposes a registry (window.FLEXAIDDS_TUI_PROFILES) instead of
+       branching on the pathname. This registers one entry; an unregistered or
+       throwing profile falls back to the default synthetic queue, so a mistake
+       here stays on this page.
+
+       WHAT GOES IN A TERMINAL THAT IS NOT ALREADY IN THE PANELS
+       The sections above are instantaneous readouts. A terminal is good at
+       ORDER, so this prints the crossing log — a stage fires when the binding
+       walk in #binding reaches it and reports the value AT that crossing —
+       plus the build and validation provenance the cards have no room for.
+
+       PROVENANCE. Every figure below is stated elsewhere on THIS page:
+         ΔS/ΔH/ΔG per phase   BindingSection phases[] (unitless there, so
+                              unitless here — the page states no units for them)
+         SURFNET · GA + DEE · Voronoi CF · F = −kT ln Z · Van't Hoff   ArchSection
+         tENCoM normal modes                        FeaturesSection, ModulesSection
+         dispatch order · C++26 · Apache 2.0        FeaturesSection, hero badges
+         CMake defaults                             InstallSection table
+         r 0.93 · RMSE 1.4 · 0.88 · 92% + rivals    BenchmarksSection table
+         "preliminary, bootstrap CIs in progress"   BenchmarksSection footnote
+       Nothing is invented. The site's Astex Diverse 85 / 96.4% figure is NOT
+       stated on this page — it is on the homepage — so it is not used here. -->
+  <script>
+  (function () {
+    // The reader's position on the binding walk, published by BindingSection.
+    var live = function () { return window.FLEXAIDDS_BINDING || null; };
+
+    window.FLEXAIDDS_TUI_PROFILES = window.FLEXAIDDS_TUI_PROFILES || {};
+    window.FLEXAIDDS_TUI_PROFILES['flexaid-ds'] = function () {
+      return {
+        title: 'flexaidds — binding walk · live coordinate',
+        list: [{
+          key: 'dock · reaction path',
+          // The page's own Python snippet, at its own prompt. Typed one
+          // character at a time, so a `python -c "…"` wrapper around it would
+          // cost a second of dead air and three wrapped lines on a phone.
+          cmd: ">>> fd.dock(receptor='receptor.pdb', ligand='ligand.mol2', compute_entropy=True)",
+          banner: 'FlexAID∆S · entropy-driven docking · ΔS_config via the partition function',
+          equation: true,
+          // 0 = free in solvent, 1 = bound. Driven by the reader: three phases,
+          // so 1/3 · 2/3 · 1. Before BindingSection mounts this is 0 and each
+          // stage falls through on waitCoord's own cap rather than hanging.
+          coord: function () {
+            var s = live();
+            return s ? (s.i + 1) / s.n : 0;
+          },
+          steps: [
+            { label: 'apo baseline', detail:
+                'PDB receptor + MOL2 ligand · SURFNET cavity detection' },
+            { label: 'unbound · ΔS', detail: function () {
+                var s = live();
+                return s ? 'ΔS ' + s.ds + ' · ' + s.lbl : '—';
+              } },
+            { label: 'pocket contact', detail:
+                'GA + DEE torsion pruning · ring conformer + chirality sampling' },
+            { label: 'rigidification · ΔS_vib', detail:
+                'tENCoM backbone normal modes · torsional vibrational entropy' },
+            { label: 'contacts formed · ΔH', detail: function () {
+                var s = live();
+                return s ? 'ΔH ' + s.dh + ' · Voronoi CF + OpenMP batch' : '—';
+              } },
+            { label: 'converged · ΔG', detail: function () {
+                var s = live();
+                return s ? 'ΔG ' + s.dg + ' · F = −kT ln Z' : '—';
+              } }
+          ],
+          done: function () {
+            var s = live();
+            return (s ? 'phase ' + (s.i + 1) + '/' + s.n + ' ' + s.lbl + '   ΔG ' + s.dg + '   ' : '') +
+                   "Van't Hoff decomposition · ITC-validated";
+          }
+        }, {
+          // No coordinate: a build and a benchmark record have no reaction
+          // path, so this one runs on the panel's own clock. Labels here name
+          // no thermodynamic quantity, because the ramp position already means
+          // one — a "ΔG" label on the aqua step would reassign ΔS_vib's colour.
+          key: 'build · validation',
+          cmd: '$ cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . -j $(nproc)',
+          banner: 'FlexAID∆S · reproducible benchmark · same commit · same container · same seed',
+          steps: [
+            { label: 'toolchain',           detail: 'C++26 · Python ≥ 3.9 · Apache 2.0 · Linux · macOS · Windows' },
+            { label: 'accelerators',        detail: 'OpenMP ON · CUDA · Metal · AVX-512 opt-in' },
+            { label: 'dispatch',            detail: 'CUDA > Metal > AVX-512 > AVX2 > OpenMP' },
+            { label: 'reproducibility',     detail: 'bit-for-bit identical results on the same seed' },
+            { label: 'affinity correlation', detail: 'ITC-187 · Pearson r 0.93 · RMSE 1.4 kcal/mol   (Vina 0.64 · Glide 0.69 · rDock 0.61)' },
+            { label: 'binding mode rescue', detail: 'CNS · 92% where enthalpy-only scoring fails   (Vina 58% · Glide 64% · rDock 55%)' }
+          ],
+          done: 'CASF-2016 scoring 0.88   numbers preliminary · bootstrap CIs in progress'
+        }]
+      };
+    };
+  })();
+  </script>
+
+  <!-- tui.js's init() returns early when no mount exists yet, and this page
+       builds its mount in React — which Babel-standalone compiles and runs
+       AFTER DOMContentLoaded. A plain `defer` tag would therefore load the
+       panel into a document that has no mount and never start the supervisor.
+       So the tag is appended once the mount is actually in the document; from
+       then on tui.js's own 900 ms sweep owns it and survives re-renders.
+       Bounded, so a page that never mounts stops polling instead of spinning. -->
+  <script>
+  (function () {
+    var tries = 0;
+    function boot() {
+      if (!document.querySelector('[data-flexaidds-tui]')) return false;
+      var s = document.createElement('script');
+      s.src = '/assets/tui.js';
+      document.body.appendChild(s);
+      return true;
+    }
+    if (boot()) return;
+    var iv = setInterval(function () {
+      if (boot() || ++tries > 125) clearInterval(iv);   // ≈15 s ceiling
+    }, 120);
+  })();
+  </script>
 </body>
 </html>

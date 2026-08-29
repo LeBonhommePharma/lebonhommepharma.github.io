@@ -40,6 +40,8 @@ function App() {
         <div className="section-divider" />
         <BindingSection />
         <div className="section-divider" />
+        <LiveRunSection />
+        <div className="section-divider" />
         <InstallSection />
         <div className="section-divider" />
         <BenchmarksSection />
