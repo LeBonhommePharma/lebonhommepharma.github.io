@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="build-sha" content="647da8cab7f07af4164fa5a95d2977f6bac7f46f" />
+    <meta name="build-sha" content="403a69b15772a51b8479923923c5297e9df885c1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Rive. Horaires RTC, STLévis, STM et STL, sans abonnement</title>
     <meta
@@ -907,6 +907,46 @@
       #geo-ask:hover { border-color: var(--sodium); }
       #geo-ask::after { content: " \2192"; color: var(--sodium); font-weight: 700; }
       #geo-ask[hidden] { display: none; }
+      #load-city, #atlas-gap {
+        position: absolute;
+        left: var(--safe-left);
+        top: calc(var(--safe-top) + var(--chips-h) + 10px);
+        z-index: var(--z-ask);
+        border: 1px solid var(--hair);
+        border-radius: var(--r-md);
+        background: var(--glass);
+        backdrop-filter: blur(var(--blur));
+        -webkit-backdrop-filter: blur(var(--blur));
+        color: var(--ink);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        line-height: 1.4;
+        text-align: left;
+        padding: 8px 12px;
+        min-height: 44px;
+        max-width: calc(100% - var(--safe-left) - var(--safe-right) - var(--rail) - 8px);
+        box-shadow: var(--sheen);
+      }
+      #load-city {
+        cursor: pointer;
+        transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+      }
+      #load-city:hover { border-color: var(--sodium); }
+      #load-city::after { content: " \2192"; color: var(--sodium); font-weight: 700; }
+      #load-city[hidden], #atlas-gap[hidden] { display: none; }
+      #atlas-gap { margin: 0; cursor: default; }
+      @media (min-width: 641px) {
+        #load-city, #atlas-gap {
+          left: calc(var(--safe-left) + var(--col) + 8px);
+          max-width: min(280px, calc(100% - var(--safe-left) - var(--safe-right) - var(--rail) - var(--col) - 20px));
+        }
+      }
+      #geo-ask:not([hidden]) ~ #load-city,
+      #geo-ask:not([hidden]) ~ #atlas-gap {
+        top: calc(var(--safe-top) + var(--chips-h) + 62px);
+      }
       @media (min-width: 641px) {
         #geo-ask {
           left: calc(var(--safe-left) + var(--col) + 8px);
@@ -1049,6 +1089,8 @@
         </div>
       </section>
       <button type="button" id="geo-ask" hidden></button>
+      <button type="button" id="load-city" hidden></button>
+      <p id="atlas-gap" class="panel" hidden></p>
       <div id="status-rail" aria-live="polite">
         <div id="heading" hidden></div>
         <div id="wx" hidden></div>

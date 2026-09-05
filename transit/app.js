@@ -33,6 +33,7 @@ import {
   CITY_VISITS,
   escapeHtml,
   resolveCityRequest,
+  viewportCityHint,
   tripStrokeStyle,
   setServedCenters,
   themeButtonLabel,
@@ -69,6 +70,12 @@ const state = {
     montreal: { lon: -73.5673, lat: 45.5017 },
     sherbrooke: { lon: -71.8908, lat: 45.4042 },
     "trois-rivieres": { lon: -72.5415, lat: 46.3432 },
+  },
+  cityNames: {
+    quebec: "Québec",
+    montreal: "Montréal",
+    sherbrooke: "Sherbrooke",
+    "trois-rivieres": "Trois-Rivières",
   },
   atlas: null,
   timetable: null,
@@ -480,6 +487,35 @@ function indexOnDir(dirStops, stop) {
   return -1;
 }
 
+function uniqStops(list) {
+  const map = new Map();
+  for (const stop of list || []) {
+    if (!stop || !stop.id) continue;
+    const prev = map.get(stop.id);
+    if (!prev || (stop.meters ?? Infinity) < (prev.meters ?? Infinity)) map.set(stop.id, stop);
+  }
+  return [...map.values()];
+}
+
+function connectorWalk(alight, board, waitMinutes) {
+  const dest = board || alight;
+  const same = !board || board.id === alight.id;
+  const meters = same ? 80 : Math.round(haversineMeters(alight, dest));
+  const minutes = same ? Math.max(2, waitMinutes) : Math.max(2, walkMinutes(meters));
+  return {
+    kind: "walk",
+    minutes,
+    meters,
+    label: `Marche ${formatMeters(meters)}`,
+    from: { lon: alight.lon, lat: alight.lat, name: alight.name, label: alight.name },
+    to: { lon: dest.lon, lat: dest.lat, name: dest.name, label: dest.name },
+    line: [
+      [alight.lon, alight.lat],
+      [dest.lon, dest.lat],
+    ],
+  };
+}
+
 function nextDeparture(timetable, stop, routeId, dir, now, active) {
   let best = null;
   for (const id of lookupIds(stop)) {
@@ -601,6 +637,164 @@ function planFromHere(from, destStop, now, active) {
             arrive: board + ride + w2,
             legs,
           });
+        }
+      }
+    }
+  }
+  const xOrigins = uniqStops(origins).slice(0, 6);
+  const xDests = uniqStops(dests).slice(0, 6);
+  const stopIndex = new Map(state.atlas.stops.map((s) => [s.id, s]));
+  for (const s of poles) stopIndex.set(s.id, s);
+  let xfers = 0;
+  transferSearch: for (const origin of xOrigins) {
+    for (const dest of xDests) {
+      if (origin.id === dest.id) continue;
+      for (const routeAId of (origin.routes || []).slice(0, 8)) {
+        for (const routeBId of (dest.routes || []).slice(0, 8)) {
+          if (routeAId === routeBId) continue;
+          const routeA = routes.get(routeAId);
+          const routeB = routes.get(routeBId);
+          if (!routeA || !routeB) continue;
+          for (const dirA of routeA.dirs) {
+            const iA = indexOnDir(dirA.stops, origin);
+            if (iA < 0) continue;
+            for (const dirB of routeB.dirs) {
+              const jB = indexOnDir(dirB.stops, dest);
+              if (jB < 0) continue;
+              let bestT = null;
+              for (let iT = iA + 1; iT < dirA.stops.length; iT++) {
+                const transferStop = stopIndex.get(dirA.stops[iT]);
+                if (!transferStop) continue;
+                const jT = indexOnDir(dirB.stops, transferStop);
+                if (jT < 0 || jT >= jB) continue;
+                if (!bestT || iT - iA + (jB - jT) < bestT.iT - iA + (jB - bestT.jT)) {
+                  bestT = { stop: transferStop, iT, jT };
+                }
+              }
+              if (
+                !bestT &&
+                (routeA.type === 1 || routeB.type === 1 || routeA.agencyId !== routeB.agencyId)
+              ) {
+                let walkGap = Infinity;
+                const aEnd = Math.min(dirA.stops.length, iA + 14);
+                for (let iT = iA + 1; iT < aEnd; iT++) {
+                  const stopA = stopIndex.get(dirA.stops[iT]);
+                  if (!stopA) continue;
+                  const bEnd = Math.min(jB, 18);
+                  for (let jT = 0; jT < bEnd; jT++) {
+                    const stopB = stopIndex.get(dirB.stops[jT]);
+                    if (!stopB || stopB.id === stopA.id) continue;
+                    const gapM = haversineMeters(stopA, stopB);
+                    if (gapM > 80 && gapM < 1300 && gapM < walkGap) {
+                      walkGap = gapM;
+                      bestT = { stop: stopA, walkTo: stopB, iT, jT };
+                    }
+                  }
+                }
+              }
+              if (!bestT) continue;
+              const nextA = nextDeparture(state.timetable, origin, routeA.id, dirA.id, now, active);
+              if (!nextA) continue;
+              const rideA = hopSum(dirA.hops, iA, bestT.iT);
+              const walk1 = haversineMeters(from, origin);
+              const w1 = walk1 > 40 ? Math.max(1, Math.round(walk1 / 75)) : 0;
+              const boardA = Math.max(now + w1, nextA.depart);
+              const arriveA = boardA + rideA;
+              const nextB = nextDeparture(
+                state.timetable,
+                bestT.walkTo || bestT.stop,
+                routeB.id,
+                dirB.id,
+                arriveA + 2,
+                active,
+              );
+              if (!nextB) continue;
+              const rideB = hopSum(dirB.hops, bestT.jT, jB);
+              const boardB = Math.max(arriveA + 2, nextB.depart);
+              const arriveB = boardB + rideB;
+              const walk2 = haversineMeters(dest, destStop);
+              const w2 = walk2 > 40 ? Math.max(1, Math.round(walk2 / 75)) : 0;
+              const key = `xfer|${routeA.id}|${routeB.id}|${origin.id}|${bestT.stop.id}|${dest.id}|${boardA}`;
+              if (seen.has(key)) continue;
+              seen.add(key);
+              const gap = connectorWalk(bestT.stop, bestT.walkTo, boardB - arriveA);
+              const legs = [];
+              if (w1 > 0) {
+                legs.push({
+                  kind: "walk",
+                  minutes: w1,
+                  meters: Math.round(walk1),
+                  label: `Marche ${formatMeters(walk1)}`,
+                  from: { lon: from.lon, lat: from.lat },
+                  to: { lon: origin.lon, lat: origin.lat, name: origin.name, label: origin.name },
+                  line: [
+                    [from.lon, from.lat],
+                    [origin.lon, origin.lat],
+                  ],
+                });
+              }
+              legs.push({
+                kind: "transit",
+                minutes: rideA,
+                shortName: routeA.shortName,
+                color: routeA.color,
+                textColor: routeA.textColor,
+                headsign: nextA.headsign || dirA.headsign,
+                type: routeA.type,
+                routeId: routeA.id,
+                depart: boardA,
+                arrive: arriveA,
+                from: { lon: origin.lon, lat: origin.lat, name: origin.name, label: origin.name },
+                to: {
+                  lon: bestT.stop.lon,
+                  lat: bestT.stop.lat,
+                  name: bestT.stop.name,
+                  label: bestT.stop.name,
+                },
+                line: lineSlice(decodePolyline(dirA.line), origin, bestT.stop),
+              });
+              legs.push(gap);
+              const boardStop = bestT.walkTo || bestT.stop;
+              legs.push({
+                kind: "transit",
+                minutes: rideB,
+                shortName: routeB.shortName,
+                color: routeB.color,
+                textColor: routeB.textColor,
+                headsign: nextB.headsign || dirB.headsign,
+                type: routeB.type,
+                routeId: routeB.id,
+                depart: boardB,
+                arrive: arriveB,
+                from: { lon: boardStop.lon, lat: boardStop.lat, name: boardStop.name, label: boardStop.name },
+                to: { lon: dest.lon, lat: dest.lat, name: dest.name, label: dest.name },
+                line: lineSlice(decodePolyline(dirB.line), boardStop, dest),
+              });
+              if (w2 > 0) {
+                legs.push({
+                  kind: "walk",
+                  minutes: w2,
+                  meters: Math.round(walk2),
+                  label: `Marche ${formatMeters(walk2)}`,
+                  from: { lon: dest.lon, lat: dest.lat },
+                  to: { lon: destStop.lon, lat: destStop.lat },
+                  line: [
+                    [dest.lon, dest.lat],
+                    [destStop.lon, destStop.lat],
+                  ],
+                });
+              }
+              found.push({
+                minutes: arriveB + w2 - now,
+                walkMeters: Math.round((w1 ? walk1 : 0) + (w2 ? walk2 : 0) + gap.meters),
+                depart: w1 > 0 ? now : boardA,
+                arrive: arriveB + w2,
+                legs,
+              });
+              xfers += 1;
+              if (xfers > 18) break transferSearch;
+            }
+          }
         }
       }
     }
@@ -785,6 +979,13 @@ function riderPoint() {
   }
   if (state.stop) return { lon: state.stop.lon, lat: state.stop.lat, stopId: state.stop.id };
   return { lon: state.camera.lon, lat: state.camera.lat };
+}
+
+function boardPoint() {
+  if (state.stop && Number.isFinite(state.stop.lon) && Number.isFinite(state.stop.lat)) {
+    return { lon: state.stop.lon, lat: state.stop.lat, stopId: state.stop.id };
+  }
+  return riderPoint();
 }
 
 function pickPois(candidates, budget) {
@@ -1226,6 +1427,8 @@ function inspectMapPoint(cx, cy) {
   best.meters = origin ? Math.round(haversineMeters(origin, best) * 10) / 10 : undefined;
   state.stop = best;
   paintMapHud();
+  renderLines();
+  if (state.routeId) renderDue();
   requestDraw();
 }
 
@@ -1303,6 +1506,7 @@ function applyVisit(visit) {
   if (!visit || !Number.isFinite(visit.lon) || !Number.isFinite(visit.lat)) return;
   state.userMoved = false;
   paintHereButton();
+  paintPanCityHint();
   flyTo({
     lon: visit.lon,
     lat: visit.lat,
@@ -1321,6 +1525,12 @@ async function loadCityIndex() {
     if (!cities.length) return;
     state.cityCenters = Object.fromEntries(
       cities.map((item) => [item.city, { lon: Number(item.center?.[0]), lat: Number(item.center?.[1]) }]).filter(([, center]) => Number.isFinite(center.lon) && Number.isFinite(center.lat)),
+    );
+    state.cityNames = Object.fromEntries(
+      cities.map((item) => [
+        item.city,
+        typeof item.name === "string" && item.name ? item.name : item.city,
+      ]),
     );
     setServedCenters(state.cityCenters);
     renderCityChips(cities);
@@ -1500,9 +1710,8 @@ function scheduleAtStop(atlas, timetable, stop, now, active) {
     if (seen.has(key)) continue;
     seen.add(key);
     unique.push(row);
-    if (unique.length >= 12) break;
   }
-  return unique;
+  return unique.slice(0, 32);
 }
 
 function decodePolyline(encoded, precision = 5) {
@@ -1604,6 +1813,7 @@ async function loadCity(city) {
   hideLoadError();
   renderNearby();
   renderLines();
+  paintPanCityHint();
   requestDraw();
   scheduleBuildings();
   await Promise.allSettled([loadPois(), loadRealtime(), loadBikes()]);
@@ -1703,9 +1913,14 @@ function selectSearchHit(hit, destination) {
 function renderLines() {
   const box = document.getElementById("lines");
   if (!box || !state.atlas) return;
-  const here = riderPoint();
+  const here = boardPoint();
   const dest = state.dest;
-  const lines = nearbyLines(state.atlas, here, dest);
+  let lines = nearbyLines(state.atlas, here, dest);
+  if (state.stop && (state.stop.routes || []).length) {
+    const official = new Set(state.stop.routes);
+    const served = lines.filter((line) => official.has(line.routeId));
+    if (served.length) lines = served;
+  }
   box.innerHTML = lines
     .slice(0, 16)
     .map((line) => {
@@ -1732,7 +1947,7 @@ function renderDue() {
   }
   const now = clockMinutes();
   const active = activeServiceIndexes(state.atlas, new Date());
-  const scheduled = nextDueOnLine(state.atlas, state.timetable, riderPoint(), state.routeId, now, active);
+  const scheduled = nextDueOnLine(state.atlas, state.timetable, boardPoint(), state.routeId, now, active);
   const official = applyTripUpdatesToDue(scheduled, state.tripUpdates || [], now);
   const fused = fuseSelectedRoute(official[0]?.depart ?? now);
   const due = applyFusedEtaToDue(official, fused, now);
@@ -2164,7 +2379,7 @@ function renderTrips() {
             <div class="gap">${escapeHtml(gap)}</div>
             ${legs}
           </button>
-          ${i === state.tripIndex ? `<button type="button" class="go" data-go="${i}">Démarrer</button>` : ""}
+          ${i === state.tripIndex ? `<button type="button" class="go" data-go="${i}">Aller</button>` : ""}
         </article>`;
       })
       .join("");
@@ -2297,7 +2512,7 @@ function pulseFromSelectedLine() {
   }
   const now = clockMinutes();
   const active = activeServiceIndexes(state.atlas, new Date());
-  const due = nextDueOnLine(state.atlas, state.timetable, riderPoint(), state.routeId, now, active);
+  const due = nextDueOnLine(state.atlas, state.timetable, boardPoint(), state.routeId, now, active);
   const first = due[0];
   const route = state.atlas.routes.find((r) => r.id === state.routeId);
   const command = livePulseFromTransit(
@@ -2401,6 +2616,8 @@ function openStop(stop) {
     /* private mode */
   }
   bumpSheet();
+  renderLines();
+  if (state.routeId) renderDue();
   requestDraw();
 }
 
@@ -2479,6 +2696,7 @@ function flyTo(target, ms = 420) {
     state.camera.zoom = to.zoom;
     requestDraw();
     scheduleBuildings();
+    schedulePanCityHint();
     return;
   }
   const start = performance.now();
@@ -2495,6 +2713,7 @@ function flyTo(target, ms = 420) {
     }
     flight = 0;
     scheduleBuildings();
+    schedulePanCityHint();
   };
   flight = requestAnimationFrame(step);
 }
@@ -2509,8 +2728,64 @@ function beginGesture() {
   mapBusyUntil = Date.now() + 120;
 }
 
+let panCityTick = 0;
+function schedulePanCityHint() {
+  if (!state.userMoved) {
+    clearTimeout(panCityTick);
+    panCityTick = 0;
+    paintPanCityHint();
+    return;
+  }
+  clearTimeout(panCityTick);
+  panCityTick = setTimeout(() => {
+    panCityTick = 0;
+    paintPanCityHint();
+  }, 280);
+}
+
+function paintPanCityHint() {
+  const btn = document.getElementById("load-city");
+  const note = document.getElementById("atlas-gap");
+  if (!btn) return;
+  if (!state.userMoved) {
+    btn.hidden = true;
+    btn.removeAttribute("data-city");
+    if (note) {
+      note.hidden = true;
+      note.textContent = "";
+    }
+    return;
+  }
+  const detected = cityForPoint(state.camera.lon, state.camera.lat, state.cityCenters);
+  const hint = viewportCityHint(detected, state.city, state.cityNames);
+  if (hint.kind === "offer") {
+    btn.hidden = false;
+    btn.dataset.city = hint.city;
+    btn.textContent = hint.label;
+    if (note) {
+      note.hidden = true;
+      note.textContent = "";
+    }
+    return;
+  }
+  btn.hidden = true;
+  btn.removeAttribute("data-city");
+  if (hint.kind === "outside") {
+    if (note) {
+      note.hidden = false;
+      note.textContent = hint.text;
+    }
+    return;
+  }
+  if (note) {
+    note.hidden = true;
+    note.textContent = "";
+  }
+}
+
 function endGesture() {
   mapBusyUntil = Date.now() + 80;
+  schedulePanCityHint();
   setTimeout(() => {
     if (Date.now() < mapBusyUntil || pointers.size >= 2) return;
     mapBusy = false;
@@ -3490,10 +3765,18 @@ fetchJsonLimited(new URL("l10n/rive.json", import.meta.url), {}, 512 * 1024)
   .catch(() => {});
 
 bindCityButtons();
+const loadCityBtn = document.getElementById("load-city");
+if (loadCityBtn) {
+  loadCityBtn.onclick = () => {
+    const city = loadCityBtn.dataset.city;
+    if (city) switchCity(city);
+  };
+}
 document.getElementById("here").onclick = () => {
   userAskedLocation = true;
   state.userMoved = false;
   paintHereButton();
+  paintPanCityHint();
   toolStatus(state.here && state.here.source === "gps" ? "Recentrage…" : "Recherche de ta position…");
   if (state.here && state.here.source === "gps") {
     flyTo({ lon: state.here.lon, lat: state.here.lat, zoom: Math.max(state.camera.zoom, 14.2) });
@@ -3561,7 +3844,8 @@ document.getElementById("q").addEventListener("input", (e) => {
 });
 document.getElementById("q").addEventListener("keydown", (e) => {
   if (e.key !== "Enter") return;
-  const first = searchPlaces(state.atlas, state.query, 1)[0];
+  const hits = searchPlaces(state.atlas, state.query);
+  const first = hits.find((hit) => hit.kind === "stop") || hits[0];
   if (first) selectSearchHit(first, false);
 });
 document.getElementById("dest").addEventListener("input", (e) => {
