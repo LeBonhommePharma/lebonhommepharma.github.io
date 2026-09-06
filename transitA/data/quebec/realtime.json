@@ -1,0 +1,33 @@
+{
+  "updated": "2026-08-26T03:40:01Z",
+  "updates": [],
+  "vehicles": [],
+  "shapes": {},
+  "detours": [
+    {
+      "routeId": "1-807",
+      "from": 1787371200,
+      "until": 1795496400,
+      "skipStopIds": ["1-1424", "1-1426", "1-1459", "1-1461"],
+      "tempStops": [
+        {
+          "id": "tmp-807-la-suete-pointe",
+          "name": "La Suète / D'Entremont (vers Pointe-de-Sainte-Foy)",
+          "lon": -71.314534,
+          "lat": 46.778423,
+          "routeId": "1-807"
+        },
+        {
+          "id": "tmp-807-la-suete-youville",
+          "name": "La Suète / D'Entremont (vers Place D'Youville)",
+          "lon": -71.31434,
+          "lat": 46.77852,
+          "routeId": "1-807"
+        }
+      ],
+      "title": "807 — détour RTC actif",
+      "description": "Travaux sur Ste-Foy : les arrêts 1424, 1426, 1459 et 1461 ne sont pas desservis. Arrêts voisins suggérés; fin prévue le 23 novembre 2026.",
+      "sourceUrl": "https://www.rtcquebec.ca/horaires-et-trajets/avis-la-clientele/avis-sur-les-parcours/details/807/travaux-sur-ste-foy-entre-de-2"
+    }
+  ]
+}
