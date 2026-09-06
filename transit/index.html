@@ -2,7 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="build-sha" content="403a69b15772a51b8479923923c5297e9df885c1" />
+    <meta name="build-sha" content="f4ad9fcbd0b3f3a0be23c21cb7e488dcdd1d8d06" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Rive. Horaires RTC, STLévis, STM et STL, sans abonnement</title>
     <meta
@@ -988,10 +988,13 @@
       #heading { color: var(--sodium); }
       #heading[hidden], #wx[hidden] { display: none; }
     </style>
+    <link rel="stylesheet" href="./polish.css" />
+    <link rel="stylesheet" href="./brand.css" />
   </head>
   <body>
     <canvas id="stage" aria-hidden="true"></canvas>
     <div id="ui">
+      <a class="atlas-brand" href="#dest" aria-label="Rive, rechercher une destination"><span aria-hidden="true">r</span>rive.</a>
       <a class="skip" href="#dest">Aller à la destination</a>
       <div class="cities panel" role="group" aria-label="Ville">
         <button type="button" id="btn-quebec" data-city="quebec" class="on">Québec</button>
@@ -1005,7 +1008,7 @@
       <section class="sheet panel" id="sheet">
         <div class="toolbar" role="toolbar" aria-label="Outils">
           <div class="tools">
-            <button type="button" id="here" class="icon" aria-label="Centrer sur ma position" title="Centrer sur ma position">
+            <button type="button" id="here" class="icon" aria-label="Me localiser" title="Me localiser">
               <svg viewBox="0 0 16 16" aria-hidden="true">
                 <circle cx="8" cy="8" r="3.1" fill="none" stroke="currentColor" stroke-width="1.4" />
                 <path d="M8 1.4v2.3M8 12.3v2.3M1.4 8h2.3M12.3 8h2.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
@@ -1031,12 +1034,12 @@
               <span class="tl" aria-hidden="true">Maj</span>
             </button>
             <button type="button" id="pitch" class="word" aria-pressed="false" aria-label="Vue 3D: hauteurs et souterrain" title="Vue 3D: hauteurs et souterrain">3D</button>
-            <button type="button" id="perms" class="icon" aria-label="Redemander la position et la boussole" title="Redemander la position et la boussole">
+            <button type="button" id="perms" class="icon" aria-label="Aide pour autoriser la localisation" title="Aide pour autoriser la localisation">
               <svg viewBox="0 0 16 16" aria-hidden="true">
                 <circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.4" />
                 <path d="M10.2 5.8 6.9 7.1 5.8 10.2 9.1 8.9z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
               </svg>
-              <span class="tl" aria-hidden="true">GPS</span>
+              <span class="tl" aria-hidden="true">Aide</span>
             </button>
             <button type="button" id="theme" class="icon" aria-label="Nuit" title="Nuit">
               <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true">
@@ -1060,19 +1063,39 @@
         </div>
         <div class="sheet-body" id="sheet-body">
         <p class="alert" id="load-err" role="alert" hidden></p>
+        <section class="geo-panel" id="geo-panel" aria-label="Ton point de départ">
+          <div role="status" aria-live="polite" aria-atomic="true">
+            <strong id="geo-title">D’où pars-tu ?</strong>
+            <p id="geo-message">Localise-toi en un geste, ou choisis un départ. Le centre par défaut n’est pas ta position.</p>
+          </div>
+          <div class="geo-actions">
+            <button type="button" id="geo-locate">Me localiser</button>
+            <button type="button" id="geo-manual">Choisir sur la carte</button>
+            <button type="button" id="geo-cancel" hidden>Annuler la recherche</button>
+          </div>
+          <details id="geo-help" hidden>
+            <summary>J’ai déjà autorisé, mais ça ne marche pas</summary>
+            <ol>
+              <li>Dans les réglages de ce site, vérifie que la <strong>localisation est autorisée</strong>.</li>
+              <li>Sur Mac : <strong>Réglages Système → Confidentialité et sécurité → Service de localisation</strong>. Autorise aussi l’application qui ouvre cette page : ton navigateur, ChatGPT ou Codex, selon celle que tu utilises.</li>
+              <li>Active le Wi-Fi : un ordinateur peut s’en servir pour déterminer sa position. Reviens ici et touche <strong>Réessayer</strong>.</li>
+            </ol>
+            <p>Si le navigateur intégré ne transmet toujours aucune position, ouvre la même adresse dans Safari ou Chrome. Tu peux aussi choisir ton départ sur la carte sans autoriser la localisation.</p>
+          </details>
+        </section>
         <h1 id="dest-title">Où vas-tu ?</h1>
-        <p class="lead" id="dest-lead">Le plus vite d'abord. Les autres disent combien de minutes de plus.</p>
+        <p class="lead" id="dest-lead">Ta destination, les trajets possibles, et les prochains départs.</p>
         <label>
           <span class="sr-only">Destination</span>
           <input id="dest" type="search" autocomplete="off" placeholder="Université Laval, McGill…" />
         </label>
         <ul class="hits" id="dest-hits"></ul>
         <div id="trips" hidden></div>
-        <h2 id="line-title">ligne</h2>
+        <h2 id="line-title">Choisir une ligne</h2>
         <p class="lead" id="line-lead">Après la destination, choisis le numéro ou la couleur près d'ici.</p>
         <div id="lines" class="lines" role="listbox" aria-label="Ligne"></div>
         <div class="board due" id="due" hidden></div>
-        <h2 id="else-title">horaire ailleurs</h2>
+        <h2 id="else-title">Horaire ailleurs</h2>
         <p class="lead" id="else-lead">
           Un arrêt où tu n'es pas. Les passages viennent du GTFS officiel.
         </p>
@@ -1081,14 +1104,15 @@
           <input id="q" type="search" autocomplete="off" placeholder="Youville, 801, Berri, McGill…" />
         </label>
         <ul class="hits" id="hits"></ul>
-        <h2 id="nearby-title">près d'ici</h2>
+        <h2 id="nearby-title">Les arrêts autour de toi</h2>
         <ul class="hits" id="nearby"></ul>
-        <h2 id="bikes-title">vélo près d'ici</h2>
+        <h2 id="bikes-title">Un vélo à proximité</h2>
         <ul class="hits" id="bikes"></ul>
         <div class="board" id="board" hidden></div>
         </div>
       </section>
       <button type="button" id="geo-ask" hidden></button>
+      <button type="button" id="geo-map-cancel" hidden>Annuler le choix</button>
       <button type="button" id="load-city" hidden></button>
       <p id="atlas-gap" class="panel" hidden></p>
       <div id="status-rail" aria-live="polite">

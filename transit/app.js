@@ -92,6 +92,7 @@ const state = {
   rider: emptyRiderStore(),
   probes: emptyProbeStore(),
   watchId: null,
+  selectingOrigin: false,
   pois: [],
   searchPois: [],
   buildings: [],
@@ -2132,9 +2133,15 @@ function resetPermissions() {
     state.here = null;
   }
   state.userMoved = false;
+  const help = document.getElementById("geo-help");
+  if (help) {
+    help.hidden = false;
+    help.open = true;
+  }
   paintHeading();
   paintHereButton();
   paintGeoAsk(true);
+  document.getElementById("geo-panel")?.scrollIntoView({ block: "nearest" });
   locate();
 }
 
@@ -2152,6 +2159,7 @@ function askHeadingPermission() {
 }
 
 function applyHere(lon, lat, source, at, follow) {
+  if (state.selectingOrigin && source === "gps") return;
   const stamp = source === "gps" ? Date.now() : at ?? Date.now();
   const prev = state.here;
   const next = acceptRiderFix(state.rider, { lon, lat, at: stamp, source: source || "gps" }, Date.now());
@@ -2193,6 +2201,7 @@ function applyHere(lon, lat, source, at, follow) {
       });
     }
     paintHereButton();
+    paintGeoAsk();
     renderNearby();
     renderLines();
     renderBikes();
@@ -2241,18 +2250,87 @@ function toolStatus(message, kind) {
 
 function paintGeoAsk(needed) {
   const el = document.getElementById("geo-ask");
-  if (!el) return;
   const gps = state.here && state.here.source === "gps";
-  el.hidden = Boolean(gps) && needed !== true;
-  if (!el.hidden) {
-    el.textContent = navigator.geolocation ? "Autoriser la position" : "Pas de géolocalisation ici";
-    el.title = navigator.geolocation
-      ? "Sinon le centre-ville sert de fausse origine."
-      : "Cet appareil ne fournit pas de position.";
+  const manual = state.here && state.here.source === "manual";
+  const picking = Boolean(state.selectingOrigin);
+  if (el) {
+    el.hidden = Boolean(gps) && needed !== true && !picking;
+    if (!el.hidden) {
+      el.textContent = picking
+        ? "Confirmer ce point de départ"
+        : navigator.geolocation
+          ? "Me localiser"
+          : "Pas de géolocalisation ici";
+      el.title = picking
+        ? "Utiliser le point sous le repère comme départ"
+        : navigator.geolocation
+          ? "Recevoir la position de ton appareil"
+          : "Cet appareil ne fournit pas de position.";
+    }
   }
+  const title = document.getElementById("geo-title");
+  const message = document.getElementById("geo-message");
+  const locateButton = document.getElementById("geo-locate");
+  const mapCancel = document.getElementById("geo-map-cancel");
+  const manualButton = document.getElementById("geo-manual");
+  if (title) {
+    title.textContent = picking
+      ? "Choisis ton point de départ"
+      : gps
+        ? "Position reçue"
+        : manual
+          ? "Départ choisi sur la carte"
+          : "D’où pars-tu ?";
+  }
+  if (message) {
+    message.textContent = picking
+      ? "Déplace la carte sous le repère, puis confirme ce point de départ."
+      : gps
+        ? "Le point plein indique la position reçue de ton appareil."
+        : manual
+          ? "Le carré indique ton départ choisi. Tu peux calculer un trajet sans partager ta position."
+          : "Localise-toi en un geste, ou choisis un départ. Le centre par défaut n’est pas ta position.";
+  }
+  if (locateButton) locateButton.textContent = gps ? "Me recentrer" : "Me localiser";
+  if (manualButton) manualButton.textContent = manual ? "Changer le départ" : "Choisir sur la carte";
+  if (mapCancel) mapCancel.hidden = !picking;
+}
+
+function chooseMapOrigin() {
+  state.selectingOrigin = true;
+  cancelFlight();
+  minimizeSheet();
+  paintGeoAsk(true);
+  requestDraw();
+  document.getElementById("geo-ask")?.focus();
+}
+
+function confirmMapOrigin() {
+  const { lon, lat } = state.camera;
+  state.selectingOrigin = false;
+  state.cityLocked = false;
+  state.visitId = "";
+  applyHere(lon, lat, "manual", Date.now(), true);
+  paintGeoAsk();
+  bumpSheet();
+  document.getElementById("dest")?.focus();
+}
+
+function locateFromButton() {
+  state.selectingOrigin = false;
+  userAskedLocation = true;
+  state.userMoved = false;
+  paintHereButton();
+  paintPanCityHint();
+  toolStatus(state.here && state.here.source === "gps" ? "Recentrage…" : "Recherche de ta position…");
+  if (state.here && state.here.source === "gps") {
+    flyTo({ lon: state.here.lon, lat: state.here.lat, zoom: Math.max(state.camera.zoom, 14.2) });
+  }
+  locate();
 }
 
 function locate() {
+  state.selectingOrigin = false;
   const fallback = () => {
     paintGeoAsk(true);
     if (userAskedLocation) {
@@ -3180,9 +3258,15 @@ function draw() {
   if (state.here) {
     const [hx, hy] = worldToScreen(state.here.lon, state.here.lat, cam, w, h);
     ctx.fillStyle = sodium;
-    ctx.beginPath();
-    ctx.arc(hx, hy, 5, 0, Math.PI * 2);
-    ctx.fill();
+    if (state.here.source === "manual") {
+      ctx.strokeStyle = sodium;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(hx - 6, hy - 6, 12, 12);
+    } else {
+      ctx.beginPath();
+      ctx.arc(hx, hy, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
     if (state.here.source === "gps" && state.heading && Number.isFinite(state.heading.degrees)) {
       const rad = ((state.heading.degrees - 90) * Math.PI) / 180;
       ctx.beginPath();
@@ -3192,6 +3276,17 @@ function draw() {
       ctx.closePath();
       ctx.fill();
     }
+  }
+  if (state.selectingOrigin) {
+    ctx.strokeStyle = sodium;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(w / 2, h / 2, 12, 0, Math.PI * 2);
+    ctx.moveTo(w / 2 - 20, h / 2);
+    ctx.lineTo(w / 2 + 20, h / 2);
+    ctx.moveTo(w / 2, h / 2 - 20);
+    ctx.lineTo(w / 2, h / 2 + 20);
+    ctx.stroke();
   }
   if (state.fusedVehicle && Number.isFinite(state.fusedVehicle.lon)) {
     const [fx, fy] = worldToScreen(state.fusedVehicle.lon, state.fusedVehicle.lat, cam, w, h);
@@ -3772,22 +3867,34 @@ if (loadCityBtn) {
     if (city) switchCity(city);
   };
 }
-document.getElementById("here").onclick = () => {
-  userAskedLocation = true;
-  state.userMoved = false;
-  paintHereButton();
-  paintPanCityHint();
-  toolStatus(state.here && state.here.source === "gps" ? "Recentrage…" : "Recherche de ta position…");
-  if (state.here && state.here.source === "gps") {
-    flyTo({ lon: state.here.lon, lat: state.here.lat, zoom: Math.max(state.camera.zoom, 14.2) });
-  }
-  locate();
-};
+document.getElementById("here").onclick = locateFromButton;
+const geoLocate = document.getElementById("geo-locate");
+if (geoLocate) geoLocate.onclick = locateFromButton;
 document.getElementById("geo-ask").onclick = () => {
-  userAskedLocation = true;
-  toolStatus("Recherche de ta position…");
-  locate();
+  if (state.selectingOrigin) {
+    confirmMapOrigin();
+    return;
+  }
+  locateFromButton();
 };
+const geoManual = document.getElementById("geo-manual");
+if (geoManual) geoManual.onclick = chooseMapOrigin;
+const geoCancel = document.getElementById("geo-cancel");
+if (geoCancel) {
+  geoCancel.onclick = () => {
+    state.selectingOrigin = false;
+    paintGeoAsk();
+  };
+}
+const geoMapCancel = document.getElementById("geo-map-cancel");
+if (geoMapCancel) {
+  geoMapCancel.onclick = () => {
+    state.selectingOrigin = false;
+    paintGeoAsk();
+    bumpSheet();
+    requestDraw();
+  };
+}
 const perms = document.getElementById("perms");
 if (perms) {
   perms.onclick = () => {

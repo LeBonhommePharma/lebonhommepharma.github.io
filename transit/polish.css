@@ -1,0 +1,80 @@
+/* Shared Rive character, with the atlas' day/night and map controls intact. */
+:root, html.day, html.night { --r-lg: 22px; --r-md: 12px; }
+.atlas-brand { position: absolute; top: var(--safe-top); left: var(--safe-left); height: 52px; display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 30px; font-weight: 700; letter-spacing: -1.3px; z-index: var(--z-rail); }
+.atlas-brand span { background: var(--brand-ink); color: var(--brand-mint); width: 38px; height: 38px; border-radius: 13px; display: grid; place-items: center; font-size: 24px; }
+.cities { left: calc(var(--safe-left) + 128px); border-radius: 16px; }
+.cities button { font-family: var(--font-ui); font-size: 14px; letter-spacing: 0; }
+.sheet { padding-inline: 20px; }
+.sheet h1 { font-family: var(--font-ui); font-size: 34px; letter-spacing: -1px; margin-top: 12px; line-height: 1.15; }
+.sheet p.lead { font-size: 14px; line-height: 1.5; margin: 8px 0 16px; }
+#sheet-body > h2 { font-family: var(--font-ui); font-size: 18px; font-weight: 700; letter-spacing: -.3px; color: var(--ink); margin-top: 24px; padding-top: 20px; }
+#sheet-body > h2::before { content: none; }
+#sheet-body > h2::after { background: var(--hair); }
+.sheet input { font-size: 16px; min-height: 52px; border-radius: 14px; }
+.sheet input:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--sodium) 15%, transparent); }
+.hits button { min-height: 54px; border-radius: 12px; }
+.hits button:hover { background: var(--well-hi); }
+.toolbar { padding-block: 10px; }
+.toolbar button { border-radius: 10px; }
+.at input { min-height: 44px; }
+#dest { font-weight: 500; }
+.line { border-radius: 12px; }
+.board, .trip { border-radius: 16px; }
+footer { font-family: var(--font-ui); letter-spacing: 0; }
+:where(a, button, input):focus-visible { outline: 3px solid var(--sodium); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .atlas-brand { font-size: 27px; }
+  .cities { left: calc(var(--safe-left) + 114px); right: var(--safe-right); }
+  #status-rail { top: calc(var(--safe-top) + 62px); }
+  #geo-ask { top: calc(var(--safe-top) + 62px); }
+  .sheet { left: 0; right: 0; bottom: 0; border-radius: 26px 26px 0 0; max-height: 53dvh; padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+  .sheet.tall { max-height: calc(100dvh - 140px); }
+  .sheet.folded { left: 10px; right: 10px; bottom: var(--safe-bottom); border-radius: 20px; }
+  .sheet h1 { font-size: 30px; }
+}
+@media (prefers-contrast: more) { :root, html.day { --muted: var(--ink); --hair: var(--ink); } }
+@media (prefers-reduced-transparency: reduce) { .panel { backdrop-filter: none; -webkit-backdrop-filter: none; } }
+.toolbar .tools { min-width: 0; flex: 1 1 auto; justify-content: flex-start; overflow-x: auto; scrollbar-width: thin; }
+.toolbar .tools button { flex: 0 0 44px; min-width: 44px; width: 44px; }
+.toolbar .at { flex: 0 0 82px; }
+.toolbar .at input { width: 82px; font-size: 12px; }
+
+#sheet-body > h2 { color: var(--terra); }
+
+.sheet input::placeholder { opacity: 1; }
+
+.geo-panel { margin: 12px 0 22px; padding: 14px; border: 1px solid var(--hair); border-radius: 16px; background: var(--accent-wash); }
+.geo-panel strong { font-size: 15px; line-height: 1.4; }
+.geo-panel p { margin: 7px 0 12px; color: var(--ink-soft); font-size: 13px; line-height: 1.55; }
+.geo-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.geo-actions button { min-height: 44px; padding: 10px 12px; border: 1px solid var(--hair); border-radius: 10px; background: var(--glass); color: var(--ink); font: 600 13px var(--font-ui); cursor: pointer; }
+.geo-actions #geo-locate { color: var(--brand-ink); background: var(--brand-mint); border-color: var(--brand-mint); }
+.geo-actions button:disabled, #geo-ask:disabled { opacity: .7; cursor: progress; }
+.geo-actions button[hidden], #geo-help[hidden], #geo-map-cancel[hidden] { display: none; }
+#geo-help { margin-top: 12px; font-size: 13px; line-height: 1.55; color: var(--ink-soft); }
+#geo-help summary { padding-block: 8px; min-height: 44px; color: var(--ink); cursor: pointer; }
+#geo-help summary:focus-visible { outline: 3px solid var(--sodium); outline-offset: 3px; border-radius: 4px; }
+#geo-help ol { padding-left: 20px; margin: 8px 0; }
+#geo-help li { margin-bottom: 8px; }
+#geo-ask { font: 600 14px var(--font-ui); padding: 12px 14px; color: var(--brand-ink); background: var(--brand-mint); border-color: var(--brand-mint); }
+#geo-ask::after { color: inherit; }
+#geo-map-cancel { position: absolute; left: calc(var(--safe-left) + var(--col) + 8px); top: calc(var(--safe-top) + var(--chips-h) + 66px); z-index: var(--z-ask); border: 1px solid var(--hair); border-radius: 10px; color: var(--ink); background: var(--glass); font: 500 13px var(--font-ui); min-height: 44px; padding: 10px 14px; cursor: pointer; }
+@media (max-width: 640px) { #geo-map-cancel { left: var(--safe-left); top: calc(var(--safe-top) + 118px); } }
+#load-city, #atlas-gap {
+  font: 600 14px var(--font-ui);
+  letter-spacing: 0;
+  border-radius: 10px;
+}
+#load-city {
+  color: var(--brand-ink);
+  background: var(--brand-mint);
+  border-color: var(--brand-mint);
+}
+#load-city::after { color: inherit; }
+@media (max-width: 640px) {
+  #load-city, #atlas-gap { top: calc(var(--safe-top) + 62px); }
+  #geo-ask:not([hidden]) ~ #load-city,
+  #geo-ask:not([hidden]) ~ #atlas-gap { top: calc(var(--safe-top) + 118px); }
+  #geo-map-cancel:not([hidden]) ~ #load-city,
+  #geo-map-cancel:not([hidden]) ~ #atlas-gap { top: calc(var(--safe-top) + 174px); }
+}

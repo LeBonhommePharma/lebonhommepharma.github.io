@@ -1,0 +1,77 @@
+/* Le Bonhomme Pharma palette, verified 2026-09-06 against the supplied
+   Color and type pairings.zip and the site's canonical tokens.css.
+   Only colors are adapted here; Rive's type and layout stay intact.
+   Agency route colors remain data-driven and are not brand colors. */
+:root {
+  --brand-ink: #08091A;
+  --brand-mint: #45E0A8;
+  --brand-violet: #8B5CF6;
+  --brand-tangerine: #FF9300;
+  --brand-firetruck: #F5232B;
+  --brand-aqua: #00A2FF;
+  --brand-strawberry: #FF2F92;
+  --brand-magnesium: #DCDCE4;
+}
+:root, html.day {
+  --ink: #1E293B;
+  --ink-soft: #5A6478;
+  --paper: #F4F6FB;
+  --muted: #5A6478;
+  --sodium: #147854;
+  --gold: #9B5900;
+  --terra: #7741F4;
+  --berry: #D00063;
+  --glass: #FFFFFF;
+  --stage: #EEF2F8;
+  --well: #EEF2F8;
+  --well-hi: #E4E3F5;
+  --hairline: #DCDCE4;
+  --hair: #DCDCE4;
+  --hair-soft: #E4E3F5;
+  --chip: var(--brand-mint);
+  --chip-ink: var(--brand-ink);
+  --ring: #147854;
+  --accent-wash: rgb(69 224 168 / .10);
+  --notice-wash: rgb(255 147 0 / .10);
+  --shadow: 0 8px 32px rgb(8 9 26 / .10);
+}
+html.night {
+  --ink: #E4E3F5;
+  --ink-soft: #8D8CB0;
+  --paper: #08091A;
+  --muted: #8D8CB0;
+  --sodium: #45E0A8;
+  --gold: #FF9300;
+  --terra: #A78BFA;
+  --berry: #FF2F92;
+  --glass: #111226;
+  --stage: #08091A;
+  --well: rgb(69 224 168 / .06);
+  --well-hi: rgb(69 224 168 / .12);
+  --hairline: rgb(220 220 228 / .18);
+  --hair: rgb(220 220 228 / .18);
+  --hair-soft: rgb(220 220 228 / .10);
+  --chip: var(--brand-mint);
+  --chip-ink: var(--brand-ink);
+  --ring: #45E0A8;
+  --accent-wash: rgb(69 224 168 / .10);
+  --notice-wash: rgb(255 147 0 / .10);
+  --shadow: 0 8px 32px rgb(0 0 0 / .20);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not(.day) {
+    --ink: #E4E3F5; --ink-soft: #8D8CB0; --paper: #08091A;
+    --muted: #8D8CB0; --sodium: #45E0A8; --gold: #FF9300;
+    --terra: #A78BFA; --berry: #FF2F92; --glass: #111226;
+    --stage: #08091A; --well: rgb(69 224 168 / .06); --well-hi: rgb(69 224 168 / .12);
+    --hairline: rgb(220 220 228 / .18); --hair: rgb(220 220 228 / .18);
+    --hair-soft: rgb(220 220 228 / .10); --ring: #45E0A8;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root, html.day, html.night, :root:not(.day) {
+    --muted: var(--ink); --ink-soft: var(--ink);
+    --hair: var(--ink); --hair-soft: var(--ink); --hairline: var(--ink);
+  }
+}
