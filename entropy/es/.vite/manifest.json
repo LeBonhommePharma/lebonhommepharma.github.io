@@ -10,10 +10,10 @@
     "file": "entropy/es/_next/static/chunks/rolldown-runtime-DgHlQUIL.js",
     "name": "rolldown-runtime"
   },
-  "app/kernel-lab.tsx": {
-    "file": "entropy/es/_next/static/chunks/kernel-lab-CG1hhz3u.js",
-    "name": "kernel-lab",
-    "src": "app/kernel-lab.tsx",
+  "app/entropy-experience.tsx": {
+    "file": "entropy/es/_next/static/chunks/entropy-experience-BcPMN3iu.js",
+    "name": "entropy-experience",
+    "src": "app/entropy-experience.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-DgHlQUIL.js",
@@ -21,7 +21,7 @@
     ]
   },
   "node_modules/vinext/dist/shims/internal/app-route-prefetch-policy.js": {
-    "file": "entropy/es/_next/static/chunks/app-route-prefetch-policy-CXxVecoK.js",
+    "file": "entropy/es/_next/static/chunks/app-route-prefetch-policy-Dl7dd24o.js",
     "name": "app-route-prefetch-policy",
     "src": "node_modules/vinext/dist/shims/internal/app-route-prefetch-policy.js",
     "isDynamicEntry": true,
@@ -30,7 +30,7 @@
     ]
   },
   "node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "entropy/es/_next/static/chunks/layout-segment-context-rePX1iud.js",
+    "file": "entropy/es/_next/static/chunks/layout-segment-context-BwFP5ROW.js",
     "name": "layout-segment-context",
     "src": "node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -51,7 +51,7 @@
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "entropy/es/_next/static/chunks/index-qsSUKtOh.js",
+    "file": "entropy/es/_next/static/chunks/index-BEa13UYx.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
@@ -64,7 +64,7 @@
       "virtual:vinext-app-browser-entry",
       "node_modules/vinext/dist/shims/layout-segment-context.js",
       "node_modules/vinext/dist/shims/streamed-icons.js",
-      "app/kernel-lab.tsx"
+      "app/entropy-experience.tsx"
     ]
   }
 }
