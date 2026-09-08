@@ -72,5 +72,32 @@ class TestPatchMarkers(unittest.TestCase):
             self.assertEqual(payload["latestRelease"], "v2.2.0")
 
 
+class TestParseMarkers(unittest.TestCase):
+    def test_parse_html_markers(self) -> None:
+        found = stats.parse_html_markers(SAMPLE)
+        self.assertEqual(found["stat-commits"], "2000")
+        self.assertEqual(found["latest-release"], "v2.0.0")
+
+    def test_core_fields(self) -> None:
+        fields = stats.core_fields(
+            {
+                "commits": 2553,
+                "languageCount": 15,
+                "stars": 11,
+                "latestRelease": "v2.2.0",
+                "lastUpdated": "2026-09-08",
+            }
+        )
+        self.assertEqual(
+            fields,
+            {
+                "stat-commits": "2553",
+                "stat-langs": "15",
+                "stat-stars": "11",
+                "latest-release": "v2.2.0",
+            },
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

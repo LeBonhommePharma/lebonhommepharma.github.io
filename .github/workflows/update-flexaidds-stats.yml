@@ -5,6 +5,10 @@ name: Update FlexAIDdS stats
 # would also wipe rive/, entropy/, drug-of-the-day/, …). Same pattern as
 # publish-transit.yml: this repo pulls, then dispatches pages.yml because a
 # GITHUB_TOKEN push does not start other workflows.
+#
+# Fail closed: after deploy (and on schedule even when files did not change),
+# curl live JSON + both HTML routes and compare to GitHub. A swallowed 403
+# in FlexAIDdS update-site.yml is how thebonhomme.com/FlexAIDdS/ froze.
 
 on:
   pull_request:
@@ -14,12 +18,16 @@ on:
       - "assets/repo-stats.json"
       - "scripts/update_flexaidds_stats.py"
       - "scripts/test_update_flexaidds_stats.py"
+      - "scripts/verify_live_flexaidds_stats.py"
       - ".github/workflows/update-flexaidds-stats.yml"
   schedule:
     - cron: "20 7 * * *"   # ~80 minutes after FlexAIDdS update-site.yml (06:00 UTC)
   workflow_dispatch:
   repository_dispatch:
     types: [flexaidds-stats]
+  workflow_run:
+    workflows: ["Deploy GitHub Pages"]
+    types: [completed]
 
 permissions:
   contents: write
@@ -31,12 +39,14 @@ concurrency:
 
 jobs:
   update-stats:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout apex site
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || github.ref }}
 
       - name: Guard surgical patcher
         run: python3 scripts/test_update_flexaidds_stats.py
@@ -64,7 +74,7 @@ jobs:
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Deploy via pages.yml
-        if: steps.commit.outputs.changed == 'true'
+        if: github.event_name != 'pull_request' && steps.commit.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -79,3 +89,9 @@ jobs:
           done
           [ "$id" != "$before" ] || { echo "::error::pages.yml never started"; exit 1; }
           gh run watch "$id" --exit-status
+
+      - name: Verify live GitHub stats (fail closed)
+        if: github.event_name != 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/verify_live_flexaidds_stats.py --timeout 600 --interval 15

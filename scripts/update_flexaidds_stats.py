@@ -128,6 +128,36 @@ def count_source_languages(languages: dict[str, int]) -> int:
     return sum(1 for lang in languages if lang != "Makefile")
 
 
+MARKER_IDS = (
+    "stat-commits",
+    "stat-langs",
+    "stat-stars",
+    "last-updated",
+    "latest-release",
+)
+
+
+def parse_html_markers(html: str) -> dict[str, str]:
+    found: dict[str, str] = {}
+    for marker_id in MARKER_IDS:
+        match = re.search(rf'id="{re.escape(marker_id)}"[^>]*>([^<]*)<', html)
+        if match:
+            found[marker_id] = match.group(1).strip()
+    return found
+
+
+def core_fields(snapshot: dict) -> dict[str, str]:
+    """Comparable live fields. last-updated is a stamp, not GitHub truth."""
+    fields: dict[str, str] = {"stat-commits": str(snapshot["commits"])}
+    if snapshot.get("languageCount") is not None:
+        fields["stat-langs"] = str(snapshot["languageCount"])
+    if snapshot.get("stars") is not None:
+        fields["stat-stars"] = str(snapshot["stars"])
+    if snapshot.get("latestRelease"):
+        fields["latest-release"] = str(snapshot["latestRelease"])
+    return fields
+
+
 def fetch_gh_pages_snapshot() -> dict | None:
     try:
         with urllib.request.urlopen(_request(GH_PAGES_SNAPSHOT), timeout=15) as resp:
