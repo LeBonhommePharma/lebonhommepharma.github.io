@@ -89,8 +89,9 @@
   /* Compound list and selection rule lifted verbatim from the bundle:
        doy   = floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)
        today = drugs[doy % drugs.length]
-     Entries carrying `live: true` deep-link to their own sub-page; the rest
-     fall back to the index. */
+     Every rotator slug has a published page under drug-of-the-day/<slug>/,
+     matching the bundled homepage which always builds
+     dodHref = https://thebonhomme.com/drug-of-the-day/<slug>/. */
   var drugs = [
   { name: "Cocaine HCl", slug: "cocaine", live: true, note: "competitive DAT/NET/SERT reuptake inhibitor · DAT Ki ≈ 250 nM" },
   { name: "MDMA", slug: "mdma", live: true, note: "substrate-mediated SERT/NET/DAT efflux · SERT Ki = 34 nM · FDA Breakthrough Therapy" },
@@ -169,9 +170,7 @@
     var desc = document.querySelector('[data-dod="desc"]');
     var cta  = document.querySelector('[data-dod="cta"]');
     var foot = document.querySelector('[data-dod="footer"]');
-    var href = d.live
-      ? "https://thebonhomme.com/drug-of-the-day/" + d.slug + "/"
-      : "https://thebonhomme.com/drug-of-the-day/";
+    var href = "https://thebonhomme.com/drug-of-the-day/" + d.slug + "/";
     if (link) link.setAttribute("href", href);
     if (tag)  tag.textContent  = "Today · " + d.name;
     if (cta)  cta.textContent  = "Today's drug — " + d.name;
