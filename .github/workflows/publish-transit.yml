@@ -1,12 +1,14 @@
 name: Publish /transit
 
 # Publishes the static Rive atlas from LeBonhommePharma/Transit into this
-# repository's transit/ directory, then lets pages.yml deploy the site.
+# repository's rive/ directory, then lets pages.yml deploy the site.
+# /transit/ is an apex-authored 200 alias (not this rsync target). See DEPLOY.md.
 #
 # Why the engine lives here and not in the Transit repo: a workflow's
 # GITHUB_TOKEN is scoped to its own repository, so Transit cannot push here.
 # Transit is public, so this repo can read it with no credential at all.
-# That makes the whole pipeline token-free. See DEPLOY.md.
+# That makes the whole pipeline token-free. The GitHub repo is still named
+# Transit; the public product is Rive.
 
 on:
   # Also run when this publisher definition changes. This gives us a
@@ -50,7 +52,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SITE_URL: https://thebonhomme.com/transit/
+  SITE_URL: https://thebonhomme.com/rive/
   TRANSIT_REF: ${{ github.event.inputs.ref || github.event.client_payload.ref || 'main' }}
 
 jobs:
@@ -131,18 +133,18 @@ jobs:
             --dir _stage --sha "${{ steps.src.outputs.sha }}" | tee _gate.txt
           echo "sha256=$(grep '^index-sha256=' _gate.txt | cut -d= -f2)" >> "$GITHUB_OUTPUT"
 
-      # transit/README.md is authored in this repo, not in Transit. Carry it
+      # rive/README.md is authored in this repo, not in Transit. Carry it
       # across so the sync below cannot drop it.
       - name: Preserve apex-local files
         run: |
           set -euo pipefail
-          [ -f transit/README.md ] && cp transit/README.md _stage/README.md || true
+          [ -f rive/README.md ] && cp rive/README.md _stage/README.md || true
 
       - name: Detect changes
         id: diff
         run: |
           set -euo pipefail
-          if [ -d transit ] && diff -r -q transit _stage >/dev/null 2>&1; then
+          if [ -d rive ] && diff -r -q rive _stage >/dev/null 2>&1; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Already in sync at ${{ steps.src.outputs.short }} — nothing to publish." >> "$GITHUB_STEP_SUMMARY"
           else
@@ -154,20 +156,21 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         run: echo "before=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      # --delete is scoped to the transit/ tree only. Nothing outside transit/
-      # is read or written by this step, so the other 81 routes, pages.yml,
-      # CNAME, interaction.css, fonts and PDFs are untouched by construction.
-      - name: Sync into transit/
+      # --delete is scoped to the rive/ tree only. Nothing outside rive/
+      # is read or written by this step, so /transit/ (the 200 alias),
+      # transitA/, the other routes, pages.yml, CNAME, interaction.css,
+      # fonts and PDFs are untouched by construction.
+      - name: Sync into rive/
         if: steps.diff.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
         run: |
           set -euo pipefail
-          mkdir -p transit
-          rsync -a --delete _stage/ transit/
+          mkdir -p rive
+          rsync -a --delete _stage/ rive/
           git config user.name  "transit-publish[bot]"
           git config user.email "transit-publish@users.noreply.github.com"
-          git add -- transit
-          git status --porcelain -- transit | head -20
-          git commit -m "Publish /transit from Transit@${{ steps.src.outputs.short }}
+          git add -- rive
+          git status --porcelain -- rive | head -20
+          git commit -m "Publish /rive from Transit@${{ steps.src.outputs.short }}
 
           Source: LeBonhommePharma/Transit@${{ steps.src.outputs.sha }}
           index.html sha256: ${{ steps.build.outputs.sha256 }}
@@ -179,7 +182,7 @@ jobs:
       # (This is exactly the failure the first live run caught: the commit
       # landed, nothing deployed, Gate C went red and rolled it back.)
       # Dispatch the site's own deploy workflow explicitly and wait for it, so
-      # /transit keeps being published by the same job that serves the other
+      # /rive keeps being published by the same job that serves the other
       # 81 routes rather than by a second, divergent copy of it.
       - name: Deploy via pages.yml
         if: steps.diff.outputs.changed == 'true' && github.event.inputs.dry_run != 'true'
@@ -220,12 +223,16 @@ jobs:
         run: |
           set -euo pipefail
           fail=0
-          for r in / /benchmark/ /shannon/ /periodic/ /FlexAIDdS/ /drug-of-the-day/ /interaction.css; do
+          for r in / /rive/ /transit/ /benchmark/ /shannon/ /periodic/ /FlexAIDdS/ /drug-of-the-day/ /interaction.css; do
             code=$(curl -s -o /dev/null -w '%{http_code}' "https://thebonhomme.com$r")
             printf '%-22s %s\n' "$r" "$code"
             [ "$code" = "200" ] || fail=1
           done
-          [ "$fail" = "0" ] || { echo "::error::a non-transit route regressed"; exit 1; }
+          alias=$(curl -s "https://thebonhomme.com/transit/")
+          printf '%s' "$alias" | grep -q '/rive/' || {
+            echo "::error::/transit/ 200 but does not point at /rive/"; fail=1
+          }
+          [ "$fail" = "0" ] || { echo "::error::a non-rive route regressed, or the /transit alias broke"; exit 1; }
 
       # If the bytes never went live, put the site back the way we found it
       # rather than leaving an unverified publish standing.
@@ -243,7 +250,7 @@ jobs:
           git push origin HEAD:main
           gh workflow run pages.yml --ref main || \
             echo "::error::rollback committed but pages.yml dispatch failed — dispatch it by hand"
-          echo "::warning::Verification failed; /transit rolled back to ${{ steps.rollback.outputs.before }}"
+          echo "::warning::Verification failed; /rive rolled back to ${{ steps.rollback.outputs.before }}"
 
       - name: Summary
         if: always()

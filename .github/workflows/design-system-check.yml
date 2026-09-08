@@ -49,3 +49,6 @@ jobs:
 
       - name: Scan for design-system drift
         run: ./scripts/check-design-system.sh
+
+      - name: Rive branding and routes
+        run: ./scripts/check-rive-branding.sh
