@@ -62,7 +62,7 @@ jobs:
     steps:
       # For workflow_run we deliberately take the CURRENT tip of main, not
       # workflow_run.head_sha: publish-transit is schedule-triggered, so its
-      # head_sha is the commit from BEFORE it pushed the new /transit content.
+      # head_sha is the commit from BEFORE it pushed the new /rive content.
       # head_sha would check out the tree we do not care about.
       - uses: actions/checkout@v4
         with:
