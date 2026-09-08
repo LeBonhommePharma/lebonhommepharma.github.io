@@ -1,0 +1,81 @@
+name: Update FlexAIDdS stats
+
+# Pull GitHub repo stats into the apex FlexAIDdS / flexaid-ds markers.
+# FlexAIDdS cannot push here (GITHUB_TOKEN is repo-scoped; a full-tree rsync
+# would also wipe rive/, entropy/, drug-of-the-day/, …). Same pattern as
+# publish-transit.yml: this repo pulls, then dispatches pages.yml because a
+# GITHUB_TOKEN push does not start other workflows.
+
+on:
+  pull_request:
+    paths:
+      - "FlexAIDdS/index.html"
+      - "flexaid-ds/index.html"
+      - "assets/repo-stats.json"
+      - "scripts/update_flexaidds_stats.py"
+      - "scripts/test_update_flexaidds_stats.py"
+      - ".github/workflows/update-flexaidds-stats.yml"
+  schedule:
+    - cron: "20 7 * * *"   # ~80 minutes after FlexAIDdS update-site.yml (06:00 UTC)
+  workflow_dispatch:
+  repository_dispatch:
+    types: [flexaidds-stats]
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: update-flexaidds-stats
+  cancel-in-progress: false
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout apex site
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Guard surgical patcher
+        run: python3 scripts/test_update_flexaidds_stats.py
+
+      - name: Refresh FlexAIDdS markers
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/update_flexaidds_stats.py --tree .
+
+      - name: Commit if stats changed
+        if: github.event_name != 'pull_request'
+        id: commit
+        run: |
+          set -euo pipefail
+          git add -- FlexAIDdS/index.html flexaid-ds/index.html assets/repo-stats.json
+          if git diff --staged --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No stats changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: refresh FlexAIDdS repo stats from GitHub"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy via pages.yml
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          before=$(gh run list --workflow=pages.yml -L 1 --json databaseId -q '.[0].databaseId')
+          gh workflow run pages.yml --ref main
+          id="$before"
+          for i in $(seq 1 40); do
+            id=$(gh run list --workflow=pages.yml -L 1 --json databaseId -q '.[0].databaseId')
+            if [ "$id" != "$before" ]; then echo "pages run $id"; break; fi
+            sleep 5
+          done
+          [ "$id" != "$before" ] || { echo "::error::pages.yml never started"; exit 1; }
+          gh run watch "$id" --exit-status
