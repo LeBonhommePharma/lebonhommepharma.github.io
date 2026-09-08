@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valproate — Drug of the Day #079 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of valproate / valproic acid / divalproex: a multi-mechanism anticonvulsant and mood stabilizer (Na-channel use-dependence, GABA transaminase, HDAC). Severe teratogenicity, hepatotoxicity, pancreatitis, hyperammonemia. NaV surrogate structure (PDB 8THH) via Mol*, honestly labeled.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --border: rgba(69, 224, 168, 0.12);
+  --border-h: rgba(69, 224, 168, 0.30);
+  --rose: var(--state-warn);
+  --green: var(--state-pass);
+  --fg-dim: rgba(138,147,168,0.5);
+  --nav-h: 52px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --glow-teal: var(--glow-mint);
+  --glow-gold: var(--glow-tangerine);
+  --nav-bg: rgba(8,9,26,0.92);
+  --harm-bg: rgba(255, 47, 146, 0.06);
+  --harm-eyebrow-line: rgba(255, 47, 146, 0.18);
+  --harm-card-bg: var(--bg-card);
+  --harm-card-border: rgba(255, 47, 146, 0.24);
+  --harm-fatal-bg: var(--firetruck-10);
+  --harm-fatal-border: var(--firetruck-40);
+  --harm-fatal-strong: var(--state-fail-text);
+  --viewer-panel: rgba(8,9,26,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --border: rgba(0,0,0,0.10);
+  --border-h: rgba(69,224,168,0.45);
+  --fg-dim: rgba(90,100,120,0.55);
+  --nav-bg: rgba(255,255,255,0.85);
+  --harm-bg: rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(245, 35, 43, 0.28);
+  --harm-card-bg: #ffffff;
+  --harm-card-border: var(--firetruck-32);
+  --harm-fatal-bg: rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(245, 35, 43, 0.48);
+  --viewer-panel: rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(69,224,168,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,224,168,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(69,224,168,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,224,168,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: none; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { color: #45E0A8; border-color: #45E0A8; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(255,147,0,0.35); background: rgba(255,147,0,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(139,92,246,0.30); background: rgba(139,92,246,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(255, 47, 146, 0.30);   background: rgba(255, 47, 146, 0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(69,224,168,0.3); background: rgba(69,224,168,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(255,147,0,0.3); background: rgba(255,147,0,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(69,224,168,0.08);
+  border: 1px solid rgba(69,224,168,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(69,224,168,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(69,224,168,0.08); border: 1px solid rgba(69,224,168,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(255,147,0,0.08); border: 1px solid rgba(255,147,0,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.20); }
+.ab-block   { color: var(--rose); background: rgba(255, 47, 146, 0.08); border: 1px solid rgba(255, 47, 146, 0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+<link rel="stylesheet" href="/interaction.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/drug-of-the-day/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Drug of the Day
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/lamotrigine/">Lamotrigine #059</a>
+    <a href="/drug-of-the-day/lithium/">Lithium #058</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#079 · Drug of the Day</span>
+    <span class="pill pill-terra">Branched fatty acid</span>
+    <span class="pill pill-teal">Anticonvulsant / mood stabilizer</span>
+    <span class="pill pill-dim">Rx · boxed teratogen</span>
+    <span class="pill pill-dim">2026-09-08</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Valproate</span>
+  </h1>
+  <p class="hero-tagline">Many mechanisms, one catastrophic teratogen</p>
+  <p class="hero-iupac">2-propylpentanoic acid (valproic acid) · C<sub>8</sub>H<sub>16</sub>O<sub>2</sub> · MW 144.21 g/mol · salts: sodium valproate, divalproex (Depakote) · CAS 99-66-1 · ChEMBL CHEMBL109</p>
+  <p class="hero-class"><strong>Valproate (Depakote, Epilim).</strong>
+    A branched short-chain fatty acid that refuses to be one drug: <strong>use-dependent Na<sub>v</sub> block</strong>,
+    enhanced GABAergic tone (GAD up, GABA-T down), and <strong>HDAC inhibition</strong> that is probably why the
+    teratogenicity is so ugly. First-line for many epilepsies and a bipolar workhorse — and the anticonvulsant you
+    should <em>not</em> start in anyone who could become pregnant unless nothing else works. The neural-tube and
+    neurodevelopmental signal is not a footnote.</p>
+
+  <div class="hero-facts">
+    <div class="hero-fact"><span class="fact-label">Primary targets</span><span class="fact-value gold">Na<sub>v</sub> + GABA + HDAC</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Mechanism</span><span class="fact-value">Multi (not one pocket)</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Teratogenicity</span><span class="fact-value rose">NTD + neurodevelopment</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Hepatotoxicity</span><span class="fact-value rose">Boxed, children</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Pancreatitis</span><span class="fact-value rose">Boxed</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Protein binding</span><span class="fact-value">High, saturable</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">CYP</span><span class="fact-value">Inhibitor (2C9 etc.)</span></div>
+  </div>
+</div>
+
+<div class="page-body">
+  <div class="content-col">
+
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>Not a Clean Channel Drug — That Is the Point and the Problem</h2>
+      
+      <p>
+        Valproate prolongs recovery of voltage-gated sodium channels from inactivation (use-dependence),
+        increases GABA (stimulate GAD, inhibit GABA transaminase and succinic semialdehyde dehydrogenase),
+        and inhibits histone deacetylases. No single PDB ligand pose explains the clinical profile — unlike
+        <a href="/drug-of-the-day/lamotrigine/">lamotrigine #059</a>, which is a cleaner Na<sub>v</sub> story
+        with a real co-crystal. We show <strong>8THH</strong> as the Na<sub>v</sub> pocket lamotrigine occupies,
+        honestly labeled as a <em>surrogate for one arm</em> of valproate, not a valproate complex.
+      </p>
+      <p>
+        The HDAC/epigenetic arm is the leading explanation for the <strong>valproate embryopathy</strong>:
+        neural-tube defects (especially spina bifida), cardiac and limb malformations, and a dose-dependent
+        hit to IQ/neurodevelopment. This is why pregnancy-prevention programs exist around the drug in Europe
+        and why lamotrigine/levetiracetam are preferred when pregnancy is possible.
+      </p>
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title dat">① Na<sub>v</sub> use-dependence</div>
+          <p>Slows recovery from inactivation → less high-frequency firing. One anticonvulsant arm, not the whole molecule.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">② GABA elevation</div>
+          <p>GAD stimulation + GABA-T inhibition. More inhibitory tone, also tremor and sedation.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">③ HDAC inhibition</div>
+          <p>Epigenetic; plausible driver of teratogenicity and some mood effects. Not a 'bonus feature.'</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">④ Protein binding</div>
+          <p>High and saturable — free fraction rises in overdose, hypoalbuminemia, and with displacers (aspirin, some NSAIDs).</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ CYP / UGT perpetrator</div>
+          <p>Inhibits CYP2C9, UGT1A4 (raises lamotrigine — SJS risk if you don't cut lamotrigine), epoxide hydrolase (carbamazepine epoxide).</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">⑥ Boxed triad</div>
+          <p>Hepatotoxicity (under 2 years, mitochondrial disease), pancreatitis, teratogenicity. Any one of these is a stop-the-line event.</p>
+        </div>
+      </div>
+      <div class="pathway-box">
+        <span class="step">Valproate</span>
+        <span class="arrow">→ Na<sub>v</sub> + GABA ↑ + HDAC ↓ →</span>
+        <span class="effect">seizure / mood control</span>
+        <br>
+        <span class="step">Pregnancy exposure</span>
+        <span class="arrow">→ neural tube + neurodevelopment →</span>
+        <span class="danger">avoid unless last-line and highly effective contraception</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Saturable Binding, Many Victims</h2>
+      <p>T<sub>max</sub> depends on formulation (divalproex delayed). t½ ~9–16 h. Hepatic glucuronidation and β-oxidation (mitochondrial — hence the hepatotoxicity in kids with metabolic disease). Levels are interpreted as total; free fraction is what the brain sees.</p>
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub></span><span class="pk-val">~9 – 16 h</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">high, saturable</span></div>
+        <div class="pk-row"><span class="pk-key">Metabolism</span><span class="pk-val">UGT + mitochondrial β-oxidation</span></div>
+        <div class="pk-row"><span class="pk-key">CYP2C9</span><span class="pk-val">inhibits (phenytoin ↑)</span></div>
+        <div class="pk-row"><span class="pk-key">UGT1A4</span><span class="pk-val">inhibits (lamotrigine ↑)</span></div>
+        <div class="pk-row"><span class="pk-key">Hyperammonemia</span><span class="pk-val">carnitine / urea-cycle unmasking</span></div>
+        <div class="pk-row"><span class="pk-key">Therapeutic range</span><span class="pk-val">~50 – 100 µg/mL (epilepsy)</span></div>
+        <div class="pk-row"><span class="pk-key">Formulations</span><span class="pk-val">acid / sodium / divalproex</span></div>
+      </div>
+      
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">03 · Lamotrigine Is Not Interchangeable — and the Combo Needs Math</div>
+      <h2>Valproate Doubles Lamotrigine; Titrate or Blister</h2>
+      <p>
+        Valproate inhibition of UGT1A4 roughly <strong>doubles lamotrigine levels</strong>. Start lamotrigine lower
+        and slower, or you buy Stevens–Johnson. The two drugs are often paired in bipolar depression; the
+        interaction is not optional knowledge. See <a href="/drug-of-the-day/lamotrigine/">#059</a>.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">04 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>A Ligand Too Small for One Pocket Story</h2>
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+        Valproate is an eight-carbon acid. It does not look like a Na<sub>v</sub> pore drug in 8THH, and it isn't
+        crystallized there. FlexAID∆S would refuse a single-pose narrative: the clinical ΔG is distributed across
+        enzymes (GABA-T, HDAC) and channels. The teratogenicity is an epigenetic occupancy problem more than a
+        docking problem. We still show a Na<sub>v</sub> because that arm is real — and we label the absence of
+        a valproate ligand in the map.
+      </p>
+      </div>
+    </div>
+
+    <div class="section harm-section">
+      <div class="section-eyebrow">05 · Harm Reduction</div>
+      <h2>Pregnancy, Liver, Pancreas, Ammonia</h2>
+      <p>Four organ systems, four ways to stop the drug. Teratogenicity is the one that outlives the prescription.</p>
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Pregnancy / people who can become pregnant
+          </h4>
+          <ul>
+            <li>Neural-tube defects, cardiac/limb malformations, lower IQ — dose-related</li>
+            <li>Effective contraception; folate does not make this 'safe'</li>
+            <li>Do not stop suddenly in epilepsy — seizure risk; plan a switch</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 8v8"/></svg>
+            Liver / pancreas / ammonia
+          </h4>
+          <ul>
+            <li>Fatal hepatotoxicity especially &lt;2 years or mitochondrial disease (POLG)</li>
+            <li>Pancreatitis is a boxed warning — abdominal pain is not 'GI upset'</li>
+            <li>Hyperammonemic encephalopathy can happen even with 'normal' valproate levels</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Interactions
+          </h4>
+          <ul>
+            <li>Raises lamotrigine — cut the lamotrigine dose</li>
+            <li>Carbapenems can crater valproate levels → breakthrough seizures</li>
+            <li>Highly protein-bound displacers increase free fraction</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Practice
+          </h4>
+          <ul>
+            <li>Weight gain, tremor, PCOS, hair loss are common chronic costs</li>
+            <li>See <a href="/drug-of-the-day/lamotrigine/">Lamotrigine #059</a> and <a href="/drug-of-the-day/lithium/">Lithium #058</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="fatal-box">
+        <strong>FATAL / IRREVERSIBLE:</strong> In-utero exposure → malformations and neurodevelopmental harm. Hepatic failure (young children, POLG). Pancreatitis. Hyperammonemic coma. Abrupt withdrawal → seizures.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D · NaV1.7 + lamotrigine (one-arm surrogate)</span>
+          <span class="ngl-pdb-tag">PDB: 8THH</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="8THH"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2f6b46;border:1px solid rgba(74,222,128,0.2)"></div>
+            Receptor (refined cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6fbf8f"></div>
+            Contact residues
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:var(--state-pass);box-shadow:0 0 4px var(--state-pass)"></div>
+            Ligand (ball-and-stick)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">8THH</strong> — human Na<sub>v</sub>1.7 + <strong>lamotrigine</strong>. <strong>No valproate co-crystal exists</strong> for this (or any) Na<sub>v</sub>. Shown as the channel class valproate also use-dependently inhibits. HDAC and GABA-T arms have no pocket visualization here.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/8THH" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <div class="binding-table-wrap">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">multi-mechanism</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">Na<sub>v</sub></div>
+                <span class="target-full">use-dependent inactivation</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">µM class</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">one arm; no co-crystal</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:60%;background:var(--gold)"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--teal)">GABA-T / GAD</div>
+                <span class="target-full">GABA elevation</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--teal)">enzymatic</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">not a GABA-A PAM like benzos</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:70%;background:var(--teal)"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Enzyme</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--rose)">HDAC</div>
+                <span class="target-full">epigenetic</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--rose)">µM</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">teratogenicity hypothesis</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:50%;background:var(--rose)"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:#64748b">GABA<sub>A</sub> BZD site</div>
+                <span class="target-full">diazepam pocket</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:#64748b">no</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">not a benzo</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:0%;background:#64748b"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">None</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">Valproate is multi-target; affinities are not a single nM Ki story. PDB 8THH is a lamotrigine–NaV co-crystal used as an honest surrogate for the Na-channel arm only.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Drug of the Day #079 · Valproate (valproic acid / divalproex) · Le Bonhomme Pharma · Montréal ·
+    <a href="/drug-of-the-day/">Series index</a> ·
+    <a href="/drug-of-the-day/lamotrigine/">Lamotrigine #059</a> · <a href="/drug-of-the-day/lithium/">Lithium #058</a>
+    <br>
+    Depakote boxed warnings (teratogenicity, hepatotoxicity, pancreatitis); Tomson/Battino pregnancy registries; NaV–lamotrigine <a href="https://www.rcsb.org/structure/8THH" target="_blank" rel="noopener noreferrer">PDB 8THH</a> (surrogate).
+    <br>
+    Harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> ·
+    <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> ·
+    <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>.
+  </p>
+</footer>
+
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '8THH',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>

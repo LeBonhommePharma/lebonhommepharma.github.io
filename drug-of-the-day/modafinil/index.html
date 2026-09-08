@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modafinil — Drug of the Day #073 · Le Bonhomme Pharma</title>
+<meta name="description" content="Full pharmacology of modafinil (Provigil): an atypical DAT inhibitor and wakefulness-promoting agent. Weak-to-moderate DAT occupancy, not a classical amphetamine releaser, CYP3A4 substrate, rare SJS/TEN, and a Drosophila DAT S1 blocker surrogate (PDB 4XP4) via Mol*.">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+
+<style>
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --border: rgba(69, 224, 168, 0.12);
+  --border-h: rgba(69, 224, 168, 0.30);
+  --rose: var(--state-warn);
+  --green: var(--state-pass);
+  --fg-dim: rgba(138,147,168,0.5);
+  --nav-h: 52px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --glow-teal: var(--glow-mint);
+  --glow-gold: var(--glow-tangerine);
+  --nav-bg: rgba(8,9,26,0.92);
+  --harm-bg: rgba(255, 47, 146, 0.06);
+  --harm-eyebrow-line: rgba(255, 47, 146, 0.18);
+  --harm-card-bg: var(--bg-card);
+  --harm-card-border: rgba(255, 47, 146, 0.24);
+  --harm-fatal-bg: var(--firetruck-10);
+  --harm-fatal-border: var(--firetruck-40);
+  --harm-fatal-strong: var(--state-fail-text);
+  --viewer-panel: rgba(8,9,26,0.72);
+}
+
+/* ── Light theme (accents preserved) ────────────────────────── */
+[data-theme="light"] {
+  --border: rgba(0,0,0,0.10);
+  --border-h: rgba(69,224,168,0.45);
+  --fg-dim: rgba(90,100,120,0.55);
+  --nav-bg: rgba(255,255,255,0.85);
+  --harm-bg: rgba(254,226,226,0.72);
+  --harm-eyebrow-line: rgba(245, 35, 43, 0.28);
+  --harm-card-bg: #ffffff;
+  --harm-card-border: var(--firetruck-32);
+  --harm-fatal-bg: rgba(254,202,202,0.92);
+  --harm-fatal-border: rgba(245, 35, 43, 0.48);
+  --viewer-panel: rgba(255,255,255,0.96);
+}
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(69,224,168,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,224,168,0.05) 1px, transparent 1px);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    linear-gradient(rgba(69,224,168,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(69,224,168,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  min-height: 100vh;
+}
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: none; }
+code { font-family: var(--font-mono); font-size: 0.85em; color: var(--teal); }
+ul { list-style: none; }
+
+/* ── Nav ────────────────────────────────────────────────── */
+.nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.nav-back:hover { color: #45E0A8; border-color: #45E0A8; text-decoration: none; }
+.nav-series {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nav-right a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  transition: color 0.15s;
+}
+.nav-right a:hover { color: var(--fg); text-decoration: none; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  padding: 4rem 1.5rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+.pill-gold { color: var(--gold); border-color: rgba(255,147,0,0.35); background: rgba(255,147,0,0.07); }
+.pill-teal { color: var(--teal); border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
+.pill-terra { color: var(--terra); border-color: rgba(139,92,246,0.30); background: rgba(139,92,246,0.07); }
+.pill-rose  { color: var(--rose);  border-color: rgba(255, 47, 146, 0.30);   background: rgba(255, 47, 146, 0.06); }
+.pill-dim   { color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+
+.hero-name {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+.hero-name .accent { color: var(--teal); }
+
+.hero-iupac {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-class {
+  font-size: 14px;
+  color: var(--fg-muted);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.hero-class strong { color: var(--fg); }
+
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 0;
+}
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+}
+.fact-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.fact-value.gold { color: var(--gold); }
+.fact-value.teal { color: var(--teal); }
+.fact-value.terra { color: var(--terra); }
+.fact-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+
+/* ── Main Layout ────────────────────────────────────────── */
+.page-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── Content Column ─────────────────────────────────────── */
+.content-col {}
+
+/* ── Section styling ────────────────────────────────────── */
+.section {
+  margin-bottom: 2.75rem;
+}
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section h2 {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section p {
+  color: var(--fg-muted);
+  margin-bottom: 0.9rem;
+  max-width: 68ch;
+}
+.section p strong { color: var(--fg); font-weight: 600; }
+.section p em { color: var(--teal); font-style: normal; }
+
+/* ── Mechanism Cards ────────────────────────────────────── */
+.mech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.mech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+.mech-card:hover { border-color: var(--border-h); }
+.mech-card-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.mech-card-title.sert { color: var(--teal); }
+.mech-card-title.net  { color: var(--terra); }
+.mech-card-title.dat  { color: var(--gold); }
+.mech-card-title.other { color: var(--fg-muted); }
+.mech-card p {
+  font-size: 12px;
+  color: var(--fg-muted);
+  max-width: none;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Pathway diagram ────────────────────────────────────── */
+.pathway-box {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r-md);
+  padding: 1.1rem 1.25rem;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+.pathway-box .step { color: var(--teal); font-weight: 600; }
+.pathway-box .arrow { color: var(--fg-dim); margin: 0 0.3em; }
+.pathway-box .effect { color: var(--gold); font-weight: 500; }
+
+/* ── PK Table ───────────────────────────────────────────── */
+.pk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0.55rem 0.85rem;
+  gap: 1rem;
+}
+.pk-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.pk-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* ── Metabolism pathway ─────────────────────────────────── */
+.metabolite-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  gap: 0.5rem;
+}
+.meta-node {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid;
+}
+.meta-node.primary { color: var(--teal); border-color: rgba(69,224,168,0.3); background: rgba(69,224,168,0.07); font-weight: 600; }
+.meta-node.active  { color: var(--gold); border-color: rgba(255,147,0,0.3); background: rgba(255,147,0,0.07); }
+.meta-node.inactive{ color: var(--fg-muted); border-color: var(--border); background: var(--bg-alt); }
+.meta-enzyme {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--terra);
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.meta-enzyme span { color: var(--fg-dim); font-size: 14px; line-height: 1; }
+
+/* ── Psychopharmacology section ─────────────────────────── */
+.circuit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 0 0.9rem;
+}
+.circuit-bar { border-radius: 2px; }
+.circuit-bar.serotonin { background: var(--teal); }
+.circuit-bar.dopamine  { background: var(--gold); }
+.circuit-bar.norepi    { background: var(--terra); }
+.circuit-bar.oxt       { background: var(--green); }
+.circuit-inner h4 {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 0.3rem;
+}
+.circuit-inner p {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── Harm Reduction ─────────────────────────────────────── */
+.harm-section {
+  background: var(--harm-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-lg);
+  padding: 1.75rem 2rem;
+  margin-top: 0;
+}
+.harm-section .section-eyebrow { color: var(--rose); }
+.harm-section .section-eyebrow::after { background: var(--harm-eyebrow-line); }
+.harm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.harm-card {
+  background: var(--harm-card-bg);
+  border: 1px solid var(--harm-card-border);
+  border-radius: var(--r-md);
+  padding: 0.9rem 1.05rem;
+}
+.harm-card h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rose);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.harm-card ul { list-style: none; }
+.harm-card ul li {
+  font-size: 12.5px;
+  color: var(--fg);
+  padding: 2px 0;
+  padding-left: 0.9rem;
+  position: relative;
+}
+.harm-card ul li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--rose);
+  opacity: 0.5;
+}
+.fatal-box {
+  background: var(--harm-fatal-bg);
+  border: 1px solid var(--harm-fatal-border);
+  border-radius: var(--r-md);
+  padding: 0.8rem 1rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--rose);
+  font-weight: 500;
+}
+.fatal-box strong { color: var(--harm-fatal-strong); }
+
+/* ── Viewer Column ──────────────────────────────────────── */
+.viewer-col {}
+
+.viewer-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 1rem);
+}
+
+/* ── Mol* Viewer ─────────────────────────────────────────── */
+.ngl-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.ngl-header {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--viewer-panel);
+}
+.ngl-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ngl-pdb-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(69,224,168,0.08);
+  border: 1px solid rgba(69,224,168,0.20);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+#molstar-viewer {
+  width: 100%;
+  height: 440px;
+  display: block;
+  cursor: grab;
+  background: var(--bg) !important;
+}
+#molstar-viewer canvas { background: var(--bg) !important; }
+#molstar-viewer:active { cursor: grabbing; }
+.ngl-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ngl-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ngl-btn:hover { color: var(--teal); border-color: rgba(69,224,168,0.30); background: rgba(69,224,168,0.06); }
+.ngl-legend {
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--viewer-panel);
+  border-top: 1px solid var(--border);
+}
+.ngl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ngl-note {
+  padding: 0.7rem 1rem;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ngl-note a { font-size: 11px; }
+.molstar-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 5;
+  transition: opacity 0.5s;
+}
+.molstar-loading.hidden { opacity: 0; pointer-events: none; }
+.molstar-spinner {
+  width: 28px; height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.molstar-loading-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  letter-spacing: 0.1em;
+}
+
+/* ── Binding Affinity Table ─────────────────────────────── */
+.binding-table-wrap {
+  margin-top: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.binding-table-header {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.binding-table-header h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+table.binding-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.binding-table th {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.binding-table td {
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid rgba(69,224,168,0.06);
+  vertical-align: middle;
+}
+.binding-table tr:last-child td { border-bottom: none; }
+.binding-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.target-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.target-full {
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  display: block;
+  font-family: var(--font-mono);
+}
+.affinity-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.affinity-bar-wrap {
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.affinity-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--teal);
+  transition: width 0.5s var(--ease, ease);
+}
+.action-badge {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+.ab-release { color: var(--teal); background: rgba(69,224,168,0.08); border: 1px solid rgba(69,224,168,0.20); }
+.ab-agonist { color: var(--gold); background: rgba(255,147,0,0.08); border: 1px solid rgba(255,147,0,0.20); }
+.ab-inhibit { color: var(--terra); background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.20); }
+.ab-block { color: var(--rose); background: rgba(255, 47, 146, 0.08); border: 1px solid rgba(255, 47, 146, 0.20); }
+
+.binding-note {
+  padding: 0.6rem 1rem;
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.site-footer p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-dim);
+  max-width: none;
+  margin: 0;
+  line-height: 1.6;
+}
+.site-footer a { font-size: 11px; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  .viewer-sticky {
+    position: relative;
+    top: 0;
+  }
+  .viewer-col {
+    order: -1; /* viewer first on mobile */
+  }
+  #molstar-viewer { height: 360px; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 2.5rem 1rem 1.5rem; }
+  .hero-name { font-size: 2.4rem; }
+  .pk-grid { grid-template-columns: 1fr; }
+  .mech-grid { grid-template-columns: 1fr; }
+  .harm-grid { grid-template-columns: 1fr; }
+  .page-body { padding: 1.5rem 1rem 3rem; }
+}
+
+/* ── NGL load error ─────────────────────────────────────── */
+.molstar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 440px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--bg);
+}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/molstar@4.5.0/build/viewer/molstar.css">
+<link rel="stylesheet" href="../../assets/molstar-drug-viewer.css">
+<link rel="stylesheet" href="../../theme.css">
+<script src="../../theme.js"></script>
+<link rel="stylesheet" href="/interaction.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/drug-of-the-day/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Drug of the Day
+  </a>
+  <span class="nav-series">Drug of the Day · Series</span>
+  <div class="nav-right">
+    <a href="/drug-of-the-day/methylphenidate/">Methylphenidate #023</a>
+    <a href="/drug-of-the-day/amphetamine/">Amphetamine #006</a>
+    <a href="/FlexAIDdS/">FlexAID∆S</a>
+    <span data-theme-mount></span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="pill pill-gold">#073 · Drug of the Day</span>
+    <span class="pill pill-terra">Atypical DAT inhibitor</span>
+    <span class="pill pill-teal">Wakefulness-promoting (Provigil)</span>
+    <span class="pill pill-dim">Schedule IV (US)</span>
+    <span class="pill pill-dim">2026-09-08</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="accent">Modafinil</span>
+  </h1>
+  <p class="hero-tagline">Wake without the reverse transport</p>
+  <p class="hero-iupac">2-[(diphenylmethyl)sulfinyl]acetamide · C<sub>15</sub>H<sub>15</sub>NO<sub>2</sub>S · MW 273.35 g/mol · CAS 68693-11-8 · Provigil · racemate; armodafinil is the R-enantiomer · ChEMBL CHEMBL1373</p>
+  <p class="hero-class"><strong>Modafinil (Provigil).</strong>
+    A wakefulness-promoting <strong>atypical DAT inhibitor</strong> — it occupies the dopamine transporter, but it is
+    <em>not</em> a substrate-releaser and does not run DAT in reverse the way
+    <a href="/drug-of-the-day/amphetamine/">amphetamine</a> does. Therapeutic DAT occupancy is modest (~50%),
+    which is why the subjective profile is "alert" more than "euphoric" at prescribed doses. FDA: narcolepsy,
+    obstructive sleep apnea residual sleepiness, shift-work disorder.</p>
+
+  <div class="hero-facts">
+    <div class="hero-fact"><span class="fact-label">Primary target</span><span class="fact-value gold">DAT (atypical)</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Mechanism</span><span class="fact-value">Reuptake block (not release)</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">DAT occupancy</span><span class="fact-value teal">~50% at Rx doses</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Enantiomer</span><span class="fact-value">R = armodafinil</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Metabolism</span><span class="fact-value">CYP3A4 amide hydrolysis</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">T<sub>½</sub></span><span class="fact-value">~12 – 15 h</span></div>
+    <div class="fact-sep"></div>
+    <div class="hero-fact"><span class="fact-label">Class</span><span class="fact-value teal">Eugeroic</span></div>
+  </div>
+</div>
+
+<div class="page-body">
+  <div class="content-col">
+
+    <div class="section">
+      <div class="section-eyebrow">01 · Mechanism of Action</div>
+      <h2>A DAT Ligand That Refuses to Be Amphetamine</h2>
+      
+      <p>
+        Modafinil binds the dopamine transporter and raises extracellular dopamine, but binding kinetics and
+        conformational preference differ from cocaine or methylphenidate. It is a <strong>weak-to-moderate affinity
+        inhibitor</strong> (DAT IC<sub>50</sub> / K<sub>i</sub> typically high-nM to low-µM depending on assay), with
+        <strong>negligible substrate-releaser activity</strong>. TAAR1 is not the story. Histaminergic and orexinergic
+        wake circuitry is recruited secondarily via dopaminergic tone, not a direct H<sub>1</sub> or OX2 agonism of
+        clinical size.
+      </p>
+      <p>
+        That is why Schedule IV rather than II: lower reinforcing efficacy than classical stimulants in most models,
+        though misuse exists (students, military, shift work). Armodafinil (Nuvigil) is the longer-lived R-enantiomer;
+        the S-enantiomer clears faster. Rare but real: <strong>Stevens–Johnson / TEN</strong> and psychiatric adverse
+        effects.
+      </p>
+      <div class="mech-grid">
+        <div class="mech-card">
+          <div class="mech-card-title dat">① Atypical DAT block</div>
+          <p>Occupies DAT S1 without the reverse-transport signature of amphetamine. Therapeutic occupancy ~50% — enough to promote wake, usually not enough to feel like cocaine.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title sert">② Not a releaser</div>
+          <p>No VMAT2 collapse, no TAAR1-driven DAT phosphorylation cascade. Mechanistically closer to a weak methylphenidate than to Adderall.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">③ Wake circuitry</div>
+          <p>Dopamine in the nucleus accumbens and hypothalamus; downstream histamine/orexin recruitment. Direct orexin agonism is not the approved mechanism.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title net">④ NET / SERT</div>
+          <p>Much weaker at NET/SERT than at DAT. Not an SNRI in clinical clothing.</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title other">⑤ CYP3A4 &amp; interactions</div>
+          <p>Amide hydrolysis + CYP3A4. Induces CYP3A4 modestly (can lower steroidal contraceptives — backup contraception is on the label).</p>
+        </div>
+        <div class="mech-card">
+          <div class="mech-card-title dat">⑥ Dermatologic signal</div>
+          <p>Rare SJS/TEN/DRESS. Rash + fever + mucosal lesions = stop and emergency care, not a 'modafinil allergy' to push through.</p>
+        </div>
+      </div>
+      <div class="pathway-box">
+        <span class="step">Modafinil</span>
+        <span class="arrow">→ atypical DAT occupancy (~50%) →</span>
+        <span class="effect">↑ extrasynaptic DA · wake, not reverse transport</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">02 · Pharmacokinetics</div>
+      <h2>Long Enough for a Shift, Slow Enough to Hang Around</h2>
+      <p>T<sub>max</sub> ~2–4 h, t½ ~12–15 h (longer for armodafinil). Hepatic amide hydrolysis and CYP3A4; renal excretion of metabolites.</p>
+      <div class="pk-grid">
+        <div class="pk-row"><span class="pk-key">Oral bioavailability</span><span class="pk-val">High</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>max</sub></span><span class="pk-val">~2 – 4 h</span></div>
+        <div class="pk-row"><span class="pk-key">T<sub>½</sub> (racemate)</span><span class="pk-val">~12 – 15 h</span></div>
+        <div class="pk-row"><span class="pk-key">Armodafinil T<sub>½</sub></span><span class="pk-val">longer (R-enantiomer)</span></div>
+        <div class="pk-row"><span class="pk-key">Primary metabolism</span><span class="pk-val">Amide hydrolysis + CYP3A4</span></div>
+        <div class="pk-row"><span class="pk-key">CYP induction</span><span class="pk-val">Modest CYP3A4 ↑</span></div>
+        <div class="pk-row"><span class="pk-key">Protein binding</span><span class="pk-val">~60%</span></div>
+        <div class="pk-row"><span class="pk-key">Schedule</span><span class="pk-val">IV (US)</span></div>
+      </div>
+      
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">03 · Eugeroic, Not a Substitute Coffee IV</div>
+      <h2>Alertness With a Different Risk Envelope</h2>
+      <p>
+        Modafinil will not protect you from sleep debt — it will mask it. Headache, anxiety, insomnia, and
+        irritability are common. Psychiatric decompensation (mania, psychosis) is uncommon but documented.
+        The contraceptive interaction is under-taught. Compared with
+        <a href="/drug-of-the-day/methylphenidate/">methylphenidate #023</a> it is less of a classical
+        DAT/NET blocker and less cardiovascularly punchy at labeled doses, but it is still a dopaminergic stimulant.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">04 · FlexAID∆S · Shannon Entropy Analysis</div>
+      <h2>A Loose DAT Guest Versus Cocaine's Tight S1 Plug</h2>
+      <div class="entropy-box">
+        <div class="entropy-label">FlexAID∆S · Entropy Commentary</div>
+        <p>
+        PDB <strong>4XP4</strong> shows cocaine occupying dDAT S1 — the same central site methylphenidate and (by
+        homology) modafinil use. No modafinil co-crystal exists; occupancy data say the pose is real and the
+        <em>residence</em> is shorter/weaker than cocaine. In FlexAID∆S language the Shannon collapse of the S1
+        water network is incomplete relative to a high-affinity blocker, which is a thermodynamic reading of
+        "atypical."
+      </p>
+      </div>
+    </div>
+
+    <div class="section harm-section">
+      <div class="section-eyebrow">05 · Harm Reduction</div>
+      <h2>Wake Is Not Immunity</h2>
+      <p>Schedule IV is not a vitamin. Rash, psychiatry, and contraception are the under-discussed harms.</p>
+      <div class="harm-grid">
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Dermatologic emergency
+          </h4>
+          <ul>
+            <li>SJS/TEN/DRESS are rare and real — stop at progressive rash, blistering, or mucosal involvement</li>
+            <li>Do not rechallenge after a serious cutaneous reaction</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 8v8"/></svg>
+            Psychiatric / sleep
+          </h4>
+          <ul>
+            <li>Can unmask mania or psychosis; insomnia if dosed late</li>
+            <li>Masks sleep debt — you can still crash a vehicle</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+            Interactions
+          </h4>
+          <ul>
+            <li>CYP3A4 induction: steroidal contraceptives may fail — use a backup method</li>
+            <li>MAOIs: theoretical hypertensive risk; avoid stacking stimulants</li>
+          </ul>
+        </div>
+        <div class="harm-card">
+          <h4>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Practice
+          </h4>
+          <ul>
+            <li>Morning dose; not an exam-week substitute for sleep</li>
+            <li>Armodafinil is the same mechanism, longer tail</li>
+          </ul>
+        </div>
+      </div>
+      <div class="fatal-box">
+        <strong>SERIOUS:</strong> SJS/TEN can kill. Psychiatric decompensation. Contraceptive failure from CYP3A4 induction. Not a MAOI-safe 'gentle' stimulant in overdose.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="viewer-col">
+    <div class="viewer-sticky">
+      <div class="ngl-wrap">
+        <div class="ngl-header">
+          <span class="ngl-title">3D · DAT S1 blocker surrogate (cocaine)</span>
+          <span class="ngl-pdb-tag">PDB: 4XP4</span>
+        </div>
+        <div style="position:relative;">
+          <div id="molstar-viewer" data-pdb="4XP4"></div>
+          <div class="molstar-loading" id="molstar-loading">
+            <div class="molstar-spinner"></div>
+            <div class="molstar-loading-text">Loading structure from RCSB…</div>
+          </div>
+        </div>
+        <div class="ngl-legend">
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#2f6b46;border:1px solid rgba(74,222,128,0.2)"></div>
+            Receptor (refined cartoon)
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:#6fbf8f"></div>
+            Contact residues
+          </div>
+          <div class="ngl-legend-item">
+            <div class="legend-dot" style="background:var(--state-pass);box-shadow:0 0 4px var(--state-pass)"></div>
+            Ligand (ball-and-stick)
+          </div>
+        </div>
+        <div class="ngl-controls">
+          <button class="ngl-btn" id="btn-reset">Reset view</button>
+          <button class="ngl-btn" id="btn-spin">Toggle spin</button>
+          <button class="ngl-btn" id="btn-ligand">Ligand only</button>
+          <button class="ngl-btn" id="btn-surface">Surface</button>
+        </div>
+        <div class="ngl-note">
+          Structure: <strong style="color:var(--fg-muted)">4XP4</strong> — <em>Drosophila</em> DAT + <strong>cocaine</strong> (Wang, Penmatsa &amp; Gouaux, Nature 2015). <strong>No modafinil co-crystal exists</strong>; cocaine is shown as a competitive S1 blocker in the same pocket modafinil occupies. Honestly labeled surrogate.
+          Rotate · scroll to zoom · right-drag to translate.
+          <br><a href="https://www.rcsb.org/structure/4XP4" target="_blank" rel="noopener noreferrer">View on RCSB →</a>
+        </div>
+      </div>
+
+      <div class="binding-table-wrap">
+        <div class="binding-table-header">
+          <h3>Receptor Binding Affinities</h3>
+          <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-dim)">atypical DAT</span>
+        </div>
+        <table class="binding-table">
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Affinity</th>
+              <th>Rel.</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="target-name" style="color:var(--gold)">DAT</div>
+                <span class="target-full">dopamine transporter</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:var(--gold)">IC<sub>50</sub> ~µM / occupancy ~50%</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">atypical; assay-dependent</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:55%;background:var(--gold)"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Inhibitor</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:#64748b">NET</div>
+                <span class="target-full">norepinephrine transporter</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:#64748b">much weaker</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">not the clinical target</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:15%;background:#64748b"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Weak</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:#64748b">SERT</div>
+                <span class="target-full">serotonin transporter</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:#64748b">negligible at Rx</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">not an SSRI</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:8%;background:#64748b"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Negligible</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="target-name" style="color:#64748b">TAAR1 / VMAT2</div>
+                <span class="target-full">releaser machinery</span>
+              </td>
+              <td>
+                <div class="affinity-val" style="color:#64748b">no</div>
+                <div style="font-size:10px;color:var(--fg-dim);font-family:var(--font-mono)">not amphetamine</div>
+              </td>
+              <td>
+                <div class="affinity-bar-wrap"><div class="affinity-bar" style="width:0%;background:#64748b"></div></div>
+              </td>
+              <td><span class="action-badge ab-inhibit">Inactive</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="binding-note">Modafinil DAT affinity is assay-dependent (high-nM to µM). Clinical PET occupancy ~50% at 200–300 mg. PDB 4XP4 is a cocaine–dDAT S1 surrogate; no modafinil co-crystal.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>
+    Drug of the Day #073 · Modafinil (Provigil) · Le Bonhomme Pharma · Montréal ·
+    <a href="/drug-of-the-day/">Series index</a> ·
+    <a href="/drug-of-the-day/methylphenidate/">Methylphenidate #023</a> · <a href="/drug-of-the-day/amphetamine/">Amphetamine #006</a>
+    <br>
+    Provigil / Nuvigil FDA labels (SJS, CYP3A4/contraceptive); Volkow et al. DAT occupancy PET; dDAT + cocaine <a href="https://www.rcsb.org/structure/4XP4" target="_blank" rel="noopener noreferrer">PDB 4XP4</a> (surrogate).
+    <br>
+    Harm reduction resources: <a href="https://dancesafe.org" target="_blank" rel="noopener noreferrer">DanceSafe</a> ·
+    <a href="https://tripsit.me" target="_blank" rel="noopener noreferrer">TripSit</a> ·
+    <a href="https://tripsit.me/combo/" target="_blank" rel="noopener noreferrer">TripSit Combo</a>.
+  </p>
+</footer>
+
+<script src="../../assets/molstar-drug-viewer.js"></script>
+<script>
+  MolstarDrugViewer.boot({
+    pdb: '4XP4',
+    containerId: 'molstar-viewer',
+    loadingId: 'molstar-loading',
+    controls: { reset: 'btn-reset', spin: 'btn-spin', ligand: 'btn-ligand', surface: 'btn-surface' }
+  });
+</script>
+
+</body>
+</html>
