@@ -31,8 +31,19 @@
 
    TWO KINDS OF SESSION
    --------------------
-   Default sessions are synthetic and the titlebar says so. A page
-   may instead point a mount at a registered PROFILE:
+   The default queue is GENERATED and says so in three places —
+   screen-reader summary, a notice line under the banner, and the
+   titlebar where one exists. It reports no success rate, no RMSD,
+   no rank and no accuracy figure of any kind; what it does report
+   is a thermodynamics that closes on itself:
+
+       ΔG = ΔH − TΔS    K_D = exp(ΔG/RT)    θ = [L]/([L] + K_D)
+
+   Two quantities are rolled and everything else is computed, so
+   the identity holds on every frame rather than by an author
+   keeping four hardcoded numbers in agreement.
+
+   A page may instead point a mount at a registered PROFILE:
 
        <div data-flexaidds-tui data-tui-profile="entropy-docking">
 
@@ -60,100 +71,323 @@
 
   function narrow() { return window.innerWidth < DRAG_MIN_WIDTH; }
 
-  // ── default synthetic sessions ─────────────────────────────────────────
-  // Numbers are illustrative and the titlebar says "synthetic" — the benchmark
-  // figures are kept consistent with the published ones so nothing here
-  // contradicts the rest of the site.
+  // ── what this queue prints, and what it refuses to ────────────────────
+  // This queue used to end on a benchmark result: a top-1 success rate, a
+  // median RMSD and a pose rank, hardcoded, with a comment claiming they were
+  // "kept consistent with the published ones". The campaign those figures
+  // summarised is still running, so the panel was asserting an outcome nobody
+  // had measured — on every page that loads this file, at once.
   //
-  // Every session is a list of steps coloured by the SERIES ramp, in energy
-  // order along the binding coordinate. Step count varies per session, so the
-  // meter and the [n/N] index are both derived from steps.length — never a
-  // hardcoded 6.
-  var DOCK_TARGETS = [
-    { pdb: '1S3V', lig: 'TQD', s0: '4.812', ds: '-0.341', contacts: 14, buried: 62, dsv: '-0.089', dh: '-11.204', dg: '-8.42', rmsd: '0.94', pose: 3 },
-    { pdb: '1UNL', lig: 'LGS', s0: '5.117', ds: '-0.298', contacts: 11, buried: 57, dsv: '-0.112', dh: '-10.061', dg: '-7.68', rmsd: '1.21', pose: 1 },
-    { pdb: '1YGC', lig: '905', s0: '4.463', ds: '-0.402', contacts: 17, buried: 71, dsv: '-0.074', dh: '-12.930', dg: '-9.15', rmsd: '0.62', pose: 2 }
-  ];
+  // The fix is NOT to make the rate wobble. A performance number that changes
+  // on reload reads as live telemetry, which makes a fabricated figure MORE
+  // convincing, not less. The whole class of claim is gone instead: no success
+  // rate, no RMSD, no rank, no top-N, no percentage anywhere in this file.
+  //
+  // What replaces it is the one thing a panel with no measurements behind it
+  // can still be right about — its own thermodynamics. Two numbers are rolled,
+  // ΔH and the scatter off the compensation line; every other energy on screen
+  // is COMPUTED from them, so
+  //
+  //     ΔG = ΔH − TΔS        K_D = exp(ΔG/RT)        θ = [L]/([L] + K_D)
+  //
+  // closes on every frame by construction rather than by an author remembering
+  // to update four numbers together. That demonstrates what the engine
+  // computes. It says nothing about how well it does it, and those are
+  // different kinds of statement.
+  //
+  // Everything else printed here describes PROCESS, not performance:
+  // generation counters, population entropy, CF in arbitrary units, atom
+  // counts, wall clock, paths, status.
 
-  function dockSession(t) {
-    return {
-      key: 'dock ' + t.pdb,
-      cmd: '$ flexaidds dock --receptor ' + t.pdb + '.pdb --ligand ' + t.lig + '.mol2 --entropy shannon',
-      banner: 'FlexAID∆S 2.0.3 · entropy-driven docking',
-      equation: true,
-      steps: [
-        { label: 'apo baseline',              detail: 'S = ' + t.s0 + ' nats' },
-        { label: 'unbound · ΔS',              detail: 'ΔS = ' + t.ds + ' kcal/mol·K' },
-        { label: 'pocket contact',            detail: t.contacts + ' contacts · ' + t.buried + '% buried' },
-        { label: 'rigidification · ΔS_vib',   detail: 'ΔS_vib = ' + t.dsv },
-        { label: 'contacts formed · ΔH',      detail: 'ΔH = ' + t.dh + ' kcal/mol' },
-        { label: 'converged · ΔG',            detail: 'ΔG = ' + t.dg + ' kcal/mol' }
-      ],
-      done: 'RMSD ' + t.rmsd + ' Å   pose ' + t.pose + '/20   ΔG ' + t.dg + ' kcal/mol'
+  // ── the label, in three places ────────────────────────────────────────
+  // Valid-looking physics presented as a live run is still a claim about a run
+  // that did not happen, and this panel is convincing precisely because the
+  // numbers now hang together. So the label is not one line that a bare mount
+  // or a screen reader can miss:
+  //
+  //   1. the screen-reader summary, first child of the mount    (TUI)
+  //   2. the notice line under the banner, on every session     (run)
+  //   3. the titlebar, where there is one                       (fallback)
+  //
+  // A bare mount has no titlebar, so 1 and 2 carry it alone on the homepage —
+  // which is exactly why the notice prints in the body rather than the chrome.
+  var NOTE_TEXT =
+    '  note — illustrative session. The structures are real; every energy below is ' +
+    'generated to satisfy ΔG = ΔH − TΔS. Not a measured run, and not a benchmark result.';
+  var SR_TEXT =
+    'Illustrative terminal panel. It animates a docking session using generated ' +
+    'thermodynamic values that satisfy the identity delta G equals delta H minus T delta S, ' +
+    'with the dissociation constant and fractional occupancy derived from delta G. ' +
+    'The protein structures named are real; the energies are not measured. ' +
+    'No benchmark result, success rate or accuracy figure is reported here.';
+
+  // ── constants ─────────────────────────────────────────────────────────
+  // R in kcal·mol⁻¹·K⁻¹ so every energy on the panel is kcal/mol. RT is
+  // DERIVED from R and T rather than pasted in as 0.6163, so an edit to T
+  // cannot leave a stale RT behind — the classic way this identity rots.
+  var R_KCAL = 1.987e-3;              // kcal·mol⁻¹·K⁻¹
+  var T_K = 310.15;                   // K — body temperature, not the 298 K bench default
+  var RT = R_KCAL * T_K;              // ≈ 0.6163 kcal/mol
+
+  // THE UNIT TRAP, NAMED SO IT CANNOT COME BACK.
+  // ΔH and ΔG are kcal/mol. ΔS is cal·mol⁻¹·K⁻¹ — the convention entropies are
+  // tabulated in — so T·ΔS lands in CAL/mol and must be divided by 1000 before
+  // it can be subtracted from an enthalpy. Miss that and every ΔG is off by
+  // three orders of magnitude while still looking plausible. Nothing in this
+  // file multiplies T by ΔS inline; every conversion goes through tds().
+  function tds(dS_cal) { return T_K * dS_cal / 1000; }        // → kcal/mol
+
+  // ── enthalpy–entropy compensation ─────────────────────────────────────
+  // ΔH and ΔS are not independent in real binding data. A tighter enthalpic
+  // network — more hydrogen bonds, a better-packed pocket — is paid for in
+  // conformational freedom, so the two drift together along a compensation
+  // line and ΔG varies far less than ΔH does. Rolling them independently
+  // would scatter ΔG across a range no calorimeter has ever reported.
+  //
+  //     ΔS = S_B0 + S_B1·ΔH        (ΔS cal·mol⁻¹·K⁻¹, ΔH kcal/mol)
+  //
+  // S_B1 is set so T·dΔS/dΔH ≈ 0.56: a little over half of any enthalpic gain
+  // is handed straight back as entropy, which is where measured compensation
+  // slopes for drug-like binding sit. The scatter is what keeps this a
+  // correlation instead of a rule — a perfectly straight line would be its own
+  // kind of lie.
+  var DH_MIN = -15, DH_MAX = -5;      // kcal/mol — drug-like binding enthalpies
+  var S_B0 = 14.832, S_B1 = 1.8056;   // compensation intercept / slope
+  var S_SCATTER = 1.6;                // ± cal·mol⁻¹·K⁻¹ off the line
+
+  // ΔS_vib is a COMPONENT of ΔS, not a third term bolted onto the identity:
+  // the complex rigidifies on binding, so it is negative, and it deepens as
+  // the enthalpic network tightens. The configurational remainder is whatever
+  // is left once it is taken out, which keeps ΔS = ΔS_conf + ΔS_vib exact and
+  // spends no extra roll on it.
+  var V_B0 = 0.75, V_B1 = 0.45;
+
+  var L_M = 1e-6;                     // 1 µM — a screening concentration
+  var POP = 128;                      // search population
+  var S0_NATS = Math.log(POP);        // ln N, the population entropy ceiling
+
+  // mulberry32. Seeded, and the seed is PRINTED in the command line, so the
+  // numbers on screen can be re-derived by anyone who cares to — a generated
+  // figure that hides its generator is halfway back to being a claim.
+  function rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
   }
+
+  // K_D spans four decades across the ΔH band, so the unit has to travel with
+  // it or the panel prints "0.01 nM" at one end and "36000 nM" at the other.
+  function fmtKd(kd_M) {
+    var U = [['pM', 1e-12], ['nM', 1e-9], ['µM', 1e-6], ['mM', 1e-3], ['M', 1]];
+    for (var i = 0; i < U.length; i++) {
+      var v = kd_M / U[i][1];
+      if (v < 1000 || i === U.length - 1) {
+        return (v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v.toFixed(2)) + ' ' + U[i][0];
+      }
+    }
+  }
+
+  function sgn(v, d) { return (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(d); }
+
+  // One internally-consistent draw. Two rolls in, everything else computed.
+  function draw(rand) {
+    var dH = DH_MIN + rand() * (DH_MAX - DH_MIN);
+    var dS = S_B0 + S_B1 * dH + (rand() * 2 - 1) * S_SCATTER;
+    var dG = dH - tds(dS);                       // the identity, once, here
+    var kd = Math.exp(dG / RT);                  // molar
+    var dSvib = V_B0 + V_B1 * dH;                // negative across the band
+    // u ∈ [0,1]: 0 at the weakest enthalpy, 1 at the tightest. The process
+    // counters below are shaped by it so a tighter complex also reads as a
+    // deeper search — they are descriptive, not scored.
+    var u = (dH - DH_MAX) / (DH_MIN - DH_MAX);
+    return {
+      dH: dH, dS: dS, dG: dG, kd: kd,
+      dSvib: dSvib, dSconf: dS - dSvib,
+      theta: L_M / (L_M + kd),
+      sEnd: S0_NATS * (0.22 - 0.12 * u),
+      gen: Math.round(POP * (0.55 + 0.35 * u)),
+      contacts: Math.round(9 + 9 * u),
+      sasa: Math.round(280 + 260 * u),
+      cf: -(28 + 22 * u),
+      secs: 0.019 * Math.round(POP * (0.55 + 0.35 * u))
+    };
+  }
+
+  // A dock session holds one draw and re-rolls it at the top of every pass, so
+  // the queue shows a different point on the compensation line each time round
+  // instead of replaying one frozen tuple. Details are functions because the
+  // panel already supports live values — the same mechanism a real profile uses.
+  function dockSession(t) {
+    var v = draw(rng(1));
+    var seed = 1;
+    return {
+      key: 'dock ' + t.pdb,
+      illustrative: true,
+      refresh: function () {
+        seed = (Math.random() * 0xFFFFFFFF) >>> 0;
+        v = draw(rng(seed));
+      },
+      cmd: function () {
+        return '$ flexaidds dock --receptor ' + t.pdb + '.pdb --ligand ' + t.lig +
+               '.mol2 --entropy shannon --illustrative --seed ' + seed;
+      },
+      // No version string. This file cannot check which build is installed, and
+      // the one it used to name (2.0.3) already disagreed with the release the
+      // site states elsewhere. A number that looks checkable and isn't is worse
+      // than no number.
+      banner: 'FlexAID∆S · entropy-driven docking · generated session',
+      equation: 'decomp',
+      temperature: function () { return T_K.toFixed(2) + ' K'; },
+      steps: [
+        { label: 'apo baseline',            detail: function () {
+            return 'S₀ = ln ' + POP + ' = ' + S0_NATS.toFixed(3) + ' nats · ' +
+                   t.atoms + ' receptor atoms';
+          } },
+        { label: 'unbound · ΔS',            detail: function () {
+            return 'ΔS ' + sgn(v.dS, 2) + ' cal·mol⁻¹·K⁻¹ · −TΔS ' + sgn(-tds(v.dS), 2) + ' kcal/mol';
+          } },
+        { label: 'pocket contact',          detail: function () {
+            return v.contacts + ' contacts · ' + v.sasa + ' Å² buried · CF ' +
+                   sgn(v.cf, 1) + ' a.u.';
+          } },
+        { label: 'rigidification · ΔS_vib', detail: function () {
+            return 'ΔS_vib ' + sgn(v.dSvib, 2) + ' · ΔS_conf ' + sgn(v.dSconf, 2) +
+                   ' cal·mol⁻¹·K⁻¹';
+          } },
+        { label: 'contacts formed · ΔH',    detail: function () {
+            return 'ΔH ' + sgn(v.dH, 2) + ' kcal/mol · S ' + S0_NATS.toFixed(3) + ' → ' +
+                   v.sEnd.toFixed(3) + ' nats';
+          } },
+        { label: 'converged · ΔG',          detail: function () {
+            return 'ΔG ' + sgn(v.dG, 2) + ' kcal/mol · K_D ' + fmtKd(v.kd);
+          } }
+      ],
+      done: function () {
+        return 'ΔG ' + sgn(v.dG, 2) + ' kcal/mol   K_D ' + fmtKd(v.kd) +
+               '   θ ' + v.theta.toFixed(3) + ' at [L] 1 µM   gen ' + v.gen + '/' + POP +
+               '   ' + v.secs.toFixed(2) + ' s   status=ok';
+      }
+    };
+  }
+
+  // Real PDB entries, so the walk reads as a walk rather than as three blanks.
+  // The STRUCTURES are real; every energy attached to them below is generated.
+  // The notice line and the screen-reader text both say exactly that, because
+  // a real accession next to an invented ΔG is the most checkable-looking claim
+  // on the panel and has to be the most clearly disowned.
+  var DOCK_TARGETS = [
+    { pdb: '1S3V', lig: 'TQD', atoms: 2438 },
+    { pdb: '1UNL', lig: 'LGS', atoms: 2291 },
+    { pdb: '1YGC', lig: '905', atoms: 1976 }
+  ];
 
   var SESSIONS = [
     dockSession(DOCK_TARGETS[0]),
     {
+      // The campaign is in flight. This session reports that it is running and
+      // what it is doing — it does not report how it is going, because nobody
+      // knows yet. "No aggregate" is the honest terminal state for a benchmark
+      // that has not finished, and it is not a placeholder for a number to be
+      // dropped in later without re-reading this comment.
       key: 'DatasetRunner',
-      cmd: '$ flexaidds-benchmark --set astex --n 85 --seed 7 --out bench/astex85',
-      banner: 'DatasetRunner · Astex Diverse 85 · deterministic seed',
+      illustrative: true,
+      cmd: '$ flexaidds-benchmark --set astex --resume --out bench/astex',
+      banner: 'DatasetRunner · campaign in flight',
       steps: [
-        { label: 'dataset prepared',          detail: '85 / 85 targets fetched' },
-        { label: 'receptors typed',           detail: 'apo strip · hydrogens added' },
-        { label: 'pockets detected',          detail: 'GetCleft · top-3 per target' },
-        { label: 'docking · ΔS_vib',          detail: 'tENCoM normal modes' },
-        { label: 'rescoring · ΔH',            detail: 'Voronoi CF · OpenMP batch' },
-        { label: 'scored · ΔG',               detail: 'top-1 ≤ 2 Å: 82 / 85' }
+        { label: 'manifest resolved',       detail: 'targets staged from set definition' },
+        { label: 'receptors typed',         detail: 'apo strip · hydrogens added' },
+        { label: 'pockets detected',        detail: 'GetCleft · clefts ranked by volume' },
+        { label: 'docking · ΔS_vib',        detail: 'tENCoM normal modes' },
+        { label: 'rescoring · ΔH',          detail: 'Voronoi CF · OpenMP batch' },
+        { label: 'writing · ΔG',            detail: 'per-target records appended' }
       ],
-      done: 'top-1 96.4%   median RMSD 1.08 Å   85 targets'
+      done: 'campaign running   no aggregate reported   status=ok'
     },
+    (function () {
+      var v = draw(rng(2));
+      return {
+        key: 'flexaidds (python)',
+        illustrative: true,
+        refresh: function () { v = draw(rng((Math.random() * 0xFFFFFFFF) >>> 0)); },
+        cmd: '$ python -m flexaidds results/1s3v --modes',
+        banner: 'flexaidds · binding-mode summary',
+        equation: 'decomp',
+        temperature: function () { return T_K.toFixed(2) + ' K'; },
+        steps: [
+          { label: 'results directory',     detail: 'results/1s3v' },
+          { label: 'binding modes · ΔS',    detail: function () {
+              return '12 parsed · 20 poses each · ΔS ' + sgn(v.dS, 2) + ' cal·mol⁻¹·K⁻¹';
+            } },
+          { label: 'temperature · T',       detail: function () {
+              return T_K.toFixed(2) + ' K · RT ' + RT.toFixed(4) + ' kcal/mol';
+            } },
+          { label: 'enthalpy · ΔH',         detail: function () { return 'ΔH ' + sgn(v.dH, 2) + ' kcal/mol'; } },
+          { label: 'free energy · ΔG',      detail: function () {
+              return 'ΔG ' + sgn(v.dG, 2) + ' kcal/mol · K_D ' + fmtKd(v.kd) +
+                     ' · θ ' + v.theta.toFixed(3) + ' at [L] 1 µM';
+            } }
+        ],
+        // mode_id identifies a record. It is not a rank, and nothing here
+        // orders the modes against one another — ordering them would be
+        // scoring, and scoring is the thing this file no longer does.
+        done: function () {
+          return 'mode_id 3   CF ' + sgn(v.cf, 1) + ' a.u.   claims illustrative_only';
+        }
+      };
+    })(),
     {
-      key: 'flexaidds (python)',
-      cmd: '$ python -m flexaidds results/1s3v --best-mode',
-      banner: 'flexaidds 2.0.3 · binding-mode summary',
-      steps: [
-        { label: 'results directory',         detail: 'results/1s3v' },
-        { label: 'binding modes · ΔS',        detail: '12 parsed · 20 poses each' },
-        { label: 'temperature · T',           detail: '298 K' },
-        { label: 'enthalpy · ΔH',             detail: '-11.204 kcal/mol' },
-        { label: 'free energy · ΔG',          detail: '-8.42 kcal/mol' }
-      ],
-      done: 'mode_id 3   rank 1   best_cf -42.7   claim_validity proxy_only'
-    },
-    {
+      // Process only. A folding free energy runs on the opposite sign
+      // convention to the K_D above, and putting the two next to each other in
+      // one panel is how a reader ends up reading one of them backwards. The
+      // identity in this file is the binding one; RNA co-folding gets counters.
       key: 'NATURaL cofolding',
+      illustrative: true,
       cmd: '$ natural_hammerhead --organism ecoli --rnap --cofold',
       banner: 'NATURaL · co-transcriptional DualAssembly (RNAP)',
       steps: [
-        { label: 'nascent chain',             detail: '43 nt transcribed' },
-        { label: 'RNAP tunnel',               detail: '8 nt occluded · Nudler 2012' },
-        { label: 'pause sites',               detail: '3 detected · k_el < 20% hmean' },
-        { label: 'nucleation seeds',          detail: '2 RNA hairpin · 1 G-quad' },
-        { label: 'co-folding · P_fold',       detail: '0.71 at stem II' }
+        { label: 'nascent chain',           detail: '43 nt transcribed' },
+        { label: 'RNAP tunnel',             detail: '8 nt occluded · Nudler 2012' },
+        { label: 'pause sites',             detail: '3 detected · elongation-rate dip' },
+        { label: 'nucleation seeds',        detail: '2 RNA hairpin · 1 G-quad' },
+        { label: 'co-folding · stem II',    detail: 'seed reached before tunnel exit' }
       ],
-      done: 'hammerhead folded   ΔG_fold -18.6 kcal/mol'
+      done: 'hammerhead folded   trajectory written   status=ok'
     },
     dockSession(DOCK_TARGETS[1]),
     dockSession(DOCK_TARGETS[2])
   ];
 
+  // The default queue is the one thing this file KNOWS is generated, so it is
+  // the one thing this file labels. A registered profile is a page shipping its
+  // own provenance — the three that exist read real poses and real page data —
+  // and stamping "illustrative" over a page's measured run would be a false
+  // statement in the other direction. A profile that IS synthetic opts in with
+  // `illustrative: true` on the queue or on a session.
+  function fallback() {
+    return { list: SESSIONS, illustrative: true, title: 'flexaidds — illustrative run · generated numbers' };
+  }
+
   // Resolve a mount's session queue. Unknown or absent profile → the default.
   function queueFor(mount) {
     var name = mount.getAttribute('data-tui-profile');
-    if (!name) return { list: SESSIONS, title: 'flexaidds — live synthetic run' };
+    if (!name) return fallback();
     var reg = window.FLEXAIDDS_TUI_PROFILES;
     var make = reg && reg[name];
-    if (typeof make !== 'function') return { list: SESSIONS, title: 'flexaidds — live synthetic run' };
+    if (typeof make !== 'function') return fallback();
     try {
       var p = make();
       if (!p || !p.list || !p.list.length) throw new Error('empty profile');
       return p;
     } catch (err) {
-      // A broken profile must never take the panel down with it. The four
-      // pages share this file; a page-specific mistake stays page-specific.
-      return { list: SESSIONS, title: 'flexaidds — live synthetic run' };
+      // A broken profile must never take the panel down with it. The pages
+      // share this file; a page-specific mistake stays page-specific — and it
+      // falls back to the labelled queue, never to an unlabelled one.
+      return fallback();
     }
   }
 
@@ -202,6 +436,24 @@
     '.tui-dim{color:var(--fg-muted,#8D8CB0)}',
     '.tui-cmd{color:var(--mint,#45E0A8);overflow-wrap:anywhere}',
     '.tui-t{color:var(--firetruck,#F5232B)}',
+    // The illustrative notice is deliberately NOT coloured. Every hue in this
+    // panel is bound to a quantity — mint ΔH, violet ΔS, tangerine ΔG,
+    // firetruck T, aqua ΔS_vib, strawberry receptor, magnesium baseline — and
+    // a caveat is not a quantity. Borrowing one of those to shout with would
+    // put a colour on screen that means something it does not mean. So it gets
+    // visibility from typography instead: full-strength --fg against the dim
+    // banner around it, a rule down the left, and its own line.
+    '.tui-note{display:block;margin:2px 0 4px;padding:4px 0 4px 10px;',
+    'border-left:2px solid var(--fg-muted,#8D8CB0);color:var(--fg,#E4E3F5);overflow-wrap:anywhere}',
+    // Screen-reader copy. The body types character by character, which a
+    // screen reader either ignores or reads as noise, so the honest summary is
+    // given once as text and placed BEFORE the window in the DOM — the first
+    // thing reached on entering the mount.
+    // inset(1px) rather than the usual inset(50%): on a 1×1px box it collapses
+    // just the same, and it keeps the only per-cent signs left in this file the
+    // two that are CSS lengths on the progress meter.
+    '.tui-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;',
+    'clip:rect(0 0 0 0);clip-path:inset(1px);white-space:nowrap;border:0}',
     '.tui-eq .eq-dg{color:var(--tangerine,#FF9300)}.tui-eq .eq-dh{color:var(--mint,#45E0A8)}',
     '.tui-eq .eq-t{color:var(--firetruck,#F5232B)}.tui-eq .eq-ds{color:var(--violet,#8B5CF6)}',
     '.tui-eq .eq-dsv{color:var(--aqua,#00A2FF)}',
@@ -420,6 +672,11 @@
 
     win.appendChild(body);
     mount.innerHTML = '';
+    // Place 1 of 3 for the illustrative label: the screen-reader summary, and
+    // the only one a bare mount cannot lose, since a bare mount has no
+    // titlebar to carry place 2. It goes in FIRST so it is read before the
+    // terminal it describes.
+    if (q.illustrative) mount.appendChild(el('span', 'tui-sr', SR_TEXT));
     mount.appendChild(win);
     body.appendChild(meter);
 
@@ -478,11 +735,21 @@
       if (caret.parentNode) caret.parentNode.removeChild(caret);
     }
 
-    function equation(T) {
+    // Two forms. `true` is the legacy three-term string the registered page
+    // profiles were written against and still renders exactly as it did.
+    // 'decomp' is what the generated sessions use: it states the identity they
+    // actually satisfy — ΔG from two terms — and shows ΔS_vib as a COMPONENT
+    // of ΔS rather than as a third subtraction. Printing an equation the
+    // numbers underneath it do not obey is its own quiet fabrication.
+    function equation(T, form) {
       var l = line('tui-eq tui-dim');
-      l.innerHTML = '  <span class="eq-dg">ΔG</span> = <span class="eq-dh">ΔH</span> − ' +
-                    '<span class="eq-t">T</span><span class="eq-ds">ΔS</span> − ' +
-                    '<span class="eq-t">T</span><span class="eq-dsv">ΔS_vib</span>' +
+      var lhs = '  <span class="eq-dg">ΔG</span> = <span class="eq-dh">ΔH</span> − ' +
+                '<span class="eq-t">T</span><span class="eq-ds">ΔS</span>';
+      var rhs = (form === 'decomp')
+        ? '<span style="margin-left:2.5em"><span class="eq-ds">ΔS</span> = ΔS_conf + ' +
+          '<span class="eq-dsv">ΔS_vib</span></span>'
+        : ' − <span class="eq-t">T</span><span class="eq-dsv">ΔS_vib</span>';
+      l.innerHTML = lhs + rhs +
                     '<span class="tui-t" style="margin-left:2.5em">T = ' + (T || '298 K') + '</span>';
     }
 
@@ -493,11 +760,25 @@
         state.textContent = '● RUNNING';
         cover.style.left = '0%';
 
-        await type(sess.cmd, 'tui-cmd');
+        // Re-roll before anything is printed, so the command line, the steps
+        // and the done line all describe ONE draw. Rolling mid-run is how a
+        // panel ends up printing a ΔH from one tuple and a ΔG from the next,
+        // and the identity silently stops closing on screen.
+        if (typeof sess.refresh === 'function') sess.refresh();
+
+        // Place 2 of 3: the lede — FIRST, before the command is even typed.
+        // It sat under the banner at first, which meant that for the ~300 ms a
+        // command line takes to type, a bare mount carried no visible label at
+        // all: no titlebar to fall back on, notice not yet printed. Nothing
+        // numeric is on screen during that window, but "the caveat arrives
+        // after the run starts" is the wrong order to put a caveat in.
+        if (q.illustrative || sess.illustrative) line('tui-note').textContent = NOTE_TEXT;
+
+        await type(typeof sess.cmd === 'function' ? sess.cmd() : sess.cmd, 'tui-cmd');
         if (!alive) return;
         await wait(320);
         line('tui-dim').textContent = '  ' + sess.banner;
-        if (sess.equation) equation(sess.temperature && sess.temperature());
+        if (sess.equation) equation(sess.temperature && sess.temperature(), sess.equation);
         line().textContent = '';
 
         // Step count is per session, so the index and the meter both derive
