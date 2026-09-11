@@ -79,18 +79,80 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
 @media (max-width:8.7in){.page{width:100%;min-height:0;padding:28px 20px;}header.hd{flex-direction:column;align-items:flex-start;}.contact{text-align:left;white-space:normal;}.grid2{grid-template-columns:1fr;}h1{font-size:28px;}}
 @page{size:Letter;margin:15mm 14mm 16mm;}
 @media print{
-  /* Print renders on a light ground: the triad darkens so each quantity
-     holds contrast on paper. Hue is held to within 0.5deg and only lightness
-     moves, so every colour keeps its quantity. check-design-system.sh
-     verifies that relation directly. */
-  :root{--bg:#FFFFFF;--bg-panel:#FFFFFF;--bg-card:#FFFFFF;--bg-alt:#FFFFFF;--grid-line:transparent;--focus-ring:#6B33CD;--fg:#12131F;--fg-muted:#4A4A58;--mint-06:#F1FAF6;--mint-08:#EDF8F3;--mint-10:#E8F6F1;--mint-15:#D8EFE6;--mint-20:#C7E8DB;--mint-30:#A5DCC7;--violet-10:#EFE9FA;--violet-12:#EBE4F9;--violet-16:#E4DAF7;--violet-20:#DCCFF5;--violet-25:#D2C2F2;--violet-35:#BDA5EC;--violet-40:#B39AEA;--tangerine-06:#FBF5EE;--tangerine-10:#F7EFE3;--tangerine-12:#F5ECDE;--tangerine-35:#DFC49E;--firetruck-10:#F7E5E7;--firetruck-14:#F4DCDF;--firetruck-32:#E6B2B8;--firetruck-40:#E0A1A8;--aqua-10:#E5EFF5;--aqua-20:#CCDFEA;--strawberry-12:#F6E0EA;--strawberry-30:#E9B3CB;--strawberry-35:#E5A8C3;}
-  :root{--magnesium:#3A3A44;--mint:#006648;--violet:#6B33CD;--tangerine:#864A00;--firetruck:#B60014;--aqua:#005D95;--strawberry:#AF005F;}
-  :root{color-scheme:light;}
+  /* PRINT: one accent, warm neutrals.
+     The screen palette is multi-hue because each hue MEANS a quantity —
+     mint dH, violet dS, tangerine dG. On a CV those hues are decoration, not
+     semantics: they pay the cost of a system without delivering its benefit,
+     and several darkened hues at once read institutional rather than sharp.
+     So print keeps ONLY the brand mint — same hue as #45E0A8, darkened for
+     paper — and resolves everything else to a warm near-black and two greys.
+     Hierarchy is carried by weight, size, letter-spacing and position.
+     The other quantities are NOT rebound to grey: --violet, --tangerine,
+     --firetruck, --aqua and --strawberry keep their canonical values and
+     print simply stops referencing them. Rebinding them would be an off-hue
+     rebind, which check-design-system.sh correctly refuses. */
+  :root{
+    color-scheme:light;
+    --pr-ink:#1C1915;      /* body / headings      17.5:1 on white */
+    --pr-ink-2:#3A3734;    /* prose                11.6:1          */
+    --pr-ink-3:#605C58;    /* secondary, dates      6.8:1          */
+    --pr-rule:#E2DFDC;     /* hairline rules — structural, not loud */
+    --pr-rule-soft:#EEECEA;
+    --bg:#FFFFFF;--bg-panel:#FFFFFF;--bg-card:#FFFFFF;--bg-alt:#FFFFFF;
+    --grid-line:transparent;--focus-ring:#605C58;
+    --fg:#1C1915;--fg-muted:#605C58;
+    --mint-06:#F7F5F4;--mint-08:#F7F5F4;--mint-10:#EEECEA;
+    --mint-15:#E2DFDC;--mint-20:#E2DFDC;--mint-30:#D5D1CD;
+  }
+  /* key colours: mint darkened at constant hue; magnesium is achromatic */
+  :root{--mint:#006648;--magnesium:#3A3734;}
+
   html,body{background:#FFFFFF;}
   body{padding:0;}
   .page{width:auto;min-height:0;margin:0;padding:0 !important;box-shadow:none;background:#FFFFFF;background-image:none;overflow:visible;}
   a{text-decoration:none;transition:none;}
   a:hover{filter:none;}
+
+  /* every non-mint quantity resolves to ink (inline styles need !important) */
+  [style*="--violet"],[style*="--tangerine"],[style*="--aqua"],
+  [style*="--strawberry"],[style*="--firetruck"]{color:var(--pr-ink) !important;}
+  /* No highlighting inside sentences. On screen the coloured spans in running
+     text carry the quantity they name; on paper they are just speckle, and
+     they were most of what made the first print palette look busy. Inside
+     prose every inline colour hint inherits the paragraph's ink, so mint is
+     left marking STRUCTURE — the name, the role, the institution, the
+     bullets — and nothing else. */
+  p [style*="var(--"],.body [style*="var(--"],ul.pts li [style*="var(--"],
+  ol.pubs li [style*="var(--"],.writing p [style*="var(--"]{color:inherit !important;}
+  .skill .grp{color:var(--pr-ink-3) !important;}
+
+  /* hierarchy without hue: section headings gain tracking and weight,
+     and a hairline above, in place of the violet they used to carry */
+  .eyebrow{color:var(--pr-ink-3);font-weight:var(--fw-600);letter-spacing:0.22em;
+           padding-top:7px;border-top:1px solid var(--pr-rule);}
+  .grid2 .eyebrow,.sub-eyebrow{border-top:0;padding-top:0;}
+  .sub-eyebrow{color:var(--pr-ink-3);letter-spacing:0.18em;}
+
+  /* licence badges: hairline instead of a tangerine box */
+  .lic{color:var(--pr-ink-3) !important;border-color:var(--pr-rule);}
+  /* left rules: structural, lightened so they stop competing with the type */
+  .method,.writing p{border-left-color:var(--pr-rule);}
+  .writing p.h{border-left-color:var(--mint);}
+  /* chips: no fills, hairline outlines, size carries the grouping */
+  .chip{background:transparent;border-color:var(--pr-rule);color:var(--pr-ink-2) !important;}
+  /* enumeration is not an accent — numbers and years go quiet */
+  ol.pubs li .n,ol.pubs li .yr{color:var(--pr-ink-3) !important;}
+  .dates,.award .yr,.sw-stack{color:var(--pr-ink-3) !important;}
+  .award .nm,.sw-name{color:var(--pr-ink) !important;font-weight:var(--fw-600);}
+  /* the equation is typography, not a colour key, on paper */
+  .equation,.equation *,footer .mono,footer span span{color:var(--pr-ink) !important;}
+  /* rules and dividers */
+  header.hd{border-bottom-color:var(--pr-rule);}
+  footer{border-top-color:var(--pr-rule);color:var(--pr-ink-3);}
+  .contact a{color:var(--pr-ink-2) !important;}
+  ::selection{background:transparent;}
+
+  /* page-break discipline */
   .avoid,.sw,.award,.skill,.row,ol.pubs li,ul.pts li,.writing p{break-inside:avoid;}
   .eyebrow,.sub-eyebrow,h1,.strong,.sw-name,.award .nm,header.hd{break-after:avoid;}
   section{break-inside:auto;}
