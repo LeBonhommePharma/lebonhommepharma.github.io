@@ -77,8 +77,25 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
 .avoid{break-inside:avoid;}
 @media screen{body{padding:32px 0;}.page{box-shadow:0 0 0 1px var(--mint-10),0 24px 64px rgba(0,0,0,.5);}}
 @media (max-width:8.7in){.page{width:100%;min-height:0;padding:28px 20px;}header.hd{flex-direction:column;align-items:flex-start;}.contact{text-align:left;white-space:normal;}.grid2{grid-template-columns:1fr;}h1{font-size:28px;}}
-@page{size:letter;margin:0;}
-@media print{body{padding:0;background:var(--bg);}.page{width:auto;min-height:0;box-shadow:none;margin:0;}a:hover{filter:none;}}
+@page{size:Letter;margin:15mm 14mm 16mm;}
+@media print{
+  /* Print renders on a light ground: the triad darkens so each quantity holds
+     contrast on paper. Hue is held; only lightness moves. Same binding,
+     paper rendering — the light-theme selector marks it as such. */
+  :root{--bg:#FFFFFF;--bg-panel:#FFFFFF;--bg-card:#FFFFFF;--bg-alt:#FFFFFF;--grid-line:transparent;--focus-ring:#6B33CD;--fg:#12131F;--fg-muted:#4A4A58;--mint-06:#F1FAF6;--mint-08:#EDF8F3;--mint-10:#E8F6F1;--mint-15:#D8EFE6;--mint-20:#C7E8DB;--mint-30:#A5DCC7;--violet-10:#EFE9FA;--violet-12:#EBE4F9;--violet-16:#E4DAF7;--violet-20:#DCCFF5;--violet-25:#D2C2F2;--violet-35:#BDA5EC;--violet-40:#B39AEA;--tangerine-06:#FBF5EE;--tangerine-10:#F7EFE3;--tangerine-12:#F5ECDE;--tangerine-35:#DFC49E;--firetruck-10:#F7E5E7;--firetruck-14:#F4DCDF;--firetruck-32:#E6B2B8;--firetruck-40:#E0A1A8;--aqua-10:#E5EFF5;--aqua-20:#CCDFEA;--strawberry-12:#F6E0EA;--strawberry-30:#E9B3CB;--strawberry-35:#E5A8C3;}
+  :root,:root[data-theme="light"]{--magnesium:#3A3A44;--mint:#006648;--violet:#6B33CD;--tangerine:#864A00;--firetruck:#B60014;--aqua:#005D95;--strawberry:#AF005F;}
+  :root{color-scheme:light;}
+  html,body{background:#FFFFFF;}
+  body{padding:0;}
+  .page{width:auto;min-height:0;margin:0;padding:0 !important;box-shadow:none;background:#FFFFFF;background-image:none;overflow:visible;}
+  a{text-decoration:none;transition:none;}
+  a:hover{filter:none;}
+  .avoid,.sw,.award,.skill,.row,ol.pubs li,ul.pts li,.writing p{break-inside:avoid;}
+  .eyebrow,.sub-eyebrow,h1,.strong,.sw-name,.award .nm,header.hd{break-after:avoid;}
+  section{break-inside:auto;}
+  p,ul.pts li,ol.pubs li,.body{orphans:3;widows:3;}
+  footer{break-before:avoid;}
+}
 </style>
 </head>
 <body>
@@ -109,7 +126,7 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
   <div>
     <section>
       <div class="eyebrow">// open-source software</div>
-      <div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--tangerine);">FlexAIDΔS</span><span class="sw-stack" style="font-size:9px;">C++26 · Python · PyMOL</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">Entropy-driven molecular docking engine.</div></div><div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--firetruck);">Shannon</span><span class="sw-stack" style="font-size:9px;">C++20 · Python</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">Entropy-collapse detector for frontier LLM agents − zero-shot evaluation-awareness and strategic-deception monitoring via the same H = −Σ p<sub>i</sub> log<sub>2</sub> p<sub>i</sub> kernel that scores FlexAIDΔS binding..</div></div><div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--strawberry);">ClusterFuck</span><span class="sw-stack" style="font-size:9px;">Swift · HealthKit · CareKit</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">Multi-platform Apple biofeedback (Watch · iPhone · TV · Vision Pro).</div></div><div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--mint);">NRGsuite</span><span class="sw-stack" style="font-size:9px;">Python · PyMOL</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">PyMOL plugin packaging the Najmanovich Research Group docking toolchain for real-time interactive docking with FlexAID..</div></div><div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--aqua);">PoseBust</span><span class="sw-stack" style="font-size:9px;">C++26</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">PoseBusters-compatible geometric validation − physical-plausibility checks (bond geometry, clashes, planarity) for docked ligand poses..</div></div>
+      <div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--tangerine);">FlexAIDΔS</span><span class="sw-stack" style="font-size:9px;">C++26 · Python · PyMOL</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">Entropy-driven molecular docking engine.</div></div><div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--firetruck);">Shannon</span><span class="sw-stack" style="font-size:9px;">C++20 · Python</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">Entropy-collapse detector for frontier LLM agents − zero-shot evaluation-awareness and strategic-deception monitoring via the same H = −Σ p<sub>i</sub> log<sub>2</sub> p<sub>i</sub> kernel that scores FlexAIDΔS binding.</div></div><div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--strawberry);">ClusterFuck</span><span class="sw-stack" style="font-size:9px;">Swift · HealthKit · CareKit</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">Multi-platform Apple biofeedback (Watch · iPhone · TV · Vision Pro).</div></div><div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--mint);">NRGsuite</span><span class="sw-stack" style="font-size:9px;">Python · PyMOL</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">PyMOL plugin packaging the Najmanovich Research Group docking toolchain for real-time interactive docking with FlexAID.</div></div><div style="margin-bottom:11px;"><div style="display:flex;align-items:baseline;gap:8px;"><span class="sw-name" style="font-size:12.5px;color:var(--aqua);">PoseBust</span><span class="sw-stack" style="font-size:9px;">C++26</span></div><div class="body" style="font-size:11px;line-height:1.5;margin-top:2px;">PoseBusters-compatible geometric validation − physical-plausibility checks (bond geometry, clashes, planarity) for docked ligand poses.</div></div>
     </section>
     <section>
       <div class="eyebrow">// research experience</div>
