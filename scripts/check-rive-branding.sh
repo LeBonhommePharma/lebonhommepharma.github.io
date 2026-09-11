@@ -58,7 +58,7 @@ fi
 # a guard, so these run before every scan.
 self_test() {
   local d ok=1 rc
-  d="$(mktemp -d -t rivest)"
+  d="$(mktemp -d "${TMPDIR:-/tmp}/rivest.XXXXXX")"
   python3 - "$d" <<'PX'
 import sys, pathlib
 d = pathlib.Path(sys.argv[1])
@@ -111,7 +111,7 @@ render_dom() {
 }
 
 TARGET="${1:-index.html}"
-DOM_FILE="$(mktemp -t rivedom)"
+DOM_FILE="$(mktemp "${TMPDIR:-/tmp}/rivedom.XXXXXX")"
 render_dom "$TARGET" > "$DOM_FILE"
 if [ ! -s "$DOM_FILE" ]; then
   echo "FATAL: rendering $TARGET produced an empty DOM. Refusing to pass."
