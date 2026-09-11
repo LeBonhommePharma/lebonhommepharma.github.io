@@ -50,5 +50,7 @@ jobs:
       - name: Scan for design-system drift
         run: ./scripts/check-design-system.sh
 
+      - name: rive branding — self-test (must catch its own negatives)
+        run: ./scripts/check-rive-branding.sh --self-test
       - name: Rive branding and routes
         run: ./scripts/check-rive-branding.sh
