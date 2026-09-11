@@ -79,11 +79,12 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
 @media (max-width:8.7in){.page{width:100%;min-height:0;padding:28px 20px;}header.hd{flex-direction:column;align-items:flex-start;}.contact{text-align:left;white-space:normal;}.grid2{grid-template-columns:1fr;}h1{font-size:28px;}}
 @page{size:Letter;margin:15mm 14mm 16mm;}
 @media print{
-  /* Print renders on a light ground: the triad darkens so each quantity holds
-     contrast on paper. Hue is held; only lightness moves. Same binding,
-     paper rendering — the light-theme selector marks it as such. */
+  /* Print renders on a light ground: the triad darkens so each quantity
+     holds contrast on paper. Hue is held to within 0.5deg and only lightness
+     moves, so every colour keeps its quantity. check-design-system.sh
+     verifies that relation directly. */
   :root{--bg:#FFFFFF;--bg-panel:#FFFFFF;--bg-card:#FFFFFF;--bg-alt:#FFFFFF;--grid-line:transparent;--focus-ring:#6B33CD;--fg:#12131F;--fg-muted:#4A4A58;--mint-06:#F1FAF6;--mint-08:#EDF8F3;--mint-10:#E8F6F1;--mint-15:#D8EFE6;--mint-20:#C7E8DB;--mint-30:#A5DCC7;--violet-10:#EFE9FA;--violet-12:#EBE4F9;--violet-16:#E4DAF7;--violet-20:#DCCFF5;--violet-25:#D2C2F2;--violet-35:#BDA5EC;--violet-40:#B39AEA;--tangerine-06:#FBF5EE;--tangerine-10:#F7EFE3;--tangerine-12:#F5ECDE;--tangerine-35:#DFC49E;--firetruck-10:#F7E5E7;--firetruck-14:#F4DCDF;--firetruck-32:#E6B2B8;--firetruck-40:#E0A1A8;--aqua-10:#E5EFF5;--aqua-20:#CCDFEA;--strawberry-12:#F6E0EA;--strawberry-30:#E9B3CB;--strawberry-35:#E5A8C3;}
-  :root,:root[data-theme="light"]{--magnesium:#3A3A44;--mint:#006648;--violet:#6B33CD;--tangerine:#864A00;--firetruck:#B60014;--aqua:#005D95;--strawberry:#AF005F;}
+  :root{--magnesium:#3A3A44;--mint:#006648;--violet:#6B33CD;--tangerine:#864A00;--firetruck:#B60014;--aqua:#005D95;--strawberry:#AF005F;}
   :root{color-scheme:light;}
   html,body{background:#FFFFFF;}
   body{padding:0;}
