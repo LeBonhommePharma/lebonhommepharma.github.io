@@ -657,7 +657,7 @@
     </div>
     <div class="instr-item">
       <div class="instr-icon">📉</div>
-      <div class="instr-text"><strong>∆tempo = dI/dT</strong><br>Tempo changes trigger <em>Shannon Energy Collapse</em>. Beat drops = binding events.</div>
+      <div class="instr-text"><strong>Δtempo = dI/dT</strong><br>Tempo changes trigger <em>Shannon Energy Collapse</em>. Beat drops = binding events.</div>
     </div>
     <div class="instr-item">
       <div class="instr-icon">🔄</div>
@@ -697,7 +697,7 @@
     </div>
     <div class="delta-tempo">
       <div class="delta-value" id="deltaValue" style="color: rgba(224,224,224,0.3);">±0.0</div>
-      <div class="delta-label">∆BPM/∆t ≡ dI/dT</div>
+      <div class="delta-label">ΔBPM/Δt ≡ dI/dT</div>
     </div>
   </div>
 
@@ -706,28 +706,50 @@
     EXPLORING
   </div>
 
-  <!-- Left: Thermodynamic State -->
+  <!-- Left: Thermodynamic State
+
+       DO NOT HAND-EDIT THE NUMBERS BELOW. They are the rendered form of the
+       boot seed in the script — T = bpmToTemp(120) = 325 K — produced by the
+       same thermoAt()/fmtKcal()/fmtKd()/fmtPct() the live HUD uses, so this
+       block and the first painted frame are identical strings.
+
+       This matters more here than it would on most pages: the whole simulation
+       is gated behind a click on #instructions, so until a visitor clicks,
+       THIS markup is the only thermodynamics on screen. It is a resting state,
+       not a sub-second placeholder.
+
+       It used to be hand-typed, and it described 300 K / ΔG −8.2 / K_D 1.12 µM
+       — a state the page never occupies, because the first animation frame
+       sets T from the BPM seed and lands on 325 K. Clicking to begin moved
+       K_D by a factor of six with no user input.
+
+       To regenerate: load the page, and read
+         STATE.temperature.toFixed(1)+' K', fmtKcal(STATE.deltaG),
+         fmtKcal(STATE.deltaH), fmtKcal(STATE.minusTdS, true),
+         fmtKd(STATE.kd), fmtPct(STATE.thetaBound)
+       before clicking. scripts/check-entropy-thermo.sh asserts the agreement.
+  -->
   <div class="thermo-panel">
     <h3>Thermodynamic State</h3>
     <div class="metric-row">
       <span class="metric-label">T (BPM→K)</span>
-      <span class="metric-val firetruck" id="tempK">300.0 K</span>
+      <span class="metric-val firetruck" id="tempK">325.0 K</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">ΔG_bind</span>
-      <span class="metric-val gold" id="deltaG">-8.2 kcal/mol</span>
+      <span class="metric-val gold" id="deltaG">−7.67 kcal/mol</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">ΔH</span>
-      <span class="metric-val teal" id="deltaH">-12.4 kcal/mol</span>
+      <span class="metric-val teal" id="deltaH">−16.15 kcal/mol</span>
     </div>
     <div class="metric-row">
-      <span class="metric-label">-TΔS</span>
-      <span class="metric-val terra" id="minusTdS">+4.2 kcal/mol</span>
+      <span class="metric-label">−TΔS</span>
+      <span class="metric-val terra" id="minusTdS">+8.48 kcal/mol</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">K_D</span>
-      <span class="metric-val gold" id="kdVal">1.12 µM</span>
+      <span class="metric-val gold" id="kdVal">6.96 µM</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">σ_irr</span>
@@ -777,7 +799,7 @@
     </div>
     <div class="metric-row">
       <span class="metric-label">θ bound</span>
-      <span class="metric-val gold" id="bindPct">47.2%</span>
+      <span class="metric-val gold" id="bindPct">12.6%</span>
     </div>
     <div class="metric-row">
       <span class="metric-label">Crooks cycle</span>
@@ -821,8 +843,11 @@
               aria-label="Dismiss the provenance note">×</button>
     </div>
     <span class="prov-id">1S3V</span> — human dihydrofolate reductase, 1.80 Å · ligand TQD<br>
-    atom positions from a FlexAID∆S docked pose · arm7_temp13 · CF −153.07, rank 1 of 151 · spyRMSD 1.0686 Å<br>
-    583 receptor atoms (whole residues ≤ 10 Å) · 27 ligand atoms · 29 bonds from the pose's own CONECT records
+    atom positions from a FlexAIDΔS docked pose · arm7_temp13 · CF −153.07, rank 1 of 151 · spyRMSD 1.0686 Å<br>
+    583 receptor atoms (whole residues ≤ 10 Å) · 27 ligand atoms · 29 bonds from the pose's own CONECT records<br>
+    the pose is real; the panel thermodynamics are not — ΔG, K_D and θ are an
+    illustration driven by the tempo control through a van't Hoff model, not a
+    measured or docked affinity
   </div>
 
   <button type="button" class="prov-reopen" id="provReopen" hidden
@@ -844,11 +869,18 @@ const STATE = {
   bpm: 120,
   prevBpm: 120,
   deltaBpm: 0,
-  temperature: 300, // K — mapped from BPM
-  deltaG: -8.2,
-  deltaH: -12.4,
-  minusTdS: 4.2,
-  kd: 1.118e-6,        // molar — exp(ΔG/RT) at the 300 K seed below
+  // DERIVED AT BOOT — see the seed block after thermoAt(). These were six
+  // hand-typed literals describing a 300 K state that the page abandons on
+  // its very first animation frame, because that frame runs
+  // `temperature = bpmToTemp(bpm)`, and bpmToTemp(120) is 325 K, not 300 K.
+  // So the seed and the loop were two independent sources for one state and
+  // they disagreed by 25 K — a factor of 6 in K_D. Now there is one source:
+  // the BPM seed above. Everything thermodynamic follows from it.
+  temperature: null,
+  deltaG: null,
+  deltaH: null,
+  minusTdS: null,
+  kd: null,
   sigmaIrr: 0.142,
   landauerBits: 0.205,
   sAudio: 3.21,
@@ -859,7 +891,7 @@ const STATE = {
   // Two different things that used to be one. See updateThermo().
   bindDrive: 0.62,      // animation weight only — NOT an observable
   ligandConc: 1e-6,     // [L], molar — a STATED assumption, shown in the HUD
-  thetaBound: 0.47,     // θ = [L]/([L]+K_D) — the actual fraction bound
+  thetaBound: null,     // θ = [L]/([L]+K_D) — derived at boot, like K_D
   crooksDirection: 1, // 1 = forward, -1 = reverse
   crooksPhase: 0, // 0-1 cycle progress
   isManual: false,
@@ -877,6 +909,43 @@ const STATE = {
 // Full precision: at 298 K the truncated 1.987e-3 shifts RT by ~1e-4 kcal/mol,
 // which is invisible in ΔG but not free in an exponent.
 const R_KCAL = 1.98720425e-3;
+
+// --- Energy display, and why K_D is derived from the DISPLAYED ΔG ---
+//
+// The panel used to print ΔG rounded to one decimal and K_D rounded to three
+// significant figures, each computed independently from the full-precision
+// internal value. That is not a rounding nicety, it is a broken identity: one
+// decimal on ΔG is ±0.05 kcal/mol, which at RT ≈ 0.6 is ±8% on exp(ΔG/RT).
+// Measured across this page's own BPM slider, only 3 of 19 positions printed a
+// K_D that anyone could reproduce from the ΔG printed beside it.
+//
+// A reader cannot see the internal value. They can only check the identity
+// against the digits on screen, and the digits on screen have to survive that
+// check. So the reported quantities are quantised ONCE, here, and every number
+// downstream is derived from the quantised value rather than computed in
+// parallel from a hidden one:
+//
+//   ΔH and −TΔS   are rounded to 2 dp (the site's thermodynamic convention)
+//   ΔG            is their exact sum, so ΔG = ΔH − TΔS holds in printed digits
+//   K_D           is exp(ΔG/RT) of that same ΔG, so it holds too
+//   θ             is [L]/([L]+K_D) of that same K_D
+//
+// The cost is ≤0.01 kcal/mol against the raw van't Hoff value — far below
+// anything this illustrative model resolves. The gain is that the panel is a
+// consistent thermodynamic state rather than four separately-rounded views of
+// one, and that consistency is now checkable from a screenshot.
+//
+// The animation is deliberately NOT quantised: bindDrive still rides the raw
+// ΔG, so easing stays smooth. Reported ≠ rendering-internal, on purpose.
+const q2 = (x) => Math.round(x * 100) / 100;
+
+// U+2212 MINUS SIGN, not U+002D HYPHEN-MINUS. The rest of the site's
+// thermodynamics uses the real minus; JS number formatting emits the hyphen,
+// which is why the static markup and the live text used to differ in glyph as
+// well as in value.
+const MINUS = '−';
+const fmtKcal = (v, showPlus) =>
+  (v < 0 ? MINUS : showPlus ? '+' : '') + Math.abs(v).toFixed(2) + ' kcal/mol';
 
 // --- K_D formatting ---
 // Renders a molar dissociation constant in whatever unit actually fits it.
@@ -921,16 +990,26 @@ function fmtPct(theta) {
 }
 
 // --- BPM → Temperature mapping ---
-// 60 BPM → 250K (cold), 120 BPM → 310K (physiological), 180 BPM → 400K (hot)
+// Linear through 60 BPM → 250 K (cold) and 180 BPM → 400 K (hot), so the
+// midpoint 120 BPM → 325 K and the slider's 40..200 span covers 225..425 K.
+//
+// NOTE: this comment previously read "120 BPM → 310K (physiological)". A
+// straight line through (60, 250) and (180, 400) passes through 325 at 120 —
+// those three points are not collinear, so no linear map can hit all of them
+// and the function never did. The curve is left exactly as it was; only the
+// claim about it is corrected. If 310 K at 120 BPM was the actual intent, the
+// mapping itself needs to change and that is a deliberate decision, not a
+// comment fix.
 function bpmToTemp(bpm) {
   return 250 + (bpm - 60) * (150 / 120);
 }
 
-// Temperature → thermodynamic quantities
-function updateThermo() {
-  const T = STATE.temperature;
-  const R = R_KCAL; // kcal/(mol·K)
-
+// --- Temperature → reported thermodynamics (pure) ---
+// One expression of the physics, used by three callers that used to each carry
+// their own copy: the boot seed, the animation loop, and the static HUD markup.
+// Returns the REPORTED (quantised, mutually consistent) quantities plus the raw
+// ΔG for the animation.
+function thermoAt(T) {
   // Van't Hoff: ΔG = ΔH - TΔS
   // Reference: ΔH = -12.4, ΔS = -14.1 cal/(mol·K) at 300K
   const dH = -12.4;
@@ -941,11 +1020,12 @@ function updateThermo() {
   const T0 = 300;
   const dH_T = dH + dCp * (T - T0);
   const dS_T = dS + dCp * Math.log(T / T0);
-  const dG = dH_T - T * dS_T;
+  const dGraw = dH_T - T * dS_T; // full precision — animation only
 
-  STATE.deltaG = dG;
-  STATE.deltaH = dH_T;
-  STATE.minusTdS = -T * dS_T;
+  const deltaH = q2(dH_T);
+  const minusTdS = q2(-T * dS_T);
+  const deltaG = q2(deltaH + minusTdS); // reported: the printed parts, summed
+
   // K_D in MOLAR, and nothing else.
   //
   // This line used to read `Math.exp(dG / (R * T)) * 1e-9; // nM base`, which
@@ -955,7 +1035,44 @@ function updateThermo() {
   // so a genuine 0.96 µM affinity was stored as 9.6e-16 and rendered "0.0 pM".
   // The standard state is what carries the unit here; there is no second
   // conversion to apply. See fmtKd() for the display side of the same bug.
-  STATE.kd = Math.exp(dG / (R * T));
+  //
+  // It now takes the REPORTED ΔG, not the raw one, so the K_D on screen is
+  // exp(of the ΔG on screen). See the note above fmtKcal().
+  const kd = Math.exp(deltaG / (R_KCAL * T));
+
+  return { dGraw, deltaH, minusTdS, deltaG, kd };
+}
+
+// --- BOOT SEED ---
+// The one place the resting state is established. STATE.bpm is the only free
+// choice; temperature and every thermodynamic field follow from it through the
+// same functions the animation loop uses. Nothing here is typed twice, so the
+// seed cannot drift away from the loop the way the old literals did.
+//
+// The static HUD markup in the document above is the rendered form of exactly
+// this state. scripts/check-entropy-thermo.sh asserts they still agree.
+STATE.temperature = bpmToTemp(STATE.bpm);
+{
+  const seed = thermoAt(STATE.temperature);
+  STATE.deltaG = seed.deltaG;
+  STATE.deltaH = seed.deltaH;
+  STATE.minusTdS = seed.minusTdS;
+  STATE.kd = seed.kd;
+  STATE.thetaBound = STATE.ligandConc / (STATE.ligandConc + seed.kd);
+}
+
+// Temperature → thermodynamic quantities
+function updateThermo() {
+  const T = STATE.temperature;
+  const R = R_KCAL; // kcal/(mol·K)
+
+  const t = thermoAt(T);
+  const dG = t.dGraw; // raw, for the animation drive and σ_irr below
+
+  STATE.deltaG = t.deltaG;
+  STATE.deltaH = t.deltaH;
+  STATE.minusTdS = t.minusTdS;
+  STATE.kd = t.kd;
 
   // ── fraction bound vs. animation drive ────────────────────────────────
   // These were the same variable, and that conflation is what put a confident
@@ -1003,7 +1120,7 @@ function updateThermo() {
     Math.abs(STATE.sAudio - STATE.sConfig) * 0.3);
 
   // dI/dT — rate of mutual info change with temperature
-  STATE.diDt = -STATE.deltaBpm * 0.01; // direct mapping: ∆BPM → dI/dT
+  STATE.diDt = -STATE.deltaBpm * 0.01; // direct mapping: ΔBPM → dI/dT
 
   // Shannon Collapse Index
   STATE.sci = Math.max(0, Math.min(1, 1 - STATE.sAudio / 4.5));
@@ -1042,7 +1159,7 @@ let receptorAtoms = [], ligandAtoms = [];
 
 // --- REAL COORDINATES ---------------------------------------------------
 // Every atom position below comes from assets/entropy-docking-1s3v.js: the
-// 1S3V crystal receptor (human DHFR, 1.80 Å) and the FlexAID∆S docked pose of
+// 1S3V crystal receptor (human DHFR, 1.80 Å) and the FlexAIDΔS docked pose of
 // TQD from campaign arm arm7_temp13 (CF -153.07, rank 1 of 151, spyRMSD
 // 1.0686 Å). Ångström, origin at the docked-ligand centroid, rigid-body
 // rotated so the pocket mouth faces +x — which is the direction the ligand
@@ -1198,7 +1315,7 @@ function buildLigand() {
   // Ligand: TQD, a hexahydroquinazoline-2,4-diamine antifolate. 27 heavy
   // atoms, positioned by the docked pose, local coordinates centred on the
   // ligand centroid — so when ligandGroup reaches POCKET_CENTER the ligand
-  // sits where FlexAID∆S actually put it relative to the receptor.
+  // sits where FlexAIDΔS actually put it relative to the receptor.
   const L = POSE.ligand;
   const n = L.elem.length;
 
@@ -1465,9 +1582,9 @@ function updateHUD() {
     Math.abs(STATE.deltaBpm) > 1 ? '#45E0A8' : 'rgba(224,224,224,0.3)';
 
   el('tempK').textContent = STATE.temperature.toFixed(1) + ' K';
-  el('deltaG').textContent = STATE.deltaG.toFixed(1) + ' kcal/mol';
-  el('deltaH').textContent = STATE.deltaH.toFixed(1) + ' kcal/mol';
-  el('minusTdS').textContent = (STATE.minusTdS >= 0 ? '+' : '') + STATE.minusTdS.toFixed(1) + ' kcal/mol';
+  el('deltaG').textContent = fmtKcal(STATE.deltaG);
+  el('deltaH').textContent = fmtKcal(STATE.deltaH);
+  el('minusTdS').textContent = fmtKcal(STATE.minusTdS, true);
   el('kdVal').textContent = fmtKd(STATE.kd);
 
   el('sigmaIrr').textContent = STATE.sigmaIrr.toFixed(3) + ' k_B';
@@ -2003,7 +2120,7 @@ document.getElementById('instructions').addEventListener('click', async () => {
 });
 </script>
 
-<!-- FlexAID∆S TUI — a synthetic docking run, coloured by the series ramp -->
+<!-- FlexAIDΔS TUI — a synthetic docking run, coloured by the series ramp -->
 <section id="live-run" class="section fade-section">
   <div class="container" style="max-width:900px">
     <div class="eyebrow" style="margin-bottom:14px">// see it run</div>
@@ -2032,8 +2149,14 @@ document.getElementById('instructions').addEventListener('click', async () => {
   if (!POSE) return;                       // no data, no profile — default runs
 
   var live = function () { return (typeof STATE !== 'undefined') ? STATE : null; };
-  var n1 = function (v) { return (v >= 0 ? '+' : '') + v.toFixed(1); };
   var kd = function (v) { return (typeof fmtKd === 'function') ? fmtKd(v) : v.toExponential(2) + ' M'; };
+  // Same formatter as the panels, so the TUI cannot print a differently-rounded
+  // ΔG beside the same K_D. The typeof guard matches kd()/pct() above.
+  var gkc = function (v, showPlus) {
+    return (typeof fmtKcal === 'function')
+      ? fmtKcal(v, showPlus)
+      : (v < 0 ? '−' : showPlus ? '+' : '') + Math.abs(v).toFixed(2) + ' kcal/mol';
+  };
   var pct = function (v) { return (typeof fmtPct === 'function') ? fmtPct(v) : (v * 100).toFixed(1) + '%'; };
 
   var src = POSE.source, trim = POSE.trim;
@@ -2046,7 +2169,7 @@ document.getElementById('instructions').addEventListener('click', async () => {
       list: [{
         key: POSE.pdb_id,
         cmd: '$ flexaidds inspect --pose ' + src.arm + '/' + src.restart + '/' + src.pose_file + ' --coord live',
-        banner: 'FlexAID∆S · ' + POSE.pdb_id + ' human dihydrofolate reductase 1.80 Å · ligand ' + POSE.ligand_resname,
+        banner: 'FlexAIDΔS · ' + POSE.pdb_id + ' human dihydrofolate reductase 1.80 Å · ligand ' + POSE.ligand_resname,
         equation: true,
         temperature: function () {
           var s = live();
@@ -2082,11 +2205,11 @@ document.getElementById('instructions').addEventListener('click', async () => {
             } },
           { label: 'contacts formed · ΔH', detail: function () {
               var s = live();
-              return s ? 'ΔH ' + s.deltaH.toFixed(1) + ' kcal/mol · −TΔS ' + n1(s.minusTdS) : '—';
+              return s ? 'ΔH ' + gkc(s.deltaH) + ' · −TΔS ' + gkc(s.minusTdS, true) : '—';
             } },
           { label: 'converged · ΔG', detail: function () {
               var s = live();
-              return s ? 'ΔG ' + s.deltaG.toFixed(1) + ' kcal/mol · K_D ' + kd(s.kd) : '—';
+              return s ? 'ΔG ' + gkc(s.deltaG) + ' · K_D ' + kd(s.kd) : '—';
             } }
         ],
         done: function () {
