@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlexAID∆S — Entropy-Driven Molecular Docking · Le Bonhomme Pharma</title>
-  <meta name="description" content="FlexAID∆S — entropy-driven molecular docking engine. Genetic algorithms meet statistical mechanics for real-world drug discovery. Pearson r = 0.93 · 92% correct binding mode.">
+  <meta name="description" content="FlexAID∆S — entropy-driven molecular docking engine. Decomposes binding free energy into ΔG = ΔH − TΔS with conformational and vibrational entropy modelled explicitly. Open source, Apache 2.0. Benchmarks in progress.">
   <meta name="theme-color" content="#08091A">
   <link rel="canonical" href="https://thebonhomme.com/flexaid-ds/">
 
   <meta property="og:title" content="FlexAID∆S — Entropy-Driven Molecular Docking Engine">
-  <meta property="og:description" content="Genetic algorithms meet statistical mechanics for real-world drug discovery. Pearson r = 0.93, 92% correct binding mode.">
+  <meta property="og:description" content="Genetic algorithms meet statistical mechanics. Binding free energy decomposed into ΔG = ΔH − TΔS, entropy modelled rather than fitted. Open source; benchmarks in progress.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://thebonhomme.com/flexaid-ds/">
   <meta property="og:site_name" content="FlexAID∆S">
@@ -89,10 +89,13 @@
          tENCoM normal modes                        FeaturesSection, ModulesSection
          dispatch order · C++26 · Apache 2.0        FeaturesSection, hero badges
          CMake defaults                             InstallSection table
-         r 0.93 · RMSE 1.4 · 0.88 · 92% + rivals    BenchmarksSection table
-         "preliminary, bootstrap CIs in progress"   BenchmarksSection footnote
-       Nothing is invented. The site's Astex Diverse 85 / 96.4% figure is NOT
-       stated on this page — it is on the homepage — so it is not used here. -->
+         dataset names under evaluation             BenchmarksSection
+       Nothing is invented, and nothing here is a benchmark RESULT. This page
+       states no measured score: the hero states capability, the benchmarks
+       section names the datasets under evaluation, and the terminal reports
+       that the campaigns are running. Measured values publish with the
+       preprint. A comment ships to every browser, so figures must not be
+       parked in one either. -->
   <script>
   (function () {
     // The reader's position on the binding walk, published by BindingSection.
@@ -155,10 +158,10 @@
             { label: 'accelerators',        detail: 'OpenMP ON · CUDA · Metal · AVX-512 opt-in' },
             { label: 'dispatch',            detail: 'CUDA > Metal > AVX-512 > AVX2 > OpenMP' },
             { label: 'reproducibility',     detail: 'bit-for-bit identical results on the same seed' },
-            { label: 'affinity correlation', detail: 'ITC-187 · Pearson r 0.93 · RMSE 1.4 kcal/mol   (Vina 0.64 · Glide 0.69 · rDock 0.61)' },
-            { label: 'binding mode rescue', detail: 'CNS · 92% where enthalpy-only scoring fails   (Vina 58% · Glide 64% · rDock 55%)' }
+            { label: 'affinity',            detail: 'ITC-187 · correlation against calorimetry · campaign running' },
+            { label: 'binding mode',        detail: 'Astex Diverse · heavy-atom RMSD vs deposited ligand · campaign running' }
           ],
-          done: 'CASF-2016 scoring 0.88   numbers preliminary · bootstrap CIs in progress'
+          done: 'benchmarks in progress   measured values publish with the preprint'
         }]
       };
     };
