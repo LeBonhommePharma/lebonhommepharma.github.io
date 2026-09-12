@@ -332,6 +332,101 @@
   [data-theme="light"] [style*="--hp-magnesium"] .hp-flink-g { background: #DCDCE4; }
 }
 
+/* ---------- Light theme, outlined: the palette itself, held by a stroke ----------
+   LP: "why not black outline around the same hues in light mode?" It is the
+   same principle one step further. The tier above moves the COLOUR to a role
+   where contrast is cheap; this moves the CONTRAST to a different element and
+   leaves the colour alone. If a dark stroke carries legibility, the fill is
+   free to be any chroma — so light mode uses the palette v2 hexes verbatim,
+   byte-identical to dark mode. No derivation, no hue drift, no divergence.
+
+   WHERE IT IS NOT USED, AND WHY
+   Body copy and every small text keep the derived inks from the tier above.
+   Two independent reasons:
+     1. Perceptual — a stroke on 12-14px text closes the counters (the enclosed
+        whites in a, e, o) and legibility drops rather than rises. Outlining
+        helps large glyphs and hurts small ones.
+     2. Measured — WCAG compares FILL against BACKGROUND and gives a stroke no
+        credit at all. An outlined bright hue on a light ground still computes
+        as a failure, and for a low-vision reader that failure is real, not an
+        artefact of the algorithm. The stroke is not a licence to raise chroma
+        on small text.
+   That second point applies at every size, so the display type below is
+   knowingly outside what the contrast algorithm can score. It is a deliberate
+   trade, not an oversight, and the audit reports it as a failure because that
+   is what it is.
+
+   Stroke colour is pure #000, not the theme ink #1e293b: against the six hues
+   the theme ink measures 3.45-8.69 and is weakest exactly where the fill is
+   darkest (violet 3.45, firetruck 3.59), so the outline thins out on the two
+   colours that need it most. Black measures 4.96-12.48 and is even. Black is
+   also what lets the fills be canonical: as in-fill ink it clears 4.5:1 on all
+   six (violet 4.96, firetruck 5.16), where #0B1220 leaves violet at 4.42.
+
+   Stroke weight is set per role rather than in em, because an em-relative
+   stroke that reads right on the 47px equation is sub-pixel on the 19px
+   readouts and vanishes at 1x. paint-order: stroke fill puts the stroke BEHIND
+   the glyph so the letterform keeps its weight; -webkit-text-stroke alone
+   centres the stroke and thins the counters, which is the thing to avoid. */
+@media screen {
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) {
+    --hp-fill-mint:       #45E0A8;
+    --hp-fill-violet:     #8B5CF6;   /* canonical: black ink clears 4.96:1 */
+    --hp-fill-tangerine:  #FF9300;
+    --hp-fill-firetruck:  #F5232B;
+    --hp-fill-aqua:       #00A2FF;
+    --hp-fill-strawberry: #FF2F92;
+    --hp-on-fill: #000000;
+    --hp-stroke: #000000;
+  }
+  /* display type: canonical hue, stroke behind the glyph */
+  [data-theme="light"][data-accent="outlined"] .hp-eq .t-dh,
+  [data-theme="light"][data-accent="outlined"] .hp-readout .r-dh dd  { color: #45E0A8; }
+  [data-theme="light"][data-accent="outlined"] .hp-eq .t-ds,
+  [data-theme="light"][data-accent="outlined"] .hp-stat-v .t-ds,
+  [data-theme="light"][data-accent="outlined"] .hp-readout .r-tds dd { color: #8B5CF6; }
+  [data-theme="light"][data-accent="outlined"] .hp-eq .t-dg,
+  [data-theme="light"][data-accent="outlined"] .hp-stat-v,
+  [data-theme="light"][data-accent="outlined"] .hp-readout .r-dg dd  { color: #FF9300; }
+  [data-theme="light"][data-accent="outlined"] .hp-eq .t-t,
+  [data-theme="light"][data-accent="outlined"] .hp-stat-v .t-t,
+  [data-theme="light"][data-accent="outlined"] .hp-readout .r-t dd   { color: #F5232B; }
+  [data-theme="light"][data-accent="outlined"] .hp-eq .t-dh,
+  [data-theme="light"][data-accent="outlined"] .hp-eq .t-ds,
+  [data-theme="light"][data-accent="outlined"] .hp-eq .t-dg,
+  [data-theme="light"][data-accent="outlined"] .hp-eq .t-t {
+    paint-order: stroke fill; -webkit-text-stroke: 2px var(--hp-stroke); }
+  [data-theme="light"][data-accent="outlined"] .hp-stat-v,
+  [data-theme="light"][data-accent="outlined"] .hp-stat-v .t-t,
+  [data-theme="light"][data-accent="outlined"] .hp-stat-v .t-ds {
+    paint-order: stroke fill; -webkit-text-stroke: 1.5px var(--hp-stroke); }
+  [data-theme="light"][data-accent="outlined"] .hp-readout dd {
+    paint-order: stroke fill; -webkit-text-stroke: 1px var(--hp-stroke); }
+  [data-theme="light"][data-accent="outlined"] .hp-readout dd .u {
+    -webkit-text-stroke: 0; }   /* the unit is 13.7px — small text, no stroke */
+
+  /* shapes: canonical fill, 1.5px dark border, non-scaling on the SVG so the
+     stroke is the same weight at 1x and 2x instead of shimmering */
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-glyph,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-flink-g,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-pill--h,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-pill--s,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-pill--g,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-tag--today,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-pipe-out {
+    border: 1.5px solid var(--hp-stroke); }
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-wf .wf-dh    { fill: #45E0A8; }
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-wf .wf-tds   { fill: #8B5CF6; }
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-wf .wf-dg    { fill: #FF9300; }
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-wf .wf-tmark { fill: #F5232B; }
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-wf .wf-dh,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-wf .wf-tds,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-wf .wf-dg,
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-wf .wf-tmark {
+    stroke: var(--hp-stroke); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+  [data-theme="light"]:is([data-accent="outlined"],[data-accent="outlined-shapes"]) .hp-quote { border-left-color: #FF9300; }
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
