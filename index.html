@@ -214,6 +214,124 @@
   [data-theme="light"] { --hp-ghost-border: color-mix(in srgb, var(--hp-fg-muted) 70%, transparent); --hp-btn-hover: color-mix(in srgb, var(--hp-mint) 86%, black); }
 }
 
+/* ---------- Light theme: vividness by role ----------
+   The inks above are one luminance (Y ~ .148) so every key colour clears 4.5:1
+   as SMALL TEXT on every light surface. That is correct for body copy and it is
+   what makes the theme muddy everywhere else: darkening a saturated hue is
+   exactly what destroys its chroma, and the whole palette was paying that price
+   on elements that never needed it.
+
+   Vividness and contrast are only in tension when the colour is doing the job of
+   small text. They stop being in tension the moment the colour changes role, so
+   the inks stay exactly as they are for small text and these two tiers take over
+   where the requirement is lower:
+
+     · --hp-vivid-*  large text (>= 24px, or >= 18.66px bold) and graphical
+                     objects, both 3:1. Each is the MAXIMUM in-gamut chroma for
+                     its canonical hue subject to >= 3:1 on the DARKEST
+                     light surface they sit on (#eef2f8, the alt band) — not white,
+                     which is the easiest. Chroma against the ink
+                     it replaces: violet +33%, mint +20%, firetruck +17%,
+                     strawberry +15%, aqua +13%. Tangerine is the exception at
+                     -2%: its ink was already near-maximal because it had been
+                     rotated 16deg off-hue to avoid umber. The vivid one gains
+                     luminosity and gets the TRUE hue back instead. Hue moves
+                     at most 0.58 deg, so every quantity keeps its identity —
+                     and tangerine no longer needs the 16 deg rotation the dark
+                     ink needed, because orange only turns to umber when forced
+                     dark. Violet lands at 6.36:1 and firetruck at 3.98:1
+                     because their maximum chroma happens to sit that deep.
+
+     · --hp-fill-*   the colour becomes the BACKGROUND at full chroma and dark
+                     ink on top carries the ratio. This is the lever that
+                     inverts the problem instead of trading against it: a badge
+                     can be #45E0A8 itself, which no amount of darkening a text
+                     colour will ever match.
+
+   Scoped to @media screen so none of it reaches the print stylesheet. */
+@media screen {
+  [data-theme="light"] {
+    --hp-vivid-mint:       #009F72;   /* 3.39 white · 3.13 page · 3.01 alt band · C .132 (+20%) */
+    --hp-vivid-violet:     #7C00FF;   /* 6.36 · 5.88 · 5.66 · C .293 (+33%) */
+    --hp-vivid-tangerine:  #CE7500;   /* 3.40 · 3.15 · 3.03 · C .150 · true hue, not the ink's 16deg rotation */
+    --hp-vivid-firetruck:  #FF0020;   /* 3.98 · 3.68 · 3.54 · C .256 (+17%) */
+    --hp-vivid-aqua:       #0091E6;   /* 3.39 · 3.14 · 3.02 · C .162 (+13%) */
+    --hp-vivid-strawberry: #FF008D;   /* 3.73 · 3.45 · 3.32 · C .264 (+15%) */
+    --hp-fill-mint:       #45E0A8;    /* canonical; ink below is 11.13:1 on it */
+    --hp-fill-violet:     #8E5AFF;    /* canonical lightened 0.03 L so the ink clears 4.5 */
+    --hp-fill-tangerine:  #FF9300;    /* canonical; 8.40:1 */
+    --hp-fill-firetruck:  #F5232B;    /* canonical; 4.60:1 */
+    --hp-fill-aqua:       #00A2FF;    /* canonical; 6.79:1 */
+    --hp-fill-strawberry: #FF2F92;    /* canonical; 5.42:1 */
+    --hp-on-fill: #0B1220;
+  }
+
+  /* -- large text: the 3:1 bar, so the inks give way to the vivid tier -- */
+  [data-theme="light"] .hp-eq .t-dh,
+  [data-theme="light"] .hp-readout .r-dh dd { color: var(--hp-vivid-mint); }
+  [data-theme="light"] .hp-eq .t-ds,
+  [data-theme="light"] .hp-stat-v .t-ds,
+  [data-theme="light"] .hp-readout .r-tds dd { color: var(--hp-vivid-violet); }
+  [data-theme="light"] .hp-eq .t-dg,
+  [data-theme="light"] .hp-readout .r-dg dd { color: var(--hp-vivid-tangerine); }
+  [data-theme="light"] .hp-eq .t-t,
+  [data-theme="light"] .hp-stat-v .t-t,
+  [data-theme="light"] .hp-readout .r-t dd { color: var(--hp-vivid-firetruck); }
+  [data-theme="light"] .hp-stat-v { color: var(--hp-vivid-tangerine); }
+
+  /* -- graphical objects: 3:1 measured against the surface each actually sits
+     on. The waterfall bars are inside the white ledger card, not on the alt
+     band, so they get their own tier: max chroma subject to 3:1 on #ffffff,
+     which is brighter than the alt-band-safe vivid tier. Measuring the pair
+     rather than assuming the worst surface is worth a visible step here. -- */
+  [data-theme="light"] {
+    --hp-bar-mint:      #00A979;   /* 3.02 on the white card · C .138 */
+    --hp-bar-violet:    #7C00FF;   /* 6.36 · C .293 */
+    --hp-bar-tangerine: #DC7D00;   /* 3.01 · C .158 */
+    --hp-bar-firetruck: #FF0020;   /* 3.98 · C .256 */
+  }
+  [data-theme="light"] .hp-wf .wf-dh   { fill: var(--hp-bar-mint); }
+  [data-theme="light"] .hp-wf .wf-tds  { fill: var(--hp-bar-violet); }
+  [data-theme="light"] .hp-wf .wf-dg   { fill: var(--hp-bar-tangerine); }
+  [data-theme="light"] .hp-wf .wf-tmark{ fill: var(--hp-bar-firetruck); }
+  [data-theme="light"] .hp-quote { border-left-color: var(--hp-vivid-tangerine); }
+
+  /* -- colour as fill: the badge is the colour, the ink carries the ratio -- */
+  [data-theme="light"] .hp-pill--h,
+  [data-theme="light"] .hp-pill--s,
+  [data-theme="light"] .hp-pill--g,
+  [data-theme="light"] .hp-tag--today,
+  [data-theme="light"] .hp-pipe-out { color: var(--hp-on-fill); border-color: transparent; }
+  [data-theme="light"] .hp-pill--h   { background: var(--hp-fill-mint); }
+  [data-theme="light"] .hp-pill--s   { background: var(--hp-fill-violet); }
+  [data-theme="light"] .hp-pill--g   { background: var(--hp-fill-tangerine); }
+  [data-theme="light"] .hp-tag--today{ background: var(--hp-fill-strawberry); }
+  [data-theme="light"] .hp-pipe-out  { background: var(--hp-fill-tangerine); }
+
+  /* The card and footer glyph tiles: 19px and 12px marks that were coloured
+     text on a 6% wash. Each card/link sets its own accent inline as --hp-cc,
+     so the tiles are matched on that and the accent becomes the FILL, with the
+     dark ink on top carrying the ratio. Full chroma at any tile size. */
+  [data-theme="light"] .hp-glyph,
+  [data-theme="light"] .hp-flink-g { color: var(--hp-on-fill); border-color: transparent; }
+  [data-theme="light"] .hp-glyph .hp-T,
+  [data-theme="light"] .hp-flink-g .hp-T { color: var(--hp-on-fill); }
+  [data-theme="light"] [style*="--hp-mint"] .hp-glyph,
+  [data-theme="light"] [style*="--hp-mint"] .hp-flink-g { background: var(--hp-fill-mint); }
+  [data-theme="light"] [style*="--hp-violet"] .hp-glyph,
+  [data-theme="light"] [style*="--hp-violet"] .hp-flink-g { background: var(--hp-fill-violet); }
+  [data-theme="light"] [style*="--hp-tangerine"] .hp-glyph,
+  [data-theme="light"] [style*="--hp-tangerine"] .hp-flink-g { background: var(--hp-fill-tangerine); }
+  [data-theme="light"] [style*="--hp-firetruck"] .hp-glyph,
+  [data-theme="light"] [style*="--hp-firetruck"] .hp-flink-g { background: var(--hp-fill-firetruck); }
+  [data-theme="light"] [style*="--hp-aqua"] .hp-glyph,
+  [data-theme="light"] [style*="--hp-aqua"] .hp-flink-g { background: var(--hp-fill-aqua); }
+  [data-theme="light"] [style*="--hp-strawberry"] .hp-glyph,
+  [data-theme="light"] [style*="--hp-strawberry"] .hp-flink-g { background: var(--hp-fill-strawberry); }
+  [data-theme="light"] [style*="--hp-magnesium"] .hp-glyph,
+  [data-theme="light"] [style*="--hp-magnesium"] .hp-flink-g { background: #DCDCE4; }
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
