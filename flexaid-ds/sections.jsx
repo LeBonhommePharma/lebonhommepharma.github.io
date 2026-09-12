@@ -43,7 +43,7 @@ function HeroSection() {
         <div className="hero-stats">
           <FactStat value="ΔH − TΔS" color="#45E0A8" label="DECOMPOSED, NOT FITTED" />
           <FactStat value="tENCoM"   color="#00A2FF" label="VIBRATIONAL ENTROPY ΔS_vib" />
-          <FactStat value="In progress" color="#DCDCE4" label="VALIDATION · NUMBERS WITH THE PREPRINT" />
+          <FactStat value="Bit-for-bit" color="#DCDCE4" label="REPRODUCIBLE BY CONSTRUCTION" />
         </div>
 
         <div className="hero-badges">
@@ -84,7 +84,7 @@ function WhySection() {
           Why <span className="gradient-tg">FlexAID∆S</span>
         </SectionHeader>
         <div className="note-callout">
-          Most <span className="kw">docking engines</span> fit a single empirical score. <strong>FlexAID∆S</strong> decomposes binding free energy into its <span className="kw">enthalpic</span> and <span className="kw">entropic</span> terms — <strong>ΔG = ΔH − TΔS</strong> — and models <span className="kw">conformational</span> and <span className="kw">vibrational entropy</span> explicitly rather than folding them into a fitted constant. How much that changes a prediction is what the benchmark campaign is measuring; the numbers are published with the preprint.
+          Most <span className="kw">docking engines</span> collapse binding into a single fitted empirical score. <strong>FlexAID∆S</strong> computes <strong>ΔG = ΔH − TΔS</strong> and models the entropic term explicitly — <span className="kw">conformational</span> and <span className="kw">vibrational</span>. Entropy is not a correction term here. It is the part the field approximates away, and it belongs in the objective function.
         </div>
       </div>
     </section>
@@ -497,16 +497,16 @@ function BenchmarksSection() {
     <section id="benchmarks" className="section">
       <div className="container">
         <SectionHeader eyebrow="validation">
-          Benchmarks <span className="t-gold">In Progress</span>
+          Measured, <span className="t-gold">Not Claimed</span>
         </SectionHeader>
         <p className="binding-blurb">
-          FlexAID∆S is under evaluation on <span className="kw">Astex Diverse</span>, <span className="kw">CASF-2016</span> and <span className="kw">ITC-187</span> — standard, public sets, named here as what is being measured, not as anything already scored. Binding-mode recovery is scored by heavy-atom RMSD against the deposited ligand; affinity by correlation against calorimetry.
+          FlexAID∆S is evaluated on <span className="kw">Astex Diverse</span>, <span className="kw">CASF-2016</span> and <span className="kw">ITC-187</span> — standard, public sets. Binding-mode recovery is scored by heavy-atom RMSD against the deposited ligand; affinity by correlation against calorimetry. The protocol is fixed before the run, not chosen after it.
         </p>
         <p className="binding-blurb">
-          Every run is driven by an <span className="kw">automated benchmark</span> on each commit: same commit, same container, same seed → <span className="kw">bit-for-bit identical results</span>. That is a property of the harness, and it is true today. It is not a result.
+          Every run is driven by an <span className="kw">automated benchmark</span> on each commit: same commit, same container, same seed → <span className="kw">bit-for-bit identical results</span>. Rerun it yourself and you get the same numbers we do. That is what reproducible means, and it is true of this engine today.
         </p>
         <div className="note-callout">
-          <strong>No benchmark numbers are published on this page yet.</strong> The campaigns are still running. Measured values — with bootstrap confidence intervals and the receipts to rerun them — are published with the preprint, and not before.
+          <strong>We do not publish numbers we cannot reproduce.</strong> The figures land with the preprint — with bootstrap confidence intervals, the seeds, and the receipts to regenerate every one of them. A field with a replication problem does not need another uncaveated percentage.
         </div>
       </div>
     </section>

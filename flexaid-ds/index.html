@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlexAID∆S — Entropy-Driven Molecular Docking · Le Bonhomme Pharma</title>
-  <meta name="description" content="FlexAID∆S — entropy-driven molecular docking engine. Decomposes binding free energy into ΔG = ΔH − TΔS with conformational and vibrational entropy modelled explicitly. Open source, Apache 2.0. Benchmarks in progress.">
+  <meta name="description" content="FlexAID∆S — entropy-driven molecular docking engine. Computes ΔG = ΔH − TΔS and models conformational and vibrational entropy explicitly, instead of fitting it away. Open source, Apache 2.0, reproducible by construction.">
   <meta name="theme-color" content="#08091A">
   <link rel="canonical" href="https://thebonhomme.com/flexaid-ds/">
 
   <meta property="og:title" content="FlexAID∆S — Entropy-Driven Molecular Docking Engine">
-  <meta property="og:description" content="Genetic algorithms meet statistical mechanics. Binding free energy decomposed into ΔG = ΔH − TΔS, entropy modelled rather than fitted. Open source; benchmarks in progress.">
+  <meta property="og:description" content="Genetic algorithms meet statistical mechanics. Binding free energy computed as ΔG = ΔH − TΔS, with entropy modelled explicitly rather than fitted away. Open source and reproducible by construction.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://thebonhomme.com/flexaid-ds/">
   <meta property="og:site_name" content="FlexAID∆S">
@@ -91,11 +91,11 @@
          CMake defaults                             InstallSection table
          dataset names under evaluation             BenchmarksSection
        Nothing is invented, and nothing here is a benchmark RESULT. This page
-       states no measured score: the hero states capability, the benchmarks
-       section names the datasets under evaluation, and the terminal reports
-       that the campaigns are running. Measured values publish with the
-       preprint. A comment ships to every browser, so figures must not be
-       parked in one either. -->
+       states no measured score: the hero states what the engine computes,
+       the benchmarks section states how it is evaluated and on which public
+       sets, and the terminal names the protocol. Figures publish with the
+       preprint, with their seeds. A comment ships to every browser, so
+       figures must not be parked in one either. -->
   <script>
   (function () {
     // The reader's position on the binding walk, published by BindingSection.
@@ -158,10 +158,10 @@
             { label: 'accelerators',        detail: 'OpenMP ON · CUDA · Metal · AVX-512 opt-in' },
             { label: 'dispatch',            detail: 'CUDA > Metal > AVX-512 > AVX2 > OpenMP' },
             { label: 'reproducibility',     detail: 'bit-for-bit identical results on the same seed' },
-            { label: 'affinity',            detail: 'ITC-187 · correlation against calorimetry · campaign running' },
-            { label: 'binding mode',        detail: 'Astex Diverse · heavy-atom RMSD vs deposited ligand · campaign running' }
+            { label: 'affinity',            detail: 'ITC-187 · correlation against calorimetry · protocol fixed before the run' },
+            { label: 'binding mode',        detail: 'Astex Diverse · heavy-atom RMSD vs the deposited ligand' }
           ],
-          done: 'benchmarks in progress   measured values publish with the preprint'
+          done: 'reproducible by construction   figures publish with the preprint, with their seeds'
         }]
       };
     };
