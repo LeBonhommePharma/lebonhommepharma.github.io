@@ -207,28 +207,18 @@ function ParticleCanvas() {
   return <canvas ref={ref} className="particle-canvas" aria-hidden="true" />;
 }
 
-// ─── Stat that counts up from 0 to its final value on first mount ───
-function CountStat({ to, suffix = "", decimals = 0, color, label }) {
-  const [v, setV] = useState(0);
-  useEffect(() => {
-    const dur = 1200;
-    const start = performance.now();
-    let raf = 0;
-    const step = (now) => {
-      const p = Math.min(1, (now - start) / dur);
-      // expo-out easing
-      const eased = 1 - Math.pow(1 - p, 3);
-      setV(to * eased);
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [to]);
+// ─── A hero fact. Static on purpose ───
+// This replaced the count-up stat, which animated 0 -> a benchmark result.
+// The animation was not decoration: a number climbing to a figure is a
+// rhetorical device for asserting that figure, so re-pointing it at a
+// different number would have kept the device. The Astex / CASF-2016 /
+// ITC-187 campaigns are still running, so the hero states what the engine
+// DOES, which is true and checkable today, and the measured numbers land
+// with the preprint.
+function FactStat({ value, color, label }) {
   return (
     <div className="hero-stat">
-      <div className="hero-stat-value" style={{ color }}>
-        {v.toFixed(decimals)}{suffix}
-      </div>
+      <div className="hero-stat-value" style={{ color }}>{value}</div>
       <div className="hero-stat-label">{label}</div>
     </div>
   );
@@ -268,4 +258,4 @@ function DrugOfDayBadge() {
   );
 }
 
-Object.assign(window, { Wordmark, LogoMark, SectionHeader, FeatureCard, ArchStep, EntropyMeter, Nav, ParticleCanvas, CountStat, DrugOfDayBadge });
+Object.assign(window, { Wordmark, LogoMark, SectionHeader, FeatureCard, ArchStep, EntropyMeter, Nav, ParticleCanvas, FactStat, DrugOfDayBadge });
