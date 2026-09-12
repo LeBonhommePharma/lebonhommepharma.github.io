@@ -214,73 +214,60 @@
   [data-theme="light"] { --hp-ghost-border: color-mix(in srgb, var(--hp-fg-muted) 70%, transparent); --hp-btn-hover: color-mix(in srgb, var(--hp-mint) 86%, black); }
 }
 
-/* ---------- The seven on a light ground, by role ----------
+/* ---------- The seven on a light ground: two tiers, one rule ----------
    The inks above are one luminance (Y ~ .148) so every key colour clears
-   4.5:1 as SMALL TEXT on every light surface. That is right for body copy and
-   it is what made the theme muddy everywhere else: darkening a saturated hue
-   is exactly what destroys its chroma, and the palette was paying that price
-   on elements that never needed it. The inks were already at maximum in-gamut
-   chroma for their luminance, so there was nothing to reclaim by re-deriving
-   them — the gain comes from changing the ROLE the colour plays.
+   4.5:1 as small text on every light surface. That is correct, and on its own
+   it is also why the light theme read muddy: darkening a saturated hue is
+   exactly what destroys its chroma, and the theme was paying that price on
+   chart bars, badges and tiles, which are not text and never needed it.
 
-   Small text keeps the inks. Everything else follows one rule:
+   The fix is NOT a third value for display type. Palette v2 binds one colour
+   to one quantity — mint is dH and nothing else — and that binding is the
+   whole point of the system. If the equation's dH term and the chart's dH bar
+   are two different greens, the palette signals a distinction where none
+   exists, and a reader who has learned mint = dH has to hold two mints and
+   work out that the difference means nothing. That is a semantic defect and
+   it is worse than the aesthetic one, because it degrades the thing the
+   palette exists to do.
 
-     USE THE CANONICAL PALETTE v2 HEX WHEREVER IT IS LEGIBLE TO DO SO,
-     AND THE DARKEST-SAFE DERIVED VALUE ONLY WHERE IT IS NOT.
+   A single value per quantity is not reachable: no canonical hex clears 4.5:1
+   as small text on the #eef2f8 alt band (mint 1.50, violet 3.77, tangerine
+   1.98, firetruck 3.62, aqua 2.46, strawberry 3.08), so one value would force
+   every role down to the ink and back to the muddy theme. So there are
+   exactly TWO tiers, applied to all six hues with no exceptions:
 
-   Three roles fall out of that, and which one applies is decided by
-   measurement, not by taste:
+     TEXT  — every coloured word, small or display, is the ink.
+     FILL  — every chip, badge, tile, chart bar and rule is the CANONICAL
+             palette v2 hex, byte-identical to dark mode, with a 1.5px #000
+             stroke carrying the boundary and #000 ink carrying any text
+             inside it.
 
-   1. SHAPES — chips, badges, the glyph tiles, chart bars, rules. The colour
-      is the FILL at canonical, a 1.5px #000 stroke carries the boundary, and
-      #000 ink on top carries any text inside. Nothing is darkened; the
-      contrast moves to a different element. This is the whole of the palette
-      at full chroma, byte-identical to dark mode.
+   The rule a reader internalises is "text is a shade darker", which holds for
+   every quantity: mint dE_OK 29.9, tangerine 22.5, aqua 16.3, strawberry
+   10.9, firetruck 6.9, violet 5.2. It is deliberately uniform. Letting violet
+   and firetruck use canonical as display type — they do clear the 3:1 large
+   bar at 4.23 and 4.07 — was tempting and is rejected: it would make two
+   quantities match between equation and bar while mint and tangerine could
+   not, and a rule with a one-off exception for green reads as a mistake
+   rather than a system.
 
-   2. DISPLAY TEXT that can be canonical — >= 24px, or >= 18.66px bold, so the
-      bar is 3:1, and the canonical hex clears it on the white card:
-      violet #8B5CF6 at 4.23:1 and firetruck #F5232B at 4.07:1. These use the
-      palette hex directly, so the equation and the bar beneath it are the
-      same colour.
-
-   3. DISPLAY TEXT that cannot — mint #45E0A8 is 1.68:1 and tangerine #FF9300
-      is 2.23:1 on white, both under the 3:1 bar, and a stroke earns no credit
-      from the contrast algorithm at any size. These two keep a derived value:
-      maximum in-gamut chroma for the canonical hue subject to >= 3:1 on
-      #eef2f8, the darkest light surface they sit on. Mint gains 20% chroma
-      over the ink it replaces; tangerine loses 2% but gains luminosity and
-      gets its TRUE hue back (the ink had been rotated 16deg off-hue to escape
-      umber, which only happens when orange is forced dark).
-
-   So mint and tangerine read a step darker as text than as fill (dE_OK 19.1
-   and 11.7) while violet and firetruck are identical in both roles. That
-   asymmetry is the rule showing through, not drift: the two hues that step
-   are exactly the two that cannot legally hold canonical as text.
-
-   Small text is deliberately excluded from all of this. A stroke closes the
-   counters at 12-14px so legibility drops rather than rises, and WCAG scores
-   fill against background and gives a stroke nothing. The stroke is not a
-   licence to raise chroma on small text.
+   The contrast moves to a different element rather than out of the colour.
+   That is what lets the fills stay canonical, and it only works where there
+   is an element to move it to, which is why text is excluded: a stroke closes
+   the counters at 12-14px so legibility drops rather than rises, and WCAG
+   scores fill against background and gives a stroke no credit at any size.
 
    #000 rather than the theme ink #1e293b: against the six hues the theme ink
-   measures 3.45-8.69 and is weakest exactly where the fill is darkest
-   (violet 3.45, firetruck 3.59), so it thins out on the colours that need it
-   most. Black measures 4.96-12.48 and is even. Black is also what lets the
-   fills stay canonical — as in-fill ink it clears 4.5:1 on all six
-   (violet 4.96, firetruck 5.16) where #0B1220 leaves violet at 4.42.
-
-   Stroke weight is per role, not em-relative: an em stroke that reads right
-   on the 47px equation is sub-pixel on the 19px readouts and gone at 1x.
-   vector-effect: non-scaling-stroke keeps the SVG bars the same weight at 1x
-   and 2x instead of shimmering.
+   measures 3.45-8.69 and is weakest exactly where the fill is darkest (violet
+   3.45, firetruck 3.59), so it thins out on the colours that need it most.
+   Black measures 4.96-12.48 and is even, and as in-fill ink it clears 4.5:1
+   on all six (violet 4.96, firetruck 5.16) where #0B1220 leaves violet at
+   4.42. vector-effect: non-scaling-stroke keeps the SVG bars the same weight
+   at 1x and 2x instead of shimmering.
 
    Scoped to @media screen so none of it reaches the print stylesheet. */
 @media screen {
   [data-theme="light"] {
-    /* derived display values — only for the two hues that cannot be canonical */
-    --hp-vivid-mint:      #009F72;   /* 3.39 white · 3.13 page · 3.01 alt · C .132 (+20%) */
-    --hp-vivid-tangerine: #CE7500;   /* 3.40 · 3.15 · 3.03 · C .150 · true hue */
-    /* shapes: the palette itself */
     --hp-fill-mint:       #45E0A8;
     --hp-fill-violet:     #8B5CF6;
     --hp-fill-tangerine:  #FF9300;
@@ -291,20 +278,7 @@
     --hp-stroke:  #000000;
   }
 
-  /* -- display text -- */
-  [data-theme="light"] .hp-eq .t-dh,
-  [data-theme="light"] .hp-readout .r-dh dd  { color: var(--hp-vivid-mint); }
-  [data-theme="light"] .hp-eq .t-dg,
-  [data-theme="light"] .hp-stat-v,
-  [data-theme="light"] .hp-readout .r-dg dd  { color: var(--hp-vivid-tangerine); }
-  [data-theme="light"] .hp-eq .t-ds,
-  [data-theme="light"] .hp-stat-v .t-ds,
-  [data-theme="light"] .hp-readout .r-tds dd { color: var(--hp-fill-violet); }
-  [data-theme="light"] .hp-eq .t-t,
-  [data-theme="light"] .hp-stat-v .t-t,
-  [data-theme="light"] .hp-readout .r-t dd   { color: var(--hp-fill-firetruck); }
-
-  /* -- shapes: canonical fill, black stroke, black ink -- */
+  /* -- fills: canonical hue, black stroke, black ink -- */
   [data-theme="light"] .hp-pill--h,
   [data-theme="light"] .hp-pill--s,
   [data-theme="light"] .hp-pill--g,
@@ -347,6 +321,18 @@
   [data-theme="light"] .hp-wf .wf-tmark {
     stroke: var(--hp-stroke); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
   [data-theme="light"] .hp-quote { border-left-color: var(--hp-fill-tangerine); }
+
+  /* The primary CTA and the skip link were the last fills still on the text
+     tier — mint ink behind white type. That made dH two different greens in
+     FILL role, which is the same defect this block exists to remove, so they
+     join the fill tier like every other filled element. */
+  [data-theme="light"] .hp-btn--primary,
+  [data-theme="light"] .hp-btn--primary:active,
+  [data-theme="light"] .hp-skip {
+    background: var(--hp-fill-mint); color: var(--hp-on-fill);
+    border: 1.5px solid var(--hp-stroke); }
+  [data-theme="light"] .hp-btn--primary:hover {
+    background: var(--hp-fill-mint); filter: brightness(0.94); }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
