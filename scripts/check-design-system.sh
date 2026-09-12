@@ -140,12 +140,69 @@ SCAN_EXCLUDE_RE='^(design/palette-v2/|rive/|transitA/|style\.css$|assets/index-[
 IGNORE_START='palette-check-ignore-start'
 IGNORE_END='palette-check-ignore-end'
 
-# A light/day theme legitimately DARKENS the triad so it holds contrast on a
-# light ground — #0E90AE is still ΔH, just rendered for a white page. The
-# binding to the quantity is what this guard protects, not the exact hex, so
-# a rebind on a line that also carries a light-theme selector is allowed.
-# (Matched on the same line because the pages that do this are minified.)
-LIGHT_CTX_RE='data-theme\s*=\s*["'"'"']?(day|light)'
+# A light/day theme — and a print stylesheet — legitimately DARKENS the triad
+# so it holds contrast on a light ground. #0E90AE is still ΔH, just rendered
+# for a white page. The binding to the QUANTITY is what this guard protects,
+# not the exact hex.
+#
+# This used to be waved through by location: any rebind on a line that also
+# carried a light-theme selector was allowed, whatever its value. That is the
+# failure this repo keeps paying for — an exemption wide enough to admit the
+# thing it was meant to catch. A retired v1 hex dropped onto a line with a
+# theme selector sailed straight through.
+#
+# So the allowance is now on the VALUE, not the location. Hue is the identity
+# of a quantity; lightness is the free parameter. A rebind is admitted only if
+# it is the same hue as the canonical colour, measured in OKLCH. Every retired
+# v1 hex fails this on hue alone by a wide margin (teal 47°, terra 68°,
+# gold 23°), so the drift this guard exists to catch still goes red no matter
+# where it is written.
+HUE_TOL_DEG=3.0        # hue must hold; 0.5° is typical for a real relighting
+CHROMA_GAIN_TOL=0.05   # chroma may FALL freely (the sRGB gamut narrows as a
+                       # colour darkens, so a real relighting sheds chroma);
+                       # it may only RISE a little, since a more saturated
+                       # value is the direction a different colour comes from.
+                       # Hue does the discriminating either way.
+
+# Reads "file:line:text" hits on stdin; re-emits only the GENUINE violations.
+# A hit is dropped only when every key-colour rebind on that line is a
+# same-hue relighting of its own canonical value.
+#
+# Fails CLOSED: without python3 nothing is dropped, so an unverifiable line is
+# reported rather than excused. A guard that cannot evaluate its own allowance
+# must not grant it.
+relight_filter() {
+  if ! command -v python3 >/dev/null 2>&1; then cat; return; fi
+  python3 -c '
+import sys,re,math
+HUE_TOL=float(sys.argv[1]); CHR_GAIN=float(sys.argv[2])
+CANON={"mint":"#45E0A8","violet":"#8B5CF6","tangerine":"#FF9300","firetruck":"#F5232B",
+       "aqua":"#00A2FF","strawberry":"#FF2F92","magnesium":"#DCDCE4"}
+def s2l(c):
+    c/=255.0; return c/12.92 if c<=0.04045 else ((c+0.055)/1.055)**2.4
+M=[[.4122214708,.5363325363,.0514459929],[.2119034982,.6806995451,.1073969566],[.0883024619,.2817188376,.6299787005]]
+N=[[.2104542553,.7936177850,-.0040720468],[1.9779984951,-2.4285922050,.4505937099],[.0259040371,.7827717662,-.8086757660]]
+def lch(h):
+    h=h.lstrip("#")
+    rgb=[s2l(int(h[i:i+2],16)) for i in (0,2,4)]
+    lms=[sum(r[i]*rgb[i] for i in range(3)) for r in M]
+    lms=[math.copysign(abs(c)**(1/3.0),c) for c in lms]
+    L,a,b=[sum(r[i]*lms[i] for i in range(3)) for r in N]
+    return L,math.hypot(a,b),math.atan2(b,a)
+PAIR=re.compile(r"--(mint|violet|tangerine|firetruck|aqua|strawberry|magnesium)\s*:\s*(#[0-9A-Fa-f]{6})\b")
+for line in sys.stdin:
+    pairs=PAIR.findall(line)
+    ok=bool(pairs)
+    for tok,val in pairs:
+        L0,C0,H0=lch(CANON[tok]); L1,C1,H1=lch(val)
+        if val.upper()==CANON[tok]: continue
+        dh=abs((math.degrees(H1-H0)+180)%360-180)
+        achromatic = C0<0.02 and C1<0.02      # magnesium carries no hue
+        if not ((achromatic or dh<=HUE_TOL) and (C1-C0)<=CHR_GAIN and abs(L1-L0)>1e-6):
+            ok=False; break
+    if not ok: sys.stdout.write(line)
+' "$HUE_TOL_DEG" "$CHROMA_GAIN_TOL"
+}
 
 fail=0
 note() { printf '  %s\n' "$*"; }
@@ -199,6 +256,40 @@ self_test() {
       note "ok    allows $label"
     fi
   done
+
+  # ── the relighting allowance ───────────────────────────────────────────
+  # It must admit a same-hue darkening for a light ground, and must still
+  # reject an off-hue value WHEREVER it is written. Location is not a licence:
+  # the last three cases hide retired v1 hexes on exactly the kind of line the
+  # old location-based hatch waved through, and they must still go red.
+  local -a relight_ok_cases=(
+    'f:1:  :root{--mint:#006648;--violet:#6B33CD;--tangerine:#864A00;}|the print palette, hue held'
+    'f:1:  :root{--firetruck:#B60014;--aqua:#005D95;--strawberry:#AF005F;}|the rest of it'
+    'f:1:  :root[data-theme="light"]{--violet:#7C3AED;}|a real light-theme violet'
+    'f:1:  :root{--magnesium:#3A3A44;}|achromatic baseline, lightness only'
+  )
+  local -a relight_bad_cases=(
+    'f:1:  :root[data-theme="light"]{--mint:#22D3EE;}|v1 cyan on a light-theme line'
+    'f:1:  @media print{:root{--tangerine:#FBBF24;}}|v1 gold inside a print block'
+    'f:1:  :root[data-theme="day"]{--violet:#8B1A4A;}|v1 terra on a day-theme line'
+    'f:1:  :root{--mint:#FF0000;}|an absurd hue'
+  )
+  for c in "${relight_ok_cases[@]}"; do
+    IFS='|' read -r input label <<<"$c"
+    if [ -z "$(printf '%s\n' "$input" | relight_filter)" ]; then
+      note "ok    allows $label"
+    else
+      note "BROKEN relight_filter rejects $label"; ok=0
+    fi
+  done
+  for c in "${relight_bad_cases[@]}"; do
+    IFS='|' read -r input label <<<"$c"
+    if [ -n "$(printf '%s\n' "$input" | relight_filter)" ]; then
+      note "ok    flags $label"
+    else
+      note "BROKEN relight_filter excuses $label"; ok=0
+    fi
+  done
   [ "$ok" = 1 ] || { echo "self-test FAILED — the checks below cannot be trusted."; exit 2; }
 }
 
@@ -247,7 +338,7 @@ SCAN_CACHE=$(scannable | tr -d '\0')
 
 bind_fail=0
 for re in "${BIND_RES[@]}"; do
-  hits=$(printf '%s\n' "$SCAN_CACHE" | grep -aP -e "$re" | grep -avP -e "$LIGHT_CTX_RE" || true)
+  hits=$(printf '%s\n' "$SCAN_CACHE" | grep -aP -e "$re" | relight_filter || true)
   if [ -n "$hits" ]; then
     printf '%s\n' "$hits" | sed 's/^/        /' | cut -c1-160
     bind_fail=1

@@ -1,1214 +1,347 @@
 <!DOCTYPE html>
-<html><head>
-<link rel="stylesheet" href="/tokens.css">
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="/assets/cv/dc-runtime.js"></script>
+<title>LP Morency · Curriculum Vitae</title>
+<meta name="description" content="Louis-Philippe (LP) Morency − computational pharmacologist, main author of FlexAIDΔS, Le Bonhomme Pharma, Montréal.">
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/interaction.css">
+<style>
+
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:swap;src:url("/assets/fonts/jetbrains-mono-latin.woff2") format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:swap;src:url("/assets/fonts/jetbrains-mono-greek.woff2") format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF;}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:300 700;font-display:swap;src:url("/assets/fonts/jetbrains-mono-latin-ext.woff2") format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
+@font-face{font-family:'SF Pro Display';font-style:normal;font-weight:400;font-display:swap;src:url("/assets/cv/fonts/SFProDisplay-Regular.woff2") format('woff2');}
+@font-face{font-family:'SF Pro Display';font-style:normal;font-weight:500;font-display:swap;src:url("/assets/cv/fonts/SFProDisplay-Medium.woff2") format('woff2');}
+@font-face{font-family:'SF Pro Display';font-style:normal;font-weight:600;font-display:swap;src:url("/assets/cv/fonts/SFProDisplay-Semibold.woff2") format('woff2');}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:var(--lh-body);}
+.page{position:relative;width:8.5in;min-height:11in;margin:0 auto;padding:0.7in 0.72in;box-sizing:border-box;background:var(--bg);overflow:hidden;
+  background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:var(--grid-step) var(--grid-step);}
+.page>*{position:relative;}
+a{color:var(--fg-muted);text-decoration:none;transition:color .18s cubic-bezier(.16,1,.3,1),filter .18s cubic-bezier(.16,1,.3,1);}
+a:hover{color:var(--mint);filter:brightness(1.15);}
+a:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px;border-radius:4px;}
+::selection{background:var(--mint-20);}
+.mono{font-family:var(--font-mono);}
+header.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:16px;border-bottom:1px solid var(--mint-20);}
+h1{font-family:var(--font-mono);font-weight:var(--fw-700);font-size:34px;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--fg);margin:0 0 9px;}
+.role{font-family:var(--font-mono);font-size:12px;font-weight:var(--fw-500);color:var(--mint);}
+.sub{font-size:12px;color:var(--fg-muted);margin-top:3px;}
+.contact{text-align:right;font-family:var(--font-mono);font-size:10px;line-height:1.85;color:var(--fg-muted);white-space:nowrap;}
+.dim{opacity:.6;}
+section{margin-top:20px;}
+.eyebrow{font-family:var(--font-mono);font-size:var(--fs-tag);font-weight:var(--fw-500);letter-spacing:var(--tracking-tag);text-transform:uppercase;color:var(--violet);margin-bottom:12px;}
+.sub-eyebrow{font-family:var(--font-mono);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--fg-muted);margin:0 0 8px;}
+p{max-width:none;margin:0;font-size:13px;line-height:1.62;color:var(--magnesium);}
+.body{font-size:12px;line-height:1.55;color:var(--fg-muted);}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{font-family:var(--font-mono);font-size:10px;background:var(--mint-06);border:1px solid var(--mint-15);border-radius:3px;padding:3px 8px;}
+.row{display:flex;justify-content:space-between;gap:16px;align-items:baseline;}
+.strong{font-weight:var(--fw-600);font-size:13px;color:var(--fg);}
+.org{font-family:var(--font-mono);font-size:11px;color:var(--mint);margin:2px 0 6px;}
+.dates{font-family:var(--font-mono);font-size:10.5px;color:var(--fg-muted);white-space:nowrap;}
+ul.pts{margin:0;padding:0;list-style:none;}
+ul.pts li{position:relative;padding-left:16px;font-size:12px;line-height:1.55;color:var(--fg-muted);margin-bottom:3px;}
+ul.pts li::before{content:"›";position:absolute;left:0;color:var(--mint);opacity:.6;}
+.sw{margin-bottom:12px;break-inside:avoid;}
+.sw-name{font-family:var(--font-mono);font-weight:var(--fw-600);font-size:13px;}
+.sw-stack{font-family:var(--font-mono);font-size:9.5px;color:var(--fg-muted);opacity:.7;}
+.lic{font-family:var(--font-mono);font-size:9px;color:var(--tangerine);border:1px solid var(--tangerine-35);border-radius:3px;padding:1px 6px;}
+.method{border-left:2px solid var(--tangerine);padding-left:11px;}
+ol.pubs{margin:0 0 14px;padding:0;list-style:none;}
+ol.pubs li{position:relative;padding-left:26px;font-size:12px;line-height:1.55;color:var(--fg-muted);margin-bottom:9px;break-inside:avoid;}
+ol.pubs li .n{position:absolute;left:0;top:0;font-family:var(--font-mono);font-size:10px;color:var(--mint);}
+ol.pubs li .au{color:var(--magnesium);}
+ol.pubs li .ve{font-style:italic;}
+ol.pubs li .yr{font-family:var(--font-mono);color:var(--mint);}
+.skill{display:flex;gap:12px;margin-bottom:8px;align-items:baseline;}
+.skill .grp{font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;width:96px;}
+.skill .chips{gap:5px;}
+.skill .chip{font-size:9.5px;padding:2px 7px;}
+.award{display:flex;justify-content:space-between;gap:16px;margin-bottom:8px;}
+.award .nm{font-weight:var(--fw-600);font-size:12.5px;}
+.award .bd{font-size:11.5px;color:var(--fg-muted);}
+.award .yr{font-family:var(--font-mono);font-size:10.5px;color:var(--fg-muted);white-space:nowrap;}
+.writing p{font-size:12px;line-height:1.6;color:var(--fg-muted);margin:0 0 8px;padding-left:11px;border-left:2px solid var(--tangerine);}
+.writing p.h{border-left-color:var(--mint);margin:0;}
+.equation{display:flex;justify-content:center;margin:14px 0 12px;font-family:var(--font-mono);font-size:15px;font-weight:var(--fw-500);letter-spacing:0.04em;}
+.equation .op{color:var(--fg-muted);}
+.grid2{display:grid;grid-template-columns:1.32fr 1fr;gap:26px;margin-top:20px;}
+.grid2 .eyebrow{margin-bottom:10px;}
+.grid2 section{margin-top:0;}
+.grid2 section+section{margin-top:16px;}
+footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--fg-muted);opacity:.85;}
+.avoid{break-inside:avoid;}
+@media screen{body{padding:32px 0;}.page{box-shadow:0 0 0 1px var(--mint-10),0 24px 64px rgba(0,0,0,.5);}}
+@media (max-width:8.7in){.page{width:100%;min-height:0;padding:28px 20px;}header.hd{flex-direction:column;align-items:flex-start;}.contact{text-align:left;white-space:normal;}.grid2{grid-template-columns:1fr;}h1{font-size:28px;}}
+@page{size:Letter;margin:15mm 14mm 16mm;}
+@media print{
+  /* PRINT: one accent, warm neutrals.
+     The screen palette is multi-hue because each hue MEANS a quantity —
+     mint dH, violet dS, tangerine dG. On a CV those hues are decoration, not
+     semantics: they pay the cost of a system without delivering its benefit,
+     and several darkened hues at once read institutional rather than sharp.
+     So print keeps ONLY the brand mint — same hue as #45E0A8, darkened for
+     paper — and resolves everything else to a warm near-black and two greys.
+     Hierarchy is carried by weight, size, letter-spacing and position.
+     The other quantities are NOT rebound to grey: --violet, --tangerine,
+     --firetruck, --aqua and --strawberry keep their canonical values and
+     print simply stops referencing them. Rebinding them would be an off-hue
+     rebind, which check-design-system.sh correctly refuses. */
+  :root{
+    color-scheme:light;
+    --pr-ink:#1C1915;      /* body / headings      17.5:1 on white */
+    --pr-ink-2:#3A3734;    /* prose                11.6:1          */
+    --pr-ink-3:#605C58;    /* secondary, dates      6.8:1          */
+    --pr-rule:#E2DFDC;     /* hairline rules — structural, not loud */
+    --pr-rule-soft:#EEECEA;
+    --bg:#FFFFFF;--bg-panel:#FFFFFF;--bg-card:#FFFFFF;--bg-alt:#FFFFFF;
+    --grid-line:transparent;--focus-ring:#605C58;
+    --fg:#1C1915;--fg-muted:#605C58;
+    --mint-06:#F7F5F4;--mint-08:#F7F5F4;--mint-10:#EEECEA;
+    --mint-15:#E2DFDC;--mint-20:#E2DFDC;--mint-30:#D5D1CD;
+  }
+  /* key colours: mint darkened at constant hue; magnesium is achromatic */
+  :root{--mint:#006648;--magnesium:#3A3734;}
+
+  html,body{background:#FFFFFF;}
+  body{padding:0;}
+  .page{width:auto;min-height:0;margin:0;padding:0 !important;box-shadow:none;background:#FFFFFF;background-image:none;overflow:visible;}
+  a{text-decoration:none;transition:none;}
+  a:hover{filter:none;}
+
+  /* every non-mint quantity resolves to ink (inline styles need !important) */
+  [style*="--violet"],[style*="--tangerine"],[style*="--aqua"],
+  [style*="--strawberry"],[style*="--firetruck"]{color:var(--pr-ink) !important;}
+  /* No highlighting inside sentences. On screen the coloured spans in running
+     text carry the quantity they name; on paper they are just speckle, and
+     they were most of what made the first print palette look busy. Inside
+     prose every inline colour hint inherits the paragraph's ink, so mint is
+     left marking STRUCTURE — the name, the role, the institution, the
+     bullets — and nothing else. */
+  p [style*="var(--"],.body [style*="var(--"],ul.pts li [style*="var(--"],
+  ol.pubs li [style*="var(--"],.writing p [style*="var(--"]{color:inherit !important;}
+  .skill .grp{color:var(--pr-ink-3) !important;}
+
+  /* hierarchy without hue: section headings gain tracking and weight,
+     and a hairline above, in place of the violet they used to carry */
+  .eyebrow{color:var(--pr-ink-3);font-weight:var(--fw-600);letter-spacing:0.22em;
+           padding-top:7px;border-top:1px solid var(--pr-rule);}
+  .grid2 .eyebrow,.sub-eyebrow{border-top:0;padding-top:0;}
+  .sub-eyebrow{color:var(--pr-ink-3);letter-spacing:0.18em;}
+
+  /* licence badges: hairline instead of a tangerine box */
+  .lic{color:var(--pr-ink-3) !important;border-color:var(--pr-rule);}
+  /* left rules: structural, lightened so they stop competing with the type */
+  .method,.writing p{border-left-color:var(--pr-rule);}
+  .writing p.h{border-left-color:var(--mint);}
+  /* chips: no fills, hairline outlines, size carries the grouping */
+  .chip{background:transparent;border-color:var(--pr-rule);color:var(--pr-ink-2) !important;}
+  /* enumeration is not an accent — numbers and years go quiet */
+  ol.pubs li .n,ol.pubs li .yr{color:var(--pr-ink-3) !important;}
+  .dates,.award .yr,.sw-stack{color:var(--pr-ink-3) !important;}
+  .award .nm,.sw-name{color:var(--pr-ink) !important;font-weight:var(--fw-600);}
+  /* the equation is typography, not a colour key, on paper */
+  .equation,.equation *,footer .mono,footer span span{color:var(--pr-ink) !important;}
+  /* rules and dividers */
+  header.hd{border-bottom-color:var(--pr-rule);}
+  footer{border-top-color:var(--pr-rule);color:var(--pr-ink-3);}
+  .contact a{color:var(--pr-ink-2) !important;}
+  ::selection{background:transparent;}
+
+  /* page-break discipline */
+  .avoid,.sw,.award,.skill,.row,ol.pubs li,ul.pts li,.writing p{break-inside:avoid;}
+  .eyebrow,.sub-eyebrow,h1,.strong,.sw-name,.award .nm,header.hd{break-after:avoid;}
+  section{break-inside:auto;}
+  p,ul.pts li,ol.pubs li,.body{orphans:3;widows:3;}
+  footer{break-before:avoid;}
+}
+</style>
 </head>
 <body>
-
-<x-dc>
-<helmet>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<style>/* cyrillic-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/fonts/jetbrains-mono-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-</style>
-<style>/* latin-ext */
-@font-face {
-  font-family: 'Atkinson Hyperlegible';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/cv/fonts/atkinson-hyperlegible-latin-ext-400.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Atkinson Hyperlegible';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/assets/cv/fonts/atkinson-hyperlegible-latin-400.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Atkinson Hyperlegible';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/cv/fonts/atkinson-hyperlegible-latin-ext-700.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Atkinson Hyperlegible';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/assets/cv/fonts/atkinson-hyperlegible-latin-700.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/_vinext_fonts/geist-8ac0455e797f/geist-ff2310f5.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/_vinext_fonts/geist-8ac0455e797f/geist-875ccdd4.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/_vinext_fonts/geist-8ac0455e797f/geist-52306abf.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/_vinext_fonts/geist-8ac0455e797f/geist-001175b1.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Geist';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/_vinext_fonts/geist-8ac0455e797f/geist-98bbbccb.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 300;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-ext-300.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 300;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-300.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 300;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-greek-300.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 300;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-vietnamese-300.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 300;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-ext-300.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 300;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-300.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-ext-300.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-300.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-greek-300.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-vietnamese-300.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-ext-300.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-300.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-ext-300.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-300.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-greek-300.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-vietnamese-300.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-ext-300.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-300.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-ext-300.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-300.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-greek-300.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-vietnamese-300.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-ext-300.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-300.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-ext-300.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-cyrillic-300.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-greek-300.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-vietnamese-300.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-ext-300.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'IBM Plex Sans';
-  font-style: normal;
-  font-weight: 700;
-  font-stretch: 100%;
-  font-display: swap;
-  src: url("/assets/cv/fonts/ibm-plex-sans-latin-300.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/cv/fonts/manrope-cyrillic-ext-300.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/cv/fonts/manrope-cyrillic-300.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/cv/fonts/manrope-greek-300.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/cv/fonts/manrope-vietnamese-300.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/cv/fonts/manrope-latin-ext-300.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url("/assets/cv/fonts/manrope-latin-300.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-</style>
-<style>/* ============================================================
-   FlexAID∆S Design System — Colors & Type
-   Le Bonhomme Pharma · Montréal
-   Source: thebonhomme.com (live production site)
-   ============================================================ */
-
-/* --- FONTS -----------------------------------------------------
-   The brand uses two Google Fonts. No local TTFs are bundled —
-   import via the standard Google Fonts stylesheet.
-
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-   ------------------------------------------------------------ */
-
-/* ───────── SELF-HOSTED BRAND FONT ─────────
-   SF Pro Display (Apple) — committed body & display sans.
-   Self-hosted from /fonts; replaces IBM Plex Sans as --font-body. */
-@font-face { font-family: 'SF Pro Display'; font-weight: 100; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Ultralight.woff2") format('woff2'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 200; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Thin.woff2") format('woff2'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 300; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Light.woff2") format('woff2'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 400; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Regular.woff2") format('woff2'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 500; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Medium.woff2") format('woff2'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 600; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Semibold.woff2") format('woff2'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 700; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Bold.woff2") format('woff2'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 800; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Heavy.woff2") format('woff2'); }
-@font-face { font-family: 'SF Pro Display'; font-weight: 900; font-style: normal; font-display: swap; src: url("/assets/cv/fonts/SFProDisplay-Black.woff2") format('woff2'); }
-
-:root {
-  --bg-card: rgba(17, 18, 38, 0.80);
-  --bg-alt: rgba(12, 13, 30, 0.50);
-  --teal: #45E0A8;
-  --terra: #8B5CF6;
-  --gold: #FF9300;
-  --teal-06: rgba(69,224,168,0.06);
-  --teal-08: rgba(69,224,168,0.08);
-  --teal-10: rgba(69,224,168,0.10);
-  --teal-15: rgba(69,224,168,0.15);
-  --teal-20: rgba(69,224,168,0.20);
-  --terra-10: rgba(139,92,246,0.10);
-  --terra-12: rgba(139,92,246,0.12);
-  --terra-25: rgba(139,92,246,0.25);
-  --terra-35: rgba(139,92,246,0.35);
-  --gold-06: rgba(255,147,0,0.06);
-  --gold-10: rgba(255,147,0,0.10);
-  --gold-12: rgba(255,147,0,0.12);
-  --gold-35: rgba(255,147,0,0.35);
-  --kw-entropy: var(--terra);
-  --kw-statmech: var(--teal);
-  --kw-dg: var(--gold);
-  --glow-teal: 0 0 18px rgba(69,224,168,0.30);
-  --glow-teal-strong: 0 0 24px rgba(69,224,168,0.50);
-  --glow-terra: 0 0 20px rgba(139,92,246,0.10);
-  --glow-gold: 0 0 20px rgba(255,147,0,0.10);
-  --glow-equation: 0 0 40px rgba(69,224,168,0.4), 0 0 60px rgba(255,147,0,0.2);
-  --grid-line: rgba(69,224,168,0.03);
-}
-
-/* ───────── SEMANTIC ELEMENT STYLES ─────────
-   Apply these to bare HTML in design output. They reproduce the
-   live thebonhomme.com look without per-element overrides.    */
-
-html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-
-body {
-  font-family: var(--font-body);
-  font-size:   var(--fs-body);
-  line-height: var(--lh-body);
-  color:       var(--fg);
-  background:  var(--bg);
-  /* The signature subtle grid */
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: var(--grid-step) var(--grid-step);
-}
-
-h1, .h1 {
-  font-family: var(--font-mono);
-  font-size:   var(--fs-h1);
-  font-weight: var(--fw-700);
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-flat);
-  color: var(--fg);
-}
-
-h2, .h2 {
-  font-family: var(--font-mono);
-  font-size:   var(--fs-h2);
-  font-weight: var(--fw-700);
-  line-height: var(--lh-snug);
-  color: var(--fg);
-}
-
-h3, .h3 {
-  font-family: var(--font-mono);
-  font-size:   var(--fs-h3);
-  font-weight: var(--fw-600);
-  color: var(--fg);
-}
-
-p {
-  font-family: var(--font-body);
-  font-size:   var(--fs-body);
-  line-height: var(--lh-body);
-  color: var(--fg-muted);
-  max-width: 72ch;
-  text-wrap: pretty;
-}
-
-/* Mono runs — code, badges, section labels, stats */
-code, .mono, kbd, samp {
-  font-family: var(--font-mono);
-  font-size:   var(--fs-sm);
-}
-
-/* Section eyebrow — terra, uppercase, wide tracking */
-.section-label, .eyebrow {
-  font-family: var(--font-mono);
-  font-size:   var(--fs-tag);
-  font-weight: var(--fw-500);
-  letter-spacing: var(--tracking-tag);
-  text-transform: uppercase;
-  color: var(--terra);
-}
-
-/* Stat block — big mono number + tiny tracked label */
-.stat-value {
-  font-family: var(--font-mono);
-  font-size:   2.5rem;
-  font-weight: var(--fw-700);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-.stat-label {
-  font-family: var(--font-mono);
-  font-size:   var(--fs-tag);
-  letter-spacing: var(--tracking-label);
-  color: var(--fg-muted);
-  text-transform: uppercase;
-  margin-top: var(--sp-1);
-}
-
-/* Brand wordmark — the ∆S is always gold */
-.brand {
-  font-family: var(--font-mono);
-  font-weight: var(--fw-700);
-  color: var(--teal);
-  letter-spacing: 0.02em;
-}
-.brand .delta { color: var(--gold); }
-.brand .terra { color: var(--terra); }
-</style>
-<style>
-  doc-page:not(:defined){visibility:hidden}
-  a{transition:color .18s cubic-bezier(.16,1,.3,1),filter .18s cubic-bezier(.16,1,.3,1);}
-  a:hover{color:#45E0A8 !important;filter:brightness(1.15);}
-  a:focus-visible{outline:2px solid #45E0A8;outline-offset:2px;border-radius:4px;}
-  @media print{a:hover{filter:none;}}
-  ::selection{background:rgba(69,224,168,0.25);}
-</style>
-</helmet>
-<x-import component-from-global-scope="doc-page" from="/assets/doc-page.js#/doc-page.js" size="letter" margin="0" hint-size="100%,100%">
-  <div style="position:relative;background:#08091A;color:#E4E3F5;font-family:var(--c-body,'SF Pro Display',-apple-system,sans-serif);padding:0.7in 0.72in;line-height:1.55;--c-body:{{ cBody }};--c-h:{{ cH }};--c-s:{{ cS }};--c-g:{{ cG }};--c-chrome:{{ cChrome }};--c-eyebrow:{{ cEyebrow }};--c-fav:{{ cFav }};--c-alarm:{{ cAlarm }};--c-temp:{{ cTemp }};--c-ga:{{ cGa }};">
-    <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
-      <div style="position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(69,224,168,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(69,224,168,0.03) 1px,transparent 1px);background-size:38px 38px;"></div>
-    </sc-if>
-    <div style="position:relative;">
-
-      <!-- HEADER -->
-      <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:16px;border-bottom:1px solid rgba(69,224,168,0.18);">
-        <div>
-          <h1 style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:34px;line-height:1.02;letter-spacing:-0.01em;color:#E4E3F5;margin:0 0 9px;">Louis-Philippe <span style="color:var(--c-chrome,#45E0A8);">(LP)</span> Morency</h1>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--c-chrome,#45E0A8);">Computational pharmacologist · docking-engine author · open-science</div>
-          <div style="font-size:12px;color:#8D8CB0;margin-top:3px;">PhD candidate · Najmanovich Research Group · Université de Montréal</div>
-        </div>
-        <div style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.85;color:#8D8CB0;white-space:nowrap;">
-          <div><a href="mailto:lp@thebonhomme.com" style="color:var(--c-chrome,#45E0A8);text-decoration:none;">lp@thebonhomme.com</a></div>
-          <div><a href="https://thebonhomme.com" target="_blank" rel="noreferrer noopener" style="color:#8D8CB0;text-decoration:none;">thebonhomme.com</a></div>
-          <div><a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="color:var(--c-chrome,#45E0A8);text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><svg width="11" height="11" sc-camel-view-box="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.015-1.965-3.2.695-3.875-1.543-3.875-1.543-.523-1.33-1.277-1.685-1.277-1.685-1.044-.714.08-.699.08-.699 1.155.081 1.763 1.186 1.763 1.186 1.026 1.758 2.693 1.25 3.35.956.104-.744.401-1.25.73-1.538-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.448-2.283 1.184-3.088-.119-.29-.513-1.46.113-3.045 0 0 .966-.31 3.165 1.18a11 11 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.197-1.49 3.162-1.18 3.162-1.18.627 1.585.233 2.755.114 3.045.738.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.253 5.677.413.355.78 1.056.78 2.128 0 1.537-.014 2.776-.014 3.153 0 .309.207.668.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"></path></svg>github.com/LeBonhommePharma</a></div>
-          <div><a href="https://linkedin.com/in/lebonhomme" target="_blank" rel="noreferrer noopener" style="color:#8D8CB0;text-decoration:none;">linkedin.com/in/lebonhomme</a></div>
-          <div><a href="https://x.com/lebonhomme" target="_blank" rel="noreferrer noopener" style="color:#8D8CB0;text-decoration:none;">x.com/lebonhomme</a></div>
-          <div>scholar.google.com · L-P Morency</div>
-          <div style="color:#5a6478;">ORCID 0009-0001-0218-4750</div>
-        </div>
-      </header>
-
-      <!-- PROFILE -->
-      <section style="margin-top:20px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:10px;">// profile</div>
-        <p style="max-width:none;font-size:13px;line-height:1.62;color:#b6bfd2;margin:0;">Computational pharmacologist working at the intersection of <span style="color:var(--c-ga,#8EEFC9);">genetic algorithms</span> and <span style="color:var(--c-s,#8B5CF6);">statistical mechanics</span>. Main author of <span style="color:var(--c-chrome,#45E0A8);font-weight:500;">FlexAIDΔS</span>, a <span style="color:var(--c-ga,#8EEFC9);">genetic-algorithm</span> docking engine that computes the full <span style="white-space:nowrap;"><span style="color:var(--c-g,#FF9300);">ΔG</span> = <span style="color:var(--c-h,#45E0A8);">ΔH</span> − <span style="color:var(--c-s,#8B5CF6);">TΔS</span></span> — the <span style="color:var(--c-s,#8B5CF6);">conformational entropy</span> term included, recovering the correct <span style="color:var(--c-h,#45E0A8);">binding mode</span> where <span style="color:var(--c-h,#45E0A8);">enthalpy-only</span> scoring fails. Every result is <span style="color:var(--c-fav,#00FF96);">reproducible</span> by construction and shipped under <span style="color:var(--c-fav,#00FF96);">Apache&nbsp;2.0</span>. Anti-prohibitionist; <span style="color:var(--c-fav,#00FF96);">harm reduction</span> as applied thermodynamics. Montréal.</p>
-      </section>
-
-      <!-- RESEARCH INTERESTS -->
-      <section style="margin-top:18px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:10px;">// research interests</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;">
-          <sc-for list="{{ interests }}" as="i" hint-placeholder-count="9">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:{{ i.c }};background:rgba(69,224,168,0.05);border:1px solid rgba(69,224,168,0.13);border-radius:3px;padding:3px 8px;">{{ i.label }}</span>
-          </sc-for>
-        </div>
-      </section>
-
-      <!-- EDUCATION -->
-      <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// education</div>
-        <sc-for list="{{ education }}" as="e" hint-placeholder-count="3">
-          <div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:12px;">
-            <div>
-              <div style="font-weight:600;font-size:13px;color:#E4E3F5;">{{ e.degree }}</div>
-              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-chrome,#45E0A8);margin-top:1px;">{{ e.school }}</div>
-              <div style="font-size:12px;color:#8D8CB0;margin-top:3px;">{{ e.detail }}</div>
-            </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8D8CB0;white-space:nowrap;">{{ e.dates }}</div>
-          </div>
-        </sc-for>
-      </section>
-
-      <!-- RESEARCH EXPERIENCE -->
-      <section style="margin-top:20px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// research &amp; engineering experience</div>
-        <sc-for list="{{ experience }}" as="x" hint-placeholder-count="4">
-          <div style="margin-bottom:15px;break-inside:avoid;">
-            <div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline;">
-              <span style="font-weight:600;font-size:13px;color:#E4E3F5;">{{ x.role }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8D8CB0;white-space:nowrap;">{{ x.dates }}</span>
-            </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-chrome,#45E0A8);margin:2px 0 6px;">{{ x.org }}</div>
-            <ul style="margin:0;padding:0;list-style:none;">
-              <sc-for list="{{ x.points }}" as="p" hint-placeholder-count="2">
-                <li style="position:relative;padding-left:16px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:3px;"><span style="position:absolute;left:0;color:rgba(69,224,168,0.5);">›</span>{{ p }}</li>
-              </sc-for>
-            </ul>
-          </div>
-        </sc-for>
-      </section>
-
-      <!-- SOFTWARE -->
-      <section style="margin-top:20px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// software &amp; open source</div>
-        <sc-for list="{{ software }}" as="sw" hint-placeholder-count="5">
-          <div style="margin-bottom:12px;break-inside:avoid;">
-            <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
-              <span style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:{{ sw.c }};">{{ sw.name }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#5a6478;">{{ sw.stack }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--c-g,#FF9300);border:1px solid rgba(255,147,0,0.35);border-radius:3px;padding:1px 6px;">{{ sw.license }}</span>
-            </div>
-            <div style="font-size:12px;line-height:1.55;color:#9aa4b8;margin-top:3px;">{{ sw.desc }}</div>
-          </div>
-        </sc-for>
-      </section>
-
-      <!-- BENCHMARKS -->
-      <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// benchmarks &amp; technical results</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(69,224,168,0.12);border:1px solid rgba(69,224,168,0.15);border-radius:8px;overflow:hidden;margin-bottom:12px;">
-          <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
-            <div style="background:#0d1119;padding:12px 14px;">
-              <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:23px;line-height:1;color:{{ s.c }};font-variant-numeric:tabular-nums;">{{ s.value }}</div>
-              <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#8D8CB0;margin-top:6px;">{{ s.label }}</div>
-            </div>
-          </sc-for>
-        </div>
-        <sc-raw-table style="width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;">
-          <sc-raw-thead>
-            <sc-raw-tr style="border-bottom:1px solid rgba(69,224,168,0.2);">
-              <sc-raw-th style="text-align:left;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8D8CB0;font-weight:500;padding:0 0 6px;">Benchmark</sc-raw-th>
-              <sc-raw-th style="text-align:left;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8D8CB0;font-weight:500;padding:0 0 6px;">Metric</sc-raw-th>
-              <sc-raw-th style="text-align:right;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8D8CB0;font-weight:500;padding:0 0 6px;">Result</sc-raw-th>
-            </sc-raw-tr>
-          </sc-raw-thead>
-          <sc-raw-tbody>
-            <sc-for list="{{ benchRows }}" as="r" hint-placeholder-count="3">
-              <sc-raw-tr style="border-bottom:1px solid rgba(69,224,168,0.08);">
-                <sc-raw-td style="font-size:11px;color:#E4E3F5;padding:6px 0;">{{ r.bench }}</sc-raw-td>
-                <sc-raw-td style="font-size:11px;color:#9aa4b8;padding:6px 0;">{{ r.metric }}</sc-raw-td>
-                <sc-raw-td style="font-size:11px;color:var(--c-g,#FF9300);padding:6px 0;text-align:right;font-variant-numeric:tabular-nums;">{{ r.result }}</sc-raw-td>
-              </sc-raw-tr>
-            </sc-for>
-          </sc-raw-tbody>
-        </sc-raw-table>
-      </section>
-
-      <!-- PUBLICATIONS -->
-      <section style="margin-top:20px;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// publications</div>
-
-        <sc-if value="{{ showPreprints }}" hint-placeholder-val="{{ true }}">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8D8CB0;margin:0 0 8px;">preprints &amp; in preparation</div>
-          <ol style="margin:0 0 14px;padding:0;list-style:none;">
-            <sc-for list="{{ preprints }}" as="pub" hint-placeholder-count="2">
-              <li style="position:relative;padding-left:26px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:9px;break-inside:avoid;">
-                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8D8CB0);">{{ pub.n }}</span>
-                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8D8CB0;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8D8CB0);">{{ pub.year }}</span>
-              </li>
-            </sc-for>
-          </ol>
-        </sc-if>
-
-        <sc-if value="{{ showPeer }}" hint-placeholder-val="{{ true }}">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8D8CB0;margin:0 0 8px;">peer-reviewed</div>
-          <ol style="margin:0 0 14px;padding:0;list-style:none;">
-            <sc-for list="{{ peerReviewed }}" as="pub" hint-placeholder-count="5">
-              <li style="position:relative;padding-left:26px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:9px;break-inside:avoid;">
-                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8D8CB0);">{{ pub.n }}</span>
-                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8D8CB0;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8D8CB0);">{{ pub.year }}</span>
-              </li>
-            </sc-for>
-          </ol>
-        </sc-if>
-
-        <sc-if value="{{ showKeynotes }}" hint-placeholder-val="{{ true }}">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8D8CB0;margin:0 0 8px;">invited talks &amp; conference keynotes</div>
-          <ol style="margin:0;padding:0;list-style:none;">
-            <sc-for list="{{ keynotes }}" as="pub" hint-placeholder-count="5">
-              <li style="position:relative;padding-left:26px;font-size:12px;line-height:1.55;color:#9aa4b8;margin-bottom:9px;break-inside:avoid;">
-                <span style="position:absolute;left:0;top:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-chrome,#8D8CB0);">{{ pub.n }}</span>
-                <span style="color:#c8d0e0;">{{ pub.authors }}</span> {{ pub.title }} <span style="font-style:italic;color:#8D8CB0;">{{ pub.venue }}</span> <span style="color:var(--c-chrome,#8D8CB0);">{{ pub.year }}</span>
-              </li>
-            </sc-for>
-          </ol>
-        </sc-if>
-      </section>
-
-      <!-- TALKS & TEACHING -->
-      <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// talks &amp; teaching</div>
-        <sc-for list="{{ talks }}" as="t" hint-placeholder-count="3">
-          <div style="display:flex;gap:12px;margin-bottom:7px;">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-ga,#8EEFC9);white-space:nowrap;flex-shrink:0;width:82px;">{{ t.when }}</span>
-            <span style="font-size:12px;line-height:1.5;color:#9aa4b8;">{{ t.what }}</span>
-          </div>
-        </sc-for>
-      </section>
-
-      <!-- SKILLS -->
-      <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// technical skills</div>
-        <sc-for list="{{ skills }}" as="sk" hint-placeholder-count="4">
-          <div style="display:flex;gap:12px;margin-bottom:8px;align-items:baseline;">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:{{ sk.c }};white-space:nowrap;flex-shrink:0;width:96px;">{{ sk.group }}</span>
-            <div style="display:flex;flex-wrap:wrap;gap:5px;">
-              <sc-for list="{{ sk.items }}" as="it" hint-placeholder-count="4">
-                <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:{{ sk.c }};background:rgba(69,224,168,0.05);border:1px solid rgba(69,224,168,0.13);border-radius:3px;padding:2px 7px;">{{ it }}</span>
-              </sc-for>
-            </div>
-          </div>
-        </sc-for>
-      </section>
-
-      <!-- AWARDS -->
-      <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// awards &amp; funding</div>
-        <sc-for list="{{ awards }}" as="a" hint-placeholder-count="3">
-          <div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:8px;">
-            <div>
-              <div style="font-weight:600;font-size:12.5px;color:{{ a.c }};">{{ a.name }}</div>
-              <div style="font-size:11.5px;color:#8D8CB0;">{{ a.body }}</div>
-            </div>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8D8CB0;white-space:nowrap;">{{ a.year }}</span>
-          </div>
-        </sc-for>
-      </section>
-
-      <!-- WRITING -->
-      <section style="margin-top:20px;break-inside:avoid;">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--c-eyebrow,#8B5CF6);margin-bottom:12px;">// writing &amp; advocacy</div>
-        <p style="max-width:none;font-size:12px;line-height:1.6;color:#9aa4b8;margin:0 0 8px;border-left:2px solid var(--c-g,#FF9300);padding-left:11px;">Book in progress — housing, organized crime, and <span style="color:var(--c-fav,#00FF96);">harm reduction</span> in Montréal. The same physics that lowers a binding free-energy barrier lowers the social barrier to care: systems seek lower free energy; the job is to lower it.</p>
-        <p style="max-width:none;font-size:12px;line-height:1.6;color:#9aa4b8;margin:0;border-left:2px solid var(--c-h,#45E0A8);padding-left:11px;">Drug of the Day — a rotating, rigorous <span style="color:var(--c-fav,#00FF96);">harm-reduction</span> pharmacology brief published at thebonhomme.com. Mechanism over moralising.</p>
-      </section>
-
-      <!-- FOOTER -->
-      <div style="margin-top:22px;padding-top:10px;border-top:1px solid rgba(69,224,168,0.15);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:#5a6478;">
-        <span>Le Bonhomme Pharma · Little Burgundy · Montréal · Québec</span>
-        <span><span style="color:var(--c-g,#FF9300);">ΔG</span> = <span style="color:var(--c-h,#45E0A8);">ΔH</span> − <span style="color:var(--c-s,#8B5CF6);">TΔS</span></span>
-      </div>
-
-    </div>
+<main class="page">
+<header class="hd">
+  <div>
+    <h1>Louis-Philippe <span style="color:var(--mint);">(LP)</span> Morency</h1>
+    <div class="role">Computational pharmacologist · docking-engine author · open-science</div>
+    <div class="sub">PhD candidate · Najmanovich Research Group · Université de Montréal</div>
   </div>
-</x-import>
-</x-dc>
-<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:816,&quot;height&quot;:1056},&quot;colorCoding&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;expressive&quot;,&quot;options&quot;:[&quot;strict&quot;,&quot;balanced&quot;,&quot;expressive&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Color coding&quot;,&quot;label&quot;:&quot;Keyword coding&quot;},&quot;showGrid&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Color coding&quot;,&quot;label&quot;:&quot;Graph-paper grid&quot;},&quot;pubFilter&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;all&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;peer-reviewed&quot;,&quot;preprints&quot;,&quot;talks&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Publications&quot;,&quot;label&quot;:&quot;Show&quot;},&quot;bodyFont&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;SF Pro&quot;,&quot;options&quot;:[&quot;SF Pro&quot;,&quot;Geist&quot;,&quot;Manrope&quot;,&quot;Atkinson Hyperlegible&quot;,&quot;IBM Plex Sans&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Type&quot;,&quot;label&quot;:&quot;Body typeface&quot;}}">
-class Component extends DCLogic {
-  renderVals() {
-    const mode = this.props.colorCoding ?? "expressive";
-    const M = {
-      strict:     { chrome: "#8D8CB0", eyebrow: "#6b6480", fav: "#8D8CB0", alarm: "#8D8CB0", temp: "#8D8CB0", ga: "#8D8CB0" },
-      balanced:   { chrome: "#5f9aa6", eyebrow: "#8f80c4", fav: "#5fae86", alarm: "#cf8f8b", temp: "#cf9e6e", ga: "#63aec2" },
-      expressive: { chrome: "#45E0A8", eyebrow: "#8B5CF6", fav: "#00FF96", alarm: "#F87171", temp: "#FF7D0A", ga: "#8EEFC9" },
-    };
-    const c = M[mode] || M.expressive;
-    const V = { h: "var(--c-h,#45E0A8)", s: "var(--c-s,#8B5CF6)", g: "var(--c-g,#FF9300)", fav: "var(--c-fav,#00FF96)", alarm: "var(--c-alarm,#F87171)", temp: "var(--c-temp,#FF7D0A)", ga: "var(--c-ga,#8EEFC9)" };
-    return {
-      cH: "#45E0A8", cS: "#8B5CF6", cG: "#FF9300",
-      cChrome: c.chrome, cEyebrow: c.eyebrow, cFav: c.fav, cAlarm: c.alarm, cTemp: c.temp, cGa: c.ga,
-      cBody: ({ "SF Pro": "'SF Pro Display',-apple-system,'Helvetica Neue',sans-serif", "Geist": "'Geist','SF Pro Display',sans-serif", "Manrope": "'Manrope','SF Pro Display',sans-serif", "Atkinson Hyperlegible": "'Atkinson Hyperlegible','SF Pro Display',sans-serif", "IBM Plex Sans": "'IBM Plex Sans','SF Pro Display',sans-serif" })[this.props.bodyFont ?? "SF Pro"] || "'SF Pro Display',-apple-system,'Helvetica Neue',sans-serif",
-      showGrid: this.props.showGrid ?? true,
-      showPeer: ["all", "peer-reviewed"].includes(this.props.pubFilter ?? "all"),
-      showPreprints: ["all", "preprints"].includes(this.props.pubFilter ?? "all"),
-      showKeynotes: ["all", "talks"].includes(this.props.pubFilter ?? "all"),
-      interests: [
-        { label: "molecular docking", c: V.h },
-        { label: "statistical mechanics of binding", c: V.h },
-        { label: "conformational entropy", c: V.s },
-        { label: "enthalpy-entropy compensation", c: V.g },
-        { label: "free-energy scoring", c: V.g },
-        { label: "genetic-algorithm optimization", c: V.ga },
-        { label: "Shannon entropy", c: V.s },
-        { label: "drug repurposing / off-targets", c: V.alarm },
-        { label: "open-source scientific software", c: V.fav },
-        { label: "harm reduction", c: V.fav },
-      ],
-      education: [
-        { degree: "Ph.D. — Pharmacology (in progress)", school: "Université de Montréal · Najmanovich Research Group", detail: "Thesis: entropy-driven molecular docking — FlexAID\u0394S and the full \u0394G = \u0394H \u2212 T\u0394S score.", dates: "present" },
-        { degree: "M.Sc. — Biochemistry", school: "Université de Sherbrooke · Najmanovich Research Group (origin lab)", detail: "Docking methods, contact-based scoring, and the first NRGsuite / FlexAID toolchain.", dates: "conferred" },
-        { degree: "B.Sc. — Structural Bioinformatics", school: "Université Laval", detail: "Foundations in structural biology, protein modelling and computational methods.", dates: "conferred" },
-      ],
-      experience: [
-        { role: "Doctoral researcher", org: "Najmanovich Research Group · Université de Montréal", dates: "Fall 2017 — present", points: [
-          "Main author of FlexAID\u0394S: a C++26 genetic-algorithm docking engine with a full statistical-mechanics score (\u0394G = \u0394H \u2212 T\u0394S), torsional ENCoM entropy, Voronoi contact function and dead-end-elimination torsion pruning.",
-          "96.4% correct binding-mode recovery on Astex Diverse 85 \u2014 without crystal coordinates.",
-          "Built Python bindings and the NRGsuite PyMOL plugin; zero-copy GPU/OpenMP batch scoring for high-throughput screens.",
-        ] },
-        { role: "Lead programmer", org: "Najmanovich Research Group", dates: "2014 — present", points: [
-          "Principal software architect for the lab \u2014 own the NRG docking toolchain end to end across its Sherbrooke and Montréal eras.",
-        ] },
-        { role: "Founder — Programmer — Research Scientist", org: "Le Bonhomme Pharma · github.com/LeBonhommePharma", dates: "2023 — present", points: [
-          "Open-science pharmacology lab shipping reproducible Apache-2.0 tooling from Little Burgundy, Montréal.",
-          "Ported the FlexAID\u0394S entropy kernel to two new domains \u2014 Shannon (LLM entropy-collapse) and ClusterFuck (HRV biofeedback).",
-        ] },
-        { role: "Graduate researcher", org: "Najmanovich Research Group · Université de Sherbrooke", dates: "earlier", points: [
-          "Co-developed NRGsuite and applied FlexAID to large-scale off-target detection for drug repurposing and side-effect prediction.",
-        ] },
-      ],
-      software: [
-        { name: "FlexAID\u0394S", stack: "C++26 · Python · PyMOL", license: "Apache 2.0", c: V.g, desc: "Entropy-driven molecular docking engine. GA conformational search, Voronoi contact function, torsional ENCoM entropy, DEE torsion pruning, zero-copy GPU/OpenMP batch scoring. The full \u0394G = \u0394H \u2212 T\u0394S." },
-        { name: "Shannon", stack: "C++20 · Python", license: "Apache 2.0", c: V.alarm, desc: "Entropy-collapse detector for frontier LLM agents \u2014 zero-shot evaluation-awareness and strategic-deception monitoring via the same H = \u2212\u03a3 p\u1d62 log\u2082 p\u1d62 kernel that powers binding and HRV." },
-        { name: "ClusterFuck", stack: "Swift · HealthKit · CareKit", license: "Apache 2.0", c: V.temp, desc: "Multi-platform Apple biofeedback (Watch · iPhone · TV · Vision Pro). Real-time HRV entropy \u2192 Shannon Collapse Index during guided chair yoga; shared kernel with FlexAID\u0394S." },
-        { name: "NRGsuite", stack: "Python · PyMOL", license: "open source", c: V.h, desc: "PyMOL plugin packaging the Najmanovich Research Group docking toolchain for real-time interactive docking with FlexAID." },
-        { name: "PoseBust", stack: "C++26", license: "open source", c: V.fav, desc: "PoseBusters-compatible geometric validation \u2014 physical-plausibility checks (bond geometry, clashes, planarity) for docked ligand poses." },
-      ],
-      stats: [
-        { value: "96.4%", label: "Astex Diverse 85 · top pose", c: V.g },
-        { value: "85%", label: "cross-dock · RMSD < 2\u00c5", c: V.h },
-        { value: "94%", label: "Shannon · collapse sens.", c: V.alarm },
-        { value: "<1\u00b5s", label: "per token · Shannon", c: V.ga },
-      ],
-      benchRows: [
-        { bench: "Astex Diverse 85", metric: "correct binding mode (top pose)", result: "96.4%" },
-        { bench: "Astex Diverse 85", metric: "cross-dock, RMSD < 2\u00c5", result: "85%" },
-        { bench: "Shannon", metric: "entropy-collapse sensitivity", result: "94%" },
-      ],
-      preprints: [
-        { n: "P1", authors: "Morency L-P.", title: "FlexAID\u0394S: entropy-driven molecular docking with a full \u0394G = \u0394H \u2212 T\u0394S statistical-mechanics score.", venue: "Preprint / in preparation.", year: "2026" },
-        { n: "P2", authors: "Morency L-P.", title: "Shannon: entropy-collapse detection for frontier LLM agents via the FlexAID\u0394S configurational-entropy kernel.", venue: "Preprint.", year: "2026" },
-      ],
-      peerReviewed: [
-        { n: "01", authors: "Morency L-P, Gaudreault F, Najmanovich RJ.", title: "Applications of the NRGsuite and the molecular docking software FlexAID in computational drug discovery and design.", venue: "Methods in Molecular Biology 1762, 367\u2013388. Humana Press.", year: "2018" },
-        { n: "02", authors: "Dion SP, B\u00e9liveau F, Morency L-P, D\u00e9silets A, Najmanovich RJ, Leduc R.", title: "Functional diversity of TMPRSS6 isoforms and variants expressed in hepatocellular carcinoma cell lines.", venue: "Scientific Reports 8, 12562.", year: "2018" },
-        { n: "03", authors: "Chartier M, Morency L-P, Zylber MI, Najmanovich RJ.", title: "Large-scale detection of drug off-targets: hypotheses for drug repurposing and understanding side-effects.", venue: "BMC Pharmacology and Toxicology 18, 18.", year: "2017" },
-        { n: "04", authors: "Gaudreault F, Morency L-P, Najmanovich RJ.", title: "NRGsuite: a PyMOL plugin to perform docking simulations in real time using FlexAID.", venue: "Bioinformatics 31(23), 3856\u20133858.", year: "2015" },
-        { n: "05", authors: "Leclerc J, Lef\u00e8vre T, Pottier F, Morency L-P, Lapointe-Verreault C, Gagn\u00e9 SM, Auger M.", title: "Structure and pH-induced alterations of recombinant and natural spider silk proteins in solution.", venue: "Biopolymers 97(6), 337\u2013346.", year: "2012" },
-      ],
-      keynotes: [
-        { n: "K1", authors: "Morency L-P.", title: "The Impact of Conformational Entropy on the Accuracy of FlexAID in Binding Mode Prediction (part III)", venue: "3DSig \u00b7 ISMB/ECCB 2019, Basel \u2014 selected oral talk (only ~3 non-PI speakers chosen per year).", year: "2019" },
-        { n: "K2", authors: "Morency L-P.", title: "The Impact of Conformational Entropy on the Accuracy of FlexAID in Binding Mode Prediction (part II)", venue: "ISMB 2018, Chicago \u2014 selected oral talk.", year: "2018" },
-        { n: "K3", authors: "Morency L-P.", title: "The Impact of Conformational Entropy on the Accuracy of FlexAID in Binding Mode Prediction (part 1)", venue: "3DSig \u00b7 ISMB/ECCB 2017, Prague \u2014 selected oral talk.", year: "2017" },
-        { n: "K4", authors: "Morency L-P.", title: "NRGsuite: Fast, Flexible and Free PyMOL plugin for FlexAID.", venue: "3DSig \u00b7 ISMB/ECCB 2015, Dublin \u2014 selected oral talk.", year: "2015" },
-        { n: "K5", authors: "Morency L-P, Najmanovich RJ.", title: "Modelling conformational entropy in molecular docking \u2014 beyond the enthalpy-only score.", venue: "PROTEO Annual Symposium, Qu\u00e9bec (invited).", year: "2019" },
-      ],
-      talks: [
-        { when: "workshops", what: "Hands-on docking with NRGsuite and FlexAID in PyMOL \u2014 graduate computational-biology methods." },
-        { when: "invited", what: "Entropy is not optional: why enthalpy-only docking gets the right answer for the wrong reason." },
-        { when: "teaching", what: "Teaching assistant, biochemistry & structural bioinformatics \u2014 Université de Sherbrooke." },
-      ],
-      skills: [
-        { group: "Languages", c: V.ga, items: ["C++26", "C++20", "Python", "Swift", "CMake", "Bash"] },
-        { group: "Scientific", c: V.s, items: ["Molecular docking", "Statistical mechanics", "Free-energy scoring", "Normal-mode / ENCoM", "Shannon entropy", "HRV signal processing"] },
-        { group: "Tooling", c: V.h, items: ["PyMOL", "OpenMP", "CUDA / GPU", "Git", "HealthKit", "CareKit"] },
-        { group: "Practice", c: V.fav, items: ["Reproducible builds", "Open-source maintenance", "Benchmark design", "Apache 2.0 / MIT"] },
-      ],
-      awards: [
-        { name: "Anthropic Open Source Program", body: "Recognition for open-source contributions to the open scientific-software ecosystem \u2014 FlexAID\u0394S, Shannon.", year: "2026", c: "var(--c-fav,#00FF96)" },
-        { name: "Médaille du Lieutenant-Gouverneur du Québec (bronze)", body: "Cabinet du Lieutenant-gouverneur du Québec \u2014 academic & civic merit.", year: "\u2014", c: "var(--c-g,#FF9300)" },
-        { name: "Doctoral research fellowship", body: "Fonds de recherche du Québec \u2014 Nature et technologies (FRQ-NT).", year: "PhD", c: "var(--c-g,#FF9300)" },
-        { name: "Open-source contribution recognition", body: "GitHub Arctic Code Vault Contributor; multi-year maintainer across the Najmanovich Research Group / Le Bonhomme Pharma stack.", year: "\u2014", c: "var(--c-fav,#00FF96)" },
-      ],
-    };
-  }
-}
-</script>
+  
+<div class="contact">
+  <div><a href="mailto:lp@thebonhomme.com" style="color:var(--mint);">lp@thebonhomme.com</a></div>
+  <div><a href="https://thebonhomme.com" target="_blank" rel="noreferrer noopener">thebonhomme.com</a></div>
+  <div><a href="https://github.com/LeBonhommePharma" target="_blank" rel="noreferrer noopener" style="color:var(--mint);">github.com/LeBonhommePharma</a></div>
+  <div><a href="https://linkedin.com/in/lebonhomme" target="_blank" rel="noreferrer noopener">linkedin.com/in/lebonhomme</a></div>
+  <div><a href="https://x.com/lebonhomme" target="_blank" rel="noreferrer noopener">x.com/lebonhomme</a></div>
+  <div>scholar.google.com · L-P Morency</div>
+  <div class="dim">ORCID 0009-0001-0218-4750</div>
+</div>
+</header>
 
+<section>
+  <div class="eyebrow">// profile</div>
+  <p>Computational pharmacologist working at the intersection of <span style="color:var(--aqua);">genetic algorithms</span> and <span style="color:var(--violet);">statistical mechanics</span>. Main author of <span style="color:var(--mint);font-weight:500;">FlexAIDΔS</span>, a <span style="color:var(--aqua);">genetic-algorithm</span> docking engine that computes the full <span style="white-space:nowrap;"><span style="color:var(--tangerine);">ΔG</span> = <span style="color:var(--mint);">ΔH</span> − <span style="color:var(--violet);">TΔS</span></span> − the <span style="color:var(--violet);">conformational entropy</span> term included, recovering the correct <span style="color:var(--mint);">binding mode</span> where <span style="color:var(--mint);">enthalpy-only</span> scoring fails. Every result is <span style="color:var(--mint);">reproducible</span> by construction and shipped under <span style="color:var(--mint);">Apache&nbsp;2.0</span>. Anti-prohibitionist; <span style="color:var(--mint);">harm reduction</span> as applied thermodynamics. Montréal.</p>
+</section>
 
-</body></html>
+<section>
+  <div class="eyebrow" style="margin-bottom:10px;">// research interests</div>
+  <div class="chips"><span class="chip" style="color:var(--mint);">molecular docking</span><span class="chip" style="color:var(--mint);">statistical mechanics of binding</span><span class="chip" style="color:var(--violet);">conformational entropy</span><span class="chip" style="color:var(--tangerine);">enthalpy-entropy compensation</span><span class="chip" style="color:var(--tangerine);">free-energy scoring</span><span class="chip" style="color:var(--aqua);">genetic-algorithm optimization</span><span class="chip" style="color:var(--violet);">Shannon entropy</span><span class="chip" style="color:var(--strawberry);">drug repurposing / off-targets</span><span class="chip" style="color:var(--mint);">open-source scientific software</span><span class="chip" style="color:var(--mint);">harm reduction</span></div>
+</section>
+
+<section class="avoid">
+  <div class="eyebrow">// education</div>
+  
+  <div class="row" style="margin-bottom:12px;">
+    <div>
+      <div class="strong">Ph.D. − Pharmacology (in progress)</div>
+      <div class="org" style="margin:1px 0 0;">Université de Montréal · Najmanovich Research Group</div>
+      <div class="body" style="margin-top:3px;">Thesis: entropy-driven molecular docking − FlexAIDΔS and the full ΔG = ΔH − TΔS score.</div>
+    </div>
+    <div class="dates">present</div>
+  </div>
+  <div class="row" style="margin-bottom:12px;">
+    <div>
+      <div class="strong">M.Sc. − Biochemistry</div>
+      <div class="org" style="margin:1px 0 0;">Université de Sherbrooke · Najmanovich Research Group (origin lab)</div>
+      <div class="body" style="margin-top:3px;">Docking methods, contact-based scoring, and the first NRGsuite / FlexAID toolchain.</div>
+    </div>
+    <div class="dates">conferred</div>
+  </div>
+  <div class="row" style="margin-bottom:12px;">
+    <div>
+      <div class="strong">B.Sc. − Structural Bioinformatics</div>
+      <div class="org" style="margin:1px 0 0;">Université Laval</div>
+      <div class="body" style="margin-top:3px;">Foundations in structural biology, protein modelling and computational methods.</div>
+    </div>
+    <div class="dates">conferred</div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">// research &amp; engineering experience</div>
+  
+  <div class="avoid" style="margin-bottom:15px;">
+    <div class="row"><span class="strong">Doctoral researcher</span><span class="dates">Fall 2017 − present</span></div>
+    <div class="org">Najmanovich Research Group · Université de Montréal</div>
+    <ul class="pts"><li>Main author of FlexAIDΔS: a C++26 genetic-algorithm docking engine with a full statistical-mechanics score (ΔG = ΔH − TΔS), torsional ENCoM entropy, Voronoi contact function and dead-end-elimination torsion pruning.</li><li>Running the Astex Diverse 85 self- and cross-docking campaign without crystal coordinates; results are published at thebonhomme.com/benchmark/ as they are measured.</li><li>Built Python bindings and the NRGsuite PyMOL plugin; zero-copy GPU/OpenMP batch scoring for high-throughput screens.</li></ul>
+  </div>
+  <div class="avoid" style="margin-bottom:15px;">
+    <div class="row"><span class="strong">Lead programmer</span><span class="dates">2014 − present</span></div>
+    <div class="org">Najmanovich Research Group</div>
+    <ul class="pts"><li>Principal software architect for the lab − own the NRG docking toolchain end to end across its Sherbrooke and Montréal eras.</li></ul>
+  </div>
+  <div class="avoid" style="margin-bottom:15px;">
+    <div class="row"><span class="strong">Founder − Programmer − Research Scientist</span><span class="dates">2023 − present</span></div>
+    <div class="org">Le Bonhomme Pharma · github.com/LeBonhommePharma</div>
+    <ul class="pts"><li>Open-science pharmacology lab shipping reproducible Apache-2.0 tooling from Little Burgundy, Montréal.</li><li>Ported the FlexAIDΔS entropy kernel to two new domains − Shannon (LLM entropy-collapse) and ClusterFuck (HRV biofeedback).</li></ul>
+  </div>
+  <div class="avoid" style="margin-bottom:15px;">
+    <div class="row"><span class="strong">Graduate researcher</span><span class="dates">earlier</span></div>
+    <div class="org">Najmanovich Research Group · Université de Sherbrooke</div>
+    <ul class="pts"><li>Co-developed NRGsuite and applied FlexAID to large-scale off-target detection for drug repurposing and side-effect prediction.</li></ul>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">// software &amp; open source</div>
+  
+  <div class="sw">
+    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+      <span class="sw-name" style="color:var(--tangerine);">FlexAIDΔS</span>
+      <span class="sw-stack">C++26 · Python · PyMOL</span>
+      <span class="lic">Apache 2.0</span>
+    </div>
+    <div class="body" style="margin-top:3px;">Entropy-driven molecular docking engine. GA conformational search, Voronoi contact function, torsional ENCoM entropy, DEE torsion pruning, zero-copy GPU/OpenMP batch scoring.</div>
+  </div>
+  <div class="sw">
+    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+      <span class="sw-name" style="color:var(--firetruck);">Shannon</span>
+      <span class="sw-stack">C++20 · Python</span>
+      <span class="lic">Apache 2.0</span>
+    </div>
+    <div class="body" style="margin-top:3px;">Entropy-collapse detector for frontier LLM agents − zero-shot evaluation-awareness and strategic-deception monitoring via the same H = −Σ p<sub>i</sub> log<sub>2</sub> p<sub>i</sub> kernel that scores FlexAIDΔS binding.</div>
+  </div>
+  <div class="sw">
+    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+      <span class="sw-name" style="color:var(--strawberry);">ClusterFuck</span>
+      <span class="sw-stack">Swift · HealthKit · CareKit</span>
+      <span class="lic">Apache 2.0</span>
+    </div>
+    <div class="body" style="margin-top:3px;">Multi-platform Apple biofeedback (Watch · iPhone · TV · Vision Pro). Real-time HRV entropy → Shannon Collapse Index during guided chair yoga.</div>
+  </div>
+  <div class="sw">
+    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+      <span class="sw-name" style="color:var(--mint);">NRGsuite</span>
+      <span class="sw-stack">Python · PyMOL</span>
+      <span class="lic">open source</span>
+    </div>
+    <div class="body" style="margin-top:3px;">PyMOL plugin packaging the Najmanovich Research Group docking toolchain for real-time interactive docking with FlexAID.</div>
+  </div>
+  <div class="sw">
+    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
+      <span class="sw-name" style="color:var(--aqua);">PoseBust</span>
+      <span class="sw-stack">C++26</span>
+      <span class="lic">open source</span>
+    </div>
+    <div class="body" style="margin-top:3px;">PoseBusters-compatible geometric validation − physical-plausibility checks (bond geometry, clashes, planarity) for docked ligand poses.</div>
+  </div>
+</section>
+
+<section class="avoid">
+  <div class="eyebrow">// benchmarks &amp; validation</div>
+  <p class="body method">FlexAIDΔS is validated on <span style="color:var(--fg);">Astex Diverse 85</span> by self-docking and cross-docking with no crystal coordinates supplied, scoring the top pose by heavy-atom RMSD against the deposited ligand and by PoseBusters-style physical-plausibility checks. Shannon is validated on labelled entropy-collapse traces by detection sensitivity at fixed false-positive rate. The Astex campaign is in progress; measured results are published at <a href="https://thebonhomme.com/benchmark/" style="color:var(--tangerine);">thebonhomme.com/benchmark/</a> as they land, never before.</p>
+</section>
+
+<section>
+  <div class="eyebrow">// publications</div>
+  <div class="sub-eyebrow">preprints &amp; in preparation</div>
+  <ol class="pubs">
+  <li><span class="n">P1</span><span class="au">Morency L-P.</span> FlexAIDΔS: entropy-driven molecular docking with a full ΔG = ΔH − TΔS statistical-mechanics score. <span class="ve">Preprint / in preparation.</span> <span class="yr">2026</span></li>
+  <li><span class="n">P2</span><span class="au">Morency L-P.</span> Shannon: entropy-collapse detection for frontier LLM agents via the FlexAIDΔS configurational-entropy kernel. <span class="ve">Preprint.</span> <span class="yr">2026</span></li>
+</ol>
+  <div class="sub-eyebrow">peer-reviewed</div>
+  <ol class="pubs">
+  <li><span class="n">01</span><span class="au">Morency L-P, Gaudreault F, Najmanovich RJ.</span> Applications of the NRGsuite and the molecular docking software FlexAID in computational drug discovery and design. <span class="ve">Methods in Molecular Biology 1762, 367–388. Humana Press.</span> <span class="yr">2018</span></li>
+  <li><span class="n">02</span><span class="au">Dion SP, Béliveau F, Morency L-P, Désilets A, Najmanovich RJ, Leduc R.</span> Functional diversity of TMPRSS6 isoforms and variants expressed in hepatocellular carcinoma cell lines. <span class="ve">Scientific Reports 8, 12562.</span> <span class="yr">2018</span></li>
+  <li><span class="n">03</span><span class="au">Chartier M, Morency L-P, Zylber MI, Najmanovich RJ.</span> Large-scale detection of drug off-targets: hypotheses for drug repurposing and understanding side-effects. <span class="ve">BMC Pharmacology and Toxicology 18, 18.</span> <span class="yr">2017</span></li>
+  <li><span class="n">04</span><span class="au">Gaudreault F, Morency L-P, Najmanovich RJ.</span> NRGsuite: a PyMOL plugin to perform docking simulations in real time using FlexAID. <span class="ve">Bioinformatics 31(23), 3856–3858.</span> <span class="yr">2015</span></li>
+  <li><span class="n">05</span><span class="au">Leclerc J, Lefèvre T, Pottier F, Morency L-P, Lapointe-Verreault C, Gagné SM, Auger M.</span> Structure and pH-induced alterations of recombinant and natural spider silk proteins in solution. <span class="ve">Biopolymers 97(6), 337–346.</span> <span class="yr">2012</span></li>
+</ol>
+  <div class="sub-eyebrow">invited talks &amp; conference keynotes</div>
+  <ol class="pubs">
+  <li><span class="n">K1</span><span class="au">Morency L-P.</span> The Impact of Conformational Entropy on the Accuracy of FlexAID in Binding Mode Prediction (part III) <span class="ve">3DSig · ISMB/ECCB 2019, Basel − selected oral talk (only ~3 non-PI speakers chosen per session).</span> <span class="yr">2019</span></li>
+  <li><span class="n">K2</span><span class="au">Morency L-P.</span> The Impact of Conformational Entropy on the Accuracy of FlexAID in Binding Mode Prediction (part II) <span class="ve">ISMB 2018, Chicago − selected oral talk.</span> <span class="yr">2018</span></li>
+  <li><span class="n">K3</span><span class="au">Morency L-P.</span> The Impact of Conformational Entropy on the Accuracy of FlexAID in Binding Mode Prediction (part 1) <span class="ve">3DSig · ISMB/ECCB 2017, Prague − selected oral talk.</span> <span class="yr">2017</span></li>
+  <li><span class="n">K4</span><span class="au">Morency L-P.</span> NRGsuite: Fast, Flexible and Free PyMOL plugin for FlexAID. <span class="ve">3DSig · ISMB/ECCB 2015, Dublin − selected oral talk.</span> <span class="yr">2015</span></li>
+  <li><span class="n">K5</span><span class="au">Morency L-P, Najmanovich RJ.</span> Modelling conformational entropy in molecular docking − beyond the enthalpy-only score. <span class="ve">PROTEO Annual Symposium, Québec (invited).</span> <span class="yr">2019</span></li>
+</ol>
+</section>
+
+<section class="avoid">
+  <div class="eyebrow">// talks &amp; teaching</div>
+  <div style="display:flex;gap:12px;margin-bottom:7px;"><span class="mono" style="font-size:10px;color:var(--aqua);white-space:nowrap;flex-shrink:0;width:82px;">workshops</span><span class="body">Hands-on docking with NRGsuite and FlexAID in PyMOL − graduate computational-biology methods.</span></div><div style="display:flex;gap:12px;margin-bottom:7px;"><span class="mono" style="font-size:10px;color:var(--aqua);white-space:nowrap;flex-shrink:0;width:82px;">invited</span><span class="body">Entropy is not optional: why enthalpy-only docking gets the right answer for the wrong reason.</span></div><div style="display:flex;gap:12px;margin-bottom:7px;"><span class="mono" style="font-size:10px;color:var(--aqua);white-space:nowrap;flex-shrink:0;width:82px;">teaching</span><span class="body">Teaching assistant, biochemistry &amp; structural bioinformatics − Université de Sherbrooke.</span></div>
+</section>
+
+<section class="avoid">
+  <div class="eyebrow">// technical skills</div>
+  <div class="skill"><span class="grp" style="color:var(--aqua);">Languages</span><div class="chips"><span class="chip" style="color:var(--aqua);">C++26</span><span class="chip" style="color:var(--aqua);">C++20</span><span class="chip" style="color:var(--aqua);">Python</span><span class="chip" style="color:var(--aqua);">Swift</span><span class="chip" style="color:var(--aqua);">CMake</span><span class="chip" style="color:var(--aqua);">Bash</span></div></div><div class="skill"><span class="grp" style="color:var(--violet);">Scientific</span><div class="chips"><span class="chip" style="color:var(--violet);">Molecular docking</span><span class="chip" style="color:var(--violet);">Statistical mechanics</span><span class="chip" style="color:var(--violet);">Free-energy scoring</span><span class="chip" style="color:var(--violet);">Normal-mode / ENCoM</span><span class="chip" style="color:var(--violet);">Shannon entropy</span><span class="chip" style="color:var(--violet);">HRV signal processing</span></div></div><div class="skill"><span class="grp" style="color:var(--mint);">Tooling</span><div class="chips"><span class="chip" style="color:var(--mint);">PyMOL</span><span class="chip" style="color:var(--mint);">OpenMP</span><span class="chip" style="color:var(--mint);">CUDA / GPU</span><span class="chip" style="color:var(--mint);">Git</span><span class="chip" style="color:var(--mint);">HealthKit</span><span class="chip" style="color:var(--mint);">CareKit</span></div></div><div class="skill"><span class="grp" style="color:var(--tangerine);">Practice</span><div class="chips"><span class="chip" style="color:var(--tangerine);">Reproducible builds</span><span class="chip" style="color:var(--tangerine);">Open-source maintenance</span><span class="chip" style="color:var(--tangerine);">Benchmark design</span><span class="chip" style="color:var(--tangerine);">Apache 2.0 / MIT</span></div></div>
+</section>
+
+<section class="avoid">
+  <div class="eyebrow">// awards &amp; funding</div>
+  <div class="award"><div><div class="nm" style="color:var(--mint);">Anthropic Open Source Program</div><div class="bd">Recognition for open-source contributions to the open scientific-software ecosystem − FlexAIDΔS, Shannon.</div></div><span class="yr">2026</span></div><div class="award"><div><div class="nm" style="color:var(--tangerine);">Médaille du Lieutenant-Gouverneur du Québec (bronze)</div><div class="bd">Cabinet du Lieutenant-gouverneur du Québec − academic &amp; civic merit.</div></div><span class="yr">−</span></div><div class="award"><div><div class="nm" style="color:var(--tangerine);">Doctoral research fellowship</div><div class="bd">Fonds de recherche du Québec − Nature et technologies (FRQ-NT).</div></div><span class="yr">PhD</span></div><div class="award"><div><div class="nm" style="color:var(--mint);">Open-source contribution recognition</div><div class="bd">GitHub Arctic Code Vault Contributor; multi-year maintainer across the Najmanovich Research Group / Le Bonhomme Pharma stack.</div></div><span class="yr">−</span></div>
+</section>
+
+<section class="avoid writing">
+  <div class="eyebrow">// writing &amp; advocacy</div>
+  <p>Book in progress − housing, organized crime, and <span style="color:var(--mint);">harm reduction</span> in Little Burgundy, Montréal: applied thermodynamics of a neighbourhood.</p>
+  <p class="h">Drug of the Day − a rotating, rigorous <span style="color:var(--mint);">harm-reduction</span> pharmacology column at <a href="https://thebonhomme.com/drug-of-the-day/" style="color:var(--mint);">thebonhomme.com/drug-of-the-day/</a>.</p>
+</section>
+
+<footer><span>Le Bonhomme Pharma · Little Burgundy · Montréal · Québec</span><span><span style="white-space:nowrap;"><span style="color:var(--tangerine);">ΔG</span> = <span style="color:var(--mint);">ΔH</span> − <span style="color:var(--violet);">TΔS</span></span></span></footer>
+</main>
+</body>
+</html>
