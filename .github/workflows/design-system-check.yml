@@ -54,3 +54,8 @@ jobs:
         run: ./scripts/check-rive-branding.sh --self-test
       - name: Rive branding and routes
         run: ./scripts/check-rive-branding.sh
+
+      - name: Exergy pages — self-test
+        run: python3 scripts/check-exergy-pages.py --self-test
+      - name: Exergy pages
+        run: python3 scripts/check-exergy-pages.py

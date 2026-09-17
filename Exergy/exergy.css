@@ -1,0 +1,50 @@
+/* Exergy marketing — ui-ux-pro-max + site tokens (no retired gold). */
+.exergy-page {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+  font-family: var(--font-body, system-ui);
+  line-height: 1.55;
+}
+.exergy-page header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.exergy-page header nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.5rem;
+  color: var(--fg, #E4E3F5);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.exergy-page header nav a:focus-visible {
+  outline: 2px solid var(--tangerine, #FF9300);
+  outline-offset: 2px;
+}
+.exergy-kicker {
+  color: var(--tangerine, #FF9300);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+.exergy-page h1 {
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.exergy-page a[href^="mailto"] {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .exergy-page * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
