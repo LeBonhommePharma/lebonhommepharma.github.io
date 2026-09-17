@@ -119,6 +119,8 @@
   /* Equation operators: magnesium, knocked back. Ink on a mint fill; the primary hover lift. */
   --hp-op: var(--hp-magnesium); --hp-op-alpha: .55;
   --hp-on-mint: #08091A;
+  /* Exergy chrome on this card only — not tokens.css --gold (tangerine) and not retired yellow-gold. */
+  --hp-gold: #C4A359;
   --hp-btn-hover: var(--kw-ga, #8EEFC9);
   --hp-ghost-border: rgba(141, 140, 176, 0.7);   /* 3.4:1 boundary */
   --hp-max: 1200px;
@@ -203,6 +205,7 @@
   --hp-magnesium:  var(--hp-ink-magnesium);
   --hp-violet-text: var(--hp-violet);
   --hp-fail-text:   var(--hp-firetruck);
+  --hp-gold: #8A6E2F;
   --hp-op: var(--hp-fg-muted); --hp-op-alpha: 1;
   --hp-on-mint: #ffffff;                              /* 5.29:1 on the mint ink */
   --hp-btn-hover: var(--hp-mint);
@@ -802,7 +805,7 @@ section[id], [id="top"] { scroll-margin-top: 80px; }
 /* A formula keeps its case inside an all-caps label: HCl, not HCL. */
 .hp-chem { text-transform: none; }
 .hp-card-desc { color: var(--hp-fg-muted); font-size: var(--card-desc); flex: 1 1 auto; }
-.hp-card-cta { font-family: var(--hp-mono); font-size: 13px; font-weight: 600; color: var(--hp-cc); display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; }
+.hp-card-cta { font-family: var(--hp-mono); font-size: 13px; font-weight: 600; color: var(--hp-cc); display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; cursor: pointer; }
 .hp-card-cta::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
 .hp-card-cta:hover { text-decoration: none; }
 .hp-card-cta:focus-visible { outline: none; }
@@ -1523,7 +1526,7 @@ section[id], [id="top"] { scroll-margin-top: 80px; }
         <a class="hp-card-cta" href="/shannon/">Explore Shannon <span class="hp-arrow" aria-hidden="true">→</span></a>
       </article>
 
-      <article class="hp-card is-neutral" style="--hp-cc: var(--hp-gold, #c4a35a)">
+      <article class="hp-card is-neutral" style="--hp-cc: var(--hp-gold)">
         <div class="hp-card-head"><span class="hp-kicker">Remaining work</span><span class="hp-glyph" aria-hidden="true">Δ</span></div>
         <h4 class="hp-card-name">Exergy <span class="hp-tag">App Store release in preparation</span></h4>
         <p class="hp-card-desc">Usage tracker for Claude, Codex, Cursor, and Grok — Mac menu bar, iPhone, iPad, Watch. OAuth. Private iCloud. Tokens stay on device. Shannon watches entropy collapse; Exergy watches how much quota you have left to spend.</p>
