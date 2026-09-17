@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -38,6 +39,10 @@ def check_page(path: Path, canonical: str, title_needle: str) -> None:
         fail(f"{path.name} must link /tokens.css (no local :root palette)")
     if 'href="/theme.css"' not in text:
         fail(f"{path.name} must link /theme.css")
+    if 'href="#main"' not in text and "Skip to main content" not in text:
+        fail(f"{path.name} missing skip link to #main")
+    if 'id="main"' not in text:
+        fail(f"{path.name} main landmark must have id=main")
     if canonical not in text:
         fail(f"{path.name} missing canonical {canonical}")
     if title_needle not in text:
@@ -54,11 +59,19 @@ def check_css(text: str) -> None:
         fail("exergy.css must honor prefers-reduced-motion")
     if ":focus-visible" not in text:
         fail("exergy.css must have :focus-visible")
+    if "cursor: pointer" not in text:
+        fail("exergy.css clickable elements must set cursor: pointer")
+    if "#C4A359" in text or "#c4a359" in text:
+        fail("exergy.css must use site tangerine, not native chrome gold")
     for bad in RETIRED:
         if bad in text:
             fail(f"exergy.css contains retired hue {bad}")
     if "#FF9300" not in text and "var(--tangerine" not in text:
         fail("exergy.css kicker/focus must use site tangerine, not chrome gold")
+    if "exergy-rings" not in text:
+        fail("exergy.css must keep remaining-first ring chrome")
+    if re.search(r"var\(--[^)]+,\s*#", text):
+        fail("exergy.css components must not use hex fallbacks in var()")
 
 
 def check_home(text: str) -> None:
@@ -68,6 +81,10 @@ def check_home(text: str) -> None:
         fail("homepage must name Exergy")
     if "Remaining work" not in text and "remaining" not in text.lower():
         fail("homepage Exergy card must say remaining work")
+    if "min-height: 44px" not in text and "min-height:44px" not in text:
+        fail("homepage card CTAs must keep a 44px hit")
+    if "#FBBF24" in text or "#fbbf24" in text:
+        fail("homepage must not use retired gold #FBBF24")
 
 
 def check_privacy(text: str) -> None:
@@ -152,8 +169,9 @@ def self_test() -> int:
 
     css_ok = run(
         check_css,
-        "a { min-height: 44px; } @media (prefers-reduced-motion: reduce) {} "
-        "a:focus-visible { outline: 2px solid var(--tangerine, #FF9300); }",
+        "a { min-height: 44px; cursor: pointer; } .exergy-rings {} "
+        "@media (prefers-reduced-motion: reduce) {} "
+        "a:focus-visible { outline: 2px solid var(--tangerine); }",
     )
     if css_ok:
         broken.append(f"check_css false-positives on valid CSS: {css_ok}")

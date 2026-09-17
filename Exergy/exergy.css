@@ -1,48 +1,226 @@
-/* Exergy marketing — ui-ux-pro-max + site tokens (no retired gold). */
+/* Exergy marketing — ui-styling semantic tokens. Native apps keep chrome gold;
+   these pages keep site tangerine for kickers, CTAs, and remaining rings. */
 .exergy-page {
-  max-width: 42rem;
+  --exergy-chrome: var(--tangerine);
+  --exergy-track: var(--bg-alt);
+  --exergy-ink: var(--fg);
+  --exergy-mute: var(--fg-muted);
+  --exergy-space: var(--sp-4);
+  --exergy-gap: var(--sp-3);
+  --exergy-radius: var(--r-lg);
+  --exergy-dur: var(--dur-fast);
+  --exergy-ease: var(--ease-out);
+  --exergy-measure: 42rem;
+  max-width: var(--exergy-measure);
   margin: 0 auto;
-  padding: 2rem 1.25rem;
-  font-family: var(--font-body, system-ui);
-  line-height: 1.55;
+  padding: var(--sp-8) var(--sp-5);
+  font-family: var(--font-body);
+  line-height: var(--lh-body);
+  color: var(--exergy-ink);
+  background: var(--bg);
 }
-.exergy-page header nav {
+.exergy-skip {
+  position: absolute;
+  left: var(--sp-4);
+  top: var(--sp-2);
+  transform: translateY(-200%);
+  background: var(--bg-panel);
+  color: var(--exergy-ink);
+  padding: var(--sp-2) var(--sp-3);
+  min-height: 44px;
+  border-radius: var(--r-sm);
+  z-index: 20;
+}
+.exergy-skip:focus {
+  transform: none;
+}
+.exergy-page header nav,
+.exergy-family {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
-.exergy-page header nav a {
-  display: inline-flex;
+  gap: var(--exergy-gap);
+  margin-top: var(--sp-3);
   align-items: center;
-  min-height: 44px;
-  padding: 0 0.5rem;
-  color: var(--fg, #E4E3F5);
+}
+.exergy-family {
+  margin-top: var(--sp-8);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--bg-alt);
+}
+.exergy-family-label {
+  margin: 0;
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--exergy-mute);
+  font-weight: var(--fw-600);
+}
+.exergy-page a {
+  color: var(--tangerine);
   text-decoration: underline;
   text-underline-offset: 0.2em;
+  cursor: pointer;
+  transition: color var(--exergy-dur) var(--exergy-ease);
 }
-.exergy-page header nav a:focus-visible {
-  outline: 2px solid var(--tangerine, #FF9300);
-  outline-offset: 2px;
-}
-.exergy-kicker {
-  color: var(--tangerine, #FF9300);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-}
-.exergy-page h1 {
-  font-weight: 650;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-}
-.exergy-page a[href^="mailto"] {
-  min-height: 44px;
+.exergy-page header nav a,
+.exergy-page a[href^="mailto"],
+.exergy-family a,
+.exergy-cta {
   display: inline-flex;
   align-items: center;
+  min-height: 44px;
+  padding: 0 var(--sp-2);
+  cursor: pointer;
+}
+.exergy-page a:hover {
+  color: var(--exergy-ink);
+}
+.exergy-page a:focus-visible,
+.exergy-cta:focus-visible,
+.exergy-skip:focus-visible {
+  outline: 2px solid var(--tangerine);
+  outline-offset: 2px;
+}
+.exergy-page a[aria-current="page"] {
+  color: var(--exergy-ink);
+  text-decoration: none;
+  font-weight: var(--fw-600);
+}
+.exergy-kicker {
+  color: var(--tangerine);
+  font-weight: var(--fw-600);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  font-size: var(--fs-xs);
+  margin-bottom: var(--sp-2);
+}
+.exergy-page h1 {
+  font-weight: var(--fw-700);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-snug);
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  margin: 0 0 var(--sp-4);
+}
+.exergy-page h2 {
+  font-size: var(--fs-h3);
+  letter-spacing: var(--tracking-tight);
+  margin: var(--sp-8) 0 var(--sp-3);
+}
+.exergy-lead {
+  font-size: var(--fs-body);
+  color: var(--exergy-ink);
+  margin: 0 0 var(--sp-3);
+}
+.exergy-mute {
+  color: var(--exergy-mute);
+}
+.exergy-hero {
+  display: grid;
+  gap: var(--sp-6);
+  align-items: center;
+}
+.exergy-rings {
+  --r1: 0.84;
+  --r2: 0.61;
+  --r3: 0.38;
+  width: min(11rem, 42vw);
+  aspect-ratio: 1;
+  margin: var(--sp-4) 0 var(--sp-6);
+  position: relative;
+}
+.exergy-rings::before,
+.exergy-rings::after,
+.exergy-rings i {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 8px solid var(--exergy-track);
+  border-top-color: var(--exergy-chrome);
+  transform: rotate(-90deg);
+}
+.exergy-rings::before {
+  inset: 0;
+  border-width: 8px;
+}
+.exergy-rings::after {
+  inset: 14px;
+  border-width: 7px;
+}
+.exergy-rings i {
+  inset: 28px;
+  border-width: 6px;
+  display: block;
+}
+.exergy-rings span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-weight: var(--fw-600);
+  color: var(--exergy-chrome);
+  font-size: var(--fs-h3);
+}
+.exergy-grid {
+  display: grid;
+  gap: var(--sp-4);
+  margin: var(--sp-6) 0;
+}
+.exergy-card {
+  background: var(--bg-card);
+  border: 1px solid color-mix(in srgb, var(--tangerine) 28%, transparent);
+  border-radius: var(--exergy-radius);
+  padding: var(--sp-5);
+}
+.exergy-card h2 {
+  margin: 0 0 var(--sp-2);
+  color: var(--tangerine);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+.exergy-card p {
+  margin: 0;
+  color: var(--exergy-mute);
+}
+.exergy-cta {
+  background: var(--tangerine);
+  color: var(--bg);
+  text-decoration: none;
+  border-radius: var(--r-pill);
+  padding: 0 var(--sp-5);
+  font-weight: var(--fw-600);
+  min-height: 44px;
+}
+.exergy-cta:hover {
+  color: var(--bg);
+  opacity: 0.92;
+}
+.exergy-page footer {
+  margin-top: var(--sp-12);
+  color: var(--exergy-mute);
+  font-size: var(--fs-sm);
+}
+.exergy-page code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--tangerine);
+}
+@media (min-width: 768px) {
+  .exergy-page {
+    --exergy-measure: 48rem;
+    padding: var(--sp-12) var(--sp-8);
+  }
+  .exergy-hero {
+    grid-template-columns: minmax(0, 1fr) 12rem;
+  }
+  .exergy-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
+  .exergy-page,
   .exergy-page * {
     transition: none !important;
     animation: none !important;
