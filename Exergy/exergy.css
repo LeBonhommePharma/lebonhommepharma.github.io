@@ -135,21 +135,25 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 8px solid var(--exergy-track);
-  border-top-color: var(--exergy-chrome);
-  transform: rotate(-90deg);
+  background: conic-gradient(
+    from -90deg,
+    var(--exergy-chrome) 0 calc(var(--exergy-remain) * 1turn),
+    var(--exergy-track) 0
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), black calc(100% - 7px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 8px), black calc(100% - 7px));
 }
 .exergy-rings::before {
+  --exergy-remain: var(--r1);
   inset: 0;
-  border-width: 8px;
 }
 .exergy-rings::after {
+  --exergy-remain: var(--r2);
   inset: 14px;
-  border-width: 7px;
 }
 .exergy-rings i {
+  --exergy-remain: var(--r3);
   inset: 28px;
-  border-width: 6px;
   display: block;
 }
 .exergy-rings span {

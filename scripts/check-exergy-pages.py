@@ -70,6 +70,8 @@ def check_css(text: str) -> None:
         fail("exergy.css kicker/focus must use site tangerine, not chrome gold")
     if "exergy-rings" not in text:
         fail("exergy.css must keep remaining-first ring chrome")
+    if "conic-gradient" not in text or "--exergy-remain" not in text:
+        fail("exergy rings must fill leftover work via conic-gradient, not a 25% border-top")
     if re.search(r"var\(--[^)]+,\s*#", text):
         fail("exergy.css components must not use hex fallbacks in var()")
 
@@ -169,7 +171,8 @@ def self_test() -> int:
 
     css_ok = run(
         check_css,
-        "a { min-height: 44px; cursor: pointer; } .exergy-rings {} "
+        "a { min-height: 44px; cursor: pointer; } .exergy-rings { --exergy-remain: var(--r1); } "
+        "conic-gradient(from -90deg, var(--tangerine) 0, var(--bg) 0) "
         "@media (prefers-reduced-motion: reduce) {} "
         "a:focus-visible { outline: 2px solid var(--tangerine); }",
     )
