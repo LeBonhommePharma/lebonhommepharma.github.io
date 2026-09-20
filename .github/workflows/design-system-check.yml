@@ -27,8 +27,12 @@ name: Design system check
 # unless the checks are known to still be able to fail.
 
 on:
+  # No `branches:` filter, deliberately. A PR whose BASE is not main (a stacked
+  # PR) matches no branch filter, so this workflow would never run on it at all
+  # — and once this check is required by a ruleset, a check that never arrives
+  # is a PR that can never merge. The filter only ever saved Actions minutes on
+  # PRs targeting side branches; that is the cheaper thing to lose.
   pull_request:
-    branches: [main]
   push:
     branches: [main]
   workflow_dispatch:
