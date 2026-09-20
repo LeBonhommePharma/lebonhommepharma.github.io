@@ -52,9 +52,9 @@ freely but rise no more than 0.05.**
 | BrandAqua | `#0071B5` | 4.54:1 | `#00A2FF` | 7.15:1 |
 | BrandStrawberry | `#D40074` | 4.52:1 | `#FF2F92` | 5.71:1 |
 | BrandMagnesium | `#6D6C74` | 4.52:1 | `#DCDCE4` | 14.47:1 |
-| BrandFg | `#6C6C7B` | 4.50:1 | `#E4E3F5` | 15.60:1 |
-| BrandFgMuted | `#6B6A8C` | 4.50:1 | `#8D8CB0` | 6.12:1 |
-| BrandStateFailText | `#C7373E` | 4.53:1 | `#FF6B6B` | 7.11:1 |
+| BrandFg | `#6C6B7A` | 4.55:1 | `#E4E3F5` | 15.60:1 |
+| BrandFgMuted | `#6B698C` | 4.55:1 | `#8D8CB0` | 6.12:1 |
+| BrandStateFailText | `#C7363D` | 4.55:1 | `#FF6B6B` | 7.11:1 |
 
 Both halves clear 4.5:1, which also covers the 3:1 floors for large text and
 non-text. Hue moves under 0.5° for every key colour.
@@ -109,6 +109,50 @@ Dark halves are unchanged (`#8D8CB0`, `#FF6B6B`), so nothing pinned to
 
 You author no colorset values — that discipline is right and this revision
 does not change it. These came out of the generator.
+
+---
+
+## Second revision — three body-role values, and a rule split
+
+Three more light halves changed, for a different reason than the two above.
+**Take these verbatim too.**
+
+| colorset | was | now | exact contrast on `#F3EFE7` |
+|---|---|---|---|
+| BrandFg | `#6C6C7B` | **`#6C6B7A`** | 4.500601 → **4.553120** |
+| BrandFgMuted | `#6B6A8C` | **`#6B698C`** | 4.504146 → **4.550015** |
+| BrandStateFailText | `#C7373E` | **`#C7363D`** | 4.527539 → **4.551152** |
+
+These were not failing. They cleared WCAG AA. The problem was that `BrandFg`
+cleared it by 0.000601, which is **less than one 8-bit step** — one step is
+worth 0.0469 of ratio for that colour — so the margin was an artifact of where
+the quantisation grid fell rather than a decision. Anti-aliased small text
+blends its edge pixels toward the ground, so a glyph sitting at 4.5000 renders
+part of itself under the bar.
+
+The catalog now solves under **two targets**, emitted to `roles.json` beside the
+colorsets and enforced by `check-colorsets.mjs`:
+
+- **body 4.55** — `BrandFg`, `BrandFgMuted`, `BrandStateFailText`. 4.5 plus one
+  quantisation step.
+- **identity 4.5** — the seven key hues. Unchanged, and **do not lower this to
+  the 3:1 non-text floor**: at 3:1, `BrandViolet`, `BrandFiretruck` and
+  `BrandStrawberry` solve to their own dark values, lightness never moves, and
+  the pair stops being a relighting. 4.5 there is a twin-distinctness floor
+  that happens to coincide with the AA number.
+
+Dark halves are unchanged throughout. Component deltas:
+
+```
+BrandFg.colorset             red 0.424  green 0.424 → 0.420  blue 0.482 → 0.478
+BrandFgMuted.colorset        red 0.420  green 0.416 → 0.412  blue 0.549
+BrandStateFailText.colorset  red 0.780  green 0.216 → 0.212  blue 0.243 → 0.239
+```
+
+`roles.json` is new in the catalog directory. It is metadata for the guard, not
+an Xcode asset — `actool` ignores unknown JSON at that level, but if your build
+is strict about the directory's contents, drop it and run the guard from this
+repo instead.
 
 ## Your universal entries are currently inverted
 

@@ -23,25 +23,46 @@ hue from midnight indigo rather than a relighting of it.
 
 ## Measured
 
-| colorset | light | on ivory | dark | on ink | Δhue |
-|---|---|---|---|---|---|
-| BrandBg | `#F3EFE7` | ground | `#08091A` | ground | — |
-| BrandMint | `#007C58` | 4.55:1 | `#45E0A8` | 11.73:1 | 0.02° |
-| BrandViolet | `#7E4CE6` | 4.51:1 | `#8B5CF6` | 4.66:1 | 0.08° |
-| BrandTangerine | `#A25C00` | 4.5:1 | `#FF9300` | 8.86:1 | 0.49° |
-| BrandFiretruck | `#DC001B` | 4.51:1 | `#F5232B` | 4.85:1 | 0° |
-| BrandAqua | `#0071B5` | 4.54:1 | `#00A2FF` | 7.15:1 | 0.32° |
-| BrandStrawberry | `#D40074` | 4.52:1 | `#FF2F92` | 5.71:1 | 0.06° |
-| BrandMagnesium | `#6D6C74` | 4.52:1 | `#DCDCE4` | 14.47:1 | achromatic |
-| BrandFg | `#6C6C7B` | 4.5:1 | `#E4E3F5` | 15.6:1 | 2.88° |
-| BrandFgMuted | `#6B6A8C` | 4.5:1 | `#8D8CB0` | 6.12:1 | 0.27° |
-| BrandStateFailText | `#C7373E` | 4.53:1 | `#FF6B6B` | 7.11:1 | 0.01° |
+| colorset | role | target | light | on ivory | dark | on ink | Δhue |
+|---|---|---|---|---|---|---|---|
+| BrandBg | ground | — | `#F3EFE7` | ground | `#08091A` | ground | — |
+| BrandMint | identity | 4.5:1 | `#007C58` | 4.55:1 | `#45E0A8` | 11.73:1 | 0.02° |
+| BrandViolet | identity | 4.5:1 | `#7E4CE6` | 4.51:1 | `#8B5CF6` | 4.66:1 | 0.08° |
+| BrandTangerine | identity | 4.5:1 | `#A25C00` | 4.5:1 | `#FF9300` | 8.86:1 | 0.49° |
+| BrandFiretruck | identity | 4.5:1 | `#DC001B` | 4.51:1 | `#F5232B` | 4.85:1 | 0° |
+| BrandAqua | identity | 4.5:1 | `#0071B5` | 4.54:1 | `#00A2FF` | 7.15:1 | 0.32° |
+| BrandStrawberry | identity | 4.5:1 | `#D40074` | 4.52:1 | `#FF2F92` | 5.71:1 | 0.06° |
+| BrandMagnesium | identity | 4.5:1 | `#6D6C74` | 4.52:1 | `#DCDCE4` | 14.47:1 | achromatic |
+| BrandFg | body | 4.55:1 | `#6C6B7A` | 4.55:1 | `#E4E3F5` | 15.6:1 | 0.18° |
+| BrandFgMuted | body | 4.55:1 | `#6B698C` | 4.55:1 | `#8D8CB0` | 6.12:1 | 0.93° |
+| BrandStateFailText | body | 4.55:1 | `#C7363D` | 4.55:1 | `#FF6B6B` | 7.11:1 | 0.12° |
 
-Both halves clear 4.5:1, which also satisfies the 3:1 floors for large text
-and non-text. An asset does not know whether its call site renders 12px body
-or a 28px numeral, so the strictest bar is the only safe assumption.
+## Two targets, on purpose
 
-`BrandFg` sits at 2.88° of hue drift, inside the 3° tolerance but close to
-it. That is measurement noise, not a visible shift: `#E4E3F5` has chroma
-0.024, barely above the 0.02 achromatic threshold, and the hue angle of a
-near-neutral is unstable by construction.
+The `target` column is not decoration. Colorsets are solved under one of two
+rules and which one applies is emitted to `roles.json`, read back by
+`check-colorsets.mjs`, and enforced — a colorset solved under the wrong rule
+fails CI rather than merely looking odd in this table.
+
+- **body** (4.55:1) — BrandFg, BrandFgMuted, BrandStateFailText.
+  WCAG AA body is 4.5; the extra 0.05 is one 8-bit quantisation step, because
+  a value clearing by less than the distance to the nearest representable
+  colour has not cleared on purpose. BrandFg previously landed at 4.500601.
+- **identity** (4.5:1) — the seven key hues. These are fills,
+  washes and chart series, so the WCAG *non-text* floor of 3:1 would seem to
+  apply. It does not: solved at 3:1, BrandViolet, BrandFiretruck and
+  BrandStrawberry return their own dark value unchanged, lightness never
+  moves, and the pair stops being a relighting at all. 4.5 here is a
+  twin-distinctness floor that coincides with the AA number — see the comment
+  on `AA_TWIN_FLOOR` in emit.mjs before changing it.
+
+Every half clears 4.5:1 either way, which also satisfies the 3:1 floors for
+large text and non-text.
+
+`BrandFg` is the one to watch on hue. Its dark half `#E4E3F5` has chroma
+0.024, barely above the 0.02 achromatic threshold, so its hue angle is
+unstable by construction and the reported Δ moves a lot for a small change
+in lightness — it read 2.88° when the light half was solved at the bare 4.5
+bar and reads 0.18° now. Neither figure is a visible shift; both are the
+hue of a near-neutral being reported to more precision than it has. The 3°
+tolerance is doing real work on the chromatic hues, not on this one.
