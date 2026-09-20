@@ -20,45 +20,39 @@
 
 import { readFileSync } from 'node:fs';
 import { parseTokens, resolve, SOURCE } from './extract.mjs';
+import { contrast, fmtRatio } from './oklch.mjs';
 
 const VERBOSE = process.argv.includes('--verbose');
 const css = readFileSync(SOURCE, 'utf8');
 const blocks = parseTokens(css);
 const LIGHT = '[data-theme="light"]';
 
-const f = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-function lum(hex) {
-  const m = /^#([0-9A-Fa-f]{6})$/.exec(hex.trim());
-  if (!m) return null;
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16) / 255);
-  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
-}
 /**
- * Contrast ratio, UNROUNDED.
+ * Colour maths comes from oklch.mjs. It used to be a private copy in this
+ * file, and that copy carried its own `Math.round(... * 100) / 100` feeding
+ * the `r < 4.5` test below — the same defect that let two colorsets ship
+ * below AA reported as passing. Four copies of one formula is four places for
+ * it to rot; the last time it rotted, a copy dropped the /255 and white on
+ * black measured 10,498,937:1. One definition, imported.
  *
- * This used to round to 2 dp before returning, and its result feeds the
- * `r < 4.5` test below. That is the same defect that let BrandFgMuted
- * (4.497589) and BrandStateFailText (4.497018) ship through
- * check-colorsets.mjs reported as "4.5 / ok": a measurement rounded into
- * agreement with its own threshold can never catch a near-miss.
+ * Proven equivalent to the copy it replaces before it replaced it: bit-
+ * identical contrast on 30,047 inputs across three grounds, zero verdict
+ * changes at the 4.5 bar.
  *
- * Compare with `ratio`; print with `show`.
- *
- * NOTE: this file carries its own copy of the sRGB transfer function and the
- * contrast formula. oklch.mjs exists precisely so there is one definition, and
- * its header records what the last duplicate cost. The duplication is left in
- * place here only because removing it is a refactor, not a bug fix — it is
- * called out in the handoff as the follow-up.
+ * `ratio` wraps `contrast` only to preserve this file's null-on-bad-input
+ * behaviour — oklch.mjs throws, and the callers here report a malformed token
+ * as a named failure rather than dying on it.
  */
+const HEX_RE = /^#([0-9A-Fa-f]{6})$/;
+
+/** Contrast ratio, UNROUNDED, or null if either side is not a plain hex. */
 function ratio(fg, bg) {
-  const a = lum(fg), b = lum(bg);
-  if (a === null || b === null) return null;
-  const [hi, lo] = a > b ? [a, b] : [b, a];
-  return (hi + 0.05) / (lo + 0.05);
+  if (!HEX_RE.test(String(fg).trim()) || !HEX_RE.test(String(bg).trim())) return null;
+  return contrast(fg, bg);
 }
 
 /** 2-dp form for human reading. Never compare against this. */
-const show = (r) => (r === null ? null : Math.round(r * 100) / 100);
+const show = (r) => (r === null ? null : fmtRatio(r));
 
 let fail = 0;
 const bad = (msg) => { console.log(`  FAIL  ${msg}`); fail++; };

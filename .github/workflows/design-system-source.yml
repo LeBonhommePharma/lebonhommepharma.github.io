@@ -76,6 +76,17 @@ jobs:
         if: always()
         run: node design-system/check-colorsets.mjs
 
+      # The colour maths lived in four copies and the duplication cost this
+      # repo twice — once when a copy dropped the /255 normalisation, once when
+      # a copy carried a rounded comparison that let two colorsets ship below
+      # AA reported as passing. Three copies are now one imported module. The
+      # fourth is the Python port inside scripts/check-design-system.sh, which
+      # cannot import a JS module and keeps its own fail-closed behaviour when
+      # python3 is absent. This pins the port to oklch.mjs so it cannot drift.
+      - name: The shell guard's maths agrees with oklch.mjs
+        if: always()
+        run: node design-system/check-maths-parity.mjs --verbose
+
       # The generated targets must match the source they came from. This is
       # what makes "one source of truth" a fact rather than an intention.
       - name: Generated artifacts match tokens.css
