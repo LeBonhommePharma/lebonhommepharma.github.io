@@ -100,10 +100,27 @@ if (annotated === 0) {
 // target" in the repo and this file is not a second place for it to drift.
 // emit.mjs owns the number and the reason; see AA_BODY_WITH_MARGIN there.
 //
-// WCAG AA body is 4.5. The extra 0.05 is one 8-bit quantisation step: a value
-// clearing by less than the distance to the nearest representable colour has
-// not cleared on purpose. --firetruck-fg used to sit at 4.500439, which is
-// 1/150th of a step above the bar.
+// WCAG AA body is 4.5. The extra 0.05 buys distance from the quantisation
+// grid: a value clearing by less than the distance to the nearest
+// representable colour has not cleared on purpose.
+//
+// The size of "one 8-bit step" is NOT a single number -- it depends which
+// channel moves, because the three carry different luminance weights.
+// Measured for --firetruck-fg #E4001C on the light ground #f4f6fb:
+//
+//     1 step in red    0.03427374
+//     1 step in green  0.00452309
+//     1 step in blue   0.00101509
+//
+// So 0.05 is more than one step in ANY channel for this colour -- the margin
+// is generous rather than exact, which is the intent.
+//
+// --firetruck-fg used to sit at 4.5004389770, clearing 4.5 by 0.0004389770.
+// That is less than one 8-bit step in any channel (1/78 of a red step, 1/10
+// of a green one, 1/2 of a blue one). State it that way rather than as a
+// fraction of "a step": a single step-size figure for a three-channel value
+// is not meaningful, and an earlier version of this comment claimed 1/150th
+// by picking one.
 const ROLES = JSON.parse(
   readFileSync(new URL('./dist/BrandColors.xcassets/roles.json', import.meta.url), 'utf8')
 );
