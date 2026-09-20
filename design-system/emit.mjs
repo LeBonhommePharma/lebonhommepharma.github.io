@@ -24,6 +24,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseTokens, resolve, ROOT, SOURCE } from './extract.mjs';
+import { solveRelight, isRelighting, contrast } from './oklch.mjs';
 
 const CHECK = process.argv.includes('--check');
 const DIST = join(ROOT, 'design-system', 'dist');
@@ -38,27 +39,13 @@ const camel = (n) => n.replace(/^--/, '').replace(/-([a-z0-9])/g, (_, c) => c.to
 
 // ── contrast, computed rather than transcribed ──────────────────────────────
 // The ratios annotated in tokens.css are the design system's load-bearing
-// claim. They are recomputed here from the WCAG 2.1 relative-luminance formula
-// so the emitted artifacts carry a measured number, and so a hue edited without
+// claim. They are recomputed from the WCAG 2.1 relative-luminance formula so
+// the emitted artifacts carry a measured number, and so a hue edited without
 // re-measuring is caught by --check rather than shipping a stale figure.
-function srgbToLinear(c) {
-  c /= 255;
-  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-}
-function luminance(hex) {
-  const m = /^#([0-9A-Fa-f]{6})$/.exec(hex.trim());
-  if (!m) return null;
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16));
-  return 0.2126 * srgbToLinear(r) + 0.7152 * srgbToLinear(g) + 0.0722 * srgbToLinear(b);
-}
-/** Contrast ratio of a (foreground, background) PAIR. Never of a colour alone. */
-export function contrast(fg, bg) {
-  const a = luminance(fg);
-  const b = luminance(bg);
-  if (a === null || b === null) return null;
-  const [hi, lo] = a > b ? [a, b] : [b, a];
-  return Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
-}
+//
+// The maths itself lives in oklch.mjs. It used to be copied into each tool,
+// and one copy dropped the /255 normalisation — see that file's header.
+export { contrast };
 
 // ── the model ───────────────────────────────────────────────────────────────
 const KEY_COLORS = ['mint', 'violet', 'tangerine', 'firetruck', 'aqua', 'strawberry', 'magnesium'];
@@ -227,35 +214,31 @@ function emitTs() {
 
 // ── Xcode asset catalog ─────────────────────────────────────────────────────
 //
-// THE QUESTION THIS ANSWERS
-// -------------------------
-// NATURaL's MASTER.md says "Light appearance twins live in BrandColors.xcassets"
-// and its BrandColor.swift repeats the claim under a heading that literally
-// reads "Asset catalog twins". Neither is true: all ten colorsets there carry a
-// single `universal` entry and no appearance variants at all.
+// natural/MASTER.md says light appearance twins live in BrandColors.xcassets.
+// They never existed — all ten colorsets carried a single `universal` entry.
+// LP's call: the doc is right and the assets were simply never made. So the
+// twins get built, and the doc stands.
 //
-// The blanket framing — "ten colorsets are missing their twin" — is the wrong
-// shape, because the ten are two different kinds of thing:
+// HOW THE PAIRS ARE DERIVED, NOT PICKED
+// -------------------------------------
+// The canonical hex is the DARK half: every key colour was measured against
+// the ink and clears AA there already (mint 11.73, magnesium 14.47, and the
+// tightest, violet, at 4.66).
 //
-//   The seven KEY COLOURS must NOT have a twin. They are identity hues, frozen
-//   across themes on purpose, and NATURaL's own doc demands exactly that in the
-//   same sentence that claims twins exist: "Session HUD always reads the sRGB
-//   values above so SCI / ΔH / ΔG stay identical across themes." Giving mint a
-//   dark twin would break the thing the sentence is protecting.
+// The LIGHT half is solved from it — hue held, lightness moved, chroma shed
+// only where the sRGB gamut narrows — until the pair clears 4.5:1 against
+// NATURaL's approved warm ivory. The constraint is the one
+// scripts/check-design-system.sh already defines and self-tests: hue within
+// 3°, lightness must differ, chroma may fall freely but rise no more than
+// 0.05. So every twin is provably a relighting of its counterpart rather than
+// a second colour that happens to look similar.
 //
-//   BrandBg / BrandFg / BrandFgMuted must HAVE one. They are surfaces and text,
-//   the only half of the (foreground, background) pair that is allowed to move.
-//
-// So the doc is wrong about seven and the assets are incomplete about three,
-// and generating the catalog is what stops anyone having to remember which.
-//
-// The `universal` entry is the LIGHT value and the dark appearance carries the
-// dark one, which is the direction Apple resolves: a system in light appearance
-// falls back to `universal`. NATURaL currently pins `.preferredColorScheme(.dark)`
-// app-wide, so it never reads the light entry today — but that is precisely the
-// trap. Its universal entries hold DARK values, so the day someone removes that
-// modifier the app renders dark-on-dark in light appearance, silently, with no
-// missing-asset error to catch it.
+// BrandBg is the exception and is declared as one: it IS the ground, so it has
+// no foreground to be measured against, and warm ivory is legitimately a
+// different hue from midnight indigo rather than a relighting of it.
+const IVORY = '#F3EFE7';   // NATURaL approved light appearance (natural/MASTER.md)
+const AA_BODY = 4.5;       // an asset does not know its call site; assume the strictest
+
 function colorset(entries) {
   const component = (hex) => {
     const m = /^#([0-9A-Fa-f]{6})$/.exec(hex);
@@ -271,69 +254,105 @@ function colorset(entries) {
       },
     };
   };
-  const colors = [{ color: component(entries.any), idiom: 'universal' }];
-  if (entries.dark) {
-    colors.push({
-      appearances: [{ appearance: 'luminosity', value: 'dark' }],
-      color: component(entries.dark),
-      idiom: 'universal',
-    });
-  }
+  const colors = [{ color: component(entries.light), idiom: 'universal' }];
+  colors.push({
+    appearances: [{ appearance: 'luminosity', value: 'dark' }],
+    color: component(entries.dark),
+    idiom: 'universal',
+  });
   return JSON.stringify({ colors, info: { author: 'xcode', version: 1 } }, null, 2) + '\n';
 }
 
 const XCASSETS = join(DIST, 'BrandColors.xcassets');
-const capitalise = (s) => s[0].toUpperCase() + s.slice(1);
+
+// The ten names NATURaL already uses, so this is a drop-in rather than a
+// rename, plus StateFailText which its catalog was missing.
+const CATALOG_SOURCES = [
+  ...KEY_COLORS.map((n) => ['Brand' + n[0].toUpperCase() + n.slice(1), keyColors[n].hex]),
+  ['BrandFg', val('--fg')],
+  ['BrandFgMuted', val('--fg-muted')],
+  ['BrandStateFailText', val('--state-fail-text')],
+];
 
 const colorsets = [];
+const twinReport = [];
 
-// Key colours — one value, no appearance variant, by design.
-for (const [name, c] of Object.entries(keyColors)) {
-  colorsets.push([`Brand${capitalise(name)}`, colorset({ any: c.hex })]);
+// The ground: declared, not solved.
+colorsets.push(['BrandBg', colorset({ light: IVORY, dark: val('--bg') })]);
+twinReport.push({ name: 'BrandBg', light: IVORY, dark: val('--bg'), ground: true });
+
+for (const [name, dark] of CATALOG_SOURCES) {
+  const solved = solveRelight(dark, IVORY, AA_BODY);
+  if (!solved) {
+    throw new Error(
+      `${name}: no relighting of ${dark} reaches ${AA_BODY}:1 on ${IVORY} while holding hue. ` +
+        'Refusing to emit a twin that fails contrast — a twin that looks right and fails ' +
+        'is worse than none, because it ships silently.'
+    );
+  }
+  const rel = isRelighting(dark, solved.hex);
+  if (!rel.ok) {
+    throw new Error(
+      `${name}: solved light value ${solved.hex} is not a relighting of ${dark} ` +
+        `(hue ${rel.dh}°, chroma ${rel.dc}). Refusing to emit.`
+    );
+  }
+  colorsets.push([name, colorset({ light: solved.hex, dark })]);
+  twinReport.push({
+    name,
+    light: solved.hex,
+    dark,
+    onIvory: contrast(solved.hex, IVORY),
+    onInk: contrast(dark, inkDark),
+    dh: rel.dh,
+    chromaKept: solved.chromaKept,
+  });
 }
-// Everything that legitimately differs between themes gets a real twin.
-for (const [token, pair] of Object.entries(themed)) {
-  if (!/^#[0-9A-Fa-f]{6}$/.test(pair.dark) || !/^#[0-9A-Fa-f]{6}$/.test(pair.light)) continue;
-  const name = 'Brand' + capitalise(camel(token));
-  colorsets.push([name, colorset({ any: pair.light, dark: pair.dark })]);
-}
 
-const XC_README = `# BrandColors.xcassets — GENERATED
-
-Generated by \`design-system/emit.mjs\` from \`tokens.css\`. Do not hand-edit:
-\`emit.mjs --check\` fails on drift.
-
-## Which colorsets have an appearance twin, and why
-
-**The seven key colours have NO dark twin, deliberately.** mint, violet,
-tangerine, firetruck, aqua, strawberry, magnesium are identity hues bound to
-thermodynamic quantities. They are frozen across themes so SCI / ΔH / ΔG read
-identically in either appearance. Adding a twin to one of these is a
-regression, not a fix — if a future audit reports them as "missing" twins, that
-audit is measuring the wrong thing.
-
-**Surfaces and text DO have one.** Bg, Fg, FgMuted, StateFailText and the
-\`*Fg\` foreground variants are the half of the (foreground, background) pair
-that is allowed to move.
-
-## The trap this closes
-
-The \`universal\` entry holds the LIGHT value; the dark appearance holds the
-dark one. That is the direction Apple resolves — a system in light appearance
-falls back to \`universal\`.
-
-The previous hand-written catalog put the DARK value in \`universal\` with no
-appearance variant. That is invisible today because the app pins
-\`.preferredColorScheme(.dark)\`, and it stays invisible right up until someone
-removes that modifier, at which point light appearance renders dark-on-dark
-with no missing-asset error.
-
-## Foreground variants
-
-On the light ground the bare key colours measure magnesium 1.26:1, mint 1.56:1,
-tangerine 2.06:1, aqua 2.55:1 — four of seven below the 3:1 non-text floor. Use
-\`Brand*Fg\` for anything a person reads. See \`design-system/MASTER.md\`.
-`;
+const XC_README = [
+  '# BrandColors.xcassets — GENERATED',
+  '',
+  'Generated by `design-system/emit.mjs` from `tokens.css`. Do not hand-edit:',
+  '`emit.mjs --check` fails on drift, and `check-colorsets.mjs` fails on a',
+  'missing twin.',
+  '',
+  '## How each pair was derived',
+  '',
+  'The canonical hex is the **dark** half — every key colour was measured',
+  'against the ink and clears AA there already.',
+  '',
+  'The **light** half is solved from it: hue held, lightness moved, chroma shed',
+  'only where the sRGB gamut narrows, until the pair clears 4.5:1 against warm',
+  'ivory `' + IVORY + '`. The constraint is the one',
+  '`scripts/check-design-system.sh` already defines and self-tests — hue within',
+  '3°, lightness must differ, chroma may fall freely but rise no more than',
+  '0.05 — so every twin is provably a relighting rather than a second colour',
+  'that happens to look similar.',
+  '',
+  '`BrandBg` is the declared exception: it IS the ground, so there is no',
+  'foreground to measure it against, and warm ivory is legitimately a different',
+  'hue from midnight indigo rather than a relighting of it.',
+  '',
+  '## Measured',
+  '',
+  '| colorset | light | on ivory | dark | on ink | Δhue |',
+  '|---|---|---|---|---|---|',
+  ...twinReport.map((t) =>
+    t.ground
+      ? `| ${t.name} | \`${t.light}\` | ground | \`${t.dark}\` | ground | — |`
+      : `| ${t.name} | \`${t.light}\` | ${t.onIvory}:1 | \`${t.dark}\` | ${t.onInk}:1 | ${t.dh === null ? 'achromatic' : t.dh + '°'} |`
+  ),
+  '',
+  'Both halves clear 4.5:1, which also satisfies the 3:1 floors for large text',
+  'and non-text. An asset does not know whether its call site renders 12px body',
+  'or a 28px numeral, so the strictest bar is the only safe assumption.',
+  '',
+  '`BrandFg` sits at 2.88° of hue drift, inside the 3° tolerance but close to',
+  'it. That is measurement noise, not a visible shift: `#E4E3F5` has chroma',
+  '0.024, barely above the 0.02 achromatic threshold, and the hue angle of a',
+  'near-neutral is unstable by construction.',
+  '',
+].join('\n');
 
 const artifacts = [
   [PACKAGE_CSS, css],

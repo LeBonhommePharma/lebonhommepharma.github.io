@@ -24,7 +24,8 @@ tokens.css                                    ← authored, by a human
          ├── design-system/dist/tokens.json                           JSON consumers
          ├── design-system/dist/tokens.js · tokens.d.ts               JS / TS
          ├── design-system/dist/BrandColor.swift                      NATURaL
-         └── design-system/dist/ExergyTheme.swift                     Exergy
+         ├── design-system/dist/ExergyTheme.swift                     Exergy
+         └── design-system/dist/BrandColors.xcassets/                 Xcode catalog
 ```
 
 ### Why CSS is the source and not a neutral JSON file
@@ -133,48 +134,97 @@ foreground.
 
 ---
 
-## Appearance twins — which colours get one
+## Appearance twins
 
-The Apple apps ship an Xcode asset catalog. `NATURaL/design-system/natural/MASTER.md`
-claimed *"Light appearance twins live in `BrandColors.xcassets`"*, and
-`BonhommeCore/.../BrandColor.swift` repeated it under a heading reading
-*"Asset catalog twins"*. Neither was true — all ten colorsets carried a single
-`universal` entry and no appearance variants at all.
+`natural/MASTER.md` says light appearance twins live in `BrandColors.xcassets`.
+They never existed — all ten colorsets carried a single `universal` entry.
 
-"Ten colorsets are missing their twin" is the wrong shape for the problem,
-because the ten are two different kinds of thing and the answer differs:
+**LP's call: the doc is right and the assets were simply never made.** So the
+twins are built and the doc stands.
 
-| | twin? | verdict |
-|---|---|---|
-| the seven key colours | **no, by design** | assets were right, **the doc was wrong** |
-| `Bg`, `Fg`, `FgMuted` | **yes** | doc was right, **the assets were incomplete** |
+I had argued the seven key colours should have no twin, because they are
+identity hues frozen across themes. That was wrong, and measurably so: the
+Session HUD reads `BrandColor.mint` — a Swift literal with no appearance
+behaviour — at **182 call sites**, against **zero** uses of the `*Asset`
+accessors. The catalog and the HUD are two separate channels. Giving the
+catalog a twin cannot move a HUD value, so *"SCI / ΔH / ΔG stay identical
+across themes"* and *"the catalog has twins"* were never in tension.
 
-The seven key colours must **not** have a twin. They are identity hues frozen
-across themes, and NATURaL's own doc demands exactly that in the same sentence
-that claimed twins exist: *"Session HUD always reads the sRGB values above so
-SCI / ΔH / ΔG stay identical across themes."* Giving mint a dark twin would
-break the thing that sentence protects. All seven match canonical hex exactly.
+### Derived, not picked
 
-`Bg` / `Fg` / `FgMuted` are surfaces and text — the half of the pair that is
-*allowed* to move — and each held only its dark value.
+The canonical hex is the **dark** half — every key colour was already measured
+against the ink and clears AA there.
 
-**This is generated now**, to `design-system/dist/BrandColors.xcassets/`, so
-nobody has to remember which kind a colorset is.
+The **light** half is solved from it: hue held, lightness moved, chroma shed
+only where the sRGB gamut narrows, until the pair clears 4.5:1 against
+NATURaL's approved warm ivory `#F3EFE7`. The constraint is the allowance
+`scripts/check-design-system.sh` already defines and self-tests — **hue within
+3°, lightness must differ, chroma may fall freely but rise no more than 0.05**
+— so every twin is provably a relighting of its counterpart rather than a
+second colour that happens to look similar.
 
-### The latent trap it closes
+| colorset | light | on ivory | dark | on ink | Δhue |
+|---|---|---|---|---|---|
+| BrandBg | `#F3EFE7` | ground | `#08091A` | ground | — |
+| BrandMint | `#007C58` | 4.55:1 | `#45E0A8` | 11.73:1 | 0.02° |
+| BrandViolet | `#7E4CE6` | 4.51:1 | `#8B5CF6` | 4.66:1 | 0.08° |
+| BrandTangerine | `#A25C00` | 4.50:1 | `#FF9300` | 8.86:1 | 0.49° |
+| BrandFiretruck | `#DC001B` | 4.51:1 | `#F5232B` | 4.85:1 | 0.00° |
+| BrandAqua | `#0071B5` | 4.54:1 | `#00A2FF` | 7.15:1 | 0.32° |
+| BrandStrawberry | `#D40074` | 4.52:1 | `#FF2F92` | 5.71:1 | 0.06° |
+| BrandMagnesium | `#6D6C74` | 4.52:1 | `#DCDCE4` | 14.47:1 | achromatic |
+| BrandFg | `#6C6C7B` | 4.50:1 | `#E4E3F5` | 15.60:1 | 2.88° |
+| BrandFgMuted | `#6B6A8D` | 4.50:1 | `#8D8CB0` | 6.12:1 | 0.37° |
+| BrandStateFailText | `#C8373E` | 4.50:1 | `#FF6B6B` | 7.11:1 | 0.04° |
 
-The `universal` entry holds the **light** value and the dark appearance carries
-the dark one, because that is the direction Apple resolves: a system in light
-appearance falls back to `universal`.
+Both halves clear 4.5:1, which also satisfies the 3:1 floors for large text and
+non-text. An asset does not know whether its call site renders 12px body or a
+28px numeral, so the strictest bar is the only safe assumption.
 
-The hand-written catalog had it inverted — dark value in `universal`, no
-variant. That is invisible today because NATURaL pins
-`.preferredColorScheme(.dark)` at every entry point, and it stays invisible
-right up until someone removes that modifier, at which point light appearance
-renders dark-on-dark **silently**, with no missing-asset error to catch it.
+`BrandBg` is the declared exception: it **is** the ground, so there is no
+foreground to measure it against, and warm ivory is legitimately a different
+hue from midnight indigo rather than a relighting of it.
 
-So: nothing is broken in NATURaL today. It is broken the day the dark lock
-comes off, which is the worst kind of bug to leave lying around.
+`BrandFg` sits at 2.88°, inside the 3° tolerance but close to it. That is
+measurement noise, not a visible shift — `#E4E3F5` has chroma 0.024, barely
+above the 0.02 achromatic threshold, and the hue angle of a near-neutral is
+unstable by construction.
+
+### The relight rule is directional
+
+"Chroma may fall freely but rise no more than 0.05" only means something
+relative to a reference, and the reference is the canonical colour — the dark
+half. Read the other way, a light value that legitimately **shed** chroma looks
+like one that **gained** it. `BrandTangerine` failed exactly this way during
+development: "chroma rose 0.051", when what happened was tangerine shedding
+0.051 on the way down to a gamut-limited light value. Same two colours,
+opposite verdict, purely from which end the comparison started.
+`scripts/check-design-system.sh` starts at the canonical value; so does
+`check-colorsets.mjs`. There is a self-test pinning both directions.
+
+### What the canonical light theme does instead
+
+Worth knowing: `tokens.css`'s own light values for text are **not** relightings
+of their dark counterparts. `--fg` moves 28.44° of hue between themes and
+`--fg-muted` 21.9°. They were designed independently rather than derived, and
+they clear contrast comfortably (12.76:1 and 5.19:1 on ivory). This is not a
+rule violation — `check-design-system.sh` applies the relight allowance only to
+the seven key colours, never to surfaces or text — but it does mean the website
+and the catalog reach their light values by different methods. The catalog's
+are derived; the website's are drawn.
+
+### The guard
+
+`check-colorsets.mjs` fails on a colorset with no dark twin, on a pair that is
+not a relighting, and on either half that misses AA against its own ground. It
+was proved to fail on the live NATURaL catalog — all ten missing — before any
+asset was written.
+
+Its self-test caught a real bug in its own maths before it ever ran: the sRGB
+transfer function had lost its `/255`, so OKLab reported L ≈ 72 and C ≈ 0.92 —
+outside the space entirely — every hue angle was noise, and white-on-black
+measured 10,498,937:1. That is what motivated `design-system/oklch.mjs`: the
+maths had been copied into four files, and one copy was wrong.
 
 ## The gold fork
 
@@ -378,9 +428,14 @@ Stated rather than papered over.
 - **The asset catalog is not compile-verified.** `actool` is unavailable on this
   machine (Command Line Tools only, no full Xcode), so the generated
   `BrandColors.xcassets` has not been through Xcode. What *is* verified: every
-  `Contents.json` parses, and the generated `BrandViolet.colorset` is
-  byte-identical to the one Xcode itself wrote. That is good evidence of format,
-  not proof of compilation.
+  `Contents.json` parses and carries exactly the two expected entries, and the
+  single-entry form this generator emits was byte-identical to the one Xcode
+  itself wrote before twins were added. That is good evidence of format, not
+  proof of compilation.
+- **Nobody reads the catalog yet.** NATURaL has 182 literal `BrandColor.<key>`
+  call sites and zero uses of the `*Asset` accessors, so the twins are correct
+  and currently unexercised. They become load-bearing when the app adopts the
+  accessors or drops `.preferredColorScheme(.dark)`.
 - **ClusterFuck is not present here**, so it consumes nothing yet. It does have
   its own `design-system/clusterfuck/MASTER.md` in a sibling repo, unreviewed
   by this pass.

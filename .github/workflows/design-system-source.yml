@@ -53,6 +53,17 @@ jobs:
       - name: Contrast ratios are measured, not asserted
         run: node design-system/check-contrast.mjs
 
+      # Every brand colorset must have a dark-appearance twin, each pair must be
+      # a relighting of the other under the same OKLCH allowance
+      # scripts/check-design-system.sh enforces, and both halves must clear AA
+      # against the ground they are actually shown on. A twin that looks right
+      # and fails contrast is worse than none, because it ships silently.
+      - name: Self-test the colorset guard
+        run: node design-system/check-colorsets.mjs --self-test
+
+      - name: Every colorset has a verified dark twin
+        run: node design-system/check-colorsets.mjs
+
       # The generated targets must match the source they came from. This is
       # what makes "one source of truth" a fact rather than an intention.
       - name: Generated artifacts match tokens.css
