@@ -173,9 +173,9 @@ second colour that happens to look similar.
 | BrandAqua | `#0071B5` | 4.54:1 | `#00A2FF` | 7.15:1 | 0.32° |
 | BrandStrawberry | `#D40074` | 4.52:1 | `#FF2F92` | 5.71:1 | 0.06° |
 | BrandMagnesium | `#6D6C74` | 4.52:1 | `#DCDCE4` | 14.47:1 | achromatic |
-| BrandFg | `#6C6C7B` | 4.50:1 | `#E4E3F5` | 15.60:1 | 2.88° |
-| BrandFgMuted | `#6B6A8C` | 4.50:1 | `#8D8CB0` | 6.12:1 | 0.27° |
-| BrandStateFailText | `#C7373E` | 4.53:1 | `#FF6B6B` | 7.11:1 | 0.01° |
+| BrandFg | `#6C6B7A` | 4.55:1 | `#E4E3F5` | 15.60:1 | 0.18° |
+| BrandFgMuted | `#6B698C` | 4.55:1 | `#8D8CB0` | 6.12:1 | 0.93° |
+| BrandStateFailText | `#C7363D` | 4.55:1 | `#FF6B6B` | 7.11:1 | 0.12° |
 
 Both halves clear 4.5:1, which also satisfies the 3:1 floors for large text and
 non-text. An asset does not know whether its call site renders 12px body or a
@@ -195,10 +195,13 @@ non-text. An asset does not know whether its call site renders 12px body or a
 foreground to measure it against, and warm ivory is legitimately a different
 hue from midnight indigo rather than a relighting of it.
 
-`BrandFg` sits at 2.88°, inside the 3° tolerance but close to it. That is
-measurement noise, not a visible shift — `#E4E3F5` has chroma 0.024, barely
-above the 0.02 achromatic threshold, and the hue angle of a near-neutral is
-unstable by construction.
+`BrandFg` is the one to watch on hue: `#E4E3F5` has chroma 0.024, barely above
+the 0.02 achromatic threshold, so its hue angle is unstable by construction and
+the reported Δ swings on a small change in lightness. It read 2.88° when the
+light half was solved at the bare 4.5 bar and reads 0.18° now that the body
+target is 4.55. Neither is a visible shift — both are the hue of a near-neutral
+reported to more precision than it has. The 3° tolerance is doing real work on
+the chromatic hues, not on this one.
 
 ### The relight rule is directional
 

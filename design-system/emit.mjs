@@ -242,7 +242,74 @@ function emitTs() {
 // no foreground to be measured against, and warm ivory is legitimately a
 // different hue from midnight indigo rather than a relighting of it.
 const IVORY = '#F3EFE7';   // NATURaL approved light appearance (natural/MASTER.md)
-const AA_BODY = 4.5;       // an asset does not know its call site; assume the strictest
+
+// ── the two targets, and why they are different numbers ─────────────────────
+//
+// These are NOT the same rule with a fudge on one side. They are two different
+// requirements that happen to be adjacent, and conflating them is how one of
+// them gets quietly deleted.
+
+/**
+ * Target for colorsets whose job is to be READ: BrandFg, BrandFgMuted,
+ * BrandStateFailText.
+ *
+ * WCAG AA body is 4.5. The extra 0.05 is not a safety fudge against
+ * measurement error — these are exact sRGB values and the ratio is
+ * deterministic. It is there because 4.5 exactly is not a decision.
+ *
+ * Solving for `>= 4.5` lands on the least extreme 8-bit value that clears the
+ * bar, and one 8-bit step is worth between 0.0052 and 0.0571 of ratio
+ * depending on the hue. BrandFg landed at 4.500601 — it cleared by less than
+ * the distance to the nearest representable colour, so its margin was an
+ * artifact of where the quantisation grid happened to fall, not a choice.
+ *
+ * 0.05 is the smallest margin that exceeds one full step for all three body
+ * colorsets (their steps are 0.0212, 0.0459 and 0.0469). That makes the
+ * headroom a decision rather than a coincidence, and it costs exactly one
+ * step of lightness each. It also gives anti-aliased small text somewhere to
+ * go: edge pixels blend toward the ground, so a glyph at 4.5000 renders some
+ * of itself below the bar.
+ *
+ * If you raise this, raise it by whole steps and re-run; if you lower it below
+ * 4.55 you are back to margins that mean nothing.
+ */
+const AA_BODY_WITH_MARGIN = 4.55;
+
+/**
+ * Floor for the seven identity hues: BrandMint, BrandViolet, BrandTangerine,
+ * BrandFiretruck, BrandAqua, BrandStrawberry, BrandMagnesium.
+ *
+ * READ THIS BEFORE LOWERING IT TO 3.0.
+ *
+ * These are fills, washes and chart series — non-text — and the WCAG non-text
+ * floor is 3:1, so 4.5 looks like an obvious over-requirement waiting to be
+ * relaxed. It is not, and the reason has nothing to do with contrast.
+ *
+ * Solved against ivory at 3.0, three of the seven return their own dark value
+ * unchanged, because they already clear 3:1 at canonical:
+ *
+ *     BrandViolet      #8B5CF6 → #8B5CF6
+ *     BrandFiretruck   #F5232B → #F5232B
+ *     BrandStrawberry  #FF2F92 → #FF2F92
+ *
+ * Light half equals dark half, `lightnessMoved` is false, and
+ * check-colorsets.mjs fails them: "lightness did not move — the twin is the
+ * same colour". The colorset stops being a light/dark pair at all.
+ *
+ * So 4.5 here is the level below which the light half COLLAPSES ONTO the dark
+ * half. It is a twin-distinctness floor that coincides with the AA body
+ * number. Two independent reasons, one value. Lowering it to the nominal
+ * non-text threshold breaks the catalog's own twin rule.
+ *
+ * These do not get AA_BODY_WITH_MARGIN because headroom they cannot use is
+ * paid for in colour fidelity — every step of margin drags the light twin
+ * further from the hue it is supposed to be the light version of.
+ */
+const AA_TWIN_FLOOR = 4.5;
+
+/** Which rule each colorset is solved under. Emitted, and enforced by
+ *  check-colorsets.mjs — see roles.json below. */
+const TARGET_FOR_ROLE = { body: AA_BODY_WITH_MARGIN, identity: AA_TWIN_FLOOR };
 
 function colorset(entries) {
   const component = (hex) => {
@@ -272,11 +339,13 @@ const XCASSETS = join(DIST, 'BrandColors.xcassets');
 
 // The ten names NATURaL already uses, so this is a drop-in rather than a
 // rename, plus StateFailText which its catalog was missing.
+// The role travels WITH the entry, at the point the list is already
+// partitioned, so there is no second list to drift out of sync with this one.
 const CATALOG_SOURCES = [
-  ...KEY_COLORS.map((n) => ['Brand' + n[0].toUpperCase() + n.slice(1), keyColors[n].hex]),
-  ['BrandFg', val('--fg')],
-  ['BrandFgMuted', val('--fg-muted')],
-  ['BrandStateFailText', val('--state-fail-text')],
+  ...KEY_COLORS.map((n) => ['Brand' + n[0].toUpperCase() + n.slice(1), keyColors[n].hex, 'identity']),
+  ['BrandFg', val('--fg'), 'body'],
+  ['BrandFgMuted', val('--fg-muted'), 'body'],
+  ['BrandStateFailText', val('--state-fail-text'), 'body'],
 ];
 
 const colorsets = [];
@@ -286,11 +355,13 @@ const twinReport = [];
 colorsets.push(['BrandBg', colorset({ light: IVORY, dark: val('--bg') })]);
 twinReport.push({ name: 'BrandBg', light: IVORY, dark: val('--bg'), ground: true });
 
-for (const [name, dark] of CATALOG_SOURCES) {
-  const solved = solveRelight(dark, IVORY, AA_BODY);
+for (const [name, dark, role] of CATALOG_SOURCES) {
+  const target = TARGET_FOR_ROLE[role];
+  if (target === undefined) throw new Error(`${name}: unknown role ${role}`);
+  const solved = solveRelight(dark, IVORY, target);
   if (!solved) {
     throw new Error(
-      `${name}: no relighting of ${dark} reaches ${AA_BODY}:1 on ${IVORY} while holding hue. ` +
+      `${name}: no relighting of ${dark} reaches ${target}:1 on ${IVORY} while holding hue. ` +
         'Refusing to emit a twin that fails contrast — a twin that looks right and fails ' +
         'is worse than none, because it ships silently.'
     );
@@ -305,11 +376,13 @@ for (const [name, dark] of CATALOG_SOURCES) {
   colorsets.push([name, colorset({ light: solved.hex, dark })]);
   twinReport.push({
     name,
+    role,
+    target,
     light: solved.hex,
     dark,
     // Emitted into the generated README table — display values. The
     // acceptance test that actually gates this twin is solveRelight's own
-    // `contrast(...) >= AA_BODY`, which reads the unrounded ratio.
+    // `contrast(...) >= target`, which reads the unrounded ratio.
     onIvory: fmtRatio(contrast(solved.hex, IVORY)),
     onInk: fmtRatio(contrast(dark, inkDark)),
     dh: rel.dh,
@@ -343,28 +416,73 @@ const XC_README = [
   '',
   '## Measured',
   '',
-  '| colorset | light | on ivory | dark | on ink | Δhue |',
-  '|---|---|---|---|---|---|',
+  '| colorset | role | target | light | on ivory | dark | on ink | Δhue |',
+  '|---|---|---|---|---|---|---|---|',
   ...twinReport.map((t) =>
     t.ground
-      ? `| ${t.name} | \`${t.light}\` | ground | \`${t.dark}\` | ground | — |`
-      : `| ${t.name} | \`${t.light}\` | ${t.onIvory}:1 | \`${t.dark}\` | ${t.onInk}:1 | ${t.dh === null ? 'achromatic' : t.dh + '°'} |`
+      ? `| ${t.name} | ground | — | \`${t.light}\` | ground | \`${t.dark}\` | ground | — |`
+      : `| ${t.name} | ${t.role} | ${t.target}:1 | \`${t.light}\` | ${t.onIvory}:1 | \`${t.dark}\` | ${t.onInk}:1 | ${t.dh === null ? 'achromatic' : t.dh + '°'} |`
   ),
   '',
-  'Both halves clear 4.5:1, which also satisfies the 3:1 floors for large text',
-  'and non-text. An asset does not know whether its call site renders 12px body',
-  'or a 28px numeral, so the strictest bar is the only safe assumption.',
+  '## Two targets, on purpose',
   '',
-  '`BrandFg` sits at 2.88° of hue drift, inside the 3° tolerance but close to',
-  'it. That is measurement noise, not a visible shift: `#E4E3F5` has chroma',
-  '0.024, barely above the 0.02 achromatic threshold, and the hue angle of a',
-  'near-neutral is unstable by construction.',
+  'The `target` column is not decoration. Colorsets are solved under one of two',
+  'rules and which one applies is emitted to `roles.json`, read back by',
+  '`check-colorsets.mjs`, and enforced — a colorset solved under the wrong rule',
+  'fails CI rather than merely looking odd in this table.',
+  '',
+  '- **body** (' + AA_BODY_WITH_MARGIN + ':1) — BrandFg, BrandFgMuted, BrandStateFailText.',
+  '  WCAG AA body is 4.5; the extra 0.05 is one 8-bit quantisation step, because',
+  '  a value clearing by less than the distance to the nearest representable',
+  '  colour has not cleared on purpose. BrandFg previously landed at 4.500601.',
+  '- **identity** (' + AA_TWIN_FLOOR + ':1) — the seven key hues. These are fills,',
+  '  washes and chart series, so the WCAG *non-text* floor of 3:1 would seem to',
+  '  apply. It does not: solved at 3:1, BrandViolet, BrandFiretruck and',
+  '  BrandStrawberry return their own dark value unchanged, lightness never',
+  '  moves, and the pair stops being a relighting at all. 4.5 here is a',
+  '  twin-distinctness floor that coincides with the AA number — see the comment',
+  '  on `AA_TWIN_FLOOR` in emit.mjs before changing it.',
+  '',
+  'Every half clears 4.5:1 either way, which also satisfies the 3:1 floors for',
+  'large text and non-text.',
+  '',
+  '`BrandFg` is the one to watch on hue. Its dark half `#E4E3F5` has chroma',
+  '0.024, barely above the 0.02 achromatic threshold, so its hue angle is',
+  'unstable by construction and the reported Δ moves a lot for a small change',
+  'in lightness — it read 2.88° when the light half was solved at the bare 4.5',
+  'bar and reads ' + (twinReport.find((t) => t.name === 'BrandFg')?.dh ?? '?') + '° now. Neither figure is a visible shift; both are the',
+  'hue of a near-neutral being reported to more precision than it has. The 3°',
+  'tolerance is doing real work on the chromatic hues, not on this one.',
   '',
 ].join('\n');
+
+// The machine-readable half of the two-target rule. check-colorsets.mjs reads
+// this and refuses to run if a colorset in the catalog is absent from it, so a
+// new colorset cannot quietly default to the looser rule. Emitted rather than
+// hand-maintained for the same reason the role travels with CATALOG_SOURCES:
+// a second hand-written list is a second thing to drift.
+const ROLES_JSON =
+  JSON.stringify(
+    {
+      $comment:
+        'GENERATED by design-system/emit.mjs. Which contrast rule each colorset ' +
+        'is solved under. See the AA_BODY_WITH_MARGIN and AA_TWIN_FLOOR comments ' +
+        'in emit.mjs for why these are two different numbers and not one number ' +
+        'with a fudge.',
+      targets: TARGET_FOR_ROLE,
+      ground: IVORY,
+      colorsets: Object.fromEntries(
+        twinReport.map((t) => [t.name, t.ground ? { role: 'ground', target: null } : { role: t.role, target: t.target }])
+      ),
+    },
+    null,
+    2
+  ) + '\n';
 
 const artifacts = [
   [PACKAGE_CSS, css],
   [join(XCASSETS, 'README.md'), XC_README],
+  [join(XCASSETS, 'roles.json'), ROLES_JSON],
   [
     join(XCASSETS, 'Contents.json'),
     JSON.stringify({ info: { author: 'xcode', version: 1 } }, null, 2) + '\n',

@@ -62,6 +62,19 @@ const INK = '#08091A';     // midnight indigo
 const AA_BODY = 4.5;
 const AA_LARGE = 3.0;
 
+// ── the two targets ─────────────────────────────────────────────────────────
+// Colorsets are solved under one of two rules and this guard holds each to its
+// own. The rules, and why they are two numbers rather than one, live on
+// AA_BODY_WITH_MARGIN and AA_TWIN_FLOOR in emit.mjs — read those before
+// changing either. In particular: the identity floor of 4.5 is NOT the AA
+// body requirement wearing a different hat, and lowering it to the nominal
+// 3:1 non-text threshold collapses three light twins onto their dark halves.
+//
+// Which colorset gets which rule is READ FROM roles.json, emitted beside the
+// catalog. It is not restated here, because a second hand-written list is a
+// second thing to drift.
+const ROLES_FILE = 'roles.json';
+
 // Contrast is compared AS MEASURED and rounded only to print. `contrast()`
 // returns the unrounded ratio for exactly this reason — see oklch.mjs. Both
 // BrandFgMuted (4.497589) and BrandStateFailText (4.497018) passed this guard
@@ -116,6 +129,45 @@ export function readCatalog(dir) {
   }
   return sets.sort((a, b) => a.name.localeCompare(b.name));
 }
+
+// ── role targets ────────────────────────────────────────────────────────────
+// For OUR generated catalog roles.json must be present: it is emitted by the
+// same run that writes the colorsets, so its absence means a mis-generate, and
+// a mis-generate must not fall back to a looser rule silently.
+//
+// For a FOREIGN catalog (--catalog, e.g. NATURaL's own) there is no roles.json
+// and there should not be. That case falls back to a single 4.5 bar for every
+// colorset and says so out loud, because a guard applying a different rule
+// than the one it printed is the whole failure mode this file exists to avoid.
+const IS_OWN_CATALOG = CATALOG === join(HERE, 'dist', 'BrandColors.xcassets');
+let roles = null;
+{
+  const rp = join(CATALOG, ROLES_FILE);
+  if (existsSync(rp)) {
+    roles = JSON.parse(readFileSync(rp, 'utf8'));
+  } else if (IS_OWN_CATALOG) {
+    console.error(`FATAL: no ${ROLES_FILE} beside the generated catalog at ${CATALOG}.`);
+    console.error('       Refusing to run — without it this guard cannot tell which colorset is');
+    console.error('       held to which target, and defaulting to the looser one would let a body');
+    console.error('       token ship under the rule written for a non-text hue.');
+    console.error('       Regenerate: node design-system/emit.mjs');
+    process.exit(2);
+  }
+}
+
+const targetFor = (name) => {
+  if (!roles) return AA_BODY;
+  const e = roles.colorsets?.[name];
+  if (!e) {
+    console.error(`FATAL: ${name} is in the catalog but absent from ${ROLES_FILE}.`);
+    console.error('       Refusing to run — an unlisted colorset would silently take whatever');
+    console.error('       default this guard happened to have. Add it to CATALOG_SOURCES in');
+    console.error('       emit.mjs with an explicit role and regenerate.');
+    process.exit(2);
+  }
+  return e.target;
+};
+
 
 // ── self-test ───────────────────────────────────────────────────────────────
 function selfTest() {
@@ -188,6 +240,57 @@ function selfTest() {
   say(cUnder < AA_BODY, '  …and the one below 4.5 is the one that fails');
   say(cOver >= AA_BODY, '  …and the one at/above 4.5 is the one that passes');
 
+  // 1b. the SECOND target, AA_BODY_WITH_MARGIN = 4.55, measured on the same
+  //     ground. A boundary pair per target, not per guard: the body rule and
+  //     the identity rule are different numbers and each needs its own proof
+  //     that the comparison reads the real value. Without this, someone could
+  //     make the body comparison round and only the 4.5 pair above would
+  //     notice.
+  //     #B519D1 = 4.5499991630 · #9247CF = 4.5500003399 · both print as 4.55.
+  //     The target is READ FROM roles.json, never restated here. An earlier
+  //     draft of this block hardcoded 4.55 and compared it against a hardcoded
+  //     4.5 — which meant changing the real constant in emit.mjs left the
+  //     assertion passing against two literals that had nothing to do with it.
+  //     That is the same "the instrument agrees with itself" failure this file
+  //     exists to catch, rebuilt inside the test for it.
+  const BODY_TARGET = roles?.targets?.body ?? null;
+  const IDENTITY_TARGET = roles?.targets?.identity ?? null;
+  if (BODY_TARGET === null) {
+    console.log('  skip   no roles.json — the per-role boundary cases need the real targets');
+  } else {
+    const mUnder = contrast('#B519D1', IVORY);
+    const mOver = contrast('#9247CF', IVORY);
+    // The fixtures straddle 4.55 specifically. If the target moves, they stop
+    // testing anything — so that is a hard failure demanding new fixtures, not
+    // a quiet pass.
+    say(
+      mUnder < BODY_TARGET && mOver >= BODY_TARGET,
+      `the boundary fixtures still straddle the configured body target (${BODY_TARGET})`
+    );
+    if (!(mUnder < BODY_TARGET && mOver >= BODY_TARGET)) {
+      console.log(`         #B519D1 = ${mUnder.toFixed(7)} and #9247CF = ${mOver.toFixed(7)} no longer`);
+      console.log(`         bracket ${BODY_TARGET}. Regenerate the pair for the new target — do not`);
+      console.log('         delete this case.');
+    }
+    say(fmtRatio(mUnder) === fmtRatio(mOver), '  …and are indistinguishable at 2 dp');
+    sayDiffer(mUnder >= BODY_TARGET, mOver >= BODY_TARGET, `contrast 4.5499992 vs 4.5500003 get different verdicts at ${BODY_TARGET}`);
+  }
+
+  // 1c. the two targets must stay two numbers. If someone "simplifies" the
+  //     rule back to a single bar, the whole per-role structure is gone and
+  //     the identity floor's separate reason — twin collapse at 3:1 — goes
+  //     with it. This is the assertion that notices.
+  if (BODY_TARGET !== null && IDENTITY_TARGET !== null) {
+    say(BODY_TARGET !== IDENTITY_TARGET, `the body target (${BODY_TARGET}) and the identity floor (${IDENTITY_TARGET}) are still two different numbers`);
+    if (BODY_TARGET === IDENTITY_TARGET) {
+      console.log('         Collapsing them to one bar removes the per-role structure, and with');
+      console.log('         it the identity floor\'s separate reason: below 4.5 three light twins');
+      console.log('         solve to their own dark value. See AA_TWIN_FLOOR in emit.mjs.');
+    }
+    say(contrast('#6C6C7B', IVORY) >= IDENTITY_TARGET && contrast('#6C6C7B', IVORY) < BODY_TARGET,
+        'BrandFg at the old single bar (4.500601) clears the identity floor but NOT the body target');
+  }
+
   // 2. the hue tolerance, HUE_TOL_DEG = 3°, against canonical violet.
   //    #12092C = 2.999996° · #8B8A96 = 3.000010° · both print as 3°.
   //    Chroma is inside tolerance in both, so hue alone decides.
@@ -242,19 +345,24 @@ if (flag('--self-test')) {
 }
 
 const sets = readCatalog(CATALOG);
+if (!roles) {
+  console.log(`\n  NOTE  no ${ROLES_FILE} in this catalog — holding every colorset to a single`);
+  console.log(`        ${AA_BODY}:1 bar. That is the right rule for a catalog this repo did not`);
+  console.log('        generate; it is not the two-target rule the generated one uses.');
+}
 let fail = 0;
 const missing = [];
 const problems = [];
 
 console.log(`\n── ${sets.length} colorsets\n`);
-console.log(`${'colorset'.padEnd(22)}${'light'.padEnd(10)}${'on ivory'.padEnd(10)}${'dark'.padEnd(10)}${'on ink'.padEnd(9)}relight`);
-console.log('─'.repeat(78));
+console.log(`${'colorset'.padEnd(22)}${'target'.padEnd(8)}${'light'.padEnd(10)}${'on ivory'.padEnd(10)}${'dark'.padEnd(10)}${'on ink'.padEnd(9)}relight`);
+console.log('─'.repeat(86));
 
 for (const s of sets) {
   const isGround = GROUND_SETS.has(s.name);
   if (!s.dark) {
     missing.push(s.name);
-    console.log(`${s.name.padEnd(22)}${(s.light ?? '—').padEnd(10)}${''.padEnd(10)}${'MISSING'.padEnd(10)}${''.padEnd(9)}—`);
+    console.log(`${s.name.padEnd(22)}${''.padEnd(8)}${(s.light ?? '—').padEnd(10)}${''.padEnd(10)}${'MISSING'.padEnd(10)}${''.padEnd(9)}—`);
     fail++;
     continue;
   }
@@ -272,8 +380,9 @@ for (const s of sets) {
   // comparison started at. scripts/check-design-system.sh starts at the
   // canonical value; so does this.
   const rel = isGround ? { ok: true, dh: null, dc: 0 } : isRelighting(s.dark, s.light);
+  const bar = isGround ? null : targetFor(s.name);
   console.log(
-    `${s.name.padEnd(22)}${s.light.padEnd(10)}${String(fmtRatio(cl) ?? 'ground').padEnd(10)}${s.dark.padEnd(10)}${String(fmtRatio(cd) ?? 'ground').padEnd(9)}${isGround ? 'ground' : rel.ok ? 'ok' : 'NO'}`
+    `${s.name.padEnd(22)}${String(bar ?? 'ground').padEnd(8)}${s.light.padEnd(10)}${String(fmtRatio(cl) ?? 'ground').padEnd(10)}${s.dark.padEnd(10)}${String(fmtRatio(cd) ?? 'ground').padEnd(9)}${isGround ? 'ground' : rel.ok ? 'ok' : 'NO'}`
   );
   if (!rel.ok) {
     const why = [
@@ -288,12 +397,13 @@ for (const s of sets) {
     // Reported to 6 dp as well as 2. A near-miss like 4.497589 prints as
     // "4.5" at 2 dp, which reads as a broken guard rather than a real failure;
     // the precise figure is the evidence that it is not.
-    if (cl < AA_BODY) {
-      problems.push(`${s.name}: light ${s.light} on ivory ${IVORY} = ${fmtRatio(cl)}:1 (${cl.toFixed(6)}) — below AA body (${AA_BODY}:1)${cl >= AA_LARGE ? ', large text only' : ', below the 3:1 non-text floor'}`);
+    const role = roles?.colorsets?.[s.name]?.role ?? 'single-bar';
+    if (cl < bar) {
+      problems.push(`${s.name}: light ${s.light} on ivory ${IVORY} = ${fmtRatio(cl)}:1 (${cl.toFixed(6)}) — below its ${role} target (${bar}:1)${cl >= AA_LARGE ? ', large text only' : ', below the 3:1 non-text floor'}`);
       fail++;
     }
-    if (cd < AA_BODY) {
-      problems.push(`${s.name}: dark ${s.dark} on ink ${INK} = ${fmtRatio(cd)}:1 (${cd.toFixed(6)}) — below AA body (${AA_BODY}:1)${cd >= AA_LARGE ? ', large text only' : ', below the 3:1 non-text floor'}`);
+    if (cd < bar) {
+      problems.push(`${s.name}: dark ${s.dark} on ink ${INK} = ${fmtRatio(cd)}:1 (${cd.toFixed(6)}) — below its ${role} target (${bar}:1)${cd >= AA_LARGE ? ', large text only' : ', below the 3:1 non-text floor'}`);
       fail++;
     }
   }
