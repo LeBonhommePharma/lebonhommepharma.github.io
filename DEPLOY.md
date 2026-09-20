@@ -90,3 +90,5 @@ Run workflow → `ref: <good sha>`.
 
 Do not copy `transitA/` onto `transit/` — that directory is the public alias,
 not the app.
+
+<!-- stacked-PR CI trigger probe; branch is deleted after the runs are observed -->
