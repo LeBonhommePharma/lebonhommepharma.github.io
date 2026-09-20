@@ -40,6 +40,15 @@ jobs:
       # Proves the patterns can still fail. If this is red, the scan below
       # tells you nothing and must not be trusted. Same doctrine as
       # palette-check.yml: a check that cannot fail is not a check.
+      # Every check below is independent, so each runs even if an earlier one
+      # is red. Without `if: always()` the first failure skips the rest, and a
+      # skipped check is an unknown wearing the colour of a decision — the first
+      # run of this workflow proved the raw-hex guard worked and said nothing at
+      # all about contrast, the colorsets, or artifact drift.
+      #
+      # The self-tests are deliberately NOT guarded that way: each gates its own
+      # scan. If the patterns have stopped matching their fixtures, the scan
+      # that follows tells you nothing and must not be trusted.
       - name: Self-test the raw-hex guard
         run: node design-system/check-raw-hex.mjs --self-test
 
@@ -51,6 +60,7 @@ jobs:
       # Every ratio annotated in tokens.css must be true, and every foreground
       # token must clear AA against the ground it is used on, in both themes.
       - name: Contrast ratios are measured, not asserted
+        if: always()
         run: node design-system/check-contrast.mjs
 
       # Every brand colorset must have a dark-appearance twin, each pair must be
@@ -59,12 +69,15 @@ jobs:
       # against the ground they are actually shown on. A twin that looks right
       # and fails contrast is worse than none, because it ships silently.
       - name: Self-test the colorset guard
+        if: always()
         run: node design-system/check-colorsets.mjs --self-test
 
       - name: Every colorset has a verified dark twin
+        if: always()
         run: node design-system/check-colorsets.mjs
 
       # The generated targets must match the source they came from. This is
       # what makes "one source of truth" a fact rather than an intention.
       - name: Generated artifacts match tokens.css
+        if: always()
         run: node design-system/emit.mjs --check
