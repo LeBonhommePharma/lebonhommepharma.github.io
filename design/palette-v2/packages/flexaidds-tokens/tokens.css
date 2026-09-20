@@ -332,6 +332,14 @@
      design-system/check-contrast.mjs, so an edited hue cannot ship
      with a stale number beside it. Regenerate with
      `node design-system/derive-light.mjs 4.5`. */
+  /* The seven --*-fg values below are SOLVED, not chosen: hue and chroma held,
+     lightness moved until the pair clears the target on this ground. Do not edit
+     them by hand -- they were transcribed by hand once and nothing checked the
+     transcription. Regenerate with:
+         node design-system/derive-light.mjs --write && node design-system/emit.mjs
+     Enforced by derive-light.mjs --check in CI.
+     The target in force is the marker on the next line. */
+  /* fg-solve-target: 4.5 */
   --mint-fg:       #00815C;   /* 4.52:1 · hue +0.21° · chroma  75% */
   --violet-fg:     #8251EA;   /* 4.50:1 · hue +0.21° · chroma 100% */
   --tangerine-fg:  #A85F00;   /* 4.51:1 · hue +0.05° · chroma  73% */

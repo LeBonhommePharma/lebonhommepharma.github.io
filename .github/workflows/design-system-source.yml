@@ -87,6 +87,19 @@ jobs:
         if: always()
         run: node design-system/check-maths-parity.mjs --verbose
 
+      # The seven --*-fg light values are SOLVED, and used to be transcribed
+      # into tokens.css by hand from a script that only printed to stdout. A
+      # typo, a partial paste, a paste into the wrong block, or a paste that
+      # never happened would all have shipped silently -- nothing anywhere
+      # compared the published values against what the solver produces.
+      - name: Prove the solver guard catches a desynchronised value
+        if: always()
+        run: node design-system/derive-light.mjs --self-test
+
+      - name: The light --*-fg values are what the solver produces
+        if: always()
+        run: node design-system/derive-light.mjs --check
+
       # The generated targets must match the source they came from. This is
       # what makes "one source of truth" a fact rather than an intention.
       - name: Generated artifacts match tokens.css
