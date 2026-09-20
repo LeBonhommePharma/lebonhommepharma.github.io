@@ -88,6 +88,17 @@ console.log('  static frame: T=' + raw.T + '  ΔG=' + raw.G + '  ΔH=' + raw.H +
             '  −TΔS=' + raw.S + '  K_D=' + raw.K);
 
 // 1. U+2206 anywhere in the page
+//
+// THE TWO '∆' LITERALS BELOW MUST STAY U+2206. They are not prose and they
+// are not an oversight: they are the character this check hunts for. A repo-
+// wide sweep normalising U+2206 to U+0394 would rewrite them, and the guard
+// would then search for U+0394 -- it would stop catching the wrong glyph and
+// start flagging every correct one. Not a broken check: a check inverted into
+// fail-open, by an edit that looks identical to the safe ones around it.
+//
+// This happened for real: of 714 U+2206 in the repo, 621 were prose and safe
+// to normalise, and these two were the only occurrences that could do damage.
+// If you are running a glyph sweep, exclude this file by path.
 if (src.includes('∆')) {
   const ctx = src.split('\n').map((l, i) => l.includes('∆') ? (i + 1) : 0).filter(Boolean);
   fail('U+2206 INCREMENT at line(s) ' + ctx.join(', ') + ' — use U+0394 GREEK CAPITAL DELTA');
