@@ -38,6 +38,7 @@ permissions:
 
 jobs:
   design-system:
+    name: Design system · pages match the tokens
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
