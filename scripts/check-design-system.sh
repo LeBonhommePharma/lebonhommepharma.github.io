@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Guard that every page actually CONSUMES the FlexAID∆S design system,
+# Guard that every page actually CONSUMES the FlexAIDΔS design system,
 # rather than hand-copying it.
 #
 # WHY THIS EXISTS ALONGSIDE check-palette-v2.sh

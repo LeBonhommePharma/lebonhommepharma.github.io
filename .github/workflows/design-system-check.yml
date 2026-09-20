@@ -1,6 +1,6 @@
 name: Design system check
 
-# Catches pages that have left the FlexAID∆S design system.
+# Catches pages that have left the FlexAIDΔS design system.
 #
 # WHY THIS IS SEPARATE FROM palette-check.yml
 # -------------------------------------------
@@ -38,6 +38,7 @@ permissions:
 
 jobs:
   design-system:
+    name: Design system · pages match the tokens
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

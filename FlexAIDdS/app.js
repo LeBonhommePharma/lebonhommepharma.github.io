@@ -1,4 +1,4 @@
-// Le Bonhomme Pharma — FlexAID∆S Homepage JS
+// Le Bonhomme Pharma — FlexAIDΔS Homepage JS
 // Tabs · Copy · Theme · Counter · Drug of day · Mol* hero · Mobile menu
 
 (function () {

@@ -2,7 +2,7 @@
 
 ## Do NOT run the converter's reconciliation against project 316ea2bb…
 
-The bound project **FlexAID∆S Design System** (`316ea2bb-4ea9-4cc2-890d-a68af60403a5`)
+The bound project **FlexAIDΔS Design System** (`316ea2bb-4ea9-4cc2-890d-a68af60403a5`)
 is **hand-authored**, not a /design-sync product. It has no `components/<group>/<Name>/`
 tree, no `_ds_sync.json`, no `_vendor/`. It holds ~400 files: 30 `preview/*.html` cards,
 two UI kits, logo assets, a reference copy of thebonhomme.com, deploy handoffs — and
@@ -126,7 +126,7 @@ in the first pass. The nested copies were stale leftovers, replaced for correctn
 `_ds/`. Took exactly one file from it:
 
 - `guidelines/palette-v2.card.html` — a v2-clean seven-swatch card carrying a real
-  `@dsCard group="Colors" name="FlexAID∆S palette v2"` marker. New `guidelines/` dir in
+  `@dsCard group="Colors" name="FlexAIDΔS palette v2"` marker. New `guidelines/` dir in
   the project, so pure addition. Its stylesheet link was repointed from `../styles.css`
   to `../colors_and_type.css`: all 11 tokens it uses (`--mint`, `--violet`, `--tangerine`,
   `--firetruck`, `--aqua`, `--strawberry`, `--magnesium`, `--bg`, `--fg`, `--fg-muted`,

@@ -13,7 +13,7 @@ Once the Cloudflare rewrites are active, content appears at the clean URL with n
 ## Contents
 
 - `index.html` — Self-contained, Tailwind-CDN-powered interactive periodic table with deep pharmacological annotations for clinically relevant elements (Li, Pt, F, I, Ra-223, Lu-177, Gd agents, Bi, As₂O₃, etc.).
-- Fully matches thebonhomme.com / FlexAID∆S design system.
+- Fully matches thebonhomme.com / FlexAIDΔS design system.
 
 ## Local testing
 

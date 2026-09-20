@@ -177,14 +177,14 @@ superseded round, so they are reproduced rather than fixed:
 
 ## Known limitation
 
-`U+2206 INCREMENT` — the `∆` in the FlexAID∆S wordmark — is not in any Google
+`U+2206 INCREMENT` — the `Δ` in the FlexAIDΔS wordmark — is not in any Google
 Fonts subset, for any of these families. It falls back to a system glyph, in
 this recreation and in the original prototype alike. The Greek `Δ` used in the
 equations (`U+0394`) is a different codepoint and is covered.
 
 Fixing it means either shipping the full unsubsetted fonts or hosting a
 one-glyph face per family; Google's `text=` subset endpoint refuses to serve
-its own generated URLs from here. Say the word if the wordmark's ∆ matters
+its own generated URLs from here. Say the word if the wordmark's Δ matters
 enough to carry the extra weight.
 
 ## Fonts

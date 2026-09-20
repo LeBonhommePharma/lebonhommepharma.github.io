@@ -129,7 +129,12 @@ export const fmtRatio = (r) => (r === null || r === undefined ? r : Math.round(r
 // different colour comes from.
 export const HUE_TOL_DEG = 3.0;
 export const CHROMA_GAIN_TOL = 0.05;
-const ACHROMATIC_C = 0.02; // magnesium carries no hue; its angle is noise
+// Below this chroma a colour carries no hue: the angle is numerical noise, so
+// reporting a hue SHIFT for it is reporting a difference between two noise
+// values. Exported because derive-light.mjs needs exactly this rule when it
+// annotates --magnesium-fg, and a second copy of the number is a second place
+// for it to drift.
+export const ACHROMATIC_C = 0.02; // magnesium carries no hue; its angle is noise
 
 export function isRelighting(a, b) {
   const x = lch(a);

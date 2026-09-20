@@ -1,5 +1,5 @@
 /**
- * @flexaidds/tokens — FlexAID∆S palette v2
+ * @flexaidds/tokens — FlexAIDΔS palette v2
  * Le Bonhomme Pharma · Montréal
  *
  * The same values as `tokens.css`, for consumers that need them in

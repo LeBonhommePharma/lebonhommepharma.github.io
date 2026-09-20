@@ -1,6 +1,6 @@
 # @flexaidds/tokens
 
-FlexAID∆S palette v2 — the approved output of the *Color and type pairings*
+FlexAIDΔS palette v2 — the approved output of the *Color and type pairings*
 exploration (option `6a`). Seven key colors, each carrying a thermodynamic
 quantity, plus type, spacing, radii, glow, and the energy-ordered series ramp.
 
