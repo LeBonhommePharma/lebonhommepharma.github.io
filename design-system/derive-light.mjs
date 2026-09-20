@@ -33,56 +33,29 @@
  * check-contrast.mjs then holds them to it forever.
  */
 
-// ── sRGB ↔ OKLab ↔ OKLCH ────────────────────────────────────────────────────
-const f = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-const g = (c) => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
+// ── colour maths ────────────────────────────────────────────────────────────
+// Imported, not restated. This file used to carry its own copy of the sRGB
+// transfer function, the OKLab matrices and the contrast formula — one of
+// four copies in the repo. oklch.mjs's header records what the last duplicate
+// cost (a dropped /255; white on black measured 10,498,937:1), and a second
+// copy in check-contrast.mjs was found carrying the rounded comparison that
+// let two colorsets ship below AA. One definition, imported.
+//
+// Equivalence was measured before the copy was removed, not assumed: on
+// 30,047 inputs this file's maths and oklch.mjs agreed bit-for-bit on
+// contrast across three grounds, and to within 1.3e-12° on hue for every
+// chromatic input. Zero verdict changes. (The old copy used Math.cbrt where
+// oklch.mjs uses sign·|x|^(1/3); that is the whole of the difference, and it
+// lives ~14 orders of magnitude below the 3° tolerance.)
+//
+// The aliases below keep solve() and the report block reading as they did.
+import { contrast, lch, fromLch, inGamut, hexOf, fmtRatio } from './oklch.mjs';
 
-function hexToRgb(hex) {
-  const m = /^#?([0-9A-Fa-f]{6})$/.exec(hex.trim());
-  if (!m) throw new Error(`not a hex colour: ${hex}`);
-  return [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16) / 255);
-}
-const rgbToHex = (rgb) =>
-  '#' + rgb.map((v) => Math.round(Math.max(0, Math.min(1, v)) * 255).toString(16).padStart(2, '0')).join('').toUpperCase();
-
-function rgbToOklab([r, gg, b]) {
-  const R = f(r), G = f(gg), B = f(b);
-  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B);
-  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B);
-  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
-  return [
-    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
-    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
-    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
-  ];
-}
-function oklabToRgb([L, a, b]) {
-  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
-  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
-  const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
-  return [
-    g(+4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
-    g(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
-    g(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
-  ];
-}
-const toOklch = (hex) => {
-  const [L, a, b] = rgbToOklab(hexToRgb(hex));
-  return { L, C: Math.hypot(a, b), h: Math.atan2(b, a) };
-};
-const fromOklch = ({ L, C, h }) => oklabToRgb([L, C * Math.cos(h), C * Math.sin(h)]);
-const inGamut = (rgb) => rgb.every((v) => v >= -0.0005 && v <= 1.0005);
-
-// ── contrast ────────────────────────────────────────────────────────────────
-const lum = (hex) => {
-  const [r, gg, b] = hexToRgb(hex);
-  return 0.2126 * f(r) + 0.7152 * f(gg) + 0.0722 * f(b);
-};
-const ratio = (a, b) => {
-  const [hi, lo] = lum(a) > lum(b) ? [lum(a), lum(b)] : [lum(b), lum(a)];
-  return (hi + 0.05) / (lo + 0.05);
-};
-const round2 = (n) => Math.round(n * 100) / 100;
+const toOklch = lch;
+const fromOklch = fromLch;
+const rgbToHex = hexOf;
+const ratio = contrast;   // UNROUNDED — see oklch.mjs. round2 is for printing.
+const round2 = fmtRatio;
 
 /**
  * Darken `hex` in OKLCH — hue fixed, chroma held as high as the gamut allows —

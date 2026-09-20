@@ -24,7 +24,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseTokens, resolve, ROOT, SOURCE } from './extract.mjs';
-import { solveRelight, isRelighting, contrast } from './oklch.mjs';
+import { solveRelight, isRelighting, contrast, fmtRatio } from './oklch.mjs';
 
 const CHECK = process.argv.includes('--check');
 const DIST = join(ROOT, 'design-system', 'dist');
@@ -59,8 +59,13 @@ for (const name of KEY_COLORS) {
   if (!hex) throw new Error(`key colour --${name} is not defined in tokens.css`);
   keyColors[name] = {
     hex,
-    contrastOnDark: contrast(hex, inkDark),
-    contrastOnLight: contrast(hex, inkLight),
+    // fmtRatio, not contrast, because these figures are EMITTED — into Swift
+    // doc comments, tokens.json and tokens.d.ts — and are read by people, not
+    // compared against a threshold. contrast() returns the unrounded ratio now
+    // (see oklch.mjs); rounding belongs here, at the print/emit site, and
+    // nowhere upstream of a comparison.
+    contrastOnDark: fmtRatio(contrast(hex, inkDark)),
+    contrastOnLight: fmtRatio(contrast(hex, inkLight)),
   };
 }
 
@@ -302,8 +307,11 @@ for (const [name, dark] of CATALOG_SOURCES) {
     name,
     light: solved.hex,
     dark,
-    onIvory: contrast(solved.hex, IVORY),
-    onInk: contrast(dark, inkDark),
+    // Emitted into the generated README table — display values. The
+    // acceptance test that actually gates this twin is solveRelight's own
+    // `contrast(...) >= AA_BODY`, which reads the unrounded ratio.
+    onIvory: fmtRatio(contrast(solved.hex, IVORY)),
+    onInk: fmtRatio(contrast(dark, inkDark)),
     dh: rel.dh,
     chromaKept: solved.chromaKept,
   });

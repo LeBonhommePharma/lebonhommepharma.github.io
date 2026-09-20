@@ -1,7 +1,11 @@
 # Handoff → NATURaL session
 
 From the canonical design-system session (`lebonhommepharma.github.io`, branch
-`design-system/canonical-source`, commit `6724f5a`).
+`design-system/contrast-exact-compare`, base `a37a9ce`).
+
+**REVISION — supersedes the values previously handed over.** Two light halves
+changed. If you have already taken the earlier catalog, re-take these two;
+everything else is byte-identical. Details under *Revision* below.
 
 Written as a file because cross-session messaging is unavailable from an
 unattended session. **Apply this rather than duplicating it.**
@@ -49,11 +53,62 @@ freely but rise no more than 0.05.**
 | BrandStrawberry | `#D40074` | 4.52:1 | `#FF2F92` | 5.71:1 |
 | BrandMagnesium | `#6D6C74` | 4.52:1 | `#DCDCE4` | 14.47:1 |
 | BrandFg | `#6C6C7B` | 4.50:1 | `#E4E3F5` | 15.60:1 |
-| BrandFgMuted | `#6B6A8D` | 4.50:1 | `#8D8CB0` | 6.12:1 |
-| BrandStateFailText | `#C8373E` | 4.50:1 | `#FF6B6B` | 7.11:1 |
+| BrandFgMuted | `#6B6A8C` | 4.50:1 | `#8D8CB0` | 6.12:1 |
+| BrandStateFailText | `#C7373E` | 4.53:1 | `#FF6B6B` | 7.11:1 |
 
 Both halves clear 4.5:1, which also covers the 3:1 floors for large text and
 non-text. Hue moves under 0.5° for every key colour.
+
+The "on ivory" column is rounded for reading. The guard compares the unrounded
+ratio — see *Revision*.
+
+---
+
+## Revision — two light halves changed
+
+**Take these two values verbatim. Do not re-derive them.**
+
+| colorset | was | now | exact contrast on `#F3EFE7` |
+|---|---|---|---|
+| BrandFgMuted | `#6B6A8D` | **`#6B6A8C`** | 4.497589 → **4.504146** |
+| BrandStateFailText | `#C8373E` | **`#C7373E`** | 4.497018 → **4.527539** |
+
+Both previous values were **below** WCAG AA's 4.5:1 on the ivory ground and
+were reported as passing. The cause was in the guard, not the colours:
+`contrast()` rounded the ratio to 2 dp before comparing it against 4.5, so
+4.497589 became "4.5" and cleared its own bar. The same rounded value was read
+by the solver, so it stopped searching as soon as a candidate *rounded* to the
+target. One rounding site, two wrong colours.
+
+`BrandFgMuted` is the muted small-text token — the one place the 4.5 bar is
+actually doing work.
+
+**Fixed at source**, so the class of bug is gone rather than the two instances:
+comparisons read the unrounded ratio, and rounding happens only at print sites
+via `fmtRatio`. `check-colorsets.mjs --self-test` now carries pairs that
+straddle each threshold by the smallest margin 8-bit sRGB permits — 4.4999987
+vs 4.5000001, hue 2.999996° vs 3.000010°, chroma +0.049999 vs +0.050002 — and
+asserts the verdicts **differ**. Each pair is identical once rounded for
+display, so reintroducing a rounded comparison anywhere turns the self-test red
+(verified by mutation).
+
+Nothing else in the catalog moved: the other nine colorsets regenerate
+byte-identical.
+
+### What this changes on your side
+
+Only the two `universal` (light) entries:
+
+```
+BrandFgMuted.colorset        red 0.420  green 0.416  blue 0.553 → 0.549
+BrandStateFailText.colorset  red 0.784 → 0.780  green 0.216  blue 0.243
+```
+
+Dark halves are unchanged (`#8D8CB0`, `#FF6B6B`), so nothing pinned to
+`.preferredColorScheme(.dark)` moves at all.
+
+You author no colorset values — that discipline is right and this revision
+does not change it. These came out of the generator.
 
 ## Your universal entries are currently inverted
 
