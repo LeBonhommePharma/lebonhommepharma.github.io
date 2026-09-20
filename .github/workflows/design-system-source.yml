@@ -1,0 +1,59 @@
+name: Design system · source of truth
+
+# Complements palette-check.yml rather than replacing it.
+#
+# palette-check.yml is a DENYLIST: it names the retired v1 hues and rejects
+# them. It stays, and it is good at what it does. It cannot catch a colour
+# nobody has thought of yet — a Cursor agent shipped `--hp-gold: #C4A359` into
+# index.html and that guard passed, correctly, because #C4A359 is not one of
+# the eight colours it knows to forbid. It was the wrong question.
+#
+# This workflow asks the other question: is every colour literal in the tree
+# one the design system actually defines? And are the contrast ratios the
+# system claims still true, and do the generated per-target artifacts still
+# match the source they were generated from?
+#
+# Separate workflow for the same reason linkcheck.yml and palette-check.yml are
+# separate: pages.yml is the transit bot's publish path and publish-transit.yml
+# is the bot itself. Neither should grow a job that can wedge an automated push.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  design-system:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Proves the patterns can still fail. If this is red, the scan below
+      # tells you nothing and must not be trusted. Same doctrine as
+      # palette-check.yml: a check that cannot fail is not a check.
+      - name: Self-test the raw-hex guard
+        run: node design-system/check-raw-hex.mjs --self-test
+
+      # Every colour literal must be one tokens.css defines, or be
+      # grandfathered in design-system/raw-hex-baseline.json.
+      - name: No colour born outside the token source
+        run: node design-system/check-raw-hex.mjs
+
+      # Every ratio annotated in tokens.css must be true, and every foreground
+      # token must clear AA against the ground it is used on, in both themes.
+      - name: Contrast ratios are measured, not asserted
+        run: node design-system/check-contrast.mjs
+
+      # The generated targets must match the source they came from. This is
+      # what makes "one source of truth" a fact rather than an intention.
+      - name: Generated artifacts match tokens.css
+        run: node design-system/emit.mjs --check
