@@ -1,7 +1,19 @@
 /* Exergy marketing — ui-styling semantic tokens. Native apps keep chrome gold;
-   these pages keep site tangerine for kickers, CTAs, and remaining rings. */
+   these pages keep site tangerine for kickers, CTAs, and remaining rings.
+
+   THE ACCENT IS --tangerine-fg, NOT --tangerine.
+   These pages load /theme.css and /theme.js, so they render in light
+   appearance whenever the visitor has chosen it. Every accent here used to be
+   the bare identity hue, which is 8.86:1 on the ink and 2.06:1 on the light
+   ground — below AA body, below the large-text bar, and below the 1.4.11
+   non-text floor. tokens.css is explicit that the bare key colours "are
+   identity hues for fills, washes and charts on the dark ground, and --*-fg is
+   the token for reading".
+
+   --tangerine-fg IS --tangerine in dark appearance, so routing through it
+   changes nothing there and fixes light. Do not "simplify" it back. */
 .exergy-page {
-  --exergy-chrome: var(--tangerine);
+  --exergy-chrome: var(--tangerine-fg);
   --exergy-track: var(--bg-alt);
   --exergy-ink: var(--fg);
   --exergy-mute: var(--fg-muted);
@@ -56,7 +68,7 @@
   font-weight: var(--fw-600);
 }
 .exergy-page a {
-  color: var(--tangerine);
+  color: var(--exergy-chrome);
   text-decoration: underline;
   text-underline-offset: 0.2em;
   cursor: pointer;
@@ -78,7 +90,7 @@
 .exergy-page a:focus-visible,
 .exergy-cta:focus-visible,
 .exergy-skip:focus-visible {
-  outline: 2px solid var(--tangerine);
+  outline: 2px solid var(--exergy-chrome);
   outline-offset: 2px;
 }
 .exergy-page a[aria-current="page"] {
@@ -87,7 +99,7 @@
   font-weight: var(--fw-600);
 }
 .exergy-kicker {
-  color: var(--tangerine);
+  color: var(--exergy-chrome);
   font-weight: var(--fw-600);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
@@ -173,13 +185,16 @@
 }
 .exergy-card {
   background: var(--bg-card);
+  /* A wash, not a foreground: carries no information, so the identity hue is
+     the right token here and it stays bright rather than muddying to the
+     solved value in light appearance. */
   border: 1px solid color-mix(in srgb, var(--tangerine) 28%, transparent);
   border-radius: var(--exergy-radius);
   padding: var(--sp-5);
 }
 .exergy-card h2 {
   margin: 0 0 var(--sp-2);
-  color: var(--tangerine);
+  color: var(--exergy-chrome);
   font-size: var(--fs-sm);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
@@ -189,7 +204,7 @@
   color: var(--exergy-mute);
 }
 .exergy-cta {
-  background: var(--tangerine);
+  background: var(--exergy-chrome);
   color: var(--bg);
   text-decoration: none;
   border-radius: var(--r-pill);
@@ -209,7 +224,7 @@
 .exergy-page code {
   font-family: var(--font-mono);
   font-size: 0.9em;
-  color: var(--tangerine);
+  color: var(--exergy-chrome);
 }
 @media (min-width: 768px) {
   .exergy-page {
