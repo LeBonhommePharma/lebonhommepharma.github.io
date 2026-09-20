@@ -33,6 +33,7 @@ permissions:
 
 jobs:
   palette:
+    name: Palette · no v1 colour creeps back
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
