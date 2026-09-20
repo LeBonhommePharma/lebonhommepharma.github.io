@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Guard against FlexAID∆S palette v1 creeping back into the site.
+# Guard against FlexAIDΔS palette v1 creeping back into the site.
 #
 # WHY THIS EXISTS AS A SCRIPT AND NOT AN AD-HOC GREP
 # --------------------------------------------------

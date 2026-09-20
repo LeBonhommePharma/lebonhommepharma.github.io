@@ -375,11 +375,11 @@ const artifacts = [
   [join(DIST, 'tokens.d.ts'), emitTs()],
   [
     join(DIST, 'BrandColor.swift'),
-    emitSwift('BrandColor', 'FlexAID∆S palette v2 for NATURaL.\nLe Bonhomme Pharma · Montréal'),
+    emitSwift('BrandColor', 'FlexAIDΔS palette v2 for NATURaL.\nLe Bonhomme Pharma · Montréal'),
   ],
   [
     join(DIST, 'ExergyTheme.swift'),
-    emitSwift('ExergyTheme', 'FlexAID∆S palette v2 for Exergy.\nLe Bonhomme Pharma · Montréal'),
+    emitSwift('ExergyTheme', 'FlexAIDΔS palette v2 for Exergy.\nLe Bonhomme Pharma · Montréal'),
   ],
 ];
 

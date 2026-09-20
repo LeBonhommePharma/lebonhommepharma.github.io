@@ -1,4 +1,4 @@
-# FlexAID∆S design system — MASTER
+# FlexAIDΔS design system — MASTER
 
 Le Bonhomme Pharma · Montréal
 

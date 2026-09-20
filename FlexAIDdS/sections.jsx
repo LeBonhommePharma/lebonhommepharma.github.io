@@ -1,4 +1,4 @@
-// FlexAID∆S Website UI Kit — page-level sections.
+// FlexAIDΔS Website UI Kit — page-level sections.
 // Composes primitives from components.jsx into the actual marketing page.
 
 const { useState: useStateS, useEffect: useEffectS } = React;
@@ -20,7 +20,7 @@ function HeroSection() {
         </div>
 
         <h1 className="hero-title">
-          FlexAID<span className="gold">∆S</span>
+          FlexAID<span className="gold">ΔS</span>
         </h1>
 
         <p className="hero-subtitle">
@@ -80,11 +80,11 @@ function WhySection() {
   return (
     <section id="why" className="section">
       <div className="container">
-        <SectionHeader eyebrow="why flexaid∆s">
-          Why <span className="gradient-tg">FlexAID∆S</span>
+        <SectionHeader eyebrow="why flexaidΔs">
+          Why <span className="gradient-tg">FlexAIDΔS</span>
         </SectionHeader>
         <div className="note-callout">
-          Most <span className="kw">docking engines</span> optimize <span className="kw">enthalpy</span> alone. <strong>FlexAID∆S</strong> adds <span className="kw">conformational entropy</span> via a full <span className="kw">statistical mechanics framework</span> — recovering the correct binding mode <strong>92% of the time</strong> when enthalpy-only scoring fails.
+          Most <span className="kw">docking engines</span> optimize <span className="kw">enthalpy</span> alone. <strong>FlexAIDΔS</strong> adds <span className="kw">conformational entropy</span> via a full <span className="kw">statistical mechanics framework</span> — recovering the correct binding mode <strong>92% of the time</strong> when enthalpy-only scoring fails.
         </div>
       </div>
     </section>
@@ -507,7 +507,7 @@ function BenchmarksSection() {
             <thead>
               <tr>
                 <th>Benchmark</th>
-                <th className="h">FlexAID∆S</th>
+                <th className="h">FlexAIDΔS</th>
                 <th>Vina</th>
                 <th>Glide</th>
                 <th>rDock</th>
