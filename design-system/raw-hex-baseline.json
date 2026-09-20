@@ -1,0 +1,1257 @@
+{
+  "_readme": [
+    "Ratchet for design-system/check-raw-hex.mjs. A file may LOSE colour literals,",
+    "never gain one. Regenerate with: node design-system/check-raw-hex.mjs --reseal",
+    "",
+    "grandfathered — literals that predate the guard. Not endorsed, just not a",
+    "regression. Each one is a page that should eventually consume a token.",
+    "",
+    "openViolations — literals deliberately NOT forgiven. These fail the build.",
+    "Nothing lands here by accident; each carries a note saying why."
+  ],
+  "_paletteCheck": "palette-check-ignore-start",
+  "generated": "2026-09-20",
+  "openViolations": {},
+  "resolved": {
+    "index.html": {
+      "was": "--hp-gold, an invented brass with a light-mode partner, on the Exergy homepage card",
+      "now": "var(--hp-tangerine) — the card follows the theme through the existing alias chain",
+      "why": "Off-palette, and without headroom. On this card the accent paints a 19px/700 glyph (large text, 3:1) and the border/hover/focus ring (non-text, 3:1) — .is-neutral gives the CTA --hp-fg — so the brass cleared what it needed at 4.29:1 on --bg-alt and 4.46:1 on the page. It was NOT an AA failure, and an earlier note here said it was; that was wrong. --hp-ink-tangerine is 4.74 / 4.92 / 5.32, clearing 4.5:1 everywhere. Tangerine is also the correct binding: the card's kicker is \"Remaining work\" and ds-G is free energy. The Exergy repo replaced the same brass with tangerine independently.",
+      "kept_out_of_openViolations": "The violation is fixed; an entry here that no longer exists in the tree would be a stale claim about the current state. Recorded instead so the history is not lost."
+    }
+  },
+  "grandfathered": {
+    ".design-sync/NOTES.md": [
+      "#3572A5",
+      "#7A7294",
+      "#7D8590",
+      "#F34B7D"
+    ],
+    ".github/workflows/design-system-source.yml": [
+      "#C4A359"
+    ],
+    "EntropyDocking.html": [
+      "#1FF01F",
+      "#20808D",
+      "#3050F8",
+      "#90E050",
+      "#940094",
+      "#A62929",
+      "#A84B2F",
+      "#D4A843",
+      "#E0E0E0",
+      "#E8E8E8",
+      "#FF0D0D",
+      "#FF8000",
+      "#FFFF30"
+    ],
+    "FlexAIDdS/app.js": [
+      "#000000",
+      "#E8E8E8"
+    ],
+    "FlexAIDdS/sections.jsx": [
+      "#3178C6",
+      "#3572A5",
+      "#438EFF",
+      "#76B900",
+      "#89E051",
+      "#8B949E",
+      "#E34C26",
+      "#EC4899",
+      "#F05138",
+      "#F34B7D"
+    ],
+    "FlexAIDdS/styles.css": [
+      "#000000",
+      "#3AA6B3",
+      "#5AC8FA",
+      "#76B900",
+      "#7DD3FC",
+      "#8A93A8",
+      "#9AE635",
+      "#ED1C24",
+      "#F87171",
+      "#F8FAFC"
+    ],
+    "NATURaL/style.css": [
+      "#087A56",
+      "#CBD5E1"
+    ],
+    "app.js": [
+      "#000000",
+      "#E8E8E8"
+    ],
+    "assets/cv/dc-runtime.js": [
+      "#000000",
+      "#2E2C26",
+      "#B00020",
+      "#D97757",
+      "#F0EEE6",
+      "#F7E1D3"
+    ],
+    "assets/doc-page.js": [
+      "#141413",
+      "#ECE8DD"
+    ],
+    "assets/home.js": [
+      "#E9EDF5"
+    ],
+    "assets/molstar-drug-viewer.js": [
+      "#000000",
+      "#E8E8E8",
+      "#F43F5E"
+    ],
+    "assets/repo-stats.json": [
+      "#3178C6",
+      "#3572A5",
+      "#438EFF",
+      "#555555",
+      "#89E051",
+      "#8B949E",
+      "#F05138",
+      "#F34B7D"
+    ],
+    "benchmark/index.html": [
+      "#000000",
+      "#05080B",
+      "#070C11",
+      "#0A1016",
+      "#0B1219",
+      "#0C171F",
+      "#0E1820",
+      "#101B23",
+      "#103C48",
+      "#16232E",
+      "#1C5566",
+      "#1E3040",
+      "#23323E",
+      "#233242",
+      "#26313A",
+      "#2A1215",
+      "#2A3B49",
+      "#2C3E4C",
+      "#34D399",
+      "#3A5260",
+      "#3B5F72",
+      "#3D4E5C",
+      "#4C6EF5",
+      "#4E606D",
+      "#51CF66",
+      "#5A6B79",
+      "#5C2B2E",
+      "#666666",
+      "#66D9E8",
+      "#7C8B99",
+      "#7FF0C4",
+      "#8496A4",
+      "#86173A",
+      "#8C9BA8",
+      "#8FD4DB",
+      "#8FD9E8",
+      "#8FE9F7",
+      "#999999",
+      "#9AA9B6",
+      "#9C36B5",
+      "#B08A1F",
+      "#C7D2DA",
+      "#C92A2A",
+      "#D24B7E",
+      "#DC2626",
+      "#E03131",
+      "#E64980",
+      "#E8F1F5",
+      "#EDF2F7",
+      "#F59F00",
+      "#F76707",
+      "#F97316",
+      "#FAF9F5",
+      "#FF8A80"
+    ],
+    "cv-portable.html": [
+      "#000000",
+      "#006648",
+      "#1C1915",
+      "#3A3734",
+      "#605C58",
+      "#D5D1CD",
+      "#E2DFDC",
+      "#EEECEA",
+      "#F7F5F4"
+    ],
+    "cv.html": [
+      "#000000",
+      "#006648",
+      "#1C1915",
+      "#3A3734",
+      "#605C58",
+      "#D5D1CD",
+      "#E2DFDC",
+      "#EEECEA",
+      "#F7F5F4"
+    ],
+    "drug-of-the-day/25i-nbome/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/2c-b/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/5-meo-dmt/index.html": [
+      "#000000",
+      "#000033",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/alprazolam/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/amitriptyline/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/amphetamine/index.html": [
+      "#000000",
+      "#22C55E",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#9333EA",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/anandamide/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/aripiprazole/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/buprenorphine/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#4ADE80",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/bupropion/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/buspirone/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/caffeine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/cbd/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/clonazepam/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/clozapine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/cocaine/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/codeine/index.html": [
+      "#000000",
+      "#000099",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/dextromethorphan/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/diazepam/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/diphenhydramine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/dmt/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/dom/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/donepezil/index.html": [
+      "#000000",
+      "#004433",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/duloxetine/index.html": [
+      "#000000",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/dxm/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/escitalopram/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/ethanol/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/fentanyl/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/fluoxetine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/gabapentin/index.html": [
+      "#000000",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/ghb/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/haloperidol/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/harmine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/heroin/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#4ADE80",
+      "#64748B",
+      "#8A93A8",
+      "#9AA3B8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/hydromorphone/index.html": [
+      "#000000",
+      "#000099",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#86EFAC",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/ibogaine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/index.html": [
+      "#000000",
+      "#000011",
+      "#8A93A8",
+      "#E8D5B7"
+    ],
+    "drug-of-the-day/jwh-018/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/ketamine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/kratom/index.html": [
+      "#000000",
+      "#002222",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/lamotrigine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/lisdexamfetamine/index.html": [
+      "#000000",
+      "#000066",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/lithium/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/lsd/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/mdma/index.html": [
+      "#000000",
+      "#22C55E",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#9333EA",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/mdpv/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/melatonin/index.html": [
+      "#000000",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/memantine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/mephedrone/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/mescaline/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/methadone/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#4ADE80",
+      "#64748B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/methamphetamine/index.html": [
+      "#000000",
+      "#000066",
+      "#22C55E",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/methylphenidate/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/mitragynine/index.html": [
+      "#000000",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/modafinil/index.html": [
+      "#000000",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/morphine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#86EFAC",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/muscimol/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/naloxone/index.html": [
+      "#000000",
+      "#007700",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/naltrexone/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/nicotine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/nitrous-oxide/index.html": [
+      "#000000",
+      "#001111",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/olanzapine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/oxycodone/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#4ADE80",
+      "#64748B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/paroxetine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/pcp/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/phenelzine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/phenibut/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/phenobarbital/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/pregabalin/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/propofol/index.html": [
+      "#000000",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/psilocin/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/psilocybin/index.html": [
+      "#000000",
+      "#000044",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/quetiapine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/risperidone/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/salvinorin-a/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/scopolamine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/sertraline/index.html": [
+      "#000000",
+      "#1A3A5C",
+      "#4A7A9B",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/thc/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/tramadol/index.html": [
+      "#000000",
+      "#8A93A8",
+      "#B8925A",
+      "#D8B57A",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/valproate/index.html": [
+      "#000000",
+      "#2F6B46",
+      "#4ADE80",
+      "#64748B",
+      "#6FBF8F",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/varenicline/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/venlafaxine/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/yohimbine/index.html": [
+      "#000000",
+      "#4B3A7A",
+      "#8A93A8",
+      "#8F7FC9",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "drug-of-the-day/zolpidem/index.html": [
+      "#000000",
+      "#2A5A9F",
+      "#4ADE80",
+      "#64748B",
+      "#6A9FCF",
+      "#8A93A8",
+      "#FECACA",
+      "#FEE2E2"
+    ],
+    "entropy-docking/index.html": [
+      "#1FF01F",
+      "#20808D",
+      "#3050F8",
+      "#90E050",
+      "#940094",
+      "#A62929",
+      "#A84B2F",
+      "#D4A843",
+      "#E0E0E0",
+      "#E8E8E8",
+      "#FF0D0D",
+      "#FF8000",
+      "#FFFF30"
+    ],
+    "entropy-driven.html": [
+      "#000000",
+      "#00FF96",
+      "#05070B",
+      "#0E2230",
+      "#10B981",
+      "#22C55E",
+      "#2A1215",
+      "#3A4257",
+      "#4ADE80",
+      "#5C2B2E",
+      "#666666",
+      "#67E8F9",
+      "#999999",
+      "#D24B7E",
+      "#DC2626",
+      "#EA580C",
+      "#EF4444",
+      "#F87171",
+      "#F97316",
+      "#FAF9F5",
+      "#FB7185",
+      "#FDBA74",
+      "#FF7D0A",
+      "#FF8A80"
+    ],
+    "entropy-help/index.html": [
+      "#475569"
+    ],
+    "entropy-help/request.html": [
+      "#221199"
+    ],
+    "entropy/es/index.html": [
+      "#000000",
+      "#39D1C8",
+      "#53A4FF",
+      "#68EDA8",
+      "#A2383F",
+      "#A786FF",
+      "#D6CBCC",
+      "#D8DFF4",
+      "#D99DA7",
+      "#E8DADD",
+      "#F77FCB",
+      "#FF5B3A",
+      "#FF735F",
+      "#FFB449",
+      "#FFE5DE",
+      "#FFF3ED"
+    ],
+    "entropy/es/index.rsc": [
+      "#000000"
+    ],
+    "entropy/fr/index.html": [
+      "#000000",
+      "#39D1C8",
+      "#53A4FF",
+      "#68EDA8",
+      "#A2383F",
+      "#A786FF",
+      "#D6CBCC",
+      "#D8DFF4",
+      "#D99DA7",
+      "#E8DADD",
+      "#F77FCB",
+      "#FF5B3A",
+      "#FF735F",
+      "#FFB449",
+      "#FFE5DE",
+      "#FFF3ED"
+    ],
+    "entropy/fr/index.rsc": [
+      "#000000"
+    ],
+    "entropy/index.html": [
+      "#000000",
+      "#39D1C8",
+      "#53A4FF",
+      "#68EDA8",
+      "#A2383F",
+      "#A786FF",
+      "#D6CBCC",
+      "#D8DFF4",
+      "#D99DA7",
+      "#E8DADD",
+      "#F77FCB",
+      "#FF5B3A",
+      "#FF735F",
+      "#FFB449",
+      "#FFE5DE",
+      "#FFF3ED"
+    ],
+    "entropy/index.rsc": [
+      "#000000"
+    ],
+    "flexaid-ds/app.js": [
+      "#000000",
+      "#E8E8E8"
+    ],
+    "flexaid-ds/index.html": [
+      "#E6EDF3"
+    ],
+    "flexaid-ds/sections.jsx": [
+      "#3178C6",
+      "#3572A5",
+      "#438EFF",
+      "#76B900",
+      "#89E051",
+      "#8B949E",
+      "#E34C26",
+      "#EC4899",
+      "#F05138",
+      "#F34B7D"
+    ],
+    "flexaid-ds/styles.css": [
+      "#000000",
+      "#3AA6B3",
+      "#5AC8FA",
+      "#76B900",
+      "#7DD3FC",
+      "#8A93A8",
+      "#9AE635",
+      "#ED1C24",
+      "#F87171",
+      "#F8FAFC"
+    ],
+    "flexaid/index.html": [
+      "#05080D",
+      "#0C1118",
+      "#1A1F2B"
+    ],
+    "index.html": [
+      "#000000",
+      "#006FBA",
+      "#007B57",
+      "#0B1220",
+      "#111111",
+      "#444444",
+      "#444D60",
+      "#7C4AE5",
+      "#999999",
+      "#9F5A05",
+      "#B0B0BA",
+      "#B44B00",
+      "#C4C4CC",
+      "#CF027E",
+      "#D60E2E"
+    ],
+    "lebonhomme-brand.css": [
+      "#000000",
+      "#DC2626",
+      "#F87171"
+    ],
+    "patches/flexaidds-restore-pages-deploy.patch": [
+      "#555555",
+      "#F34B7D"
+    ],
+    "periodic/index.html": [
+      "#000000",
+      "#0C4A6E",
+      "#0F172A",
+      "#10141C",
+      "#11161F",
+      "#134E4B",
+      "#14B8A6",
+      "#1E1135",
+      "#1E1B4B",
+      "#1F2937",
+      "#38BDF8",
+      "#422006",
+      "#431407",
+      "#451A03",
+      "#4C1D95",
+      "#6366F1",
+      "#64748B",
+      "#94A3B8",
+      "#99F6E4",
+      "#A855F7",
+      "#BAE6FD",
+      "#C4B5FD",
+      "#C7D2FE",
+      "#D8B4FE",
+      "#E2E8F0",
+      "#F59E0B",
+      "#FACC15",
+      "#FB923C",
+      "#FDBA74",
+      "#FDE047",
+      "#FED7AA"
+    ],
+    "resume.html": [
+      "#000000",
+      "#006648",
+      "#1C1915",
+      "#3A3734",
+      "#605C58",
+      "#D5D1CD",
+      "#E2DFDC",
+      "#EEECEA",
+      "#F7F5F4"
+    ],
+    "shannon/index.html": [
+      "#78BEDC",
+      "#8A93A8"
+    ],
+    "style.css": [
+      "#000000",
+      "#059669",
+      "#0A0E14",
+      "#10141C",
+      "#161B26",
+      "#22D3EE",
+      "#3572A5",
+      "#3AA6B3",
+      "#438EFF",
+      "#555555",
+      "#5AC8FA",
+      "#64748B",
+      "#67E8F9",
+      "#6B7280",
+      "#76B900",
+      "#7C3AED",
+      "#7D8590",
+      "#7DD3FC",
+      "#86EFAC",
+      "#8A93A8",
+      "#9AE635",
+      "#AAAAAA",
+      "#D4DCED",
+      "#E0F7FA",
+      "#E8EDF5",
+      "#ED1C24",
+      "#F05138",
+      "#F0F9FF",
+      "#F1F5F9",
+      "#F34B7D",
+      "#F43F5E",
+      "#F87171",
+      "#FBBF24"
+    ],
+    "test-full-site.mjs": [
+      "#7FF0C4"
+    ],
+    "test-shannon-and-design.mjs": [
+      "#7FF0C4"
+    ],
+    "theme.css": [
+      "#000000",
+      "#10141C",
+      "#1C2433",
+      "#232C3C",
+      "#3A465C",
+      "#785A00",
+      "#926400",
+      "#B45309",
+      "#C7D2E8",
+      "#DCD1A8",
+      "#F4D98A",
+      "#FFE39A"
+    ],
+    "transit/redirect.css": [
+      "#3D5DF2",
+      "#78BEDC"
+    ]
+  },
+  "_paletteCheckEnd": "palette-check-ignore-end"
+}

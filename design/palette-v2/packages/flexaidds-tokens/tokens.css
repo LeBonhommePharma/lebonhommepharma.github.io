@@ -54,6 +54,42 @@
      normal text but have no headroom. Hold firetruck to 12px
      and up; prefer --state-fail-text for small failure labels. */
 
+  /* ───────── KEY COLORS AS FOREGROUND ─────────
+     Use these, not the bare key color, for anything a person has
+     to READ: text, icons, rules, chart strokes over the page.
+
+     WHY THEY EXIST
+     Contrast is a (foreground, background) pair, and the block
+     below freezes the key colors across both themes. That keeps
+     identity — correctly — but it froze only one half of the
+     pair. Measured against the light ground (#f4f6fb) the bare
+     key colors land at:
+
+         magnesium 1.26  ·  mint 1.56  ·  tangerine 2.06  ·  aqua 2.55
+
+     Four of seven below 3:1, which is the floor for a UI border,
+     never mind body text. In light mode the brand primary is
+     effectively invisible.
+
+     So hue and chroma carry identity and lightness is free: each
+     -fg is the same OKLCH hue, solved down in lightness until the
+     pair clears 4.5:1. Hue moves less than 0.3° in every case
+     (see design-system/derive-light.mjs), so a mint reads as mint.
+
+     In dark mode these ARE the key colors — nothing changes on
+     any page that ships today. Only the light theme overrides
+     them, which is why this is additive and not a repaint. The
+     alpha washes (--mint-10 &c.) deliberately stay built from the
+     bright hue: as a translucent BACKGROUND tint that is the
+     correct behaviour, and they are never a foreground. */
+  --mint-fg:       var(--mint);
+  --violet-fg:     var(--violet);
+  --tangerine-fg:  var(--tangerine);
+  --firetruck-fg:  var(--firetruck);
+  --aqua-fg:       var(--aqua);
+  --strawberry-fg: var(--strawberry);
+  --magnesium-fg:  var(--magnesium);
+
   /* Legacy aliases — v1 rules keep resolving.
      palette-check-ignore-start
      The comments below name the v1 hex each alias replaced; that is a
@@ -256,4 +292,54 @@
   --dur-slow:     0.7s;
   --dur-breathe:  4s;
   --dur-spectrum: 8.5s;
+}
+
+/* ───────── LIGHT THEME ─────────
+   The site ships a light toggle (theme.js sets data-theme pre-paint,
+   theme.css owns the toggle component). Only the surface and text
+   tokens move — the seven key colors are the system and do not
+   change with the theme, so a chart or an equation reads the same
+   in either mode. Alpha washes lift slightly because the same
+   opacity over a light ground reads weaker. */
+[data-theme="light"] {
+  --bg:       #f4f6fb;
+  --bg-panel: rgba(255, 255, 255, 0.88);
+  --bg-card:  #ffffff;
+  --bg-alt:   #eef2f8;
+
+  --fg:       #1e293b;
+  --fg-muted: #5a6478;
+
+  --grid-line: rgba(139, 92, 246, 0.06);
+
+  --mint-06: rgba(69, 224, 168, 0.08);
+  --mint-08: rgba(69, 224, 168, 0.10);
+  --mint-10: rgba(69, 224, 168, 0.14);
+  --mint-15: rgba(69, 224, 168, 0.22);
+  --mint-20: rgba(69, 224, 168, 0.28);
+  --mint-30: rgba(69, 224, 168, 0.38);
+
+  /* Failure text goes DARKER on a light ground, not lighter. #FF6B6B
+     is a lift for DARK mode (7.11:1 on the ink) and collapses to
+     2.57:1 on #f4f6fb — below AA. #BE123C is the value the drug pages
+     had already arrived at independently in their own light blocks,
+     promoted here so every page inherits it. */
+  --state-fail-text: #BE123C;   /* 5.81:1 on --bg */
+
+  /* Key colors, solved down in lightness for this ground. Same OKLCH
+     hue, chroma kept where sRGB had room for it; the ratio after each
+     is measured against --bg (#f4f6fb) and asserted by
+     design-system/check-contrast.mjs, so an edited hue cannot ship
+     with a stale number beside it. Regenerate with
+     `node design-system/derive-light.mjs 4.5`. */
+  --mint-fg:       #00815C;   /* 4.52:1 · hue +0.21° · chroma  75% */
+  --violet-fg:     #8251EA;   /* 4.50:1 · hue +0.21° · chroma 100% */
+  --tangerine-fg:  #A85F00;   /* 4.51:1 · hue +0.05° · chroma  73% */
+  --firetruck-fg:  #E4001C;   /* 4.50:1 · hue +0.06° · chroma  99% */
+  --aqua-fg:       #0076BB;   /* 4.51:1 · hue −0.27° · chroma  79% */
+  --strawberry-fg: #DC0078;   /* 4.50:1 · hue +0.28° · chroma  96% */
+  /* Magnesium is near-achromatic (C ≈ 0.006), so its OKLCH hue angle
+     carries no perceptual meaning and the 5.56° shift the solver
+     reports is numerical noise, not a visible change of colour. */
+  --magnesium-fg:  #717078;   /* 4.53:1 · chroma 100% */
 }
