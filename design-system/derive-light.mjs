@@ -124,12 +124,36 @@ function readModel() {
   // is correctly excluded -- it has no base hue, it is the body text colour.
   // Adding an eighth key colour to tokens.css brings it under this solver
   // automatically; there is no list here to forget to update.
-  const keys = Object.keys(blocks[LIGHT] || {})
-    .filter((n) => n.endsWith('-fg'))
+  // THE SET IS READ FROM :root, NOT FROM THE LIGHT BLOCK, and that is the whole
+  // difference between a check and a check that agrees with the file.
+  //
+  // The first version of this discovered the set from the light block. Deleting
+  // a --x-fg declaration there therefore removed it from the set, so the token
+  // stopped being CHECKED instead of failing the check. Six of the seven were
+  // dropped during a merge and this reported "all 1 in sync", exit 0, while
+  // --mint-fg fell back to its :root alias var(--mint) = #45E0A8 = 1.56:1 on
+  // the light ground. A live contrast regression, reported green.
+  //
+  // :root declares --x-fg: var(--x) for every key colour. That set does not
+  // shrink when the light block does.
+  const keys = Object.keys(blocks[':root'] || {})
+    .filter((n) => n.endsWith('-fg') && n.length > 5)
     .map((n) => n.slice(0, -3))
     .filter((base) => HEX.test(String(resolve(blocks, ':root', base) ?? '')))
     .map((base) => [base.slice(2), resolve(blocks, ':root', base)]);
-  if (!keys.length) die('no --x/--x-fg pairs found in tokens.css — refusing to run.');
+  if (!keys.length) die('no --x/--x-fg pairs found at :root in tokens.css — refusing to run.');
+
+  // Every discovered key MUST have its own declaration in the light block. A
+  // token that merely inherits the :root alias is not in sync, it is unsolved.
+  const missing = keys.map(([n]) => `--${n}-fg`).filter((n) => !(blocks[LIGHT] || {})[n]);
+  if (missing.length) {
+    die(
+      `the ${LIGHT} block has no declaration for: ${missing.join(', ')}.\n` +
+        '       They inherit the :root alias var(--x), which is the DARK identity hue and\n' +
+        '       is nowhere near readable on the light ground. A missing override is a\n' +
+        '       failure, not an exemption.'
+    );
+  }
 
   return { css, blocks, lightBg, darkBg, keys };
 }
@@ -235,9 +259,29 @@ if (has('--self-test')) {
   t('one channel moved by one step is detected', diff(dirty, rows).length, 1);
   t('  …and the detected token is the one that moved', diff(dirty, rows)[0]?.name, victim.name);
   t('the target marker is required', TARGET_RE.test(clean), true);
+
+  // Deleting a light-block declaration must FAIL, not shrink the set. This case
+  // exists because the first version of readModel() discovered the set from the
+  // light block and so reported exit 0 with six of seven tokens missing.
+  const gutted = clean.replace(/\n  --mint-fg:\s*#[0-9A-Fa-f]{6};[^\n]*/, '');
+  t('a deleted light declaration is a failure, not an exemption',
+    (() => { try { readModelFrom(gutted); return 'no error'; } catch (e) { return e.message; } })(),
+    'MISSING --mint-fg');
   if (!ok) { console.log('\nself-test FAILED'); process.exit(1); }
   console.log('\nself-test passed: the check fails on a one-step desync and names the token.');
   process.exit(0);
+}
+
+// The missing-declaration rule, as a throwing function so the self-test can
+// exercise it without the process exiting.
+function readModelFrom(css) {
+  const blocks = parseTokens(css);
+  const keys = Object.keys(blocks[':root'] || {})
+    .filter((n) => n.endsWith('-fg') && n.length > 5)
+    .filter((n) => HEX.test(String(resolve(blocks, ':root', n.slice(0, -3)) ?? '')));
+  const missing = keys.filter((n) => !(blocks[LIGHT] || {})[n]);
+  if (missing.length) throw new Error(`MISSING ${missing.join(', ')}`);
+  return keys;
 }
 
 function diff(css, rows) {
