@@ -34,8 +34,8 @@ hue from midnight indigo rather than a relighting of it.
 | BrandStrawberry | `#D40074` | 4.52:1 | `#FF2F92` | 5.71:1 | 0.06° |
 | BrandMagnesium | `#6D6C74` | 4.52:1 | `#DCDCE4` | 14.47:1 | achromatic |
 | BrandFg | `#6C6C7B` | 4.5:1 | `#E4E3F5` | 15.6:1 | 2.88° |
-| BrandFgMuted | `#6B6A8D` | 4.5:1 | `#8D8CB0` | 6.12:1 | 0.37° |
-| BrandStateFailText | `#C8373E` | 4.5:1 | `#FF6B6B` | 7.11:1 | 0.04° |
+| BrandFgMuted | `#6B6A8C` | 4.5:1 | `#8D8CB0` | 6.12:1 | 0.27° |
+| BrandStateFailText | `#C7373E` | 4.53:1 | `#FF6B6B` | 7.11:1 | 0.01° |
 
 Both halves clear 4.5:1, which also satisfies the 3:1 floors for large text
 and non-text. An asset does not know whether its call site renders 12px body

@@ -36,7 +36,7 @@
  */
 
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
-import { contrast, isRelighting, HUE_TOL_DEG, CHROMA_GAIN_TOL } from './oklch.mjs';
+import { contrast, fmtRatio, isRelighting, HUE_TOL_DEG, CHROMA_GAIN_TOL } from './oklch.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, basename } from 'node:path';
 
@@ -61,6 +61,15 @@ const INK = '#08091A';     // midnight indigo
 // recorded for reference, not accepted.
 const AA_BODY = 4.5;
 const AA_LARGE = 3.0;
+
+// Contrast is compared AS MEASURED and rounded only to print. `contrast()`
+// returns the unrounded ratio for exactly this reason — see oklch.mjs. Both
+// BrandFgMuted (4.497589) and BrandStateFailText (4.497018) passed this guard
+// while strictly failing AA, because the ratio was rounded to 4.5 before it
+// reached the `< AA_BODY` below. Every comparison here reads the real number;
+// `fmtRatio` appears only inside template strings and table cells.
+//
+// No epsilon. WCAG AA says >= 4.5, so the bar is >= 4.5.
 
 // Grounds are not measured against themselves.
 const GROUND_SETS = new Set(['BrandBg']);
@@ -141,6 +150,76 @@ function selfTest() {
   say(contrast('#FFFFFF', '#000000') === 21, 'white on black is 21:1');
   say(contrast('#08091A', '#08091A') === 1, 'a colour on itself is 1:1');
 
+  // ── boundary cases ────────────────────────────────────────────────────────
+  // WHY THESE EXIST
+  //
+  // Every assertion above this point uses values that sit far from their
+  // threshold: white-on-black is 21 against a bar of 4.5, retired v1 cyan
+  // misses the hue tolerance by 47° against a bar of 3°. Not one of them can
+  // detect a guard that ROUNDS its measurement before comparing it, because
+  // rounding 21 or 47 changes nothing. That is how the rounding defect lived
+  // here through a green self-test: the suite only ever asked obvious
+  // questions.
+  //
+  // Each pair below straddles one threshold by the smallest margin 8-bit sRGB
+  // allows, and — this is the load-bearing part — BOTH MEMBERS OF EACH PAIR
+  // ARE IDENTICAL ONCE ROUNDED FOR DISPLAY. A guard that compares the rounded
+  // value must return the same verdict for both, so `sayDiffer` fails. A
+  // guard that compares the real number separates them.
+  //
+  // Do not "simplify" these to round numbers. Their whole value is that they
+  // are not round.
+  const sayDiffer = (a, b, label) => {
+    const good = a !== b;
+    console.log(`  ${good ? 'ok    ' : 'BROKEN'} ${label}`);
+    if (!good) {
+      console.log(`         both verdicts came back ${JSON.stringify(a)} — the comparison is`);
+      console.log('         not reading the real number. Something upstream is rounding.');
+      ok = false;
+    }
+  };
+
+  // 1. the contrast threshold, AA_BODY = 4.5, measured on the ivory ground.
+  //    #796879 = 4.4999986968 · #C53B3E = 4.5000001310 · both print as 4.5.
+  const cUnder = contrast('#796879', IVORY);
+  const cOver = contrast('#C53B3E', IVORY);
+  say(fmtRatio(cUnder) === fmtRatio(cOver), 'the contrast pair is indistinguishable at 2 dp (both 4.5)');
+  sayDiffer(cUnder >= AA_BODY, cOver >= AA_BODY, 'contrast 4.4999987 vs 4.5000001 get different verdicts');
+  say(cUnder < AA_BODY, '  …and the one below 4.5 is the one that fails');
+  say(cOver >= AA_BODY, '  …and the one at/above 4.5 is the one that passes');
+
+  // 2. the hue tolerance, HUE_TOL_DEG = 3°, against canonical violet.
+  //    #12092C = 2.999996° · #8B8A96 = 3.000010° · both print as 3°.
+  //    Chroma is inside tolerance in both, so hue alone decides.
+  const hUnder = isRelighting('#8B5CF6', '#12092C');
+  const hOver = isRelighting('#8B5CF6', '#8B8A96');
+  say(hUnder.dh === hOver.dh, 'the hue pair is indistinguishable at 2 dp (both 3°)');
+  sayDiffer(hUnder.hueOk, hOver.hueOk, 'hue 2.999996° vs 3.000010° get different verdicts');
+
+  // 3. the chroma-gain tolerance, CHROMA_GAIN_TOL = 0.05, against violet.
+  //    #6F14EA = +0.049999 · #772FFA = +0.050002 · both print as 0.05.
+  //    Hue is inside tolerance in both, so chroma alone decides.
+  const kUnder = isRelighting('#8B5CF6', '#6F14EA');
+  const kOver = isRelighting('#8B5CF6', '#772FFA');
+  say(kUnder.dc === kOver.dc, 'the chroma pair is indistinguishable at 3 dp (both 0.05)');
+  sayDiffer(kUnder.chromaOk, kOver.chromaOk, 'chroma +0.049999 vs +0.050002 get different verdicts');
+
+  // 4. lightness-must-differ. The threshold is 1e-6, far below what 8-bit
+  //    sRGB can express, so the real boundary is "same hex" vs "one LSB
+  //    apart". Both sides are asserted so neither can rot unnoticed.
+  const lSame = isRelighting('#8B5CF6', '#8B5CF6');
+  const lNext = isRelighting('#8B5CF6', '#8B5CF7');
+  sayDiffer(lSame.lightnessMoved, lNext.lightnessMoved, 'identical hex vs one LSB apart get different verdicts');
+  say(!lSame.lightnessMoved, '  …identical hex has not moved');
+  say(lNext.lightnessMoved, '  …one LSB apart has');
+
+  // 5. the regression itself, kept as a fixture. These are the two values that
+  //    shipped green: both printed 4.5, both strictly failed.
+  say(contrast('#6B6A8D', IVORY) < AA_BODY, 'BrandFgMuted-as-shipped (4.497589) is correctly BELOW 4.5');
+  say(contrast('#C8373E', IVORY) < AA_BODY, 'BrandStateFailText-as-shipped (4.497018) is correctly BELOW 4.5');
+  say(contrast('#6B6A8C', IVORY) >= AA_BODY, 'BrandFgMuted re-solved (4.504146) clears 4.5');
+  say(contrast('#C7373E', IVORY) >= AA_BODY, 'BrandStateFailText re-solved (4.527539) clears 4.5');
+
   // The parser must see a missing twin as missing.
   const noTwin = { colors: [{ idiom: 'universal', color: { components: { red: '0.271', green: '0.878', blue: '0.659' } } }] };
   const anyE = noTwin.colors.find((c) => !c.appearances);
@@ -194,7 +273,7 @@ for (const s of sets) {
   // canonical value; so does this.
   const rel = isGround ? { ok: true, dh: null, dc: 0 } : isRelighting(s.dark, s.light);
   console.log(
-    `${s.name.padEnd(22)}${s.light.padEnd(10)}${String(cl ?? 'ground').padEnd(10)}${s.dark.padEnd(10)}${String(cd ?? 'ground').padEnd(9)}${isGround ? 'ground' : rel.ok ? 'ok' : 'NO'}`
+    `${s.name.padEnd(22)}${s.light.padEnd(10)}${String(fmtRatio(cl) ?? 'ground').padEnd(10)}${s.dark.padEnd(10)}${String(fmtRatio(cd) ?? 'ground').padEnd(9)}${isGround ? 'ground' : rel.ok ? 'ok' : 'NO'}`
   );
   if (!rel.ok) {
     const why = [
@@ -206,12 +285,15 @@ for (const s of sets) {
     fail++;
   }
   if (!isGround) {
+    // Reported to 6 dp as well as 2. A near-miss like 4.497589 prints as
+    // "4.5" at 2 dp, which reads as a broken guard rather than a real failure;
+    // the precise figure is the evidence that it is not.
     if (cl < AA_BODY) {
-      problems.push(`${s.name}: light ${s.light} on ivory ${IVORY} = ${cl}:1 — below AA body (${AA_BODY}:1)${cl >= AA_LARGE ? ', large text only' : ', below the 3:1 non-text floor'}`);
+      problems.push(`${s.name}: light ${s.light} on ivory ${IVORY} = ${fmtRatio(cl)}:1 (${cl.toFixed(6)}) — below AA body (${AA_BODY}:1)${cl >= AA_LARGE ? ', large text only' : ', below the 3:1 non-text floor'}`);
       fail++;
     }
     if (cd < AA_BODY) {
-      problems.push(`${s.name}: dark ${s.dark} on ink ${INK} = ${cd}:1 — below AA body (${AA_BODY}:1)${cd >= AA_LARGE ? ', large text only' : ', below the 3:1 non-text floor'}`);
+      problems.push(`${s.name}: dark ${s.dark} on ink ${INK} = ${fmtRatio(cd)}:1 (${cd.toFixed(6)}) — below AA body (${AA_BODY}:1)${cd >= AA_LARGE ? ', large text only' : ', below the 3:1 non-text floor'}`);
       fail++;
     }
   }

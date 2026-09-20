@@ -174,12 +174,22 @@ second colour that happens to look similar.
 | BrandStrawberry | `#D40074` | 4.52:1 | `#FF2F92` | 5.71:1 | 0.06° |
 | BrandMagnesium | `#6D6C74` | 4.52:1 | `#DCDCE4` | 14.47:1 | achromatic |
 | BrandFg | `#6C6C7B` | 4.50:1 | `#E4E3F5` | 15.60:1 | 2.88° |
-| BrandFgMuted | `#6B6A8D` | 4.50:1 | `#8D8CB0` | 6.12:1 | 0.37° |
-| BrandStateFailText | `#C8373E` | 4.50:1 | `#FF6B6B` | 7.11:1 | 0.04° |
+| BrandFgMuted | `#6B6A8C` | 4.50:1 | `#8D8CB0` | 6.12:1 | 0.27° |
+| BrandStateFailText | `#C7373E` | 4.53:1 | `#FF6B6B` | 7.11:1 | 0.01° |
 
 Both halves clear 4.5:1, which also satisfies the 3:1 floors for large text and
 non-text. An asset does not know whether its call site renders 12px body or a
 28px numeral, so the strictest bar is the only safe assumption.
+
+> **The "on ivory" column is rounded to 2 dp for reading. It is not what the
+> guard compares.** `BrandFgMuted` and `BrandStateFailText` previously read
+> `#6B6A8D` / 4.50:1 and `#C8373E` / 4.50:1 in this table and were in fact
+> 4.497589 and 4.497018 — both strictly below AA. `contrast()` rounded before
+> comparing, so the guard agreed with itself and the near-miss could not be
+> caught. Fixed at source in `oklch.mjs`: comparisons read the unrounded
+> ratio, `fmtRatio` rounds only to print. The two light halves above were
+> re-solved and now measure 4.504146 and 4.527539. See the boundary cases in
+> `check-colorsets.mjs --self-test`.
 
 `BrandBg` is the declared exception: it **is** the ground, so there is no
 foreground to measure it against, and warm ivory is legitimately a different

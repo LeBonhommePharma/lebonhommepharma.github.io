@@ -79,13 +79,47 @@ export function luminance(hex) {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-/** Contrast ratio of a (foreground, background) PAIR. Never of a colour alone. */
+/**
+ * Contrast ratio of a (foreground, background) PAIR. Never of a colour alone.
+ *
+ * Returns the RATIO AS MEASURED — unrounded. This is load-bearing, not a
+ * style choice.
+ *
+ * This function used to `Math.round(r * 100) / 100` before returning, and
+ * every threshold comparison in the system consumes its result. A ratio
+ * rounded to 2 dp and then compared against 4.5 admits everything from
+ * 4.495 upward, so a near-miss could never be caught: the guard rounded its
+ * own measurement into agreement with its own threshold. Two colorsets
+ * shipped through that hole, both reported as "4.5 / ok":
+ *
+ *     BrandFgMuted        #6B6A8D on #F3EFE7 = 4.497589   (AA body needs 4.5)
+ *     BrandStateFailText  #C8373E on #F3EFE7 = 4.497018
+ *
+ * BrandFgMuted is the muted SMALL-TEXT token, which is exactly where the
+ * threshold is doing work.
+ *
+ * The same rounded value was also read by solveRelight() below, so the solver
+ * stopped searching as soon as a candidate rounded to the target — it was
+ * solving for `round(r) >= 4.5`, not for `r >= 4.5`.
+ *
+ * Rule: compare at full precision, round only to print. Use `fmtRatio` at the
+ * print site. Do not reintroduce rounding here, and do not add an epsilon to
+ * the comparison — `>= 4.5` on the real number is the WCAG bar.
+ */
 export function contrast(fg, bg) {
   const a = luminance(fg);
   const b = luminance(bg);
   const [hi, lo] = a > b ? [a, b] : [b, a];
-  return Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100;
+  return (hi + 0.05) / (lo + 0.05);
 }
+
+/**
+ * 2-dp form, for human reading only.
+ *
+ * Never feed this back into a threshold comparison — that is precisely the
+ * bug the comment above describes.
+ */
+export const fmtRatio = (r) => (r === null || r === undefined ? r : Math.round(r * 100) / 100);
 
 // ── the relight allowance ───────────────────────────────────────────────────
 // Identical to scripts/check-design-system.sh. Hue is the identity of a
