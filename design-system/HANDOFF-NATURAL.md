@@ -86,7 +86,9 @@ added. **If you have full Xcode, run it through `actool` and report back.**
 
 1. **`natural/MASTER.md` line 41**, *"Gold is allowed as thermodynamic chrome"*,
    and **`BrandColor.swift:17`**, `public static let gold: UInt32 = 0xC4A359`.
+<!-- palette-check-ignore-start -->
    That is where the website's `--hp-gold: #C4A359` came from. Gold `#FBBF24`
+<!-- palette-check-ignore-end -->
    is retired in palette v2; ΔG chrome should read tangerine `#FF9300`
    (8.86:1). Pointing the raw-hex guard at the repo flags it at
    `BrandColor.swift:17` in `0x` form.

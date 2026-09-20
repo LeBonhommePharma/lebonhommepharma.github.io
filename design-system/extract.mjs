@@ -82,7 +82,9 @@ export function resolve(blocks, selector, name, seen = new Set()) {
  * WHY NOT JUST SCAN THE FILE TEXT
  * -------------------------------
  * `tokens.css` names the retired v1 palette in its "do not reintroduce"
+ * palette-check-ignore-start
  * comment — #22D3EE, #FBBF24, #8B1A4A and the rest are written out so the
+ * palette-check-ignore-end
  * migration record says what it forbids. A text scan therefore harvests the
  * retired colours into the allowlist and cheerfully authorises the exact hues
  * the other guard exists to reject. Declarations only.

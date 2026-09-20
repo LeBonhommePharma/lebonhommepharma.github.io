@@ -120,9 +120,11 @@ function selfTest() {
   say(isRelighting('#45E0A8', '#00815C').ok, 'mint → darker mint is a relighting');
   say(isRelighting('#45E0A8', '#8EEFC9').ok, 'mint → lighter mint is a relighting');
   // Not relightings.
+  // palette-check-ignore-start — fixtures: a guard must name what it rejects
   say(!isRelighting('#45E0A8', '#22D3EE').ok, 'mint → retired v1 cyan is NOT (hue 47°)');
   say(!isRelighting('#FF9300', '#C4A359').ok, 'tangerine → the invented gold is NOT');
   say(!isRelighting('#8B5CF6', '#8B1A4A').ok, 'violet → retired terra is NOT (hue 68°)');
+  // palette-check-ignore-end
   say(!isRelighting('#45E0A8', '#45E0A8').ok, 'a colour is not its own twin (lightness must move)');
   // Magnesium is achromatic — hue angle is noise, so it is judged on lightness.
   say(isRelighting('#DCDCE4', '#717078').ok, 'magnesium → darker grey (achromatic path)');

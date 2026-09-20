@@ -246,7 +246,9 @@ unchanged — it is not a canonical token and does not belong in `index.html` �
 but the root cause is a fork with a docstring, not a rogue agent, and a guard
 alone would not have prevented it.
 
+<!-- palette-check-ignore-start -->
 Gold `#FBBF24` is retired in palette v2. `--gold` survives only as a back-compat
+<!-- palette-check-ignore-end -->
 alias for **tangerine** (ΔG, `#FF9300`, 8.86:1). ΔG chrome reads tangerine.
 Resolving the clause in NATURaL's doc is that repo's change, not this one's.
 

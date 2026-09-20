@@ -9,6 +9,8 @@
     "openViolations — literals deliberately NOT forgiven. These fail the build.",
     "Nothing lands here by accident; each carries a note saying why."
   ],
+  "_paletteCheck": "palette-check-ignore-start",
+  "generated": "2026-09-20",
   "openViolations": {
     "index.html": {
       "values": {
@@ -23,6 +25,9 @@
       "#7A7294",
       "#7D8590",
       "#F34B7D"
+    ],
+    ".github/workflows/design-system-source.yml": [
+      "#C4A359"
     ],
     "EntropyDocking.html": [
       "#1FF01F",
@@ -1247,5 +1252,5 @@
       "#78BEDC"
     ]
   },
-  "generated": "2026-09-20"
+  "_paletteCheckEnd": "palette-check-ignore-end"
 }

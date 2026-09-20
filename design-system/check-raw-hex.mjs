@@ -104,6 +104,46 @@ const MATCHERS = [
     key: (m) => toHex(+m[1], +m[2], +m[3]),
   },
   {
+    name: 'components',
+    // Named colour components: SwiftUI `Color(red:green:blue:)`, `UIColor(...)`,
+    // `#colorLiteral(...)`, `Color(.sRGB, red:...)`, and the `"red": "0.271"`
+    // form an Xcode .colorset uses. One matcher, because they differ only in
+    // what surrounds the same three numbers.
+    //
+    // This was the guard's worst hole, and it was self-inflicted: emit.mjs
+    // generates Swift as `Color(red: 0.7686, green: 0.6392, blue: 0.3490)`,
+    // so the canonical generator was emitting colours in a notation its own
+    // guard could not see. Of seven ways Swift writes a colour, only the two
+    // hex-shaped ones were caught.
+    //
+    // Accepts 0–1 floats, 0–255 integers, and the `196/255` idiom. If any
+    // channel exceeds 1 the triple is read as 0–255; otherwise as 0–1, which
+    // is the same heuristic every colour library uses and the only one
+    // available without knowing the call site.
+    re: /\bred"?\s*:\s*"?(-?[\d.]+(?:\s*\/\s*255)?)"?[\s,]*(?:[^)}\n]*?)\bgreen"?\s*:\s*"?(-?[\d.]+(?:\s*\/\s*255)?)"?[\s,]*(?:[^)}\n]*?)\bblue"?\s*:\s*"?(-?[\d.]+(?:\s*\/\s*255)?)"?/g,
+    key: (m) => {
+      const num = (s) => {
+        const d = s.split('/');
+        const v = parseFloat(d[0]);
+        return d.length > 1 ? v / parseFloat(d[1]) : v;
+      };
+      const raw = [m[1], m[2], m[3]].map(num);
+      if (raw.some((v) => Number.isNaN(v))) return null;
+      const scaled = raw.some((v) => v > 1) ? raw : raw.map((v) => v * 255);
+      return toHex(...scaled.map((v) => Math.round(v)));
+    },
+  },
+  {
+    name: 'hex-string',
+    // A bare 6-hex string in an explicitly colour-shaped position:
+    // `Color(hex: "C4A359")`, `hexString: "c4a359"`. Requires the `hex` key,
+    // because six hex characters in a quoted string is otherwise a git sha, an
+    // id, or a checksum — the same prose trap that made #RGB shorthand flag
+    // "Drug of the Day #038" across eighty pages.
+    re: /\bhex[A-Za-z]*"?\s*[:=]\s*"#?([0-9A-Fa-f]{6})"/g,
+    key: (m) => '#' + m[1].toUpperCase(),
+  },
+  {
     name: 'hsl',
     // Zero hsl() in the tree today. Enforced at zero tolerance precisely
     // because it is free to close now and would otherwise be the obvious
@@ -205,6 +245,15 @@ function selfTest(allowed) {
     ['background: rgba(196, 163, 89, 0.4)', 'unauthorised rgba triple'],
     ['background: rgb(196 163 89 / 0.4)', 'space-separated rgb'],
     ['color: hsl(43 47% 56%)', 'hsl, the way around every hex matcher'],
+    // Swift, in every spelling it writes a colour. Only the first two were
+    // caught before; the rest are why "a hex check that only knows one
+    // language isn't a guard".
+    ['    static let g = Color(hex: "C4A359")', 'Swift hex string with no #'],
+    ['    static let d = Color(red: 0.7686, green: 0.6392, blue: 0.3490)', 'SwiftUI float components — the form emit.mjs itself generates'],
+    ['UIColor(red: 196/255, green: 163/255, blue: 89/255, alpha: 1)', 'UIColor with the /255 idiom'],
+    ['#colorLiteral(red: 0.7686, green: 0.6392, blue: 0.3490, alpha: 1)', 'Xcode #colorLiteral'],
+    ['Color(.sRGB, red: 0.7686, green: 0.6392, blue: 0.3490)', 'Color(.sRGB, ...)'],
+    ['"red" : "0.769", "green" : "0.639", "blue" : "0.349"', 'an .colorset Contents.json component block'],
   ];
   for (const [input, label] of positives) {
     say(findViolations(input, allowed).length > 0, label);
@@ -221,6 +270,14 @@ function selfTest(allowed) {
     ['<title>Phenibut — Drug of the Day #038</title>', 'an issue number in prose, not #003388'],
     ['<a href="/drug-of-the-day/cocaine/">Cocaine #001</a>', 'another issue number in prose'],
     ['  --fg: #E4E3F5;', 'body text'],
+    ['    static let ok = Color(red: 0.2706, green: 0.8784, blue: 0.6588)', 'palette mint as float components'],
+    ['"red" : "0.271", "green" : "0.878", "blue" : "0.659"', 'palette mint as colorset components'],
+    // `hex: "abc123"` is deliberately NOT here as a negative: a key literally
+    // named `hex` holding six hex characters IS colour-shaped, and flagging it
+    // is right. The boundary being tested is a hex-looking string with no
+    // colour context at all.
+    ['const id = "abc123";', 'a 6-char hex string with no colour context'],
+    ['let reduced = { red: 3, green: 9 };', 'a red/green pair with no blue is not a colour'],
   ];
   for (const [input, label] of negatives) {
     say(findViolations(input, allowed).length === 0, `${label} (correctly allowed)`);
@@ -228,7 +285,9 @@ function selfTest(allowed) {
 
   // The allowlist must not have absorbed the retired v1 palette from the
   // "do not reintroduce" comment in tokens.css.
+  // palette-check-ignore-start — fixtures: these must NOT be in the allowlist
   for (const retired of ['#22D3EE', '#FBBF24', '#FDE68A', '#8B1A4A', '#C2456F', '#DA2F63', '#6E7C99', '#FF2600']) {
+  // palette-check-ignore-end
     say(!allowed.has(retired), `retired ${retired} is not in the allowlist`);
   }
 
@@ -289,9 +348,27 @@ function main() {
       const keys = [...new Set(vs.filter((v) => !v.noBaseline && !open.has(v.key)).map((v) => v.key))].sort();
       if (keys.length) grandfathered[f] = keys;
     }
+    // Key order is load-bearing, so the object is built explicitly rather than
+    // spread. This file RECORDS the colour literals in the tree — retired v1
+    // hues included — so scripts/check-palette-v2.sh, which forbids exactly
+    // those hues, would reject the ledger that names them. The guard offers
+    // ignore markers for precisely this; they only work if the start marker
+    // precedes every hex and the end marker follows all of them, which a
+    // `{...base}` spread does not guarantee.
     writeFileSync(
       BASELINE,
-      JSON.stringify({ ...base, generated: new Date().toISOString().slice(0, 10), grandfathered }, null, 2) + '\n'
+      JSON.stringify(
+        {
+          _readme: base._readme,
+          _paletteCheck: 'palette-check-ignore-start',
+          generated: new Date().toISOString().slice(0, 10),
+          openViolations: base.openViolations ?? {},
+          grandfathered,
+          _paletteCheckEnd: 'palette-check-ignore-end',
+        },
+        null,
+        2
+      ) + '\n'
     );
     console.log(`\nresealed ${BASELINE}: ${Object.keys(grandfathered).length} files grandfathered.`);
     return 0;
