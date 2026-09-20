@@ -133,6 +133,73 @@ foreground.
 
 ---
 
+## Appearance twins — which colours get one
+
+The Apple apps ship an Xcode asset catalog. `NATURaL/design-system/natural/MASTER.md`
+claimed *"Light appearance twins live in `BrandColors.xcassets`"*, and
+`BonhommeCore/.../BrandColor.swift` repeated it under a heading reading
+*"Asset catalog twins"*. Neither was true — all ten colorsets carried a single
+`universal` entry and no appearance variants at all.
+
+"Ten colorsets are missing their twin" is the wrong shape for the problem,
+because the ten are two different kinds of thing and the answer differs:
+
+| | twin? | verdict |
+|---|---|---|
+| the seven key colours | **no, by design** | assets were right, **the doc was wrong** |
+| `Bg`, `Fg`, `FgMuted` | **yes** | doc was right, **the assets were incomplete** |
+
+The seven key colours must **not** have a twin. They are identity hues frozen
+across themes, and NATURaL's own doc demands exactly that in the same sentence
+that claimed twins exist: *"Session HUD always reads the sRGB values above so
+SCI / ΔH / ΔG stay identical across themes."* Giving mint a dark twin would
+break the thing that sentence protects. All seven match canonical hex exactly.
+
+`Bg` / `Fg` / `FgMuted` are surfaces and text — the half of the pair that is
+*allowed* to move — and each held only its dark value.
+
+**This is generated now**, to `design-system/dist/BrandColors.xcassets/`, so
+nobody has to remember which kind a colorset is.
+
+### The latent trap it closes
+
+The `universal` entry holds the **light** value and the dark appearance carries
+the dark one, because that is the direction Apple resolves: a system in light
+appearance falls back to `universal`.
+
+The hand-written catalog had it inverted — dark value in `universal`, no
+variant. That is invisible today because NATURaL pins
+`.preferredColorScheme(.dark)` at every entry point, and it stays invisible
+right up until someone removes that modifier, at which point light appearance
+renders dark-on-dark **silently**, with no missing-asset error to catch it.
+
+So: nothing is broken in NATURaL today. It is broken the day the dark lock
+comes off, which is the worst kind of bug to leave lying around.
+
+## The gold fork
+
+`#C4A359` did not come from nowhere. It is declared in
+`NATURaL/BonhommeCore/Sources/BonhommeCore/UI/BrandColor.swift`:
+
+```swift
+/// Thermodynamic gold chrome — optional, never a SCI/CTA substitute.
+public static let gold: UInt32 = 0xC4A359
+```
+
+— in a file headed *"Locked so design-system/natural/MASTER.md and Swift HUD
+stay in lockstep"* that links to `thebonhomme.com/tokens.css`, and licensed by
+`natural/MASTER.md`: *"Gold is allowed as thermodynamic chrome."*
+
+So the website's `--hp-gold: #C4A359` was **copied from a sibling repo that had
+forked the palette**, not invented on the spot. The guard's verdict is
+unchanged — it is not a canonical token and does not belong in `index.html` —
+but the root cause is a fork with a docstring, not a rogue agent, and a guard
+alone would not have prevented it.
+
+Gold `#FBBF24` is retired in palette v2. `--gold` survives only as a back-compat
+alias for **tangerine** (ΔG, `#FF9300`, 8.86:1). ΔG chrome reads tangerine.
+Resolving the clause in NATURaL's doc is that repo's change, not this one's.
+
 ## Unknown means unknown
 
 An em dash — never a fabricated reading, never a zero standing in for missing
@@ -304,10 +371,19 @@ Stated rather than papered over.
 
 - **No Swift consumer in this repo.** `BrandColor.swift` and `ExergyTheme.swift`
   are generated and typecheck clean against the macOS SDK with SwiftUI, but
-  `NATURaL/` and `Exergy/` here are marketing sites, not the Apple apps. Nothing
-  in this repo proves the apps consume them. Wiring that up is a change in
-  those repos.
-- **ClusterFuck is not present here**, so it consumes nothing yet.
+  `NATURaL/` and `Exergy/` here are marketing sites, not the Apple apps. The
+  apps live in sibling repos under `~/Projects/` — `NATURaL/` already has its
+  own hand-written `BonhommeCore/.../UI/BrandColor.swift`, so adopting the
+  generated one is a rename-and-reconcile in that repo, not a drop-in.
+- **The asset catalog is not compile-verified.** `actool` is unavailable on this
+  machine (Command Line Tools only, no full Xcode), so the generated
+  `BrandColors.xcassets` has not been through Xcode. What *is* verified: every
+  `Contents.json` parses, and the generated `BrandViolet.colorset` is
+  byte-identical to the one Xcode itself wrote. That is good evidence of format,
+  not proof of compilation.
+- **ClusterFuck is not present here**, so it consumes nothing yet. It does have
+  its own `design-system/clusterfuck/MASTER.md` in a sibling repo, unreviewed
+  by this pass.
 - **`index.html` carries a parallel `--hp-*` token set.** It is a shadow design
   system living beside this one. `--hp-gold` is the part that is provably
   invented; the rest is grandfathered pending a reconciliation that was out of
