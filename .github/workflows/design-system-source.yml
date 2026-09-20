@@ -29,6 +29,7 @@ permissions:
 
 jobs:
   design-system:
+    name: Design system · tokens are the one source
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
