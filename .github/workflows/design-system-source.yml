@@ -87,6 +87,18 @@ jobs:
         if: always()
         run: node design-system/check-maths-parity.mjs --verbose
 
+      # Exergy's pages render in light appearance too. Every accent on them was
+      # the bare identity hue, which is 8.86:1 on the ink and 2.06:1 on the
+      # light ground — below AA body, below large text, below the 1.4.11
+      # non-text floor. This holds the routing through --tangerine-fg in place.
+      - name: Self-test the Exergy contrast guard
+        if: always()
+        run: node design-system/check-exergy-contrast.mjs --self-test
+
+      - name: Exergy accents are readable in both appearances
+        if: always()
+        run: node design-system/check-exergy-contrast.mjs
+
       # The generated targets must match the source they came from. This is
       # what makes "one source of truth" a fact rather than an intention.
       - name: Generated artifacts match tokens.css

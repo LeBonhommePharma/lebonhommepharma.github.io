@@ -183,6 +183,27 @@ def self_test() -> int:
     if not any("/Exergy/" in m for m in home_bad):
         broken.append("check_home no longer requires /Exergy/")
 
+    # check_support had no coverage here at all. Every other check function in
+    # this file is mutation-covered by the cases above and below; neutering
+    # check_support to `return` left the whole guard exiting 0, so its three
+    # contracts — the private CloudKit container name, the OAuth redirect, and
+    # the promise that empty rings are shown rather than invented percents —
+    # were enforced by code nothing verified still worked. A check that cannot
+    # fail is not a check, and that includes the self-test.
+    support_bad = run(check_support, "<p>hello</p>")
+    if not any("CloudKit container" in m for m in support_bad):
+        broken.append("check_support no longer requires the private CloudKit container")
+    if not any("OAuth redirect" in m for m in support_bad):
+        broken.append("check_support no longer requires the OAuth redirect")
+    if not any("inventing percents" in m for m in support_bad):
+        broken.append("check_support no longer requires the empty-rings promise")
+    support_ok = run(
+        check_support,
+        "iCloud.com.lebonhommepharma.exergy exergy://oauth we show empty rings rather than inventing percents",
+    )
+    if support_ok:
+        broken.append(f"check_support false-positives on valid copy: {support_ok}")
+
     priv_bad = run(check_privacy, "<p>hello</p>")
     if not any("data not collected" in m for m in priv_bad):
         broken.append("check_privacy no longer fail-closes on missing copy")
