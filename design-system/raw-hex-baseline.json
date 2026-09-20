@@ -11,12 +11,13 @@
   ],
   "_paletteCheck": "palette-check-ignore-start",
   "generated": "2026-09-20",
-  "openViolations": {
+  "openViolations": {},
+  "resolved": {
     "index.html": {
-      "values": {
-        "#C4A359": "invented gold shipped by a Cursor agent as --hp-gold; not a palette colour and not derivable from one. The denylist guard could not see it because it only matches the eight retired v1 hex values. This is the regression this guard exists for — it is not grandfathered on purpose. Fix: use var(--tangerine) (ΔG, 8.86:1) or, if a genuinely new hue is wanted, add it to tokens.css with a measured contrast ratio first.",
-        "#8A6E2F": "the light-mode partner of --hp-gold, same origin, same fix."
-      }
+      "was": "--hp-gold, an invented brass with a light-mode partner, on the Exergy homepage card",
+      "now": "var(--hp-tangerine) — the card follows the theme through the existing alias chain",
+      "why": "Off-palette, and without headroom. On this card the accent paints a 19px/700 glyph (large text, 3:1) and the border/hover/focus ring (non-text, 3:1) — .is-neutral gives the CTA --hp-fg — so the brass cleared what it needed at 4.29:1 on --bg-alt and 4.46:1 on the page. It was NOT an AA failure, and an earlier note here said it was; that was wrong. --hp-ink-tangerine is 4.74 / 4.92 / 5.32, clearing 4.5:1 everywhere. Tangerine is also the correct binding: the card's kicker is \"Remaining work\" and ds-G is free energy. The Exergy repo replaced the same brass with tangerine independently.",
+      "kept_out_of_openViolations": "The violation is fixed; an entry here that no longer exists in the tree would be a stale claim about the current state. Recorded instead so the history is not lost."
     }
   },
   "grandfathered": {

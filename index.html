@@ -119,8 +119,22 @@
   /* Equation operators: magnesium, knocked back. Ink on a mint fill; the primary hover lift. */
   --hp-op: var(--hp-magnesium); --hp-op-alpha: .55;
   --hp-on-mint: #08091A;
-  /* Exergy chrome on this card only — not tokens.css --gold (tangerine) and not retired yellow-gold. */
-  --hp-gold: #C4A359;
+  /* Exergy chrome. Tangerine, via the same alias tokens.css uses for --gold.
+     The name is kept because the card references it; the invented brass is not.
+     ΔG is the right binding rather than a concession: this card's kicker reads
+     "Remaining work" and Exergy measures how much quota is left to spend, which
+     is free energy. The Exergy repo reached tangerine independently, replacing
+     the same brass.
+     Contrast: on this card the accent paints a 19px/700 glyph (large text, 3:1)
+     and the border, hover and focus ring (non-text, 3:1) — .is-neutral gives the
+     CTA --hp-fg instead — so the brass cleared what it needed at 4.29:1 on
+     --bg-alt and 4.46:1 on the page. It had no headroom above those uses,
+     though; --hp-ink-tangerine is 4.74 / 4.92 / 5.32 and clears 4.5:1 on every
+     ground, so the accent stays safe if the card is ever not .is-neutral.
+     (The retired value is named in design-system/raw-hex-baseline.json, not
+     here: this page is scanned strictly, and a shipped page is the last place
+     that should carry an ignore marker.) */
+  --hp-gold: var(--hp-tangerine);
   --hp-btn-hover: var(--kw-ga, #8EEFC9);
   --hp-ghost-border: rgba(141, 140, 176, 0.7);   /* 3.4:1 boundary */
   --hp-max: 1200px;
@@ -205,7 +219,6 @@
   --hp-magnesium:  var(--hp-ink-magnesium);
   --hp-violet-text: var(--hp-violet);
   --hp-fail-text:   var(--hp-firetruck);
-  --hp-gold: #8A6E2F;
   --hp-op: var(--hp-fg-muted); --hp-op-alpha: 1;
   --hp-on-mint: #ffffff;                              /* 5.29:1 on the mint ink */
   --hp-btn-hover: var(--hp-mint);

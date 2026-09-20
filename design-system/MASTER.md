@@ -441,9 +441,11 @@ Stated rather than papered over.
 - **ClusterFuck is not present here**, so it consumes nothing yet. It does have
   its own `design-system/clusterfuck/MASTER.md` in a sibling repo, unreviewed
   by this pass.
-- **`index.html` carries a parallel `--hp-*` token set.** It is a shadow design
-  system living beside this one. `--hp-gold` is the part that is provably
-  invented; the rest is grandfathered pending a reconciliation that was out of
-  scope for this pass.
+- **`index.html` carries a parallel `--hp-*` layer.** It is mostly not a fork:
+  nearly every entry aliases a canonical token with a fallback
+  (`--hp-violet: var(--violet, #8B5CF6)`). `--hp-gold` was the one entry that
+  invented a colour, and it now aliases `--hp-tangerine` — ΔG, which is the
+  correct binding for a card whose kicker reads "Remaining work". The rest of
+  the layer is grandfathered pending a reconciliation that was out of scope.
 - **The denylist guard cannot run on macOS** (see above).
 - **P3 / wide-gamut is not addressed.** Everything here is sRGB.

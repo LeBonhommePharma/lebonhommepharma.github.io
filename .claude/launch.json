@@ -1,11 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    {
-      "name": "lbp-site",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4242"],
-      "port": 4242
-    }
+    { "name": "ds-check", "runtimeExecutable": "python3", "runtimeArgs": ["-m", "http.server", "4343"], "port": 4343 }
   ]
 }
