@@ -1,5 +1,5 @@
 /* ============================================================
-   FlexAID∆S — Color & Type Pairings board
+   FlexAIDΔS — Color & Type Pairings board
    Le Bonhomme Pharma · Montréal
 
    Runtime-free recreation of `Color & Type Pairings.dc.html`.
@@ -959,7 +959,7 @@ a:hover { color: #8EEFC9; }
    One block per specimen. Only what differs from the shell.
    ───────────────────────────────────────────────────────────── */
 
-/* ---------- 6a · FlexAID∆S palette v2 · canonical ---------- */
+/* ---------- 6a · FlexAIDΔS palette v2 · canonical ---------- */
 
 #s-6a { --section-edge: rgba(69, 224, 168, 0.16); --section-accent: var(--mint); }
 

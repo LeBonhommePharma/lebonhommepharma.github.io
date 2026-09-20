@@ -6,5 +6,5 @@
       <g fill="#8B5CF6" opacity="0.5">
         <circle cx="600" cy="356" r="13"/><circle cx="516" cy="524" r="13"/><circle cx="684" cy="524" r="13"/>
       </g>
-      <text x="600" y="650" font-family="ui-monospace, Menlo, monospace" font-size="74" font-weight="700" fill="#e6edf3" text-anchor="middle">FlexAID<tspan fill="#FF9300">∆S</tspan></text>
+      <text x="600" y="650" font-family="ui-monospace, Menlo, monospace" font-size="74" font-weight="700" fill="#e6edf3" text-anchor="middle">FlexAID<tspan fill="#FF9300">ΔS</tspan></text>
     </svg>

@@ -95,7 +95,7 @@ for (const rel of ['cv.html', 'resume.html', 'entropy-driven/index.html', 'FlexA
   }
 }
 
-// FlexAID∆S product surfaces must ship handoff hover tokens (not legacy #7FF0C4)
+// FlexAIDΔS product surfaces must ship handoff hover tokens (not legacy #7FF0C4)
 // Canonical live path is /flexaid-ds/ (GitHub Pages keeps a poisoned /FlexAIDdS/ object).
 for (const dir of ['FlexAIDdS', 'flexaid-ds']) {
   const flexCss = readFileSync(join(__dirname, dir, 'styles.css'), 'utf8');

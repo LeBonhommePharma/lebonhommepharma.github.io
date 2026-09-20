@@ -1,6 +1,6 @@
 name: Palette v2 check
 
-# Catches FlexAID∆S palette v1 creeping back into the site.
+# Catches FlexAIDΔS palette v1 creeping back into the site.
 #
 # WHY A SEPARATE WORKFLOW
 # -----------------------
@@ -33,6 +33,7 @@ permissions:
 
 jobs:
   palette:
+    name: Palette · no v1 colour creeps back
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

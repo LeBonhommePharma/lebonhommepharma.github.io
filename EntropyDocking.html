@@ -458,7 +458,7 @@
     </div>
     <div class="instr-item">
       <div class="instr-icon">📉</div>
-      <div class="instr-text"><strong>∆tempo = dI/dT</strong><br>Tempo changes trigger <em>Shannon Energy Collapse</em>. Beat drops = binding events.</div>
+      <div class="instr-text"><strong>Δtempo = dI/dT</strong><br>Tempo changes trigger <em>Shannon Energy Collapse</em>. Beat drops = binding events.</div>
     </div>
     <div class="instr-item">
       <div class="instr-icon">🔄</div>
@@ -497,7 +497,7 @@
     </div>
     <div class="delta-tempo">
       <div class="delta-value" id="deltaValue" style="color: rgba(224,224,224,0.3);">±0.0</div>
-      <div class="delta-label">∆BPM/∆t ≡ dI/dT</div>
+      <div class="delta-label">ΔBPM/Δt ≡ dI/dT</div>
     </div>
   </div>
 
@@ -605,7 +605,7 @@
   <!-- What the scene is actually showing -->
   <div class="provenance">
     <span class="prov-id">1S3V</span> — human dihydrofolate reductase, 1.80 Å · ligand TQD<br>
-    atom positions from a FlexAID∆S docked pose · arm7_temp13 · CF −153.07, rank 1 of 151 · spyRMSD 1.0686 Å<br>
+    atom positions from a FlexAIDΔS docked pose · arm7_temp13 · CF −153.07, rank 1 of 151 · spyRMSD 1.0686 Å<br>
     583 receptor atoms (whole residues ≤ 10 Å) · 27 ligand atoms · 29 bonds from the pose's own CONECT records
   </div>
 </div>
@@ -706,7 +706,7 @@ function updateThermo() {
     Math.abs(STATE.sAudio - STATE.sConfig) * 0.3);
 
   // dI/dT — rate of mutual info change with temperature
-  STATE.diDt = -STATE.deltaBpm * 0.01; // direct mapping: ∆BPM → dI/dT
+  STATE.diDt = -STATE.deltaBpm * 0.01; // direct mapping: ΔBPM → dI/dT
 
   // Shannon Collapse Index
   STATE.sci = Math.max(0, Math.min(1, 1 - STATE.sAudio / 4.5));
@@ -741,7 +741,7 @@ let receptorAtoms = [], ligandAtoms = [];
 
 // --- REAL COORDINATES ---------------------------------------------------
 // Every atom position below comes from assets/entropy-docking-1s3v.js: the
-// 1S3V crystal receptor (human DHFR, 1.80 Å) and the FlexAID∆S docked pose of
+// 1S3V crystal receptor (human DHFR, 1.80 Å) and the FlexAIDΔS docked pose of
 // TQD from campaign arm arm7_temp13 (CF -153.07, rank 1 of 151, spyRMSD
 // 1.0686 Å). Ångström, origin at the docked-ligand centroid, rigid-body
 // rotated so the pocket mouth faces +x — which is the direction the ligand
@@ -896,7 +896,7 @@ function buildLigand() {
   // Ligand: TQD, a hexahydroquinazoline-2,4-diamine antifolate. 27 heavy
   // atoms, positioned by the docked pose, local coordinates centred on the
   // ligand centroid — so when ligandGroup reaches POCKET_CENTER the ligand
-  // sits where FlexAID∆S actually put it relative to the receptor.
+  // sits where FlexAIDΔS actually put it relative to the receptor.
   const L = POSE.ligand;
   const n = L.elem.length;
 

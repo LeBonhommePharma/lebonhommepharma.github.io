@@ -3,7 +3,7 @@
 
 import SwiftUI
 
-/// FlexAID∆S palette v2 for Exergy.
+/// FlexAIDΔS palette v2 for Exergy.
 /// Le Bonhomme Pharma · Montréal
 public enum ExergyTheme {
 

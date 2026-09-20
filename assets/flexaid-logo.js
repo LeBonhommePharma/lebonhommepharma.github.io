@@ -1,5 +1,5 @@
 /* ============================================================
-   FlexAID∆S — Dynamic Brand Mark
+   FlexAIDΔS — Dynamic Brand Mark
    Le Bonhomme Pharma · Montréal
 
    The mark is a living conformational ensemble. A 3-atom ligand
@@ -68,7 +68,7 @@
     var svg = el("svg", {
       viewBox: "0 0 100 100",
       width: size, height: size,
-      role: "img", "aria-label": "FlexAID∆S"
+      role: "img", "aria-label": "FlexAIDΔS"
     });
     svg.style.display = "block";
     svg.style.overflow = "visible";
