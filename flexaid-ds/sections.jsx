@@ -1,4 +1,4 @@
-// FlexAID∆S Website UI Kit — page-level sections.
+// FlexAIDΔS Website UI Kit — page-level sections.
 // Composes primitives from components.jsx into the actual marketing page.
 
 const { useState: useStateS, useEffect: useEffectS } = React;
@@ -20,7 +20,7 @@ function HeroSection() {
         </div>
 
         <h1 className="hero-title">
-          FlexAID<span className="gold">∆S</span>
+          FlexAID<span className="gold">ΔS</span>
         </h1>
 
         <p className="hero-subtitle">
@@ -80,11 +80,11 @@ function WhySection() {
   return (
     <section id="why" className="section">
       <div className="container">
-        <SectionHeader eyebrow="why flexaid∆s">
-          Why <span className="gradient-tg">FlexAID∆S</span>
+        <SectionHeader eyebrow="why flexaidΔs">
+          Why <span className="gradient-tg">FlexAIDΔS</span>
         </SectionHeader>
         <div className="note-callout">
-          Most <span className="kw">docking engines</span> collapse binding into a single fitted empirical score. <strong>FlexAID∆S</strong> computes <strong>ΔG = ΔH − TΔS</strong> and models the entropic term explicitly — <span className="kw">conformational</span> and <span className="kw">vibrational</span>. Entropy is not a correction term here. It is the part the field approximates away, and it belongs in the objective function.
+          Most <span className="kw">docking engines</span> collapse binding into a single fitted empirical score. <strong>FlexAIDΔS</strong> computes <strong>ΔG = ΔH − TΔS</strong> and models the entropic term explicitly — <span className="kw">conformational</span> and <span className="kw">vibrational</span>. Entropy is not a correction term here. It is the part the field approximates away, and it belongs in the objective function.
         </div>
       </div>
     </section>
@@ -500,7 +500,7 @@ function BenchmarksSection() {
           Measured, <span className="t-gold">Not Claimed</span>
         </SectionHeader>
         <p className="binding-blurb">
-          FlexAID∆S is evaluated on <span className="kw">Astex Diverse</span>, <span className="kw">CASF-2016</span> and <span className="kw">ITC-187</span> — standard, public sets. Binding-mode recovery is scored by heavy-atom RMSD against the deposited ligand; affinity by correlation against calorimetry. The protocol is fixed before the run, not chosen after it.
+          FlexAIDΔS is evaluated on <span className="kw">Astex Diverse</span>, <span className="kw">CASF-2016</span> and <span className="kw">ITC-187</span> — standard, public sets. Binding-mode recovery is scored by heavy-atom RMSD against the deposited ligand; affinity by correlation against calorimetry. The protocol is fixed before the run, not chosen after it.
         </p>
         <p className="binding-blurb">
           Every run is driven by an <span className="kw">automated benchmark</span> on each commit: same commit, same container, same seed → <span className="kw">bit-for-bit identical results</span>. Rerun it yourself and you get the same numbers we do. That is what reproducible means, and it is true of this engine today.

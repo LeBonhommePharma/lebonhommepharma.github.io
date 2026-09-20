@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="FlexAID∆S">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@BonhommePharma">
-  <meta name="twitter:title" content="FlexAID∆S — Entropy-Driven Molecular Docking Engine">
+  <meta name="twitter:title" content="FlexAIDΔS — Entropy-Driven Molecular Docking Engine">
   <meta name="twitter:description" content="Genetic algorithms meet statistical mechanics for real-world drug discovery.">
 
   <link rel="icon" type="image/svg+xml" href="../assets/favicon-flexaid-ds.svg">
@@ -102,7 +102,7 @@
           // character at a time, so a `python -c "…"` wrapper around it would
           // cost a second of dead air and three wrapped lines on a phone.
           cmd: ">>> fd.dock(receptor='receptor.pdb', ligand='ligand.mol2', compute_entropy=True)",
-          banner: 'FlexAID∆S · entropy-driven docking · ΔS_config via the partition function',
+          banner: 'FlexAIDΔS · entropy-driven docking · ΔS_config via the partition function',
           equation: true,
           // 0 = free in solvent, 1 = bound. Driven by the reader: three phases,
           // so 1/3 · 2/3 · 1. Before BindingSection mounts this is 0 and each
@@ -143,7 +143,7 @@
           // one — a "ΔG" label on the aqua step would reassign ΔS_vib's colour.
           key: 'build · validation',
           cmd: '$ cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . -j $(nproc)',
-          banner: 'FlexAID∆S · reproducible benchmark · same commit · same container · same seed',
+          banner: 'FlexAIDΔS · reproducible benchmark · same commit · same container · same seed',
           steps: [
             { label: 'toolchain',           detail: 'C++26 · Python ≥ 3.9 · Apache 2.0 · Linux · macOS · Windows' },
             { label: 'accelerators',        detail: 'OpenMP ON · CUDA · Metal · AVX-512 opt-in' },

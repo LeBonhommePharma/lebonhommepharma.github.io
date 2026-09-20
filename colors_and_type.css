@@ -1,5 +1,5 @@
 /* ============================================================
-   FlexAID∆S Design System — Colors & Type
+   FlexAIDΔS Design System — Colors & Type
    Le Bonhomme Pharma · Montréal
    Source: thebonhomme.com (live production site)
 
@@ -11,7 +11,7 @@
 
    Link `tokens.css` alone for the tokens with no opinions about
    your markup. Link this file when you also want bare HTML to
-   come out looking like FlexAID∆S: mono headings, the violet
+   come out looking like FlexAIDΔS: mono headings, the violet
    graph-paper body, .eyebrow, .stat-value, .brand.
 
    palette-check-ignore-start
@@ -124,7 +124,7 @@ code, .mono, kbd, samp {
   margin-top: var(--sp-1);
 }
 
-/* Brand wordmark — the ∆S is always gold */
+/* Brand wordmark — the ΔS is always gold */
 .brand {
   font-family: var(--font-mono);
   font-weight: var(--fw-700);

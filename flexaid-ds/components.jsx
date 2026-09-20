@@ -1,4 +1,4 @@
-// FlexAID∆S Website UI Kit — shared primitives.
+// FlexAIDΔS Website UI Kit — shared primitives.
 // Loaded as text/babel; all components export to window for cross-file use.
 
 const { useState, useEffect, useRef } = React;
@@ -14,11 +14,11 @@ function LogoMark({ size = 132, poses = 6, fan = 58, period = 7.2, well = true, 
   return <span ref={ref} className={className} style={{ display: "inline-flex", lineHeight: 0 }} aria-hidden="true" />;
 }
 
-// ─── Brand wordmark with animated ∆S ───
+// ─── Brand wordmark with animated ΔS ───
 function Wordmark({ size = 14 }) {
   return (
     <span className="word" style={{ fontFamily: "var(--font-mono)", fontWeight: 700, color: "var(--teal)", fontSize: size + "px", letterSpacing: "0.02em" }}>
-      FlexAID<span className="kw">∆S</span>
+      FlexAID<span className="kw">ΔS</span>
     </span>
   );
 }
@@ -106,7 +106,7 @@ function Nav({ active, onJump }) {
   return (
     <nav className="nav">
       <div className="nav-inner">
-        <button type="button" className="nav-brand" onClick={() => jump("hero")} aria-label="FlexAID∆S home">
+        <button type="button" className="nav-brand" onClick={() => jump("hero")} aria-label="FlexAIDΔS home">
           <LogoMark size={26} poses={4} fan={54} period={6} well={false} />
           <Wordmark size={14} />
         </button>

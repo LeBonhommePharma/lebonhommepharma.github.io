@@ -1,5 +1,5 @@
 /* ============================================================
-   FlexAID∆S — TUI
+   FlexAIDΔS — TUI
    Le Bonhomme Pharma · Montréal
 
    A terminal panel that runs a docking session and keeps
@@ -240,7 +240,7 @@
       // the one it used to name (2.0.3) already disagreed with the release the
       // site states elsewhere. A number that looks checkable and isn't is worse
       // than no number.
-      banner: 'FlexAID∆S · entropy-driven docking · generated session',
+      banner: 'FlexAIDΔS · entropy-driven docking · generated session',
       equation: 'decomp',
       temperature: function () { return T_K.toFixed(2) + ' K'; },
       steps: [

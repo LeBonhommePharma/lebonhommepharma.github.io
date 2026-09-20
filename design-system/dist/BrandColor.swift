@@ -3,7 +3,7 @@
 
 import SwiftUI
 
-/// FlexAID∆S palette v2 for NATURaL.
+/// FlexAIDΔS palette v2 for NATURaL.
 /// Le Bonhomme Pharma · Montréal
 public enum BrandColor {
 

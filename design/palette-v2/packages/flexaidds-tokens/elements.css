@@ -3,7 +3,7 @@
    Le Bonhomme Pharma · Montréal
 
    Optional companion to `tokens.css`. Drop both into a page and
-   bare HTML comes out looking like FlexAID∆S with no per-element
+   bare HTML comes out looking like FlexAIDΔS with no per-element
    overrides. Import `tokens.css` first — every value here
    resolves through it.
 
@@ -121,7 +121,7 @@ code, .mono, kbd, samp {
 .state-warn { color: var(--state-warn); }
 .state-fail { color: var(--state-fail-text); }
 
-/* Brand wordmark — mint mark, tangerine ∆S. */
+/* Brand wordmark — mint mark, tangerine ΔS. */
 .brand {
   font-family: var(--font-mono);
   font-weight: var(--fw-700);
