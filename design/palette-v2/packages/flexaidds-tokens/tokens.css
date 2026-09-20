@@ -331,15 +331,37 @@
      is measured against --bg (#f4f6fb) and asserted by
      design-system/check-contrast.mjs, so an edited hue cannot ship
      with a stale number beside it. Regenerate with
-     `node design-system/derive-light.mjs 4.5`. */
-  --mint-fg:       #00815C;   /* 4.52:1 · hue +0.21° · chroma  75% */
-  --violet-fg:     #8251EA;   /* 4.50:1 · hue +0.21° · chroma 100% */
-  --tangerine-fg:  #A85F00;   /* 4.51:1 · hue +0.05° · chroma  73% */
-  --firetruck-fg:  #E4001C;   /* 4.50:1 · hue +0.06° · chroma  99% */
-  --aqua-fg:       #0076BB;   /* 4.51:1 · hue −0.27° · chroma  79% */
-  --strawberry-fg: #DC0078;   /* 4.50:1 · hue +0.28° · chroma  96% */
+     `node design-system/derive-light.mjs 4.55`.
+
+     WHY 4.55 AND NOT 4.5
+     These seven are the readable variants of the identity hues — a
+     highlighted figure, a status label, an inline stat. Small coloured
+     text, which is the one place anti-aliasing actually bites: edge
+     pixels blend toward the ground, so a glyph sitting at exactly 4.5
+     renders part of itself below the bar.
+
+     Solved at 4.5 they were the thinnest read-values in the repo.
+     --firetruck-fg cleared AA by 0.00044 — far less than one 8-bit
+     step, which for that colour is worth ~0.069 of ratio. A margin
+     smaller than the distance to the nearest representable colour is
+     not a margin, it is wherever the quantisation grid happened to
+     land. 0.05 is the smallest headroom that exceeds one full step for
+     every one of the seven.
+
+     This is the same body target the catalog uses (AA_BODY_WITH_MARGIN
+     in design-system/emit.mjs); --fg, --fg-muted and --state-fail-text
+     above already clear it by +1.0 to +9.0 and are untouched. The bare
+     --mint / --violet / … identity hues are NOT held to this: they are
+     fills and chart series, not text, and --*-fg is the token for
+     anything read. */
+  --mint-fg:       #00805B;   /* 4.58:1 · hue +0.05° · chroma  74% */
+  --violet-fg:     #8150E9;   /* 4.56:1 · hue +0.14° · chroma 100% */
+  --tangerine-fg:  #A75E00;   /* 4.58:1 · hue −0.24° · chroma  73% */
+  --firetruck-fg:  #E2001C;   /* 4.57:1 · hue  0.00° · chroma  98% */
+  --aqua-fg:       #0075BB;   /* 4.56:1 · hue +0.27° · chroma  79% */
+  --strawberry-fg: #DA0078;   /* 4.57:1 · hue −0.13° · chroma  95% */
   /* Magnesium is near-achromatic (C ≈ 0.006), so its OKLCH hue angle
      carries no perceptual meaning and the 5.56° shift the solver
      reports is numerical noise, not a visible change of colour. */
-  --magnesium-fg:  #717078;   /* 4.53:1 · chroma 100% */
+  --magnesium-fg:  #706F77;   /* 4.59:1 · chroma 100% */
 }

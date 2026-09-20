@@ -60,39 +60,39 @@ public enum BrandColor {
         scheme == .dark ? Color(red: 1.0000, green: 0.4196, blue: 0.4196) : Color(red: 0.7451, green: 0.0706, blue: 0.2353)
     }
 
-    /// dark #45E0A8 · light #00815C
+    /// dark #45E0A8 · light #00805B
     public static func mintFg(_ scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(red: 0.2706, green: 0.8784, blue: 0.6588) : Color(red: 0.0000, green: 0.5059, blue: 0.3608)
+        scheme == .dark ? Color(red: 0.2706, green: 0.8784, blue: 0.6588) : Color(red: 0.0000, green: 0.5020, blue: 0.3569)
     }
 
-    /// dark #8B5CF6 · light #8251EA
+    /// dark #8B5CF6 · light #8150E9
     public static func violetFg(_ scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(red: 0.5451, green: 0.3608, blue: 0.9647) : Color(red: 0.5098, green: 0.3176, blue: 0.9176)
+        scheme == .dark ? Color(red: 0.5451, green: 0.3608, blue: 0.9647) : Color(red: 0.5059, green: 0.3137, blue: 0.9137)
     }
 
-    /// dark #FF9300 · light #A85F00
+    /// dark #FF9300 · light #A75E00
     public static func tangerineFg(_ scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(red: 1.0000, green: 0.5765, blue: 0.0000) : Color(red: 0.6588, green: 0.3725, blue: 0.0000)
+        scheme == .dark ? Color(red: 1.0000, green: 0.5765, blue: 0.0000) : Color(red: 0.6549, green: 0.3686, blue: 0.0000)
     }
 
-    /// dark #F5232B · light #E4001C
+    /// dark #F5232B · light #E2001C
     public static func firetruckFg(_ scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(red: 0.9608, green: 0.1373, blue: 0.1686) : Color(red: 0.8941, green: 0.0000, blue: 0.1098)
+        scheme == .dark ? Color(red: 0.9608, green: 0.1373, blue: 0.1686) : Color(red: 0.8863, green: 0.0000, blue: 0.1098)
     }
 
-    /// dark #00A2FF · light #0076BB
+    /// dark #00A2FF · light #0075BB
     public static func aquaFg(_ scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(red: 0.0000, green: 0.6353, blue: 1.0000) : Color(red: 0.0000, green: 0.4627, blue: 0.7333)
+        scheme == .dark ? Color(red: 0.0000, green: 0.6353, blue: 1.0000) : Color(red: 0.0000, green: 0.4588, blue: 0.7333)
     }
 
-    /// dark #FF2F92 · light #DC0078
+    /// dark #FF2F92 · light #DA0078
     public static func strawberryFg(_ scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(red: 1.0000, green: 0.1843, blue: 0.5725) : Color(red: 0.8627, green: 0.0000, blue: 0.4706)
+        scheme == .dark ? Color(red: 1.0000, green: 0.1843, blue: 0.5725) : Color(red: 0.8549, green: 0.0000, blue: 0.4706)
     }
 
-    /// dark #DCDCE4 · light #717078
+    /// dark #DCDCE4 · light #706F77
     public static func magnesiumFg(_ scheme: ColorScheme) -> Color {
-        scheme == .dark ? Color(red: 0.8627, green: 0.8627, blue: 0.8941) : Color(red: 0.4431, green: 0.4392, blue: 0.4706)
+        scheme == .dark ? Color(red: 0.8627, green: 0.8627, blue: 0.8941) : Color(red: 0.4392, green: 0.4353, blue: 0.4667)
     }
 
     // MARK: - Series ramp

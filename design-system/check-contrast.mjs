@@ -95,12 +95,31 @@ if (annotated === 0) {
 
 // ── 2. foreground tokens against the ground they are used on ────────────────
 // AA body text. These are the tokens whose entire job is to be read.
+// ── the body target ─────────────────────────────────────────────────────────
+// Read from the generated roles.json so there is ONE definition of "the body
+// target" in the repo and this file is not a second place for it to drift.
+// emit.mjs owns the number and the reason; see AA_BODY_WITH_MARGIN there.
+//
+// WCAG AA body is 4.5. The extra 0.05 is one 8-bit quantisation step: a value
+// clearing by less than the distance to the nearest representable colour has
+// not cleared on purpose. --firetruck-fg used to sit at 4.500439, which is
+// 1/150th of a step above the bar.
+const ROLES = JSON.parse(
+  readFileSync(new URL('./dist/BrandColors.xcassets/roles.json', import.meta.url), 'utf8')
+);
+const BODY_TARGET = ROLES.targets.body;
+if (typeof BODY_TARGET !== 'number') {
+  console.log('FATAL: roles.json has no numeric targets.body — refusing to run.');
+  console.log('       Regenerate: node design-system/emit.mjs');
+  process.exit(2);
+}
+
 const BODY = ['--fg', '--fg-muted', '--state-fail-text',
   '--mint-fg', '--violet-fg', '--tangerine-fg', '--firetruck-fg',
   '--aqua-fg', '--strawberry-fg', '--magnesium-fg'];
 
 for (const [theme, sel] of [['dark', ':root'], ['light', LIGHT]]) {
-  console.log(`\n── ${theme} theme · foreground tokens vs --bg · AA body 4.5:1`);
+  console.log(`\n── ${theme} theme · foreground tokens vs --bg · body target ${BODY_TARGET}:1`);
   const bg = resolve(blocks, sel, '--bg');
   for (const name of BODY) {
     const hex = resolve(blocks, sel, name);
@@ -109,7 +128,7 @@ for (const [theme, sel] of [['dark', ':root'], ['light', LIGHT]]) {
     if (r === null) { bad(`${name} = ${hex} is not a plain hex; cannot measure`); continue; }
     // Exact comparison; 6 dp alongside the 2 dp form so a near-miss reads as
     // a real failure rather than as a broken guard printing "4.5 < 4.5".
-    if (r < 4.5) bad(`${theme}: ${name} ${hex} on ${bg} = ${show(r)}:1 (${r.toFixed(6)}) — below AA body (4.5:1)`);
+    if (r < BODY_TARGET) bad(`${theme}: ${name} ${hex} on ${bg} = ${show(r)}:1 (${r.toFixed(6)}) — below the body target (${BODY_TARGET}:1)`);
     else ok(`${theme}: ${name} ${hex} on ${bg} = ${show(r)}:1`);
   }
 }
