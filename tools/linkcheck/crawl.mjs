@@ -668,6 +668,20 @@ for (const r of resources.values()) {
   });
 }
 
+// Zero-coverage guard. A crawl that reached no route, or found no local
+// sub-resource to check across every route it did reach, has checked nothing.
+// "No findings" from an empty crawl is not a pass: a wrong --base, an empty
+// --artifact dir, or a seed list that resolved to nothing would otherwise go
+// green forever. This site has ~150 routes and ~250 sub-resources; either
+// count at zero means the crawler, not the site, is broken.
+if (pages.size === 0) {
+  addFinding({ type: 'PAGE_ERROR', page: BASE, ref: '/', url: BASE, fatal: true,
+    detail: 'crawl reached 0 routes — nothing was checked (bad --base / --artifact / --seed-from?)' });
+} else if (resources.size === 0) {
+  addFinding({ type: 'PAGE_ERROR', page: BASE, ref: '/', url: BASE, fatal: true,
+    detail: `crawl reached ${pages.size} route(s) but found 0 local sub-resources — nothing was checked` });
+}
+
 // ---------------------------------------------------------------- report ----
 const runtimeMs = Date.now() - t0;
 const by = (t) => findings.filter((f) => f.type === t);
