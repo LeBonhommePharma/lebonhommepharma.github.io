@@ -168,6 +168,10 @@ def fetch_gh_pages_snapshot() -> dict | None:
         return None
 
 
+class MarkerError(ValueError):
+    """A marker the snapshot carries a value for is not in the page."""
+
+
 def patch_html_markers(
     content: str,
     commit_count: int,
@@ -177,40 +181,34 @@ def patch_html_markers(
     release: str | None = None,
     last_updated: str | None = None,
 ) -> str:
-    content = re.sub(
-        r'(<[^>]*id="stat-commits"[^>]*>)\d+(</[^>]+>)',
-        rf"\g<1>{commit_count}\g<2>",
-        content,
-        count=1,
-    )
-    if language_count is not None:
-        content = re.sub(
-            r'(<[^>]*id="stat-langs"[^>]*>)\d+(</[^>]+>)',
-            rf"\g<1>{language_count}\g<2>",
-            content,
-            count=1,
-        )
-    if stars is not None:
-        content = re.sub(
-            r'(<span[^>]*id="stat-stars"[^>]*>)\d*(</span>)',
-            rf"\g<1>{stars}\g<2>",
-            content,
-            count=1,
-        )
+    """Patch every marker the snapshot has a value for, or raise MarkerError.
+
+    re.sub on a marker that is not there is a silent no-op, which is how a
+    renamed id or a template rewrite would freeze the page while the job
+    stays green. Every substitution is therefore counted, and a marker that
+    matched zero times is an error naming the marker.
+    """
     stamp = last_updated or datetime.date.today().isoformat()
-    content = re.sub(
-        r'(<span[^>]*id="last-updated"[^>]*>)[^<]*(</span>)',
-        rf"\g<1>{stamp}\g<2>",
-        content,
-        count=1,
-    )
+    plan: list[tuple[str, str, str]] = [
+        ("stat-commits", r'(<[^>]*id="stat-commits"[^>]*>)\d+(</[^>]+>)', str(commit_count)),
+    ]
+    if language_count is not None:
+        plan.append(("stat-langs", r'(<[^>]*id="stat-langs"[^>]*>)\d+(</[^>]+>)', str(language_count)))
+    if stars is not None:
+        plan.append(("stat-stars", r'(<span[^>]*id="stat-stars"[^>]*>)\d*(</span>)', str(stars)))
+    plan.append(("last-updated", r'(<span[^>]*id="last-updated"[^>]*>)[^<]*(</span>)', stamp))
     if release:
-        content = re.sub(
-            r'(<span[^>]*id="latest-release"[^>]*>)[^<]*(</span>)',
-            rf"\g<1>{release}\g<2>",
-            content,
-            count=1,
+        plan.append(("latest-release", r'(<span[^>]*id="latest-release"[^>]*>)[^<]*(</span>)', release))
+
+    missing: list[str] = []
+    for marker_id, pattern, value in plan:
+        content, hits = re.subn(
+            pattern, lambda m, v=value: f"{m.group(1)}{v}{m.group(2)}", content, count=1
         )
+        if hits == 0:
+            missing.append(marker_id)
+    if missing:
+        raise MarkerError(f"marker(s) not found: {', '.join(missing)}")
     return content
 
 
@@ -253,18 +251,22 @@ def apply_snapshot(tree: str, snapshot: dict) -> list[str]:
     for relpath in HTML_TARGETS:
         path = os.path.join(tree, relpath)
         if not os.path.isfile(path):
-            print(f"Warning: {path} not found, skipping", file=sys.stderr)
-            continue
+            # A missing target is a broken tree, not a no-op: skipping it would
+            # let the job report success while that route silently froze.
+            raise FileNotFoundError(f"stats target {path} not found")
         with open(path, encoding="utf-8") as f:
             original = f.read()
-        updated = patch_html_markers(
-            original,
-            commit_count,
-            language_count,
-            stars=stars,
-            release=release,
-            last_updated=last_updated,
-        )
+        try:
+            updated = patch_html_markers(
+                original,
+                commit_count,
+                language_count,
+                stars=stars,
+                release=release,
+                last_updated=last_updated,
+            )
+        except MarkerError as exc:
+            raise MarkerError(f"{path}: {exc}") from None
         if updated != original:
             with open(path, "w", encoding="utf-8") as f:
                 f.write(updated)
@@ -324,7 +326,12 @@ def main() -> int:
         snapshot.get("latestRelease"),
         snapshot.get("lastUpdated"),
     )
-    changed = apply_snapshot(args.tree, snapshot)
+    try:
+        changed = apply_snapshot(args.tree, snapshot)
+    except (FileNotFoundError, MarkerError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    print(f"patched {len(HTML_TARGETS)}/{len(HTML_TARGETS)} HTML targets + {STATS_JSON_PATH}")
     if changed:
         for path in changed:
             print(f"Updated {path}")

@@ -99,5 +99,52 @@ class TestParseMarkers(unittest.TestCase):
         )
 
 
+class TestFailsLoudOnZero(unittest.TestCase):
+    """A patcher that patches nothing must not pass."""
+
+    SNAP = {"commits": 2553, "languageCount": 15, "lastUpdated": "2026-09-08",
+            "stars": 11, "latestRelease": "v2.2.0", "languages": []}
+
+    def _tree(self, root: Path, html: str) -> None:
+        for d in ("FlexAIDdS", "flexaid-ds", "assets"):
+            (root / d).mkdir()
+        (root / "FlexAIDdS" / "index.html").write_text(html, encoding="utf-8")
+        (root / "flexaid-ds" / "index.html").write_text(html, encoding="utf-8")
+
+    def test_missing_marker_raises_and_names_it(self) -> None:
+        broken = SAMPLE.replace('id="stat-commits"', 'id="stat-commit-count"')
+        with self.assertRaisesRegex(stats.MarkerError, "stat-commits"):
+            stats.patch_html_markers(broken, 1, 1, last_updated="2026-09-08")
+
+    def test_page_with_no_markers_raises(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._tree(root, "<html><body>rewritten template</body></html>")
+            with self.assertRaisesRegex(stats.MarkerError, "FlexAIDdS/index.html"):
+                stats.apply_snapshot(str(root), self.SNAP)
+
+    def test_missing_target_raises(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._tree(root, SAMPLE)
+            (root / "flexaid-ds" / "index.html").unlink()
+            with self.assertRaises(FileNotFoundError):
+                stats.apply_snapshot(str(root), self.SNAP)
+
+    def test_second_run_is_a_no_op(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._tree(root, SAMPLE)
+            first = stats.apply_snapshot(str(root), self.SNAP)
+            before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+            second = stats.apply_snapshot(str(root), self.SNAP)
+            after = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+            self.assertEqual(len(first), 3)
+            self.assertEqual(second, [])
+            self.assertEqual(before, after)
+            html = (root / "FlexAIDdS" / "index.html").read_text(encoding="utf-8")
+            self.assertEqual(html.count(">2553<"), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
