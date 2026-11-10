@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlexAID∆S — Entropy-Driven Molecular Docking · Le Bonhomme Pharma</title>
-  <meta name="description" content="FlexAID∆S — entropy-driven molecular docking engine. Genetic algorithms meet statistical mechanics for real-world drug discovery. Pearson r = 0.93 · 92% correct binding mode.">
+  <meta name="description" content="FlexAID∆S — entropy-driven molecular docking engine. Genetic algorithms meet statistical mechanics for real-world drug discovery. Benchmarking not closed — unverified / pending receipt.">
   <meta name="theme-color" content="#08091A">
   <link rel="canonical" href="https://thebonhomme.com/FlexAIDdS/">
 
   <meta property="og:title" content="FlexAID∆S — Entropy-Driven Molecular Docking Engine">
-  <meta property="og:description" content="Genetic algorithms meet statistical mechanics for real-world drug discovery. Pearson r = 0.93, 92% correct binding mode.">
+  <meta property="og:description" content="Genetic algorithms meet statistical mechanics for real-world drug discovery. Unverified / pending receipt — publishes no validated success rate.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://thebonhomme.com/FlexAIDdS/">
   <meta property="og:site_name" content="FlexAID∆S">
@@ -83,10 +83,10 @@
          tENCoM normal modes                        FeaturesSection, ModulesSection
          dispatch order · C++26 · Apache 2.0        FeaturesSection, hero badges
          CMake defaults                             InstallSection table
-         r 0.93 · RMSE 1.4 · 0.88 · 92% + rivals    BenchmarksSection table
-         "preliminary, bootstrap CIs in progress"   BenchmarksSection footnote
-       Nothing is invented. The site's Astex Diverse 85 / 96.4% figure is NOT
-       stated on this page — it is on the homepage — so it is not used here. -->
+         (benchmark figures withdrawn — unverified / pending receipt)
+         BenchmarksSection status note — no validated success rate
+       Nothing is invented. Former rates are not restated on this page
+       or in this comment. -->
   <script>
   (function () {
     // The reader's position on the binding walk, published by BindingSection.
@@ -134,7 +134,7 @@
           done: function () {
             var s = live();
             return (s ? 'phase ' + (s.i + 1) + '/' + s.n + ' ' + s.lbl + '   ΔG ' + s.dg + '   ' : '') +
-                   "Van't Hoff decomposition · ITC-validated";
+                   "Van't Hoff decomposition";
           }
         }, {
           // No coordinate: a build and a benchmark record have no reaction
@@ -149,10 +149,10 @@
             { label: 'accelerators',        detail: 'OpenMP ON · CUDA · Metal · AVX-512 opt-in' },
             { label: 'dispatch',            detail: 'CUDA > Metal > AVX-512 > AVX2 > OpenMP' },
             { label: 'reproducibility',     detail: 'bit-for-bit identical results on the same seed' },
-            { label: 'affinity correlation', detail: 'ITC-187 · Pearson r 0.93 · RMSE 1.4 kcal/mol   (Vina 0.64 · Glide 0.69 · rDock 0.61)' },
-            { label: 'binding mode rescue', detail: 'CNS · 92% where enthalpy-only scoring fails   (Vina 58% · Glide 64% · rDock 55%)' }
+            { label: 'affinity correlation', detail: 'ITC-187 · unverified / pending receipt' },
+            { label: 'binding mode rescue', detail: 'CNS · unverified / pending receipt' }
           ],
-          done: 'CASF-2016 scoring 0.88   numbers preliminary · bootstrap CIs in progress'
+          done: 'benchmarking not closed · no validated success rate published'
         }]
       };
     };
