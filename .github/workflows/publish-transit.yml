@@ -14,7 +14,13 @@ on:
   # Also run when this publisher definition changes. This gives us a
   # credential-free immediate kick when an upstream publish is waiting on the
   # delayed GitHub schedule; normal Transit updates still use dispatch/schedule.
+  #
+  # main only. Without the branch filter, pushing a feature branch that edits
+  # this file starts a NON-dry-run publish from that branch, whose sync step
+  # pushes the branch's HEAD to main. Test changes here with a workflow_dispatch
+  # on the branch with dry_run=true instead.
   push:
+    branches: [main]
     paths:
       - .github/workflows/publish-transit.yml
   # Instant publish. Transit's own workflow sends this once APEX_DISPATCH_TOKEN
@@ -119,9 +125,33 @@ jobs:
       # If you want next build gating the deploy, fix those 10 errors first and
       # add the step. Do not add it with `|| true`.
       # ---------------------------------------------------------------------
-      - name: "Gate A — tests (162 expected)"
+      # The suite size is reported, never hard-coded: it grows (162 → 268 →
+      # 271), and a pinned number is a number that goes stale and starts
+      # lying in the commit message. What IS enforced: a summary line must
+      # exist, at least one test must have run, and every test must pass.
+      # `node --test` with a glob that matches nothing exits 0 with "tests 0",
+      # so exit status alone cannot catch an empty suite.
+      - name: "Gate A — tests (count reported; zero or any failure is red)"
+        id: tests
         working-directory: _transit
-        run: npm test
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/transit-tests-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.log"
+          # Capture the exit code explicitly (no `|| true`, no `set +e`) so the
+          # counts below are always printed, and a non-zero exit still fails.
+          if npm test 2>&1 | tee "$log"; then rc=0; else rc=$?; fi
+          # TAP (node 22, non-TTY) prints "# tests N"; spec prints "ℹ tests N".
+          count() { grep -E "^(# |ℹ )$1 [0-9]+$" "$log" | tail -1 | grep -oE '[0-9]+$' || true; }
+          total=$(count tests); pass=$(count pass); fail=$(count fail)
+          if [ -z "$total" ] || [ -z "$pass" ] || [ -z "$fail" ]; then
+            echo "::error::Gate A: no test summary in the output — the runner did not finish or its format changed"; exit 1
+          fi
+          echo "Gate A: $pass/$total passed, $fail failed"
+          echo "Gate A: $pass/$total tests passed" >> "$GITHUB_STEP_SUMMARY"
+          [ "$total" -gt 0 ] || { echo "::error::Gate A: 0 tests ran — an empty suite is not a pass"; exit 1; }
+          [ "$fail" -eq 0 ] && [ "$pass" -eq "$total" ] || { echo "::error::Gate A: $fail of $total tests failed"; exit 1; }
+          [ "$rc" -eq 0 ] || { echo "::error::Gate A: npm test exited $rc although every counted test passed"; exit 1; }
+          echo "total=$total" >> "$GITHUB_OUTPUT"
 
       - name: "Gate B — compose and verify artifact"
         id: build
@@ -131,14 +161,25 @@ jobs:
             --src _transit --out _stage --sha "${{ steps.src.outputs.sha }}"
           node _transit/scripts/publish-transit.mjs verify-artifact \
             --dir _stage --sha "${{ steps.src.outputs.sha }}" | tee _gate.txt
-          echo "sha256=$(grep '^index-sha256=' _gate.txt | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+          sha256=$(grep '^index-sha256=' _gate.txt | cut -d= -f2)
+          [ -n "$sha256" ] || { echo "::error::Gate B: verify-artifact printed no index-sha256"; exit 1; }
+          files=$(find _stage -type f | wc -l | tr -d ' ')
+          echo "Gate B: staged $files file(s), index.html sha256 $sha256"
+          [ "$files" -gt 0 ] || { echo "::error::Gate B: compose staged 0 files — refusing to publish an empty /rive"; exit 1; }
+          [ -f _stage/index.html ] || { echo "::error::Gate B: _stage/index.html missing"; exit 1; }
+          echo "sha256=$sha256" >> "$GITHUB_OUTPUT"
+          echo "files=$files" >> "$GITHUB_OUTPUT"
 
       # rive/README.md is authored in this repo, not in Transit. Carry it
       # across so the sync below cannot drop it.
       - name: Preserve apex-local files
         run: |
           set -euo pipefail
-          [ -f rive/README.md ] && cp rive/README.md _stage/README.md || true
+          # `[ -f ] && cp || true` would also swallow a failed cp. Absent is
+          # fine; present-but-uncopyable is an error and must say so here.
+          if [ -f rive/README.md ]; then
+            cp rive/README.md _stage/README.md
+          fi
 
       - name: Detect changes
         id: diff
@@ -174,7 +215,7 @@ jobs:
 
           Source: LeBonhommePharma/Transit@${{ steps.src.outputs.sha }}
           index.html sha256: ${{ steps.build.outputs.sha256 }}
-          Gates: tests 162/162, artifact integrity passed."
+          Gates: tests ${{ steps.tests.outputs.total }}/${{ steps.tests.outputs.total }}, artifact integrity passed (${{ steps.build.outputs.files }} files)."
           git push origin HEAD:main
 
       # GitHub deliberately does not start a workflow run for a push made with
@@ -248,9 +289,9 @@ jobs:
           git revert --no-edit ${{ steps.rollback.outputs.before }}..HEAD || {
             echo "::error::automatic rollback failed — roll back by hand, see DEPLOY.md"; exit 1; }
           git push origin HEAD:main
-          gh workflow run pages.yml --ref main || \
-            echo "::error::rollback committed but pages.yml dispatch failed — dispatch it by hand"
           echo "::warning::Verification failed; /rive rolled back to ${{ steps.rollback.outputs.before }}"
+          gh workflow run pages.yml --ref main || {
+            echo "::error::rollback committed but pages.yml dispatch failed — dispatch it by hand"; exit 1; }
 
       - name: Summary
         if: always()
