@@ -14,8 +14,8 @@
 //      home page's (day-of-year % 63) for a Montréal visitor.
 //   4. Every 63-day window shows each compound exactly once.
 //   5. Rotation rows agree with drug-of-the-day/queue.json (series, PDB) and every page exists.
-//   6. Every consumer loads /assets/dotd.js (before app.js where there is one), and none of
-//      them carries its own list or day arithmetic.
+//   6. Every consumer — including the /DotD and /rx short links — loads /assets/dotd.js (before
+//      app.js where there is one), and none of them carries its own list or day arithmetic.
 
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -136,13 +136,18 @@ check(D.dateKey(new Date(Date.parse('2027-11-07T03:59:59Z'))) === '2027-11-06' &
     ['drug-of-the-day/index.html', null],
     ['flexaid-ds/index.html', 'src="app.js"'],
     ['FlexAIDdS/index.html', 'src="app.js"'],
+    ['DotD/index.html', null],   // short link thebonhomme.com/DotD
+    ['rx/index.html', null],     // shorter link thebonhomme.com/rx
   ];
   for (const [f, before] of consumers) {
     const s = readFileSync(join(ROOT, f), 'utf8');
     const i = s.indexOf('<script src="/assets/dotd.js"></script>');
     check(i >= 0 && (!before || i < s.indexOf(before)), `${f} loads /assets/dotd.js${before ? ' before app.js' : ''}`);
   }
-  const noPicker = ['index.html', 'drug-of-the-day/index.html', 'app.js',
+  // The short links are two copies of one page (GitHub Pages has no server-side redirects).
+  check(readFileSync(join(ROOT, 'DotD/index.html'), 'utf8') === readFileSync(join(ROOT, 'rx/index.html'), 'utf8'),
+    'DotD/ and rx/ short-link pages are identical');
+  const noPicker = ['index.html', 'drug-of-the-day/index.html', 'app.js', 'DotD/index.html', 'rx/index.html',
     'flexaid-ds/index.html', 'flexaid-ds/app.js', 'flexaid-ds/app.jsx', 'flexaid-ds/components.jsx', 'flexaid-ds/sections.jsx',
     'FlexAIDdS/index.html', 'FlexAIDdS/app.js', 'FlexAIDdS/app.jsx', 'FlexAIDdS/components.jsx', 'FlexAIDdS/sections.jsx'];
   const forbidden = [/86400000/, /getFullYear\(\)\s*,\s*0\s*,\s*0/, /drugComplexes\s*=\s*\[/, /var LIST\s*=\s*\[/, /\|cocaine\|/];
