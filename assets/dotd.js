@@ -27,7 +27,7 @@
        live order (63 entries). Curation notes on type and class below, moved here with
        the list.
      slug:   the page under /drug-of-the-day/. Dextromethorphan uses the canonical
-             queue.json slug, dxm (#041); /dextromethorphan/ is an unlisted duplicate.
+             queue.json slug, dxm (series 041); /dextromethorphan/ is an unlisted duplicate.
      series, pdb: from drug-of-the-day/queue.json, the canonical series. CI checks them.
      target: the receptor label the FlexAIDΔS hero badge shows beside the PDB code.
 
