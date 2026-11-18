@@ -1,0 +1,32 @@
+name: Drug of the Day check
+
+# One picker (/assets/dotd.js), one compound per Montréal calendar day, for every
+# visitor, on every page that names today's drug. scripts/check-dotd.mjs proves it:
+# timezone invariance across five TZs, the midnight-Montréal boundary through both
+# DST switches and New Year, agreement with drug-of-the-day/queue.json, and that no
+# page has grown its own list or day arithmetic again. It fails on zero checks.
+
+on:
+  # No `branches:` filter, same reason as design-system-check.yml: a stacked PR
+  # would otherwise never get this check at all.
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dotd:
+    name: Drug of the Day · same compound everywhere, every day
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check the picker and its consumers
+        run: node scripts/check-dotd.mjs

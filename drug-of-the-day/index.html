@@ -3,6 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- /drug-of-the-day/ is the short link: it sends you straight to today's compound, the same one the
+     home page and both FlexAIDΔS pages name, picked once by /assets/dotd.js on the Montréal calendar
+     date. This page's own content is the series archive: what you get with ?all (every drug page's
+     "Series index" link carries it), with JavaScript off, and what link-preview scrapers read.
+     location.replace, so Back from today's drug does not bounce through here. -->
+<script src="/assets/dotd.js"></script>
+<script>
+(function () {
+  if (/(?:^|&)all(?:[=&]|$)/.test(location.search.slice(1)) || location.hash === '#all') return;
+  var d = window.LBP_DOTD && window.LBP_DOTD.today();
+  if (!d) return;
+  var root = document.documentElement;
+  root.style.visibility = 'hidden';                                        // no flash of the archive
+  setTimeout(function () { root.style.visibility = ''; }, 4000);          // navigation blocked: show it
+  location.replace(d.href);
+})();
+</script>
 <title>Drug of the Day — Le Bonhomme Pharma</title>
 <meta name="description" content="Le Bonhomme Pharma's Drug of the Day series: rigorous pharmacology, no moralizing. Full receptor binding tables, 3D binding-site visualization, harm reduction, and entropy docking commentary.">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
@@ -1234,5 +1251,22 @@ a:hover { text-decoration: none; }
   </p>
 </footer>
 
+<script>
+/* Archive view (?all): mark today's compound with a "Today" pill on its card. Same picker as the
+   redirect above, so the pill and the short link can never disagree. */
+(function () {
+  var d = window.LBP_DOTD && window.LBP_DOTD.today();
+  if (!d) return;
+  var cards = document.querySelectorAll('.series-section a[href="' + d.href + '"]'), j, eb, pill;
+  for (j = 0; j < cards.length; j++) {
+    eb = cards[j].querySelector('.card-eyebrow');
+    if (!eb) continue;
+    pill = document.createElement('span');
+    pill.className = 'pill pill-gold';
+    pill.textContent = 'Today';
+    eb.insertBefore(pill, eb.firstChild);
+  }
+})();
+</script>
 </body>
 </html>

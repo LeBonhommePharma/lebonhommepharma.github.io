@@ -107,18 +107,17 @@ function validateDrugLibrary() {
   if (orphanDirs.length) info('dirs not in queue', orphanDirs.join(', '));
   else ok('no orphan drug folders');
 
-  // cross-check app.js drugComplexes
-  const appJs = readFileSync(join(__dirname, 'app.js'), 'utf8');
-  const hrefs = [...appJs.matchAll(/href:\s*'(\/drug-of-the-day\/[^']+\/)'/g)].map((m) => m[1]);
-  if (hrefs.length !== 70) fail('app.js drugComplexes count', `got ${hrefs.length}`);
-  else ok('app.js has 70 drugComplexes');
+  // cross-check the site's one Drug of the Day picker (assets/dotd.js) against the queue.
+  // The full gate — timezone invariance, boundaries, no stray pickers — is scripts/check-dotd.mjs.
+  const dotdJs = readFileSync(join(__dirname, 'assets/dotd.js'), 'utf8');
+  const rows = [...dotdJs.matchAll(/^\s*"[^"|]+\|([^|]+)\|/gm)].map((m) => `/drug-of-the-day/${m[1]}/`);
+  if (rows.length === 0) fail('assets/dotd.js rotation count', 'got 0');
+  else ok('assets/dotd.js rotation', `${rows.length} compounds`);
 
-  let appMismatches = 0;
-  for (const entry of series) {
-    if (!hrefs.includes(entry.href)) appMismatches++;
-  }
-  if (appMismatches) fail('app.js hrefs match queue', `${appMismatches} missing`);
-  else ok('app.js hrefs match queue.json');
+  const queueHrefs = new Set(series.map((e) => e.href));
+  const dotdMismatches = rows.filter((h) => !queueHrefs.has(h));
+  if (dotdMismatches.length) fail('dotd.js hrefs are in queue', dotdMismatches.join(', '));
+  else ok('dotd.js hrefs are all in queue.json');
 
   // sample drug pages include molstar viewer + theme
   let molPages = 0;
