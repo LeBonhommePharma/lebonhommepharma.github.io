@@ -22,6 +22,9 @@
 <meta name="twitter:site" content="@BonhommePharma">
 <meta name="twitter:title" content="Le Bonhomme Pharma">
 <meta name="twitter:description" content="Open-source computational psychopharmacology from Montréal. FlexAIDΔS entropy-driven docking, Shannon entropy tooling, harm-reduction pharmacology. ΔG = ΔH − TΔS.">
+<!-- Drug of the Day: the site's one picker (rotation + Montréal-date rule). Loaded in the head so the
+     #products script can upgrade the ℞ link and the card before first paint. -->
+<script src="/assets/dotd.js"></script>
 <!-- Theme before first paint. A stored choice wins; on a first visit the OS preference; the brand
      default is dark. Storage is guarded: it throws in some contexts and can come back empty. The
      key and values are the ones every other page of the site persists under (theme.js), so a
@@ -1337,132 +1340,19 @@ section[id], [id="top"] { scroll-margin-top: 80px; }
          any day; this upgrades all three to today's compound. It runs here — a script element is
          display:none, not a grid item — because the nav and the card are already parsed, so the
          swap lands before first paint; the footer tile is below the fold and is done at
-         DOMContentLoaded. Day-of-year and the modulus are the live bundle's, verbatim: local time,
-         epoch Dec 31 of the current year, and the hour lost to spring-forward is NOT corrected, so
-         the boundary is midnight in standard time and 01:00 in daylight time — exactly as on
-         /drug-of-the-day/, which must change compound at the same instant. Do not move it to UTC.
-         The list is the live list, character for character, in the live order — the order is the
-         calendar (63 entries: day 252 → Cocaine HCl, 253 → MDMA). Colour never follows the compound:
-         palette v2 binds each key colour to one thermodynamic quantity and a drug class has no slot,
-         so the card keeps its one accent and the class is rendered as text, never as colour.
-
-         Row format is "name|slug|type|class|note". Type and class are explicit fields, per
-         compound, decided once against NATURaL's own catalogues and curated mechanism-of-action
-         data (ChEMBL, WHO ATC, primary literature) — never derived at runtime from the prose. The
-         predecessor did derive the class, with a regex over the note, and shipped MDMA as a
-         stimulant, naloxone and naltrexone beside fentanyl as "opioid", memantine as a
-         dissociative, and ~18 of 63 as "Other".
-
-         `type` is the compound's PokeDrugType (LeBonhommePharma/NATURaL, BonhommeCore/Analysis/
-         PokeDrugType.swift): twelve target classes — serotonin · opioid · dopamine · empathogen ·
-         dissociative · cannabinoid · kappa · stimulant · sedative · cholinergic · adenosine ·
-         sigma — in NATURaL's exact case spelling. Where PokeDrugSpecies.swift catalogues the
-         compound, its primaryType is taken as-is (22 of the 63; secondary types stay in the note).
-         A trailing "?" marks a forced fit — the target is the type's, but the action or the name
-         misdescribes the drug — and "-" means no type is honest. Coverage on 2026-09-10: 37 clean,
-         3 catalogued but stretched (CBD is no CB1/CB2 agonist, GHB is GABA-B not GABA-A, ibogaine
-         is multi-target and NATURaL calls it opioid first), 6 forced, 17 with no honest home: the
-         five SERT/NET reuptake inhibitors, the six D2 antagonists, the four channel and α2δ
-         ligands, lithium, melatonin. LP ruled PokeDrugType; twelve target classes cannot label 63
-         compounds alone without a catch-all, and a catch-all is the failure above.
-
-         `class` is what renders — the finest NATURaL target-class label that is honest:
-           1. the PokeDrugType, display-cased, for the 40 it fits (Empathogen's prototype drug IS
-              MDMA; Kappa's IS Salvinorin A);
-           2. the PokeDrugSuperaCluster (PokeDrugSuperaCluster.swift, five systems) where the type
-              is not honest but the system is: the five SSRI/SNRIs and buspirone are Serotonergic;
-           3. the previous label for the 17 neither vocabulary can carry without lying. Opioid
-              antagonist for naloxone and naltrexone — PokeDrugType has only .opioid, defined as
-              μ agonism, and the same chip as fentanyl is the exact failure above (NATURaL's own
-              PK profile files naltrexone under opioidAnalgesic). Anti-dementia agent (ATC N06D)
-              for memantine and donepezil. Antipsychotic, Anticonvulsant and Antihistamine from
-              TherapeuticClass (PharmacokineticProfile.swift). Mood stabilizer for lithium, which
-              NATURaL's PK profile files under anticonvulsant and which is not one. Melatonin
-              receptor agonist (ATC N05CH).
-         What the twelve cases cannot say stays in the note: partial vs full agonist
-         (buprenorphine, mitragynine, varenicline), prodrug (codeine, lisdexamfetamine,
-         psilocybin), secondary types (LSD's dopamine, DMT's and dextromethorphan's sigma, MDMA's
-         stimulant, ibogaine's dissociative); and Dopamine on modafinil and bupropion is the type's
-         own letter — "DAT inhibition" — not a claim of kinship with cocaine.
-         Classes carry no Greek: .hp-tag and .hp-flink-r are CSS-uppercased, which would render a
-         lowercase μ as Μ, and NATURaL spells the case "kappa", not κ. Mechanism detail — including
-         μ/κ — stays in the note, which is not. */
+         DOMContentLoaded. WHICH compound is not decided here: /assets/dotd.js (loaded in <head>)
+         holds the rotation, its curation notes, and the one date rule — the Montréal calendar
+         date — that /drug-of-the-day/ and both FlexAIDΔS pages also read. Do not put a list or
+         any day arithmetic back in this page; scripts/check-dotd.mjs fails CI if you do.
+         Colour never follows the compound: palette v2 binds each key colour to one thermodynamic
+         quantity and a drug class has no slot, so the card keeps its one accent and the class is
+         rendered as text, never as colour. */
       (function () {
         'use strict';
-        var LIST = [
-          "Cocaine HCl|cocaine|dopamine|Dopamine|competitive DAT/NET/SERT reuptake inhibitor · DAT Ki ≈ 250 nM",
-          "MDMA|mdma|empathogen|Empathogen|substrate-mediated SERT/NET/DAT efflux · SERT Ki = 34 nM · FDA Breakthrough Therapy",
-          "DMT|dmt|serotonin|Serotonin|endogenous 5-HT2A agonist · Ki ≈ 170 nM · near-zero tolerance",
-          "Psilocin|psilocin|serotonin|Serotonin|psilocybin’s active metabolite · 5-HT2A Ki ~107 nM",
-          "LSD|lsd|serotonin|Serotonin|ergoline · 5-HT2A Ki ~1 nM · receptor lid-lock",
-          "Amphetamine|amphetamine|dopamine|Dopamine|DAT/NET substrate-releaser · DAT Ki ~1,400 nM",
-          "Fentanyl|fentanyl|opioid|Opioid|μ-opioid full agonist · MOR Ki ~1.1 nM · naloxone-reversible",
-          "Salvinorin A|salvinorin-a|kappa|Kappa|κ-opioid full agonist · KOR Ki ~1.8 nM · non-serotonergic",
-          "Ketamine|ketamine|dissociative|Dissociative|NMDA-receptor antagonist · dissociative anesthetic · esketamine FDA-approved for depression",
-          "Methamphetamine|methamphetamine|dopamine|Dopamine|TAAR1 agonist & monoamine releaser · Schedule II (Desoxyn)",
-          "Methylphenidate|methylphenidate|dopamine|Dopamine|DAT/NET reuptake inhibitor · ADHD (Ritalin)",
-          "Lisdexamfetamine|lisdexamfetamine|dopamine|Dopamine|amphetamine prodrug · ADHD (Vyvanse)",
-          "Modafinil|modafinil|dopamine|Dopamine|atypical DAT inhibitor · wakefulness-promoting (Provigil)",
-          "Morphine|morphine|opioid|Opioid|μ-opioid full agonist · prototypical analgesic",
-          "Oxycodone|oxycodone|opioid|Opioid|semi-synthetic μ-opioid full agonist",
-          "Hydromorphone|hydromorphone|opioid|Opioid|μ-opioid full agonist · potent analgesic",
-          "Codeine|codeine|opioid|Opioid|μ-opioid prodrug · CYP2D6 → morphine",
-          "Tramadol|tramadol|opioid|Opioid|μ-opioid agonist + serotonin/NE reuptake inhibitor",
-          "Methadone|methadone|opioid|Opioid|μ-opioid agonist + NMDA antagonist · OUD maintenance",
-          "Buprenorphine|buprenorphine|opioid|Opioid|partial μ-opioid agonist / κ antagonist · OUD (Suboxone)",
-          "Naloxone|naloxone|opioid?|Opioid antagonist|competitive μ-opioid antagonist · overdose reversal (Narcan)",
-          "Naltrexone|naltrexone|opioid?|Opioid antagonist|opioid antagonist · alcohol & opioid use disorder",
-          "Diazepam|diazepam|sedative|Sedative|GABA-A positive allosteric modulator · benzodiazepine (Valium)",
-          "Alprazolam|alprazolam|sedative|Sedative|GABA-A PAM · benzodiazepine (Xanax)",
-          "Clonazepam|clonazepam|sedative|Sedative|GABA-A PAM · benzodiazepine (Klonopin)",
-          "Zolpidem|zolpidem|sedative|Sedative|GABA-A α1-selective PAM · Z-drug hypnotic (Ambien)",
-          "Propofol|propofol|sedative|Sedative|GABA-A PAM · IV general anesthetic",
-          "Nitrous Oxide|nitrous-oxide|dissociative|Dissociative|NMDA antagonist · inhaled anesthetic & analgesic",
-          "Dextromethorphan|dextromethorphan|dissociative|Dissociative|NMDA antagonist / σ1 agonist · dissociative at high dose",
-          "Memantine|memantine|dissociative?|Anti-dementia agent|uncompetitive NMDA antagonist · Alzheimer’s",
-          "Caffeine|caffeine|adenosine|Adenosine|adenosine A1/A2A receptor antagonist",
-          "Nicotine|nicotine|cholinergic|Cholinergic|nicotinic acetylcholine-receptor agonist",
-          "Varenicline|varenicline|cholinergic|Cholinergic|α4β2 nicotinic partial agonist · smoking cessation (Chantix)",
-          "THC|thc|cannabinoid|Cannabinoid|CB1/CB2 partial agonist · principal cannabinoid",
-          "CBD|cbd|cannabinoid|Cannabinoid|non-euphoric cannabinoid · 5-HT1A / TRPV1 · FDA (Epidiolex)",
-          "Psilocybin|psilocybin|serotonin|Serotonin|prodrug → psilocin · 5-HT2A agonist · Breakthrough Therapy",
-          "Mescaline|mescaline|serotonin|Serotonin|phenethylamine 5-HT2A agonist",
-          "2C-B|2c-b|serotonin|Serotonin|phenethylamine 5-HT2A agonist / partial",
-          "Ibogaine|ibogaine|opioid|Opioid|multi-target (NMDA, opioid, σ) · anti-addictive",
-          "Fluoxetine|fluoxetine|-|Serotonergic|SSRI · serotonin reuptake inhibitor (Prozac)",
-          "Sertraline|sertraline|-|Serotonergic|SSRI (Zoloft)",
-          "Escitalopram|escitalopram|-|Serotonergic|SSRI (Lexapro)",
-          "Venlafaxine|venlafaxine|-|Serotonergic|SNRI · serotonin-norepinephrine reuptake inhibitor",
-          "Duloxetine|duloxetine|-|Serotonergic|SNRI (Cymbalta)",
-          "Bupropion|bupropion|dopamine|Dopamine|NDRI · norepinephrine-dopamine reuptake inhibitor (Wellbutrin)",
-          "Buspirone|buspirone|serotonin?|Serotonergic|5-HT1A partial agonist · anxiolytic",
-          "Aripiprazole|aripiprazole|-|Antipsychotic|dopamine D2 partial agonist · atypical antipsychotic (Abilify)",
-          "Risperidone|risperidone|-|Antipsychotic|D2 / 5-HT2A antagonist · atypical antipsychotic",
-          "Olanzapine|olanzapine|-|Antipsychotic|multi-receptor antagonist · atypical antipsychotic (Zyprexa)",
-          "Quetiapine|quetiapine|-|Antipsychotic|D2 / 5-HT2A antagonist · atypical antipsychotic (Seroquel)",
-          "Clozapine|clozapine|-|Antipsychotic|multi-receptor atypical antipsychotic · treatment-resistant",
-          "Haloperidol|haloperidol|-|Antipsychotic|D2 antagonist · typical antipsychotic",
-          "Lithium|lithium|-|Mood stabilizer|mood stabilizer · GSK-3 / inositol-depletion",
-          "Lamotrigine|lamotrigine|-|Anticonvulsant|voltage-gated Na+ channel blocker · mood stabilizer",
-          "Valproate|valproate|-|Anticonvulsant|Na+ channel / GABAergic · anticonvulsant & mood stabilizer",
-          "Gabapentin|gabapentin|-|Anticonvulsant|α2δ voltage-gated Ca2+ channel ligand",
-          "Pregabalin|pregabalin|-|Anticonvulsant|α2δ Ca2+ channel ligand (Lyrica)",
-          "Melatonin|melatonin|-|Melatonin receptor agonist|MT1 / MT2 receptor agonist · circadian",
-          "Diphenhydramine|diphenhydramine|cholinergic?|Antihistamine|H1 antihistamine / antimuscarinic (Benadryl)",
-          "Scopolamine|scopolamine|cholinergic|Cholinergic|muscarinic acetylcholine antagonist",
-          "Donepezil|donepezil|cholinergic?|Anti-dementia agent|acetylcholinesterase inhibitor · Alzheimer’s",
-          "GHB|ghb|sedative|Sedative|GABA-B & GHB-receptor agonist · Xyrem (narcolepsy)",
-          "Mitragynine|kratom|opioid|Opioid|kratom alkaloid · atypical μ-opioid partial agonist"
-        ];
-        var drugs = [], i, p;
-        for (i = 0; i < LIST.length; i++) { p = LIST[i].split('|'); drugs.push({ name: p[0], slug: p[1], type: p[2], cls: p[3], note: p[4] }); }
-
-        var now = new Date();
-        var doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
-        var today = drugs[doy % drugs.length];
+        var today = window.LBP_DOTD && window.LBP_DOTD.today();
         if (!today) return;
 
-        var NB = '\u00A0', href = '/drug-of-the-day/' + today.slug + '/';
+        var NB = '\u00A0', href = today.href;
         function text(s) { return document.createTextNode(s); }
         // A formula keeps its case inside an all-caps label (HCl, not HCL): the .hp-chem span the
         // hand-set card used. With `tight`, the spaces inside the name become no-break spaces.
