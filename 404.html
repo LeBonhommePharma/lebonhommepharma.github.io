@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- GitHub Pages serves this page, with status 404, for any path the site does not have.
+     Without it, missing paths got GitHub's own 503 error page instead of a 404.
+     Pages paths are case-sensitive, so /dotd, /DOTD or /Rx would land here. Those go straight on
+     to the real short links (/DotD/ and /rx/), which hand off to /assets/dotd.js; this page
+     names no drug itself. Every URL here is absolute, because this file answers at any depth. -->
+<script>
+(function () {
+  var p = location.pathname.replace(/\/+$/, '').toLowerCase();
+  var to = { '/dotd': '/DotD/', '/rx': '/rx/' }[p];
+  if (to && location.pathname !== to) location.replace(to);
+})();
+</script>
+<title>Not found — Le Bonhomme Pharma</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tokens.css">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon-flexaid-ds.svg">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    background: var(--bg); color: var(--fg);
+    font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body);
+  }
+  main { width: 100%; max-width: 40rem; padding: var(--sp-8) var(--sp-6); display: flex; flex-direction: column; gap: var(--sp-4); }
+  .eyebrow { margin: 0; font-family: var(--font-mono); font-size: var(--fs-tag); letter-spacing: var(--tracking-tag); text-transform: uppercase; color: var(--terra); }
+  h1 { margin: 0; font-family: var(--font-mono); font-size: var(--fs-h2); line-height: var(--lh-snug); }
+  p { margin: 0; color: var(--fg-muted); }
+  nav { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); font-family: var(--font-mono); font-size: var(--fs-sm); }
+  a { color: var(--teal); text-underline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">// 404 · thebonhomme.com</p>
+  <h1>Nothing binds at this address.</h1>
+  <p>This page is not on the site. Short links are <a href="/DotD/">/DotD</a> and <a href="/rx/">/rx</a>, in any capitals.</p>
+  <nav aria-label="Where to go instead">
+    <a href="/">Home</a>
+    <a href="/DotD/">Today’s drug</a>
+    <a href="/drug-of-the-day/?all">The series</a>
+    <a href="/FlexAIDdS/">FlexAIDΔS</a>
+  </nav>
+</main>
+</body>
+</html>
