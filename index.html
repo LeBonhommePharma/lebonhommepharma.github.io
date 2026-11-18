@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+<meta charset="utf-8">
 <!--
   thebonhomme.com — homepage. The repo form of the approved redesign (series ramp as the page's
   spine, the reaction-coordinate bar, seven figures, the live terminal). Non-negotiables:
@@ -37,8 +39,6 @@
     /theme.css (its transition list overrides the meters' `transition:left`) or /style.css
     (transforms on #molstar-viewer and .hero-bg).
 -->
-<head>
-<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Le Bonhomme Pharma — Open-source computational psychopharmacology · Montréal</title>
 <meta name="description" content="Le Bonhomme Pharma: open-source, thermodynamically rigorous computational pharmacology from Montréal. FlexAIDΔS entropy-driven docking, Shannon entropy tooling, harm-reduction pharmacology.">
@@ -1445,7 +1445,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:var(--r
             <span class="q-fail">body count</span> attached.</p>
           <p>So publish the pharmacology instead. Kᵢ values, half-lives, metabolite routes,
             interaction lethality. Adults can read a binding table — they have been reading them
-            here for seventy entries.</p>
+            here for eighty-two entries.</p>
         </div>
       </div>
     </article>
@@ -1469,7 +1469,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:var(--r
         <details class="more">
           <summary>Which compounds, and why the boring ones matter most</summary>
           <div class="body">
-            <p>Seventy entries: stimulants, opioids, psychedelics, benzodiazepines, antipsychotics,
+            <p>Eighty-two entries: stimulants, opioids, psychedelics, benzodiazepines, antipsychotics,
               SSRIs, and the unglamorous ones. The unglamorous ones matter most — GABA<sub>A</sub>
               positive allosteric modulators plus an opioid kill more reliably and more quietly than
               anything on the illegal list, and nobody writes a moral panic about a repeat
@@ -1490,9 +1490,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:var(--r
         <span class="nm">pocket contact</span>
         <span class="crayon">strawberry · receptor &amp; pocket</span>
         <span class="rule" aria-hidden="true"></span>
-        <span class="crayon">℞ drug of the day · 12 of 70</span>
+        <span class="crayon">℞ drug of the day · 12 of 82</span>
       </div>
-      <h2>Twelve of seventy, and the pocket each one sits in.</h2>
+      <h2>Twelve of eighty-two, and the pocket each one sits in.</h2>
       <p class="standfirst">The index is the control surface, not a table: pick a compound and the
         viewer loads that co-crystal from the RCSB. The receptor is drawn uniform
         <span class="q-rec">strawberry</span> because strawberry means receptor — not chain-coloured,
@@ -1508,7 +1508,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:var(--r
         <div class="instr-bar">
           <i class="dot-stage" aria-hidden="true"></i>
           <span class="who">fig. 2 — compound index</span>
-          <span class="state" data-held="1">● 12 OF 70</span>
+          <span class="state" data-held="1">● 12 OF 82</span>
         </div>
         <ul class="cmp-list" id="cmpList"></ul>
         <div class="instr-meter"><div class="ramp"></div><div class="cover" style="left:40%"></div></div>
@@ -1986,14 +1986,14 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:var(--r
         <a class="work-cta" href="/entropy/">Read the essay <span aria-hidden="true">→</span></a>
       </article>
       <article class="work k-rec">
-        <div class="work-top"><span class="label">Series · 70 entries</span><span class="work-glyph" aria-hidden="true">℞</span></div>
+        <div class="work-top"><span class="label">Series · 82 entries</span><span class="work-glyph" aria-hidden="true">℞</span></div>
         <h3>Drug of the Day</h3>
         <!-- Ships generic — true on any day, with or without JS. The rotator after the masthead
              upgrades the chips and the CTA to today's compound and points the link at its page.
              The class chip is deliberately NOT key-coloured: palette v2 gives every key colour to
              one thermodynamic quantity, and a categorical class has no claim on any of them. -->
         <div class="work-tags"><span class="tag tag--today" data-dotd="tag">Rotates daily</span> <span class="tag" data-dotd="class">By mechanism</span></div>
-        <p>Seventy compounds with full receptor binding tables, real crystal structures, metabolite
+        <p>Eighty-two compounds with full receptor binding tables, real experimental structures, metabolite
           pharmacology and interaction lethality. Arguments II and III, one molecule at a time, with
           the moralising removed rather than softened.</p>
         <a class="work-cta" href="/drug-of-the-day/" data-dotd-href><span data-dotd="cta">Open Drug of the Day</span>&nbsp;<span aria-hidden="true">→</span></a>
@@ -3014,7 +3014,8 @@ var DSCONF = DS - DSVIB;                     /* the remainder, exact = −15.55 
 (function(){
   var list = $('cmpList'); if (!list) return;
 
-  /* 12 of 70, chosen for mechanistic spread rather than notoriety.
+  /* 12 of 82, chosen for mechanistic spread rather than notoriety. 82 is the length of
+     "series" in /drug-of-the-day/queue.json; every count of the series on this page restates it.
      [id, name, receptor, Kᵢ/EC₅₀, mechanism, PDB, slug] */
   var C = [
     ['001','Cocaine',      'DAT',    '~250 nM',    'reuptake blocker',            '4XP4','cocaine'],
