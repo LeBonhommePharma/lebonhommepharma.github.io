@@ -133,7 +133,9 @@ if (typeof BODY_TARGET !== 'number') {
 
 const BODY = ['--fg', '--fg-muted', '--state-fail-text',
   '--mint-fg', '--violet-fg', '--tangerine-fg', '--firetruck-fg',
-  '--aqua-fg', '--strawberry-fg', '--magnesium-fg'];
+  '--aqua-fg', '--strawberry-fg', '--magnesium-fg',
+  '--t-cryo-fg', '--t-cold-fg', '--t-ambient-fg', '--t-physio-fg', '--t-denature-fg',
+  '--fig-ink'];
 
 for (const [theme, sel] of [['dark', ':root'], ['light', LIGHT]]) {
   console.log(`\n── ${theme} theme · foreground tokens vs --bg · body target ${BODY_TARGET}:1`);
