@@ -62,6 +62,17 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
     }
 
+    /* The :root block above is a later rule of equal specificity to
+       tokens.css's [data-theme="light"], so its dark --bg-card wins in
+       both themes. tui.js grounds its titlebar (and its restore chip) on
+       --bg-card and paints their text in --fg-muted and the --*-fg twins,
+       which in light are solved for a light ground. Scoped to the mount, the panel
+       takes --bg-panel, the light card wash, which this page does not
+       override, so its read colours sit on the ground they were solved
+       for. The rest of this page's light theme is out of this rule's
+       reach: the same :root block keeps its cards dark too. */
+    [data-theme="light"] [data-flexaidds-tui] { --bg-card: var(--bg-panel); }
+
     body {
       font-family: var(--font-body);
       background: var(--bg);
