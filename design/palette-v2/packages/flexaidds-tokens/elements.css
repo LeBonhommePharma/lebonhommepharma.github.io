@@ -12,6 +12,20 @@
 
    Consuming a design system that already styles elements? Take
    `tokens.css` alone; this file is the part that has opinions.
+
+   READ COLOURS TAKE THE --*-fg TWINS
+   Every `color:` below is something a person reads, so it uses
+   --NAME-fg and never the bare key colour. In dark appearance the
+   twin IS the key colour, byte for byte, so nothing on the ink
+   changes. In light appearance the bare hues used here land at
+   1.56 to 3.92:1 on #f4f6fb: all below AA body text, and mint,
+   tangerine and aqua below even the 3:1 large-text bar. The twins
+   are solved to clear the body target there. Bare key colours are
+   for fills, washes and charts.
+
+   Enforced, not intended: design-system/check-contrast.mjs reads
+   this file, resolves every `color:` in both themes and fails
+   below the body target, at any font size.
    ============================================================ */
 
 html {
@@ -71,8 +85,14 @@ p {
   text-wrap: pretty;
 }
 
-a { color: var(--mint); }
+a { color: var(--mint-fg); }
 a:hover { color: var(--kw-ga); }
+
+/* --kw-ga is a lighter mint with no light twin: 1.27:1 on the light
+   ground. A twin solved to the body target would land on --mint-fg's
+   lightness and the hover would stop being visible. The light ground
+   takes --fg instead: readable, and clearly not the resting colour. */
+[data-theme="light"] a:hover { color: var(--fg); }
 
 code, .mono, kbd, samp {
   font-family: var(--font-mono);
@@ -87,7 +107,7 @@ code, .mono, kbd, samp {
   font-weight: var(--fw-500);
   letter-spacing: var(--tracking-tag);
   text-transform: uppercase;
-  color: var(--strawberry);
+  color: var(--strawberry-fg);
 }
 
 /* Stat block — oversized mono number under a tiny tracked label. */
@@ -97,7 +117,7 @@ code, .mono, kbd, samp {
   font-weight: var(--fw-700);
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--tangerine);
+  color: var(--tangerine-fg);
 }
 
 .stat-label {
@@ -110,15 +130,19 @@ code, .mono, kbd, samp {
 }
 
 /* Equation terms — the identity reads term by term in color. */
-.eq-dg  { color: var(--tangerine); }
-.eq-dh  { color: var(--mint); }
-.eq-t   { color: var(--firetruck); }
-.eq-ds  { color: var(--violet); }
-.eq-dsv { color: var(--aqua); }
+.eq-dg  { color: var(--tangerine-fg); }
+.eq-dh  { color: var(--mint-fg); }
+.eq-t   { color: var(--firetruck-fg); }
+.eq-ds  { color: var(--violet-fg); }
+.eq-dsv { color: var(--aqua-fg); }
 
-/* State */
-.state-pass { color: var(--state-pass); }
-.state-warn { color: var(--state-warn); }
+/* State. --state-pass and --state-warn are mint and strawberry and
+   have no light twin of their own, so their text takes the twin of
+   the hue they are bound to. check-contrast.mjs fails if either state
+   is ever rebound to a different hue, so the two cannot drift apart.
+   Fail already has a text token, --state-fail-text. */
+.state-pass { color: var(--mint-fg); }
+.state-warn { color: var(--strawberry-fg); }
 .state-fail { color: var(--state-fail-text); }
 
 /* Brand wordmark — mint mark, tangerine ΔS. */
@@ -126,10 +150,10 @@ code, .mono, kbd, samp {
   font-family: var(--font-mono);
   font-weight: var(--fw-700);
   letter-spacing: 0.02em;
-  color: var(--mint);
+  color: var(--mint-fg);
 }
 
-.brand .delta { color: var(--tangerine); }
+.brand .delta { color: var(--tangerine-fg); }
 
 /* Tables put their numbers on a tabular figure. */
 table { font-variant-numeric: tabular-nums; }

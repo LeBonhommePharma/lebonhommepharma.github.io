@@ -412,6 +412,18 @@ Recomputes every ratio annotated in `tokens.css` and fails if a comment
 disagrees with the colour beside it, then asserts every foreground token against
 the ground it is actually used on, in both themes.
 
+It then reads the package's `elements.css` and resolves every `color` and
+`-webkit-text-fill-color` there through `tokens.css`, in both themes, against
+`--bg`. Each must clear the body target at any font size. A rule under
+`[data-theme="light"]` replaces the unscoped rule for the same element in
+light; a `[data-theme="dark"]` rule replaces nothing, because dark is what
+paints when no `data-theme` is set at all. Anything it cannot evaluate fails
+instead of being skipped: an at-rule, nesting, a custom property declared in
+the stylesheet, or a value that does not resolve to an opaque hex. It also
+fails if `.state-pass` or `.state-warn` stops painting the hue its state token
+is bound to. `--self-test` proves the audit still fails on the bare-hue rules
+`elements.css` used to ship, and on each way it is meant to fail closed.
+
 ### `design-system/emit.mjs --check`
 
 Fails if any generated artifact has drifted from `tokens.css`. This is what
