@@ -13,19 +13,11 @@
    Consuming a design system that already styles elements? Take
    `tokens.css` alone; this file is the part that has opinions.
 
-   READ COLOURS TAKE THE --*-fg TWINS
-   Every `color:` below is something a person reads, so it uses
-   --NAME-fg and never the bare key colour. In dark appearance the
-   twin IS the key colour, byte for byte, so nothing on the ink
-   changes. In light appearance the bare hues used here land at
-   1.56 to 3.92:1 on #f4f6fb: all below AA body text, and mint,
-   tangerine and aqua below even the 3:1 large-text bar. The twins
-   are solved to clear the body target there. Bare key colours are
-   for fills, washes and charts.
-
-   Enforced, not intended: design-system/check-contrast.mjs reads
-   this file, resolves every `color:` in both themes and fails
-   below the body target, at any font size.
+   Every colour a person READS here takes the --*-fg twin, never
+   the bare key colour. On the ink the twins ARE the key colours,
+   so the dark theme is unchanged; on the light ground the bare
+   hues fall below AA. design-system/check-contrast.mjs measures
+   every `color:` in this file in both themes.
    ============================================================ */
 
 html {
@@ -88,10 +80,10 @@ p {
 a { color: var(--mint-fg); }
 a:hover { color: var(--kw-ga); }
 
-/* --kw-ga is a lighter mint with no light twin: 1.27:1 on the light
-   ground. A twin solved to the body target would land on --mint-fg's
-   lightness and the hover would stop being visible. The light ground
-   takes --fg instead: readable, and clearly not the resting colour. */
+/* --kw-ga is a lift for the ink and has no -fg twin; on the light
+   ground it all but disappears. There a hover goes darker, not
+   lighter (tokens.css makes the same call for --state-fail-text),
+   so the light hover takes the body ink. */
 [data-theme="light"] a:hover { color: var(--fg); }
 
 code, .mono, kbd, samp {
@@ -136,11 +128,9 @@ code, .mono, kbd, samp {
 .eq-ds  { color: var(--violet-fg); }
 .eq-dsv { color: var(--aqua-fg); }
 
-/* State. --state-pass and --state-warn are mint and strawberry and
-   have no light twin of their own, so their text takes the twin of
-   the hue they are bound to. check-contrast.mjs fails if either state
-   is ever rebound to a different hue, so the two cannot drift apart.
-   Fail already has a text token, --state-fail-text. */
+/* State. tokens.css binds --state-pass to mint and --state-warn to
+   strawberry, so they read through those twins; --state-fail has
+   its own read value, --state-fail-text. */
 .state-pass { color: var(--mint-fg); }
 .state-warn { color: var(--strawberry-fg); }
 .state-fail { color: var(--state-fail-text); }
