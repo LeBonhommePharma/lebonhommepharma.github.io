@@ -27,8 +27,9 @@ your design system already styles elements.
 
 Every key colour `elements.css` paints as text goes through its `--*-fg` twin,
 never the bare hue. On the ink the twin *is* the key colour, so dark appearance
-is unchanged. On the light ground the bare hues fall to 1.56–3.92:1, and the
-twins are solved to clear AA body text there. Do the same in your own rules:
+is unchanged. On the light ground the bare hues `elements.css` reads fall to
+1.56–3.92:1 (magnesium, which it doesn't read, to 1.26:1), and the twins are
+solved to clear AA body text there. Do the same in your own rules:
 bare key colours are for fills, washes and charts. `design-system/check-contrast.mjs`
 holds `elements.css` to this in both themes.
 

@@ -417,9 +417,13 @@ reaches for a bare identity hue instead of its `--*-fg` twin fails here rather
 than shipping. "Read" means `color` and `-webkit-text-fill-color`, the two
 properties that paint glyphs. It also fails if `elements.css` declares a custom
 property, because a token redefined there would change what the page paints
-while the check measured the `tokens.css` value it shadows. And it fails if
-`.state-pass` or `.state-warn` stops painting the hue its state token is bound
-to. `--self-test` proves the audit can still fail, against a frozen token model
+while the check measured the `tokens.css` value it shadows. It also fails, rather
+than guess, on opacity or a filter, on a background on any rule but `body`, on
+a string holding CSS syntax or a backslash escape, and on a theme-scoped rule
+that can never match. And it fails if `.state-pass` or `.state-warn` stops
+painting, in either theme, the read twin of the hue its state token is bound to.
+Text is held against `--bg`; the 1px `--grid-line` the body paints across it is
+excluded, and that exclusion is stated in the check's header. `--self-test` proves the audit can still fail, against a frozen token model
 so that a token regression is reported as the contrast failure it is; CI runs
 it as its own step.
 

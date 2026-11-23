@@ -89,12 +89,69 @@ const ok = (msg) => { if (VERBOSE) console.log(`  ok    ${msg}`); };
 // never a skip. That last one matters because every measurement here resolves
 // through tokens.css: a `--mint-fg` redefined in elements.css would change what
 // the browser paints while this check went on measuring the token it was
-// shadowing. A check that half-reads a file and reports the half reports a
-// pass it never made.
+// shadowing. The same goes for opacity and filters, which composite text with
+// what lies under it; for a background on any rule but body; for a string that
+// holds CSS syntax or a backslash escape, either of which can hide a rule from
+// the parser below; and for a theme-scoped rule that can never match. A check
+// that half-reads a file and reports the half reports a pass it never made.
+//
+// THE GRID — measured as excluded, and stated rather than hidden
+// body paints the violet graph paper (--grid-line) over --bg, 1px every
+// --grid-step. Text crossing a line sits on a slightly darker ground: on the
+// light theme the --*-fg twins measure 4.26 to 4.30:1 against a line pixel
+// (#EEEDFB) and 3.97 to 4.00:1 where two lines cross (#E8E4FA), against 4.56
+// to 4.60:1 on --bg. The twins are solved against --bg with 0.05 of headroom;
+// a line takes about 0.3 and a crossing about 0.6. This audit holds text to
+// --bg, the ground under all but a few percent of any glyph, and does not
+// claim the line pixels clear. Closing that is a palette decision, either
+// solving the twins against the composited line or lightening the light
+// grid, not something a guard should settle by moving its own ground.
 const ELEMENTS = 'design/palette-v2/packages/flexaidds-tokens/elements.css';
 const THEMED = /^\[data-theme="(light|dark)"\]\s+/;
 const VAR_ONLY = /^var\(\s*(--[A-Za-z0-9-]+)\s*\)$/;
 const READ_PROPS = ['color', '-webkit-text-fill-color'];
+
+// Anything that composites text with what is under it changes the pair this
+// measures, so a rule carrying one cannot be measured as a plain foreground
+// on --bg. Fail rather than pass a 0.8-opacity label at 3.6:1.
+const COMPOSITING = ['opacity', 'filter', 'backdrop-filter', 'mix-blend-mode'];
+const GROUND_PROPS = ['background', 'background-color', 'background-image'];
+
+/**
+ * Blank comments the way a CSS tokenizer does, honouring strings, and report
+ * what the regex parser below cannot read safely: a string that holds CSS
+ * syntax (`content: "/*"` would otherwise swallow every rule up to the next
+ * close-comment), a backslash escape (`c\olor` is `color` to a browser and
+ * nothing to a regex), or an unterminated comment or string.
+ */
+function lexElements(css) {
+  let text = '';
+  const problems = [];
+  for (let i = 0; i < css.length;) {
+    const c = css[i];
+    if (c === '/' && css[i + 1] === '*') {
+      const end = css.indexOf('*/', i + 2);
+      if (end < 0) { problems.push('an unterminated comment'); break; }
+      text += ' ';
+      i = end + 2;
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      let j = i + 1;
+      while (j < css.length && css[j] !== c && css[j] !== '\n') j += css[j] === '\\' ? 2 : 1;
+      if (css[j] !== c) { problems.push(`an unterminated string at ${JSON.stringify(css.slice(i, i + 24))}`); break; }
+      const lit = css.slice(i, j + 1);
+      if (/[{};\\]|\/\*|\*\//.test(lit.slice(1, -1))) problems.push(`a string holding CSS syntax, ${lit}`);
+      text += lit;
+      i = j + 1;
+      continue;
+    }
+    if (c === '\\') problems.push(`a CSS escape at ${JSON.stringify(css.slice(i, i + 12))}`);
+    text += c;
+    i++;
+  }
+  return { text, problems };
+}
 
 // .state-pass and .state-warn read the twin of the hue their state token is
 // bound to (tokens.css: --state-pass is mint, --state-warn is strawberry),
@@ -112,7 +169,8 @@ const STATE_BINDINGS = [['.state-pass', '--state-pass'], ['.state-warn', '--stat
 function auditElements(cssText, tokens, target) {
   const fails = [];
   const oks = [];
-  const elCss = cssText.replace(/\/\*[\s\S]*?\*\//g, ' ');
+  const { text: elCss, problems } = lexElements(cssText);
+  for (const p of problems) fails.push(`elements.css has ${p} — the rule parser below cannot read that safely; it fails rather than guess`);
   if (/@[A-Za-z-]+[^;{}]*\{/.test(elCss)) {
     fails.push('elements.css has an at-rule block — this reads flat rules only; teach it the block before trusting it');
   }
@@ -129,6 +187,9 @@ function auditElements(cssText, tokens, target) {
     for (const name of Object.keys(decls).filter((n) => n.startsWith('--'))) {
       fails.push(`${rule} declares ${name} — tokens belong in tokens.css; one redefined here changes what the page paints while this check measures the tokens.css value it shadows`);
     }
+    for (const prop of COMPOSITING.filter((n) => decls[n] !== undefined)) {
+      fails.push(`${rule} sets ${prop}: ${decls[prop]} — text under it is composited with what lies beneath, so its contrast is not the pair this measures`);
+    }
     const ground = decls['background-color'] ?? decls.background;
     for (const raw of selText.split(',')) {
       const sel = raw.replace(/\s+/g, ' ').trim();
@@ -137,12 +198,25 @@ function auditElements(cssText, tokens, target) {
         if (sel === 'body' && ground === 'var(--bg)') paintsGround = true;
         else fails.push(`${sel} paints its own ground (${ground}) — measure text against it before trusting this check`);
       }
+      // body's background-image is the violet graph paper, and it is the one
+      // paint this deliberately does not measure under text. See "THE GRID" in
+      // the section header: it is reported there, not hidden here.
+      for (const prop of GROUND_PROPS.filter((n) => n !== 'background' && n !== 'background-color' && decls[n] !== undefined)) {
+        if (sel !== 'body') fails.push(`${sel} paints its own ground (${prop}: ${decls[prop]}) — measure text against it before trusting this check`);
+      }
       // A light- or dark-scoped rule overrides its base selector in that theme
       // only; it outranks the base on specificity, so source order is moot.
       const t = THEMED.exec(sel);
       const key = t ? sel.slice(t[0].length) : sel;
       if (/data-theme/.test(key)) {
         fails.push(`${sel}: a theme qualifier this check cannot attribute — write it as [data-theme="light"] <selector>`);
+        continue;
+      }
+      // data-theme sits ON <html>, so `[data-theme="light"] html` asks for an
+      // <html> inside <html> and never matches. Treating it as an override
+      // would credit the light theme with a rule the browser never applies.
+      if (t && /^(html|:root)(?![\w-])/.test(key)) {
+        fails.push(`${sel} never matches — data-theme is set on <html> itself, so nothing is its own descendant; write [data-theme="light"] for the root`);
         continue;
       }
       for (const prop of READ_PROPS) {
@@ -197,16 +271,28 @@ function auditElements(cssText, tokens, target) {
   }
 
   for (const [sel, stateToken] of STATE_BINDINGS) {
-    const expr = runs.get(`${sel}\ncolor`)?.base;
-    if (expr === undefined) {
+    const run = runs.get(`${sel}\ncolor`);
+    if (!run || (run.base ?? run.dark ?? run.light) === undefined) {
       fails.push(`${sel} no longer sets a colour — restore it, or drop it from STATE_BINDINGS in the same change`);
       continue;
     }
-    const v = VAR_ONLY.exec(expr);
-    const painted = v ? resolve(tokens, ':root', v[1]) : undefined;
-    const bound = resolve(tokens, ':root', stateToken);
-    if (!painted || !bound || painted.toUpperCase() !== bound.toUpperCase()) {
-      fails.push(`${sel} { color: ${expr} } paints ${painted ?? 'an unresolvable colour'} on the ink, but ${stateToken} is ${bound} — the state was rebound and its text did not follow; read it through the new hue's --*-fg twin`);
+    // The text must be the read twin of the hue the state is bound to, in
+    // EACH theme, so a light-scoped override is held to it as well.
+    const twin = twinOf(`var(${stateToken})`);
+    const twinName = twin && VAR_ONLY.exec(twin)[1];
+    if (!twinName) {
+      fails.push(`${stateToken} resolves to no key colour with a --*-fg twin — ${sel} has no read value to be held to`);
+      continue;
+    }
+    for (const [theme, block] of [['dark', ':root'], ['light', LIGHT]]) {
+      const expr = run[theme] ?? run.base;
+      if (expr === undefined) continue;
+      const v = VAR_ONLY.exec(expr);
+      const painted = v ? resolve(tokens, block, v[1]) : undefined;
+      const expected = resolve(tokens, block, twinName);
+      if (!painted || !expected || painted.toUpperCase() !== expected.toUpperCase()) {
+        fails.push(`${theme}: ${sel} { color: ${expr} } paints ${painted ?? 'an unresolvable colour'}, but ${stateToken} reads as ${twin} = ${expected} here — the state and its text have drifted apart; read it through ${twin}`);
+      }
     }
   }
 
@@ -271,8 +357,12 @@ function selfTest() {
     .replace('.state-warn { color: var(--strawberry); }', '.state-warn { color: var(--state-warn); }')
     .replace('[data-theme="light"] a:hover { color: var(--fg); }', '');
   const bare = run(BARE);
-  const lightFails = bare.fails.filter((f) => f.startsWith('light:'));
-  say(lightFails.length === 8 && bare.fails.length === 8, `the bare-hue shape fails all 8 of its read runs in light, and only those (${bare.fails.length})`);
+  const contrastFails = bare.fails.filter((f) => /below the body target/.test(f));
+  const bindingFails = bare.fails.filter((f) => /have drifted apart/.test(f));
+  say(contrastFails.length === 8 && contrastFails.every((f) => f.startsWith('light:')),
+    `the bare-hue shape fails all 8 of its read runs in light, none in dark (${contrastFails.length})`);
+  say(bindingFails.length === 2 && bindingFails.every((f) => f.startsWith('light:')) && bare.fails.length === 10,
+    `and its two bare state aliases fail the binding in light only, where they are not the twin (${bindingFails.length}; ${bare.fails.length} in all)`);
   say(has(bare, /light: \.state-pass \{ color: var\(--state-pass\) \}.*read it through var\(--mint-fg\)/), 'a failing state alias is told the twin of its bound hue');
 
   const noOverride = run(ROUTED.replace('[data-theme="light"] a:hover { color: var(--fg); }', ''));
@@ -285,13 +375,25 @@ function selfTest() {
   say(has(shadow, /:root declares --mint-fg — tokens belong in tokens\.css/), 'a token redefined in the stylesheet fails');
 
   const rebound = { ...FIXTURE_TOKENS, ':root': { ...FIXTURE_TOKENS[':root'], '--state-pass': 'var(--violet)' } };
-  say(has(run(ROUTED, rebound), /^\.state-pass \{ color: var\(--mint-fg\) \} paints #45E0A8 on the ink, but --state-pass is #8B5CF6/), 'rebinding --state-pass in the tokens fails the routed .state-pass');
+  say(has(run(ROUTED, rebound), /^dark: \.state-pass \{ color: var\(--mint-fg\) \} paints #45E0A8, but --state-pass reads as var\(--violet-fg\) = #8B5CF6/), 'rebinding --state-pass in the tokens fails the routed .state-pass');
+  const lightState = run(`${ROUTED}\n[data-theme="light"] .state-pass { color: var(--violet-fg); }`);
+  say(lightState.fails.length === 1 && has(lightState, /^light: \.state-pass \{ color: var\(--violet-fg\) \} paints #8150E9, but --state-pass reads as var\(--mint-fg\)/),
+    'a light-scoped state override in the wrong hue fails, though it is readable');
   say(has(run(ROUTED.replace('.state-warn { color: var(--strawberry-fg); }', '')), /^\.state-warn no longer sets a colour/), 'a state class that disappears fails');
 
   say(has(run(`${ROUTED}\n@media (prefers-color-scheme: light) { a { color: var(--mint); } }`), /at-rule block/), 'an at-rule block fails closed');
   say(has(run(`${ROUTED}\n.card { color: var(--fg); background: var(--mint); }`), /^\.card paints its own ground/), 'a second painted ground fails closed');
   say(has(run(ROUTED.replace('background: var(--bg);', '')), /^body no longer paints var\(--bg\)/), 'body no longer painting --bg fails closed');
   say(has(run(`${ROUTED}\nhtml[data-theme="light"] a { color: var(--fg); }`), /theme qualifier this check cannot attribute/), 'an unrecognised theme qualifier fails closed');
+  say(has(run(`${ROUTED}\n.x { color: var(--fg); opacity: 0.8; }`), /^\.x sets opacity: 0\.8/), 'opacity on a rule fails closed');
+  say(has(run(`${ROUTED}\n.x { filter: brightness(1.4); }`), /^\.x sets filter/), 'a filter fails closed');
+  say(has(run(`${ROUTED}\n.chip { color: var(--fg); background-image: linear-gradient(var(--mint), var(--mint)); }`), /^\.chip paints its own ground \(background-image/), 'a background-image under text fails closed');
+  const hidden = run(`${ROUTED}\n.q::before { content: "/*"; }\n.leak { color: var(--mint); }\n.r::after { content: "*/"; }`);
+  say(has(hidden, /a string holding CSS syntax, "\/\*"/), 'a string holding /* cannot hide the rules after it');
+  say(has(run(`${ROUTED}\na[title="}"] { color: var(--fg); }`), /a string holding CSS syntax, "\}"/), 'a brace inside an attribute string fails closed');
+  say(has(run(`${ROUTED}\n.e { c\\olor: var(--mint); }`), /a CSS escape/), 'a CSS escape fails closed');
+  say(has(run(`${ROUTED}\n[data-theme="light"] html { color: var(--fg); }`), /never matches — data-theme is set on <html> itself/), 'a light rule scoped to a descendant <html> fails as never-matching');
+  say(run(ROUTED.replace('a:hover {', 'a[href^="http"]:hover {')).fails.length === 1, 'a plain quoted attribute selector is read, not refused (only the moved override fails)');
   say(has(run(`${ROUTED}\n.x { color: inherit; }`), /\.x \{ color: inherit \} = inherit is not a plain hex/), '`color: inherit` fails closed');
   say(has(run(`${ROUTED}\n.x { color: var(--nope); }`), /tokens\.css does not define --nope/), 'an undefined token fails closed');
   const sunk = { ...FIXTURE_TOKENS, [LIGHT]: { ...FIXTURE_TOKENS[LIGHT], '--mint-fg': '#00A070' } };
