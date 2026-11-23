@@ -40,6 +40,13 @@
   --fg:       #E4E3F5;                  /* body text     15.60:1   */
   --fg-muted: #8D8CB0;                  /* secondary      6.12:1   */
 
+  /* Figure ink: the neutral a figure is DRAWN in where no quantity
+     applies (Mol* ligand carbon and the outline pass). Bound to no
+     quantity, so it is not a key colour and is not solved: it follows
+     the text colour into the light theme. WebGL cannot take var(), so
+     a viewer reads it with getComputedStyle, never as a literal. */
+  --fig-ink:  var(--fg);
+
   /* ───────── KEY COLORS ─────────
      Semantic, not decorative. Each carries a quantity. */
   --mint:       #45E0A8;   /* ΔH · enthalpy · brand primary      11.73:1 */
@@ -203,6 +210,20 @@
               var(--t-ambient)  50%,
               var(--t-physio)   76%,
               var(--t-denature) 100%);
+
+  /* The ramp as FOREGROUND. Same rule as the key colours: anything
+     READ in a ramp colour (a temperature readout) takes the -fg,
+     never the bare stop, which stays a fill (--t-ramp, a slider
+     track). In dark mode they ARE the stops. The light theme
+     overrides all five with values derive-light.mjs solves at the
+     same target as the key colours, because the bare stops on the
+     light ground land at
+         cryo 2.55  ·  cold 1.57  ·  ambient 1.26  ·  physio 2.37  ·  denature 3.77 */
+  --t-cryo-fg:     var(--t-cryo);
+  --t-cold-fg:     var(--t-cold);
+  --t-ambient-fg:  var(--t-ambient);
+  --t-physio-fg:   var(--t-physio);
+  --t-denature-fg: var(--t-denature);
 
   /* ───────── GLOW ─────────
      Elevation is colored glow and translucency, never a
@@ -374,4 +395,15 @@
      carries no perceptual meaning and the 5.56° shift the solver
      reports is numerical noise, not a visible change of colour. */
   --magnesium-fg:  #706F77;   /* 4.59:1 · chroma 100% */
+
+  /* Temperature ramp, solved by the same solver at the same marker.
+     Three stops alias key colours (cryo aqua, ambient magnesium,
+     denature firetruck), so their values equal those three -fg above.
+     They are declared anyway: derive-light discovers every --x-fg at
+     :root and fails on a light block that leaves one out. */
+  --t-cryo-fg:     #0075BB;   /* 4.56:1 · hue +0.27° · chroma  79% */
+  --t-cold-fg:     #2077A2;   /* 4.60:1 · hue +0.14° · chroma 100% */
+  --t-ambient-fg:  #706F77;   /* 4.59:1 · chroma 100% */
+  --t-physio-fg:   #C54529;   /* 4.56:1 · hue −0.16° · chroma 100% */
+  --t-denature-fg: #E2001C;   /* 4.57:1 · hue +0.00° · chroma  98% */
 }

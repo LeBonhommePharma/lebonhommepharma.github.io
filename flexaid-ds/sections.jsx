@@ -136,7 +136,7 @@ function ArchSection() {
           <ArchStep num="1" title="Input"   color="teal"  desc="PDB receptor + MOL2 ligand. Automatic cavity detection via SURFNET." />
           <ArchStep num="2" title="Sample"  color="terra" desc="GA + DEE torsion pruning. Ring conformer + chirality sampling." />
           <ArchStep num="3" title="Score"   color="gold"  desc="Voronoi CF + ΔS_config via partition function. Free energy F = −kT ln Z." />
-          <ArchStep num="4" title="Output"  color="teal"  desc="Ranked poses · ΔG · Van't Hoff decomposition · ITC-validated." />
+          <ArchStep num="4" title="Output"  color="teal"  desc="Ranked poses · ΔG · Van't Hoff decomposition." />
         </div>
         <div className="arch-sub-grid">
           <div className="arch-sub-card">
@@ -496,18 +496,12 @@ function BenchmarksSection() {
   return (
     <section id="benchmarks" className="section">
       <div className="container">
-        <SectionHeader eyebrow="validation">
-          Measured, <span className="t-gold">Not Claimed</span>
+        <SectionHeader eyebrow="reproducible benchmarks">
+          Benchmark <span className="t-gold">status</span>
         </SectionHeader>
         <p className="binding-blurb">
-          FlexAIDΔS is evaluated on <span className="kw">Astex Diverse</span>, <span className="kw">CASF-2016</span> and <span className="kw">ITC-187</span> — standard, public sets. Binding-mode recovery is scored by heavy-atom RMSD against the deposited ligand; affinity by correlation against calorimetry. The protocol is fixed before the run, not chosen after it.
+          This site publishes <span className="kw">no validated FlexAIDΔS success rate</span>. Benchmarks are still rolling — do not cite a former rate at or above 90%. Astex-85, ITC-187, CASF, and CNS figures are <span className="kw">unverified / pending receipt</span> until a METHODOLOGY.md §0 receipted blind campaign exists. Literature comparators quoted elsewhere in this project are someone else’s published numbers, not ours.
         </p>
-        <p className="binding-blurb">
-          Every run is driven by an <span className="kw">automated benchmark</span> on each commit: same commit, same container, same seed → <span className="kw">bit-for-bit identical results</span>. Rerun it yourself and you get the same numbers we do. That is what reproducible means, and it is true of this engine today.
-        </p>
-        <div className="note-callout">
-          <strong>We do not publish numbers we cannot reproduce.</strong> The figures land with the preprint — with bootstrap confidence intervals, the seeds, and the receipts to regenerate every one of them. A field with a replication problem does not need another uncaveated percentage.
-        </div>
       </div>
     </section>
   );

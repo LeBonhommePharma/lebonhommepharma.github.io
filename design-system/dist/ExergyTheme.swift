@@ -95,6 +95,31 @@ public enum ExergyTheme {
         scheme == .dark ? Color(red: 0.8627, green: 0.8627, blue: 0.8941) : Color(red: 0.4392, green: 0.4353, blue: 0.4667)
     }
 
+    /// dark #00A2FF · light #0075BB
+    public static func tCryoFg(_ scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color(red: 0.0000, green: 0.6353, blue: 1.0000) : Color(red: 0.0000, green: 0.4588, blue: 0.7333)
+    }
+
+    /// dark #7FD0FF · light #2077A2
+    public static func tColdFg(_ scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color(red: 0.4980, green: 0.8157, blue: 1.0000) : Color(red: 0.1255, green: 0.4667, blue: 0.6353)
+    }
+
+    /// dark #DCDCE4 · light #706F77
+    public static func tAmbientFg(_ scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color(red: 0.8627, green: 0.8627, blue: 0.8941) : Color(red: 0.4392, green: 0.4353, blue: 0.4667)
+    }
+
+    /// dark #FF7A5C · light #C54529
+    public static func tPhysioFg(_ scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color(red: 1.0000, green: 0.4784, blue: 0.3608) : Color(red: 0.7725, green: 0.2706, blue: 0.1608)
+    }
+
+    /// dark #F5232B · light #E2001C
+    public static func tDenatureFg(_ scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color(red: 0.9608, green: 0.1373, blue: 0.1686) : Color(red: 0.8863, green: 0.0000, blue: 0.1098)
+    }
+
     // MARK: - Series ramp
     //
     // Ordered by ENERGY along the binding coordinate, not by hue — position in
