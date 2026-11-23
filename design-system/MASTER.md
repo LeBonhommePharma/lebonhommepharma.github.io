@@ -410,7 +410,11 @@ node design-system/check-raw-hex.mjs \
 
 Recomputes every ratio annotated in `tokens.css` and fails if a comment
 disagrees with the colour beside it, then asserts every foreground token against
-the ground it is actually used on, in both themes.
+the ground it is actually used on, in both themes. It then reads
+`design/palette-v2/packages/flexaidds-tokens/elements.css` and measures every
+colour a rule there asks a person to read, in both themes, so a rule that
+reaches for a bare identity hue instead of its `--*-fg` twin fails here rather
+than shipping.
 
 ### `design-system/emit.mjs --check`
 
