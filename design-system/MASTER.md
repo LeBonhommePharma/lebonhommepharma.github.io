@@ -414,7 +414,14 @@ the ground it is actually used on, in both themes. It then reads
 `design/palette-v2/packages/flexaidds-tokens/elements.css` and measures every
 colour a rule there asks a person to read, in both themes, so a rule that
 reaches for a bare identity hue instead of its `--*-fg` twin fails here rather
-than shipping.
+than shipping. "Read" means `color` and `-webkit-text-fill-color`, the two
+properties that paint glyphs. It also fails if `elements.css` declares a custom
+property, because a token redefined there would change what the page paints
+while the check measured the `tokens.css` value it shadows. And it fails if
+`.state-pass` or `.state-warn` stops painting the hue its state token is bound
+to. `--self-test` proves the audit can still fail, against a frozen token model
+so that a token regression is reported as the contrast failure it is; CI runs
+it as its own step.
 
 ### `design-system/emit.mjs --check`
 

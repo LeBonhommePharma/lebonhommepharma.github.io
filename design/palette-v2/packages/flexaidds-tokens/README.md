@@ -25,8 +25,8 @@ consuming stylesheet. `elements.css` is the opinionated half — the body grid,
 mono headings, `.eyebrow`, `.stat-value`, `.brand`. Take `tokens.css` alone if
 your design system already styles elements.
 
-Every colour `elements.css` paints as text goes through a `--*-fg` twin, never
-a bare key colour. On the ink the twin *is* the key colour, so dark appearance
+Every key colour `elements.css` paints as text goes through its `--*-fg` twin,
+never the bare hue. On the ink the twin *is* the key colour, so dark appearance
 is unchanged. On the light ground the bare hues fall to 1.56–3.92:1, and the
 twins are solved to clear AA body text there. Do the same in your own rules:
 bare key colours are for fills, washes and charts. `design-system/check-contrast.mjs`

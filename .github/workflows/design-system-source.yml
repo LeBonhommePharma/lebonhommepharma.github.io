@@ -63,9 +63,11 @@ jobs:
         run: node design-system/check-raw-hex.mjs
 
       # The contrast guard reads elements.css with its own parser. If that
-      # parser has stopped catching main's old bare-hue shape, or has stopped
+      # parser has stopped catching the old bare-hue shape, or has stopped
       # failing closed on what it cannot read, the scan below is a pass it
-      # never made.
+      # never made. The fixtures run against a frozen token model, so this
+      # step goes red only when the guard is broken, never because a token
+      # moved; a moved token is the next step's failure, and it names it.
       - name: Self-test the contrast guard
         if: always()
         run: node design-system/check-contrast.mjs --self-test
