@@ -12,6 +12,12 @@
 
    Consuming a design system that already styles elements? Take
    `tokens.css` alone; this file is the part that has opinions.
+
+   Every colour a person READS here takes the --*-fg twin, never
+   the bare key colour. On the ink the twins ARE the key colours,
+   so the dark theme is unchanged; on the light ground the bare
+   hues fall below AA. design-system/check-contrast.mjs measures
+   every `color:` in this file in both themes.
    ============================================================ */
 
 html {
@@ -71,8 +77,14 @@ p {
   text-wrap: pretty;
 }
 
-a { color: var(--mint); }
+a { color: var(--mint-fg); }
 a:hover { color: var(--kw-ga); }
+
+/* --kw-ga is a lift for the ink and has no -fg twin; on the light
+   ground it all but disappears. There a hover goes darker, not
+   lighter (tokens.css makes the same call for --state-fail-text),
+   so the light hover takes the body ink. */
+[data-theme="light"] a:hover { color: var(--fg); }
 
 code, .mono, kbd, samp {
   font-family: var(--font-mono);
@@ -87,7 +99,7 @@ code, .mono, kbd, samp {
   font-weight: var(--fw-500);
   letter-spacing: var(--tracking-tag);
   text-transform: uppercase;
-  color: var(--strawberry);
+  color: var(--strawberry-fg);
 }
 
 /* Stat block — oversized mono number under a tiny tracked label. */
@@ -97,7 +109,7 @@ code, .mono, kbd, samp {
   font-weight: var(--fw-700);
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--tangerine);
+  color: var(--tangerine-fg);
 }
 
 .stat-label {
@@ -110,15 +122,17 @@ code, .mono, kbd, samp {
 }
 
 /* Equation terms — the identity reads term by term in color. */
-.eq-dg  { color: var(--tangerine); }
-.eq-dh  { color: var(--mint); }
-.eq-t   { color: var(--firetruck); }
-.eq-ds  { color: var(--violet); }
-.eq-dsv { color: var(--aqua); }
+.eq-dg  { color: var(--tangerine-fg); }
+.eq-dh  { color: var(--mint-fg); }
+.eq-t   { color: var(--firetruck-fg); }
+.eq-ds  { color: var(--violet-fg); }
+.eq-dsv { color: var(--aqua-fg); }
 
-/* State */
-.state-pass { color: var(--state-pass); }
-.state-warn { color: var(--state-warn); }
+/* State. tokens.css binds --state-pass to mint and --state-warn to
+   strawberry, so they read through those twins; --state-fail has
+   its own read value, --state-fail-text. */
+.state-pass { color: var(--mint-fg); }
+.state-warn { color: var(--strawberry-fg); }
 .state-fail { color: var(--state-fail-text); }
 
 /* Brand wordmark — mint mark, tangerine ΔS. */
@@ -126,10 +140,10 @@ code, .mono, kbd, samp {
   font-family: var(--font-mono);
   font-weight: var(--fw-700);
   letter-spacing: 0.02em;
-  color: var(--mint);
+  color: var(--mint-fg);
 }
 
-.brand .delta { color: var(--tangerine); }
+.brand .delta { color: var(--tangerine-fg); }
 
 /* Tables put their numbers on a tabular figure. */
 table { font-variant-numeric: tabular-nums; }

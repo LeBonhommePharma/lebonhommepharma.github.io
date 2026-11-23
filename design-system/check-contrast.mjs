@@ -13,13 +13,19 @@
  * (foreground, background) pair — a ratio quoted without naming its background
  * is not a measurement, so nothing here is checked against an assumed ground.
  *
+ * And it reads elements.css, the half of the package that puts text on a page.
+ * Proving the tokens readable proves nothing about a rule that reaches past a
+ * twin for the bare identity hue, so every `color:` there is measured too, in
+ * both themes.
+ *
  * WCAG 2.1 AA: 4.5:1 body · 3:1 at >=24px or >=18.66px bold · 3:1 non-text.
  *
  * Usage: check-contrast.mjs [--verbose]
  */
 
 import { readFileSync } from 'node:fs';
-import { parseTokens, resolve, SOURCE } from './extract.mjs';
+import { join } from 'node:path';
+import { parseTokens, resolve, ROOT, SOURCE } from './extract.mjs';
 import { contrast, fmtRatio } from './oklch.mjs';
 
 const VERBOSE = process.argv.includes('--verbose');
@@ -166,11 +172,110 @@ for (const name of ['mint', 'violet', 'tangerine', 'firetruck', 'aqua', 'strawbe
   console.log(`  ${name.padEnd(11)} ${hex}  dark ${String(show(onDark)).padStart(6)}:1   light ${String(show(onLight)).padStart(5)}:1  ${note}`);
 }
 
+// ── 4. every colour elements.css asks a person to read ──────────────────────
+// Sections 1–3 prove the TOKENS readable, and none of that reached the rules
+// that use them: every accent rule in elements.css read a bare key colour
+// while this check stayed green, because the colours it measured were not the
+// colours on the page. So the rules are measured too, per selector, in both
+// themes, against the one ground the file paints (body: var(--bg)).
+//
+// Every run is held to the body target whatever its size. .eq-dg, .brand and
+// `a` inherit their size from markup this file never sees, so a large-text
+// allowance would be a guess about that markup.
+//
+// Fail-closed, the way extract.mjs is: flat rules only. An at-rule block, a
+// theme qualifier this does not recognise, a second painted ground or a colour
+// it cannot resolve is a FAIL, never a skip. A check that half-reads a file and
+// reports the half reports a pass it never made.
+const ELEMENTS = 'design/palette-v2/packages/flexaidds-tokens/elements.css';
+console.log(`\n── ${ELEMENTS} · every text colour vs --bg · body target ${BODY_TARGET}:1`);
+const elCss = readFileSync(join(ROOT, ELEMENTS), 'utf8').replace(/\/\*[\s\S]*?\*\//g, ' ');
+if (/@[A-Za-z-]+[^;{}]*\{/.test(elCss)) {
+  bad('elements.css has an at-rule block — this reads flat rules only; teach it the block before trusting it');
+}
+
+const THEMED = /^\[data-theme="(light|dark)"\]\s+/;
+const VAR_ONLY = /^var\(\s*(--[A-Za-z0-9-]+)\s*\)$/;
+const runs = new Map(); // selector -> { base, dark, light } colour expressions
+let paintsGround = false;
+for (const [, selText, body] of elCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+  const decls = {};
+  for (const d of body.split(';')) {
+    const h = /^\s*([A-Za-z-]+)\s*:\s*([\s\S]+?)\s*$/.exec(d);
+    if (h) decls[h[1].toLowerCase()] = h[2].replace(/\s+/g, ' ');
+  }
+  const ground = decls['background-color'] ?? decls.background;
+  for (const raw of selText.split(',')) {
+    const sel = raw.replace(/\s+/g, ' ').trim();
+    if (!sel) continue;
+    if (ground !== undefined) {
+      if (sel === 'body' && ground === 'var(--bg)') paintsGround = true;
+      else bad(`${sel} paints its own ground (${ground}) — measure text against it before trusting this check`);
+    }
+    // A light- or dark-scoped rule overrides its base selector in that theme
+    // only; it outranks the base on specificity, so source order is moot.
+    const t = THEMED.exec(sel);
+    const key = t ? sel.slice(t[0].length) : sel;
+    if (/data-theme/.test(key)) {
+      bad(`${sel}: a theme qualifier this check cannot attribute — write it as [data-theme="light"] <selector>`);
+      continue;
+    }
+    if (decls.color === undefined) continue;
+    const run = runs.get(key) ?? {};
+    run[t ? t[1] : 'base'] = decls.color; // later wins, as in the cascade
+    runs.set(key, run);
+  }
+}
+if (!paintsGround) bad('body no longer paints var(--bg) — measuring against --bg would be an assumed ground');
+
+/** The read twin of a bare colour, following var() aliases: --state-pass -> --mint-fg. */
+function twinOf(expr) {
+  let m = VAR_ONLY.exec(expr);
+  for (let guard = 0; m && guard < 32; guard++) {
+    if (blocks[':root'][`${m[1]}-fg`] !== undefined) return `var(${m[1]}-fg)`;
+    m = VAR_ONLY.exec(blocks[':root'][m[1]] ?? '');
+  }
+  return null;
+}
+
+let measured = 0;
+for (const [sel, run] of runs) {
+  for (const [theme, block] of [['dark', ':root'], ['light', LIGHT]]) {
+    const expr = run[theme] ?? run.base;
+    if (expr === undefined) continue;
+    measured++;
+    const bg = resolve(blocks, block, '--bg');
+    const v = VAR_ONLY.exec(expr);
+    let fg;
+    try {
+      fg = v ? resolve(blocks, block, v[1]) : expr;
+    } catch (e) {
+      bad(`${theme}: ${sel} { color: ${expr} } — ${e.message}`);
+      continue;
+    }
+    if (fg === undefined) { bad(`${theme}: ${sel} { color: ${expr} } — tokens.css does not define ${v[1]}`); continue; }
+    const r = ratio(fg, bg);
+    if (r === null) { bad(`${theme}: ${sel} { color: ${expr} } = ${fg} is not a plain hex; cannot measure`); continue; }
+    if (r < BODY_TARGET) {
+      const twin = twinOf(expr);
+      bad(`${theme}: ${sel} { color: ${expr} } = ${fg} on ${bg} = ${show(r)}:1 (${r.toFixed(6)}) — below the body target (${BODY_TARGET}:1)${twin ? `; read it through ${twin}` : ''}`);
+    } else ok(`${theme}: ${sel} { color: ${expr} } = ${fg} on ${bg} = ${show(r)}:1`);
+  }
+}
+console.log(`  ${measured} text run(s) measured across ${runs.size} selector(s)`);
+if (measured === 0) {
+  console.log('  FAIL  parsed no `color:` from elements.css — the pattern has stopped matching.');
+  console.log('        A check that silently matches nothing reports a clean pass it never made.');
+  fail++;
+}
+
 console.log('');
 if (fail) {
   console.log(`contrast: ${fail} failure(s).`);
   console.log('A ratio is a (foreground, background) pair. Fix the colour, or fix the number —');
   console.log('never the comment alone. Re-solve with: node design-system/derive-light.mjs 4.5');
+  console.log('A rule in elements.css is fixed in the rule: read the --*-fg twin, not the bare hue.');
   process.exit(1);
 }
-console.log('contrast: every annotated ratio is true and every foreground token clears AA.');
+console.log('contrast: every annotated ratio is true, every foreground token clears AA, and');
+console.log('every colour elements.css asks a person to read clears the body target in both themes.');
