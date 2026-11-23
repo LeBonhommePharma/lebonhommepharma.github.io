@@ -183,7 +183,7 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
 
 <section>
   <div class="eyebrow">// profile</div>
-  <p>Computational pharmacologist working at the intersection of <span style="color:var(--aqua);">genetic algorithms</span> and <span style="color:var(--violet);">statistical mechanics</span>. Main author of <span style="color:var(--mint);font-weight:500;">FlexAIDΔS</span>, a <span style="color:var(--aqua);">genetic-algorithm</span> docking engine that computes the full <span style="white-space:nowrap;"><span style="color:var(--tangerine);">ΔG</span> = <span style="color:var(--mint);">ΔH</span> − <span style="color:var(--violet);">TΔS</span></span> − the <span style="color:var(--violet);">conformational entropy</span> term included, recovering the correct <span style="color:var(--mint);">binding mode</span> where <span style="color:var(--mint);">enthalpy-only</span> scoring fails. Every result is <span style="color:var(--mint);">reproducible</span> by construction and shipped under <span style="color:var(--mint);">Apache&nbsp;2.0</span>. Anti-prohibitionist; <span style="color:var(--mint);">harm reduction</span> as applied thermodynamics. Montréal.</p>
+  <p>Computational pharmacologist working at the intersection of <span style="color:var(--aqua);">genetic algorithms</span> and <span style="color:var(--violet);">statistical mechanics</span>. Main author of <span style="color:var(--mint);font-weight:500;">FlexAIDΔS</span>, a <span style="color:var(--aqua);">genetic-algorithm</span> docking engine that ranks poses with a Voronoi <span style="color:var(--mint);">contact function</span> and computes <span style="color:var(--violet);">conformational</span> and vibrational entropy terms alongside, tested in pre-registered benchmarks. Released under <span style="color:var(--mint);">Apache&nbsp;2.0</span>. Anti-prohibitionist; <span style="color:var(--mint);">harm reduction</span> as applied thermodynamics. Montréal.</p>
 </section>
 
 <section>
@@ -226,7 +226,7 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
   <div class="avoid" style="margin-bottom:15px;">
     <div class="row"><span class="strong">Doctoral researcher</span><span class="dates">Fall 2017 − present</span></div>
     <div class="org">Najmanovich Research Group · Université de Montréal</div>
-    <ul class="pts"><li>Main author of FlexAIDΔS: a C++26 genetic-algorithm docking engine with a full statistical-mechanics score (ΔG = ΔH − TΔS), torsional ENCoM entropy, Voronoi contact function and dead-end-elimination torsion pruning.</li><li>Running the Astex Diverse 85 self- and cross-docking campaign; results are published at thebonhomme.com/benchmark/ as they are measured.</li><li>Built Python bindings and the NRGsuite PyMOL plugin; zero-copy GPU/OpenMP batch scoring for high-throughput screens.</li></ul>
+    <ul class="pts"><li>Main author of FlexAIDΔS: a C++26 genetic-algorithm docking engine with a Voronoi contact-function score, optional configurational and torsional-ENCoM entropy terms, and dead-end-elimination torsion pruning.</li><li>Benchmarking it on Astex Diverse by redocking (crystal receptor, binding site given, input ligand blinded): 38 of 84 targets with the top pose under 2 Å by plain RMSD, the same count as the published FlexAID 2015 run. No cross-docking result has been validated.</li><li>Built Python bindings and the NRGsuite PyMOL plugin; zero-copy GPU/OpenMP batch scoring for high-throughput screens.</li></ul>
   </div>
   <div class="avoid" style="margin-bottom:15px;">
     <div class="row"><span class="strong">Lead programmer</span><span class="dates">2014 − present</span></div>
@@ -254,7 +254,7 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
       <span class="sw-stack">C++26 · Python · PyMOL</span>
       <span class="lic">Apache 2.0</span>
     </div>
-    <div class="body" style="margin-top:3px;">Entropy-driven molecular docking engine. GA conformational search, Voronoi contact function, torsional ENCoM entropy, DEE torsion pruning, zero-copy GPU/OpenMP batch scoring.</div>
+    <div class="body" style="margin-top:3px;">Molecular docking engine. GA conformational search ranked by a Voronoi contact function; optional configurational and torsional-ENCoM entropy terms; DEE torsion pruning; zero-copy GPU/OpenMP batch scoring.</div>
   </div>
   <div class="sw">
     <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
@@ -262,7 +262,7 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
       <span class="sw-stack">C++20 · Python</span>
       <span class="lic">Apache 2.0</span>
     </div>
-    <div class="body" style="margin-top:3px;">Entropy-collapse detector for frontier LLM agents − zero-shot evaluation-awareness and strategic-deception monitoring via the same H = −Σ p<sub>i</sub> log<sub>2</sub> p<sub>i</sub> kernel that scores FlexAIDΔS binding.</div>
+    <div class="body" style="margin-top:3px;">Entropy-collapse monitor for LLM agent token streams, using the H = −Σ p<sub>i</sub> log<sub>2</sub> p<sub>i</sub> kernel ported from FlexAIDΔS. In development; no detection-accuracy figure published yet.</div>
   </div>
   <div class="sw">
     <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">
@@ -292,16 +292,11 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
 
 <section class="avoid">
   <div class="eyebrow">// benchmarks &amp; validation</div>
-  <p class="body method">FlexAIDΔS is validated on <span style="color:var(--fg);">Astex Diverse 85</span> by self-docking and cross-docking with no crystal coordinates supplied, scoring the top pose by heavy-atom RMSD against the deposited ligand and by PoseBusters-style physical-plausibility checks. Shannon is validated on labelled entropy-collapse traces by detection sensitivity at fixed false-positive rate. The Astex campaign is in progress; measured results are published at <a href="https://thebonhomme.com/benchmark/" style="color:var(--tangerine);">thebonhomme.com/benchmark/</a> as they land, never before.</p>
+  <p class="body method">FlexAIDΔS is benchmarked on <span style="color:var(--fg);">Astex Diverse</span> by redocking: each ligand into its own crystal structure (cofactors removed), the binding site given, the input ligand blinded, the top-ranked pose scored by heavy-atom RMSD against the deposited ligand and by PoseBusters checks. On the 84 targets shared with the published FlexAID 2015 run, scored with the same plain RMSD, both place the top pose within 2 Å on 38 targets (95% interval on the difference −10.7 to +10.7 points). No cross-docking result has been validated. Shannon is an entropy-collapse detector for agent traces, in development; no detection-accuracy figure is published yet. Benchmark status: <a href="https://thebonhomme.com/benchmark/" style="color:var(--tangerine);">thebonhomme.com/benchmark/</a>.</p>
 </section>
 
 <section>
   <div class="eyebrow">// publications</div>
-  <div class="sub-eyebrow">preprints &amp; in preparation</div>
-  <ol class="pubs">
-  <li><span class="n">P1</span><span class="au">Morency L-P.</span> FlexAIDΔS: entropy-driven molecular docking with a full ΔG = ΔH − TΔS statistical-mechanics score. <span class="ve">Preprint / in preparation.</span> <span class="yr">2026</span></li>
-  <li><span class="n">P2</span><span class="au">Morency L-P.</span> Shannon: entropy-collapse detection for frontier LLM agents via the FlexAIDΔS configurational-entropy kernel. <span class="ve">Preprint.</span> <span class="yr">2026</span></li>
-</ol>
   <div class="sub-eyebrow">peer-reviewed</div>
   <ol class="pubs">
   <li><span class="n">01</span><span class="au">Morency L-P, Gaudreault F, Najmanovich RJ.</span> Applications of the NRGsuite and the molecular docking software FlexAID in computational drug discovery and design. <span class="ve">Methods in Molecular Biology 1762, 367–388. Humana Press.</span> <span class="yr">2018</span></li>
@@ -310,7 +305,7 @@ footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--mint-15);disp
   <li><span class="n">04</span><span class="au">Gaudreault F, Morency L-P, Najmanovich RJ.</span> NRGsuite: a PyMOL plugin to perform docking simulations in real time using FlexAID. <span class="ve">Bioinformatics 31(23), 3856–3858.</span> <span class="yr">2015</span></li>
   <li><span class="n">05</span><span class="au">Leclerc J, Lefèvre T, Pottier F, Morency L-P, Lapointe-Verreault C, Gagné SM, Auger M.</span> Structure and pH-induced alterations of recombinant and natural spider silk proteins in solution. <span class="ve">Biopolymers 97(6), 337–346.</span> <span class="yr">2012</span></li>
 </ol>
-  <div class="sub-eyebrow">invited talks &amp; conference keynotes</div>
+  <div class="sub-eyebrow">invited &amp; selected talks</div>
   <ol class="pubs">
   <li><span class="n">K1</span><span class="au">Morency L-P.</span> The Impact of Conformational Entropy on the Accuracy of FlexAID in Binding Mode Prediction (part III) <span class="ve">3DSig · ISMB/ECCB 2019, Basel − selected oral talk (only ~3 non-PI speakers chosen per session).</span> <span class="yr">2019</span></li>
   <li><span class="n">K2</span><span class="au">Morency L-P.</span> The Impact of Conformational Entropy on the Accuracy of FlexAID in Binding Mode Prediction (part II) <span class="ve">ISMB 2018, Chicago − selected oral talk.</span> <span class="yr">2018</span></li>
