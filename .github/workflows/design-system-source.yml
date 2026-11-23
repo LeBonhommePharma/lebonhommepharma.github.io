@@ -62,9 +62,10 @@ jobs:
       - name: No colour born outside the token source
         run: node design-system/check-raw-hex.mjs
 
-      # The contrast guard reads elements.css with its own parser, and proves
-      # against fixtures that the parser still catches the old bare-hue shape
-      # and still fails closed on what it cannot read. The scan below runs that
+      # The contrast guard reads elements.css, and the stylesheet tui.js injects,
+      # with its own parsers, and proves against fixtures that each still
+      # catches the old bare-hue shape and still fails closed on what it cannot
+      # read. The scan below runs that
       # proof too and stops with exit 2 if it breaks; this step exists so a
       # broken guard is its own red step, not a line inside a contrast failure.
       # The fixtures use a frozen token model, so this step goes red only when
@@ -80,7 +81,11 @@ jobs:
       # the body target in both themes, at any size. The tokens being right
       # says nothing about whether the stylesheet beside them uses the right
       # ones: elements.css shipped mint links at 1.56:1 on the light ground
-      # while every token check here was green.
+      # while every token check here was green. The same holds for the CSS
+      # assets/tui.js injects, which no .css file holds: every colour it paints
+      # as text is measured on the ground it sits on (window, titlebar, restore
+      # chip), in both themes. No `paths:` filter above, so a change to tui.js
+      # alone still runs this.
       - name: Contrast ratios are measured, not asserted
         if: always()
         run: node design-system/check-contrast.mjs

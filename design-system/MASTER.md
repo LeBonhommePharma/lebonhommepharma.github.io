@@ -423,7 +423,31 @@ a string holding CSS syntax or a backslash escape, and on a theme-scoped rule
 that can never match. And it fails if `.state-pass` or `.state-warn` stops
 painting, in either theme, the read twin of the hue its state token is bound to.
 Text is held against `--bg`; the 1px `--grid-line` the body paints across it is
-excluded, and that exclusion is stated in the check's header. `--self-test` proves the audit can still fail, against a frozen token model
+excluded, and that exclusion is stated in the check's header.
+
+It reads `assets/tui.js` too. The panel injects its own stylesheet as a
+`var CSS = [ ... ].join('')` array of string literals, which no `.css` file
+holds, so its read colours sat at 1.26–3.92:1 on the light ground while every
+other check was green. The check joins the single-quoted literals, with the `//`
+comments between them stripped, and measures every colour that paints a glyph
+in both themes, on the ground that glyph sits on: the window (`.tui-win`,
+`--bg`), the titlebar (`.tui-bar`, `--bg-card` composited over the window,
+which matters because dark violet clears on the window and does not on the
+bar), or the restore chip (`.tui-restore`, `--bg-card` over the page). Which
+ground a class sits on comes from the DOM `tui.js` builds, in a table; a class
+that carries text and is not in the table fails. A bare key colour that drops
+below the target fails with its selector and its twin (`--mint -> --mint-fg`,
+`--state-pass -> --mint-fg`). Fills are left alone (the lights, the meter ramp,
+the caret), but a fill that sets a read colour fails. Of the `@media` blocks in
+the array, those on width or `prefers-reduced-motion` are read, and every
+colour inside one is measured as if it always applied. `@keyframes` may animate
+opacity and transform only, and only on a rule that paints no glyph. Anything
+else it cannot attribute fails: another at-rule, `prefers-color-scheme`,
+nesting, a theme-scoped selector, an unresolvable token, a fallback that is not
+its token's dark value, zero rules parsed, or a colour set from script outside
+the array (the stage names were inline styles until they became `.tui-s1`–`.tui-s6`).
+
+`--self-test` proves both audits can still fail, against a frozen token model
 so that a token regression is reported as the contrast failure it is; CI runs
 it as its own step.
 

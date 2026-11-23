@@ -405,6 +405,13 @@
     }
   }
 
+  // design-system/check-contrast.mjs (section 5) reads this array as the
+  // panel's stylesheet and measures every colour in it that paints a glyph,
+  // in both themes, on the ground the DOM below puts it on. So keep it as it
+  // is: single-quoted literals joined with '', every colour in a class here
+  // (never set from script), and a new class that carries text added to that
+  // check's TUI_PLACES / TUI_TEXT with its ground. It fails, not skips, on
+  // anything it cannot read.
   var CSS = [
     '[data-flexaidds-tui]{--tui-pad:clamp(16px,3vw,24px);font-family:var(--font-mono,monospace)}',
     '.tui-win{border:1px solid var(--violet-20,rgba(139,92,246,.2));border-radius:var(--r-lg,12px);',
