@@ -29,9 +29,11 @@ on:
     workflows: ["Deploy GitHub Pages"]
     types: [completed]
 
+# GITHUB_TOKEN only reads. The stats commit lands through a PR opened and
+# merged with the bot App token (scripts/land-via-pr.sh); ruleset "main
+# protection" rejects a direct push with GH013.
 permissions:
-  contents: write
-  actions: write
+  contents: read
 
 concurrency:
   group: update-flexaidds-stats
@@ -70,25 +72,35 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "chore: refresh FlexAIDdS repo stats from GitHub"
-          git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Deploy via pages.yml
+      # Fail here, by name, rather than at a 403 later.
+      - name: Bot landing token — preflight
         if: github.event_name != 'pull_request' && steps.commit.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          APP_ID: ${{ vars.BOT_APP_ID }}
+          HAS_KEY: ${{ secrets.BOT_APP_PRIVATE_KEY != '' }}
         run: |
           set -euo pipefail
-          before=$(gh run list --workflow=pages.yml -L 1 --json databaseId -q '.[0].databaseId')
-          gh workflow run pages.yml --ref main
-          id="$before"
-          for i in $(seq 1 40); do
-            id=$(gh run list --workflow=pages.yml -L 1 --json databaseId -q '.[0].databaseId')
-            if [ "$id" != "$before" ]; then echo "pages run $id"; break; fi
-            sleep 5
-          done
-          [ "$id" != "$before" ] || { echo "::error::pages.yml never started"; exit 1; }
-          gh run watch "$id" --exit-status
+          [ -n "$APP_ID" ] || { echo "::error::repository variable BOT_APP_ID is not set — see DEPLOY.md, 'Bot landing token'"; exit 1; }
+          [ "$HAS_KEY" = "true" ] || { echo "::error::repository secret BOT_APP_PRIVATE_KEY is not set — see DEPLOY.md, 'Bot landing token'"; exit 1; }
+
+      - name: Bot landing token
+        id: app
+        if: github.event_name != 'pull_request' && steps.commit.outputs.changed == 'true'
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
+      # PR -> required checks green -> merge -> wait for the pages.yml run the
+      # merge push starts (an App-token merge is an ordinary push).
+      - name: Land on main via PR
+        if: github.event_name != 'pull_request' && steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+        run: |
+          scripts/land-via-pr.sh land flexaidds-stats "chore: refresh FlexAIDdS repo stats from GitHub"
 
       - name: Verify live GitHub stats (fail closed)
         if: github.event_name != 'pull_request'
