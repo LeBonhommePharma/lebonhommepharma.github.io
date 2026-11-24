@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shannon — Entropy Collapse for Frontier Agents · Le Bonhomme Pharma</title>
-  <meta name="description" content="Shannon: entropy-collapse detector for frontier LLM agents and multi-agent hubs. Same H = −Σ pᵢ log₂ pᵢ kernel as FlexAID∆S. Zero-shot evaluation-awareness and strategic-deception monitoring. &lt;1 µs per token.">
+  <meta name="description" content="Shannon: entropy-collapse monitor for LLM agents and multi-agent hubs, using the H = −Σ pᵢ log₂ pᵢ kernel from FlexAID∆S. In development; no detection-accuracy figure is published yet. &lt;1 µs per token.">
   <meta name="keywords" content="Shannon entropy, LLM safety, evaluation awareness, strategic deception, multi-agent, entropy collapse, FlexAIDΔS, AI safety">
   <meta name="author" content="Le Bonhomme Pharma">
   <meta name="theme-color" content="#08091A">
   <link rel="canonical" href="https://thebonhomme.com/shannon/">
 
   <meta property="og:title" content="Shannon — Entropy Collapse for Frontier Agents">
-  <meta property="og:description" content="Entropy-collapse detector for frontier LLM agents. Same configurational entropy kernel as FlexAID∆S. Zero-shot evaluation-awareness monitoring. &lt;1 µs/token.">
+  <meta property="og:description" content="Entropy-collapse monitor for LLM agents, using the Shannon-entropy kernel from FlexAID∆S. No detection-accuracy figure is published yet. &lt;1 µs/token.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://thebonhomme.com/shannon/">
   <meta property="og:site_name" content="Le Bonhomme Pharma">
@@ -20,7 +20,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@BonhommePharma">
   <meta name="twitter:title" content="Shannon — Entropy Collapse for Frontier Agents">
-  <meta name="twitter:description" content="Zero-shot evaluation-awareness detection via Shannon entropy collapse. Same kernel as FlexAIDΔS binding.">
+  <meta name="twitter:description" content="Entropy-collapse monitoring for LLM agents, using the Shannon-entropy kernel from FlexAIDΔS. No detection-accuracy figure is published yet.">
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect x='2' y='2' width='28' height='28' rx='6' stroke='%2322D3EE' stroke-width='1.5'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-family='ui-monospace,monospace' font-size='14' font-weight='700' fill='%23A78BFA'%3EH%3C/text%3E%3C/svg%3E">
 
@@ -576,8 +576,8 @@
 
         <p class="hero-subtitle">Entropy-collapse detector for frontier LLM agents</p>
         <p class="hero-tagline">
-          Zero-shot evaluation-awareness and strategic-deception monitoring —
-          same <strong>H = −Σ pᵢ log₂ pᵢ</strong> kernel as FlexAIDΔS binding
+          Entropy-collapse monitoring for agent token streams —
+          the <strong>H = −Σ pᵢ log₂ pᵢ</strong> kernel FlexAIDΔS uses as a search diagnostic
         </p>
 
         <div class="equation" aria-label="Shannon entropy equation">
@@ -592,8 +592,8 @@
 
         <div class="hero-stats">
           <div class="hero-stat">
-            <div class="hero-stat-value" style="color:#45E0A8;">94%</div>
-            <div class="hero-stat-label">SHANNON COLLAPSE</div>
+            <div class="hero-stat-value" style="color:#45E0A8;">—</div>
+            <div class="hero-stat-label">DETECTION ACCURACY · NOT YET PUBLISHED</div>
           </div>
           <div class="hero-stat">
             <div class="hero-stat-value" style="color:#8B5CF6;">&lt;1µs</div>
@@ -601,7 +601,7 @@
           </div>
           <div class="hero-stat">
             <div class="hero-stat-value" style="color:#FF9300;">0-shot</div>
-            <div class="hero-stat-label">EVAL AWARENESS</div>
+            <div class="hero-stat-label">NO FINE-TUNING</div>
           </div>
           <div class="hero-stat">
             <div class="hero-stat-value" style="color:#E4E3F5;">OSS</div>
@@ -644,11 +644,11 @@
         <h2 class="section-h2">Frontier agents hide <span class="gradient-vg">evaluation awareness</span></h2>
 
         <div class="note-callout">
-          When an LLM agent realizes it is being evaluated, its token distribution
-          undergoes a characteristic <strong>entropy collapse</strong> — the same
-          thermodynamic signature as a ligand locking into a binding pocket.
-          Shannon detects that collapse in real time, with white-box physics and
-          no fine-tuning.
+          Working hypothesis: when an LLM agent recognises it is being evaluated,
+          its token distribution narrows — an <strong>entropy collapse</strong>, by
+          analogy with a ligand locking into a binding pocket. Shannon watches
+          for that collapse in real time, with no fine-tuning. No detection-accuracy
+          figure is published yet.
         </div>
 
         <div class="why-grid">
@@ -778,10 +778,7 @@
         </div>
 
         <p class="pipeline-note">
-          Normal generation holds <code>H ~ 8–12 bits</code>. Evaluation-aware or
-          strategic modes compress toward <code>H ~ 2–4 bits</code>. When
-          <code>ΔH &lt; −3.2</code>, Shannon reports collapse — the same phase
-          signature FlexAIDΔS reads when a ligand locks into a pocket.
+          When <code>ΔH &lt; −3.2</code>, Shannon reports collapse.
         </p>
       </div>
     </section>
@@ -920,11 +917,11 @@
         <div class="ecosystem-row">
           <a class="eco-card" href="/flexaid-ds/">
             <span class="eco-label">FlexAIDΔS</span>
-            <span class="eco-desc">Entropy-driven molecular docking. Source of the configurational entropy kernel.</span>
+            <span class="eco-desc">Molecular docking engine. Source of the Shannon-entropy kernel.</span>
           </a>
           <a class="eco-card terra-card" href="/entropy-driven/">
             <span class="eco-label">Entropy-Driven</span>
-            <span class="eco-desc">Product narrative: genetic algorithms meet statistical mechanics.</span>
+            <span class="eco-desc">An audited guide to FlexAIDΔS: search, contact scoring and entropy diagnostics.</span>
           </a>
           <a class="eco-card gold-card" href="/">
             <span class="eco-label">Le Bonhomme</span>

@@ -41,7 +41,7 @@
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Le Bonhomme Pharma — Open-source computational psychopharmacology · Montréal</title>
-<meta name="description" content="Le Bonhomme Pharma: open-source, thermodynamically rigorous computational pharmacology from Montréal. FlexAIDΔS entropy-driven docking, Shannon entropy tooling, harm-reduction pharmacology.">
+<meta name="description" content="Le Bonhomme Pharma: open-source computational pharmacology from Montréal. FlexAIDΔS molecular docking, Shannon entropy tooling, harm-reduction pharmacology.">
 <!-- Browser chrome: the ONE place a colour literal is written on this page, because a meta
      attribute cannot take var(). content is the dark --bg (the no-JS and brand default),
      data-light is the light --bg; both are copies of tokens.css values. The head script below
@@ -56,7 +56,7 @@
 <meta property="og:site_name" content="Le Bonhomme Pharma">
 <meta property="og:locale" content="en_CA">
 <meta property="og:title" content="Le Bonhomme Pharma">
-<meta property="og:description" content="Open-source, thermodynamically rigorous, unapologetically pro-drug in the clinical sense that matters. ΔG = ΔH − TΔS.">
+<meta property="og:description" content="Open-source, thermodynamically honest, unapologetically pro-drug in the clinical sense that matters. ΔG = ΔH − TΔS.">
 <meta property="og:url" content="https://thebonhomme.com/">
 <meta property="og:type" content="website">
 <!-- No og:image / twitter:image on purpose: nothing is published at the usual paths and a
@@ -65,7 +65,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@BonhommePharma">
 <meta name="twitter:title" content="Le Bonhomme Pharma">
-<meta name="twitter:description" content="Open-source computational psychopharmacology from Montréal. FlexAIDΔS entropy-driven docking, Shannon entropy tooling, harm-reduction pharmacology. ΔG = ΔH − TΔS.">
+<meta name="twitter:description" content="Open-source computational psychopharmacology from Montréal. FlexAIDΔS molecular docking, Shannon entropy tooling, harm-reduction pharmacology. ΔG = ΔH − TΔS.">
 <!-- Drug of the Day: the site's one picker (rotation + Montréal-date rule). Loaded in the head so the
      script after the masthead can upgrade the ℞ link before first paint. -->
 <script src="/assets/dotd.js"></script>
@@ -108,14 +108,14 @@
   "@type": "Organization",
   "name": "Le Bonhomme Pharma",
   "url": "https://thebonhomme.com/",
-  "description": "Open-source, thermodynamically rigorous computational pharmacology from Montréal.",
+  "description": "Open-source, thermodynamically honest computational pharmacology from Montréal.",
   "sameAs": ["https://github.com/LeBonhommePharma"],
   "address": { "@type": "PostalAddress", "addressLocality": "Montréal", "addressRegion": "QC", "addressCountry": "CA" },
   "founder": {
     "@type": "Person",
     "name": "Louis-Philippe Morency",
     "alternateName": "LP Morency",
-    "jobTitle": "PhD Candidate, Psychopharmacology",
+    "jobTitle": "PhD Candidate, Pharmacology",
     "affiliation": { "@type": "CollegeOrUniversity", "name": "Université de Montréal" },
     "url": "https://thebonhomme.com/#about",
     "sameAs": ["https://github.com/LeBonhommePharma"]
@@ -1938,7 +1938,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:var(--r
               nobody has measured, and a number that wobbles on reload is worse — live-looking
               telemetry makes a fabricated figure <em>more</em> convincing, not less. The protocol is
               published now so the run is reproducible before the claim is made rather than after it
-              is challenged. The figures follow in the preprint.</p>
+              is challenged. The figures will appear here with their receipts.</p>
           </div>
         </details>
       </div>
@@ -1967,9 +1967,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:var(--r
       <article class="work k-dg">
         <div class="work-top"><span class="label">Docking engine</span><span class="work-glyph" aria-hidden="true">ΔG</span></div>
         <h3>FlexAIDΔS</h3>
-        <p>Entropy-driven molecular docking. The full identity, computed: Shannon configurational
-          entropy, torsional ENCoM vibrational term, Voronoi contact enthalpy, batch rescoring. The
-          engine behind the terminal at the top, and behind every figure on this page.</p>
+        <p>Molecular docking ranked by a Voronoi contact function, with Shannon configurational
+          entropy and a torsional ENCoM vibrational term computed alongside in contact-function units.
+          No controlled test so far has shown that adding them improves pose choice or affinity ranking.</p>
         <!-- Entropy-Driven is FlexAIDΔS's documentation, so it rides on this card as its second
              link rather than as a seventh card: six works a group, as the approved grid has it. -->
         <div class="work-ctas">
@@ -2093,7 +2093,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:var(--r
     <div><span class="label">Colophon</span></div>
     <div>
       <h2>Louis-Philippe (LP) Morency</h2>
-      <p class="role">PhD candidate · Psychopharmacology · <span lang="fr">Université de Montréal</span> · Le Bonhomme Pharma</p>
+      <p class="role">PhD candidate · Pharmacology · <span lang="fr">Université de Montréal</span> · Le Bonhomme Pharma</p>
       <div class="measure" style="margin-top:var(--sp-6)">
         <p>Wrote FlexAIDΔS because the field needed thermodynamically honest docking and nobody else
           was going to do it from a basement in Little Burgundy. Main coder on FlexAIDΔS, Shannon,

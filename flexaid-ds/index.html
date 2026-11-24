@@ -4,20 +4,20 @@
   <!-- deploy-stamp: 2026-07-25-pages-republish -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlexAID∆S — Entropy-Driven Molecular Docking · Le Bonhomme Pharma</title>
-  <meta name="description" content="FlexAID∆S — entropy-driven molecular docking engine. Computes ΔG = ΔH − TΔS and models conformational and vibrational entropy explicitly, instead of fitting it away. Open source, Apache 2.0, reproducible by construction.">
+  <title>FlexAID∆S — Open-Source Molecular Docking · Le Bonhomme Pharma</title>
+  <meta name="description" content="FlexAID∆S — open-source molecular docking engine (Apache 2.0). Genetic-algorithm search with poses ranked by a Voronoi contact function; conformational and vibrational entropy terms are computed in CF units as diagnostics. No validated success rate is published.">
   <meta name="theme-color" content="#08091A">
   <link rel="canonical" href="https://thebonhomme.com/flexaid-ds/">
 
-  <meta property="og:title" content="FlexAID∆S — Entropy-Driven Molecular Docking Engine">
-  <meta property="og:description" content="Genetic algorithms meet statistical mechanics. Binding free energy computed as ΔG = ΔH − TΔS, with entropy modelled explicitly rather than fitted away. Open source and reproducible by construction.">
+  <meta property="og:title" content="FlexAID∆S — Open-Source Molecular Docking Engine">
+  <meta property="og:description" content="Genetic-algorithm search with poses ranked by a Voronoi contact function; entropy terms reported as diagnostics in CF units, not as a binding free energy. Open source, Apache 2.0.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://thebonhomme.com/flexaid-ds/">
   <meta property="og:site_name" content="FlexAID∆S">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@BonhommePharma">
-  <meta name="twitter:title" content="FlexAIDΔS — Entropy-Driven Molecular Docking Engine">
-  <meta name="twitter:description" content="Genetic algorithms meet statistical mechanics for real-world drug discovery.">
+  <meta name="twitter:title" content="FlexAIDΔS — Open-Source Molecular Docking Engine">
+  <meta name="twitter:description" content="Genetic-algorithm search with a Voronoi contact-function score; optional entropy terms.">
 
   <link rel="icon" type="image/svg+xml" href="../assets/favicon-flexaid-ds.svg">
 
@@ -85,7 +85,7 @@
        plus the build and validation provenance the cards have no room for.
 
        PROVENANCE. Every figure below is stated elsewhere on THIS page:
-         ΔS/ΔH/ΔG per phase   BindingSection phases[] (unitless there, so
+         TΔS/ΔH/ΔG per phase  BindingSection phases[] (unitless there, so
                               unitless here — the page states no units for them)
          SURFNET · GA + DEE · Voronoi CF · F = −kT ln Z · Van't Hoff   ArchSection
          tENCoM normal modes                        FeaturesSection, ModulesSection
@@ -93,7 +93,7 @@
          CMake defaults                             InstallSection table
          affinity · binding mode                    unverified / pending receipt
        Nothing is invented. This page publishes no validated success rate.
-       Astex, ITC-187, and CASF figures are unverified / pending receipt.
+       No ITC-187 or CASF run is on record; Astex status is in BenchmarksSection.
        A comment ships to every browser, so former rates are not parked here. -->
   <script>
   (function () {
@@ -110,7 +110,7 @@
           // character at a time, so a `python -c "…"` wrapper around it would
           // cost a second of dead air and three wrapped lines on a phone.
           cmd: ">>> fd.dock(receptor='receptor.pdb', ligand='ligand.mol2', compute_entropy=True)",
-          banner: 'FlexAIDΔS · entropy-driven docking · ΔS_config via the partition function',
+          banner: 'FlexAIDΔS · contact-function docking · ΔS_config via the partition function, CF units',
           equation: true,
           // 0 = free in solvent, 1 = bound. Driven by the reader: three phases,
           // so 1/3 · 2/3 · 1. Before BindingSection mounts this is 0 and each
@@ -124,7 +124,7 @@
                 'PDB receptor + MOL2 ligand · SURFNET cavity detection' },
             { label: 'unbound · ΔS', detail: function () {
                 var s = live();
-                return s ? 'ΔS ' + s.ds + ' · ' + s.lbl : '—';
+                return s ? 'TΔS ' + s.ds + ' · ' + s.lbl : '—';
               } },
             { label: 'pocket contact', detail:
                 'GA + DEE torsion pruning · ring conformer + chirality sampling' },
@@ -151,13 +151,13 @@
           // one — a "ΔG" label on the aqua step would reassign ΔS_vib's colour.
           key: 'build · validation',
           cmd: '$ cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . -j $(nproc)',
-          banner: 'FlexAIDΔS · reproducible benchmark · same commit · same container · same seed',
+          banner: 'FlexAIDΔS · build and benchmark status',
           steps: [
-            { label: 'toolchain',           detail: 'C++26 · Python ≥ 3.9 · Apache 2.0 · Linux · macOS · Windows' },
+            { label: 'toolchain',           detail: 'C++26 · Python ≥ 3.9 · Apache 2.0 · Linux · macOS · Windows (WSL2)' },
             { label: 'accelerators',        detail: 'OpenMP ON · CUDA · Metal · AVX-512 opt-in' },
             { label: 'dispatch',            detail: 'CUDA > Metal > AVX-512 > AVX2 > OpenMP' },
-            { label: 'reproducibility',     detail: 'bit-for-bit identical results on the same seed' },
-            { label: 'affinity correlation', detail: 'ITC-187 · unverified / pending receipt' },
+            { label: 'election',            detail: 'lowest-CF pose (benchmark default) · not ΔG' },
+            { label: 'affinity correlation', detail: 'ITC-187 · no run on record' },
             { label: 'binding mode',        detail: 'Astex Diverse · unverified / pending receipt' }
           ],
           done: 'benchmarking not closed · no validated success rate published'
