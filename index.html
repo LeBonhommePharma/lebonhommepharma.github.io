@@ -17,11 +17,13 @@
   · /assets/tui.js IS LOADED, NEVER INLINED, NEVER TWICE. Two copies would run two 900 ms sweep()
     supervisors. The mount is static HTML because init() bails if no mount exists when it runs.
 
-  · TWO PAGE-SIDE tui.js WORKAROUNDS, scoped to the mount; the component is not modified.
-    (1) Light theme: tui.js paints stage names in bare var(--series-N) and several spans in bare
-        key colours, which fall to 1.26–2.55:1 on the light ground. The mount redefines
-        --series-1…6 to their -fg values and overrides the key-coloured spans per class. It does
-        NOT rebind the key colours themselves: that fails scripts/check-design-system.sh check 2.
+  · TWO PAGE-SIDE tui.js CHOICES, scoped to the mount; the component is not modified.
+    tui.js reads its own text colours through the --*-fg twins, so no per-class colour
+    override is needed here any more.
+    (1) Light theme: the mount redefines --series-1…6 to their -fg values and repaints the
+        caret in --mint-fg. Both are fills now; they stay so the light panel renders exactly as
+        it did. It does NOT rebind the key colours themselves: that fails
+        scripts/check-design-system.sh check 2.
     (2) The T glyph is firetruck inside .tui-body's clamp(10.5px,…), i.e. red under 12px on a
         phone. The mount raises the clamp floor to 12px rather than changing the colour.
 
@@ -522,32 +524,27 @@ h1.thesis .quiet{color:var(--fg-muted);font-weight:var(--fw-300)}
 .console-nojs{margin:0;font-family:var(--hp-mono);font-size:var(--fs-xs);
   line-height:var(--lh-code);color:var(--fg-muted)}
 
-/* ── tui.js WORKAROUNDS · scoped to the mount · component NOT modified ──
-   (1) `.tui-name` paints bare var(--series-N), and a handful of spans paint
-       bare key colours. The light theme freezes the seven key colours, so
-       stage 01 would paint magnesium at ~1.26:1 on the light ground.
-       Redefining the ramp to its -fg values HERE, scoped to the mount, fixes
-       the stage labels and the meter together, through ordinary
-       custom-property inheritance, without touching tui.js. The key-coloured
-       spans are overridden per class rather than by rebinding the key
-       colours themselves: a key colour bound to anything but its own value
-       fails scripts/check-design-system.sh check 2. These selectors are
-       (0,3,0), so they beat tui.js's injected (0,1,0) and (0,2,0) rules
-       although its <style> lands later in <head>. */
+/* ── tui.js · scoped to the mount · component NOT modified ──
+   tui.js reads every text colour (command, equation terms, T, stage names,
+   state pill) through the --*-fg twins itself, so the per-class light
+   overrides that used to sit here are gone.
+   (1) What stays touches FILLS only. tui.js paints its meter in bare
+       --series-* and its caret in bare --mint, the identity fills. On this
+       page the light theme redefines the ramp to its -fg values, scoped to
+       the mount, and repaints the caret in --mint-fg. Both predate the
+       twins in tui.js (the ramp rebind was how the stage names got fixed)
+       and are kept so the light panel renders exactly as before. The key
+       colours themselves are not rebound: a key colour bound to anything
+       but its own value fails scripts/check-design-system.sh check 2. The
+       caret selector is (0,3,0), so it beats tui.js's injected (0,1,0)
+       rule although its <style> lands later in <head>. */
 [data-theme="light"] [data-flexaidds-tui]{
   --series-1:var(--magnesium-fg); --series-2:var(--violet-fg);
   --series-3:var(--strawberry-fg); --series-4:var(--aqua-fg);
   --series-5:var(--mint-fg);      --series-6:var(--tangerine-fg);
 }
-[data-theme="light"] [data-flexaidds-tui] .tui-cmd{color:var(--mint-fg)}
 [data-theme="light"] [data-flexaidds-tui] .tui-caret{background:var(--mint-fg)}
-[data-theme="light"] [data-flexaidds-tui] .eq-dg{color:var(--tangerine-fg)}
-[data-theme="light"] [data-flexaidds-tui] .eq-dh{color:var(--mint-fg)}
-[data-theme="light"] [data-flexaidds-tui] .eq-ds{color:var(--violet-fg)}
-[data-theme="light"] [data-flexaidds-tui] .eq-dsv{color:var(--aqua-fg)}
-[data-theme="light"] [data-flexaidds-tui] .eq-t,
-[data-theme="light"] [data-flexaidds-tui] .tui-t{color:var(--firetruck-fg)}
-/*  (2) `.tui-t` / `.eq-t` paint --firetruck inside
+/*  (2) `.tui-t` / `.eq-t` paint firetruck (through --firetruck-fg) inside
        font-size:clamp(10.5px,1.02vw,12.5px), so below ~1030px the T glyph is
        red under the 12px floor tokens.css sets for firetruck. The violation is
        the SIZE, not the hue — firetruck has to keep meaning T — so the floor

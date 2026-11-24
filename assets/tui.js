@@ -29,6 +29,20 @@
    fallbacks that were already here, so the panel cannot drift
    from the system (scripts/check-palette-v2.sh).
 
+   READ COLOURS TAKE THE -fg TWIN, FILLS TAKE THE KEY COLOUR
+   ---------------------------------------------------------
+   The bare key colours are identity hues for fills: the lights,
+   the meter ramp, the caret. Anything a person READS (the
+   command, the equation terms, the stage names, the state pill)
+   takes the --*-fg twin, as elements.css does. On the ink a twin
+   IS its key colour (`--mint-fg: var(--mint)` in tokens.css), so
+   the dark panel is unchanged. On the light ground the bare hues
+   fall to 1.26–3.92:1; the twins are solved to 4.55:1 there. The
+   stage names follow the ramp by class (.tui-s1 to .tui-s6), each
+   bound to the -fg of the hue tokens.css gives that series slot.
+   Fallbacks stay the dark hex, so the panel still renders without
+   tokens.css.
+
    TWO KINDS OF SESSION
    --------------------
    The default queue is GENERATED and says so in three places —
@@ -391,6 +405,13 @@
     }
   }
 
+  // design-system/check-contrast.mjs (section 5) reads this array as the
+  // panel's stylesheet and measures every colour in it that paints a glyph,
+  // in both themes, on the ground the DOM below puts it on. So keep it as it
+  // is: single-quoted literals joined with '', every colour in a class here
+  // (never set from script), and a new class that carries text added to that
+  // check's TUI_PLACES / TUI_TEXT with its ground. It fails, not skips, on
+  // anything it cannot read.
   var CSS = [
     '[data-flexaidds-tui]{--tui-pad:clamp(16px,3vw,24px);font-family:var(--font-mono,monospace)}',
     '.tui-win{border:1px solid var(--violet-20,rgba(139,92,246,.2));border-radius:var(--r-lg,12px);',
@@ -413,8 +434,10 @@
     '.tui-dot[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg,#08091A),0 0 0 3px currentColor}',
     '.tui-title{font-size:11.5px;letter-spacing:.04em;color:var(--fg-muted,#8D8CB0);margin-left:6px}',
     '.tui-state{margin-left:auto;font-size:10px;font-weight:var(--fw-700,700);letter-spacing:var(--tracking-label,.15em);',
-    'text-transform:uppercase;color:var(--state-pass,#45E0A8);white-space:nowrap}',
-    '.tui-state[data-done="1"]{color:var(--series-6,#FF9300)}',
+    // The pill is read text, so it takes the twins of the hues its states are
+    // bound to: --state-pass is mint, and converged is series 6, tangerine.
+    'text-transform:uppercase;color:var(--mint-fg,#45E0A8);white-space:nowrap}',
+    '.tui-state[data-done="1"]{color:var(--tangerine-fg,#FF9300)}',
     '.tui-bare .tui-body{padding:0;min-height:300px}',
     '.tui-body{padding:var(--tui-pad);font-size:clamp(10.5px,1.02vw,12.5px);line-height:1.65;',
     'color:var(--fg,#E4E3F5);min-height:clamp(260px,44vh,360px)}',
@@ -434,8 +457,15 @@
     '.tui-val{flex-basis:100%;padding-left:calc(5ch + 10px)}',
     '.tui-title{display:none}.tui-bar{padding:9px 11px}}',
     '.tui-dim{color:var(--fg-muted,#8D8CB0)}',
-    '.tui-cmd{color:var(--mint,#45E0A8);overflow-wrap:anywhere}',
-    '.tui-t{color:var(--firetruck,#F5232B)}',
+    '.tui-cmd{color:var(--mint-fg,#45E0A8);overflow-wrap:anywhere}',
+    '.tui-t{color:var(--firetruck-fg,#F5232B)}',
+    // Stage names, by position on the series ramp. Each slot reads through
+    // the -fg twin of the hue tokens.css binds to it (--series-1 is
+    // magnesium … --series-6 is tangerine); the meter below keeps the bare
+    // --series-* fills.
+    '.tui-s1{color:var(--magnesium-fg,#DCDCE4)}.tui-s2{color:var(--violet-fg,#8B5CF6)}',
+    '.tui-s3{color:var(--strawberry-fg,#FF2F92)}.tui-s4{color:var(--aqua-fg,#00A2FF)}',
+    '.tui-s5{color:var(--mint-fg,#45E0A8)}.tui-s6{color:var(--tangerine-fg,#FF9300)}',
     // The illustrative notice is deliberately NOT coloured. Every hue in this
     // panel is bound to a quantity — mint ΔH, violet ΔS, tangerine ΔG,
     // firetruck T, aqua ΔS_vib, strawberry receptor, magnesium baseline — and
@@ -454,9 +484,9 @@
     // two that are CSS lengths on the progress meter.
     '.tui-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;',
     'clip:rect(0 0 0 0);clip-path:inset(1px);white-space:nowrap;border:0}',
-    '.tui-eq .eq-dg{color:var(--tangerine,#FF9300)}.tui-eq .eq-dh{color:var(--mint,#45E0A8)}',
-    '.tui-eq .eq-t{color:var(--firetruck,#F5232B)}.tui-eq .eq-ds{color:var(--violet,#8B5CF6)}',
-    '.tui-eq .eq-dsv{color:var(--aqua,#00A2FF)}',
+    '.tui-eq .eq-dg{color:var(--tangerine-fg,#FF9300)}.tui-eq .eq-dh{color:var(--mint-fg,#45E0A8)}',
+    '.tui-eq .eq-t{color:var(--firetruck-fg,#F5232B)}.tui-eq .eq-ds{color:var(--violet-fg,#8B5CF6)}',
+    '.tui-eq .eq-dsv{color:var(--aqua-fg,#00A2FF)}',
     // The meter IS the series ramp. The ramp is always drawn full width and a
     // cover recedes to the right, so each stage lands on its OWN colour —
     // scaling a gradient into a growing box would squash the whole ramp into
@@ -793,12 +823,13 @@
           var s = st[i], n = i + 1;
           var l = line('tui-row');
           l.appendChild(el('span', 'tui-idx', '[' + n + '/' + total + ']'));
-          var tag = el('span', 'tui-name', s.label);
           // Colour by position on the series ramp. With fewer than six steps
           // the ramp is sampled across its full range rather than truncated,
           // so a five-step run still ends on tangerine (converged · ΔG).
+          // The colour is a class, not an inline style, so every colour the
+          // panel paints lives in the CSS block above.
           var tok = total === 1 ? 6 : Math.round(1 + (n - 1) * (5 / (total - 1)));
-          tag.style.color = 'var(--series-' + tok + ')';
+          var tag = el('span', 'tui-name tui-s' + tok, s.label);
           l.appendChild(tag);
           // A live step reads its value at the moment it is reached.
           l.appendChild(el('span', 'tui-val', typeof s.detail === 'function' ? s.detail() : s.detail));
@@ -809,9 +840,7 @@
         await wait(REDUCED ? 0 : 520);
         line().textContent = '';
         var done = line();
-        var okTag = el('span', null, '  ● CONVERGED');
-        okTag.style.color = 'var(--series-6)';
-        done.appendChild(okTag);
+        done.appendChild(el('span', 'tui-s6', '  ● CONVERGED'));
         done.appendChild(el('span', 'tui-dim', '   ' + (typeof sess.done === 'function' ? sess.done() : sess.done)));
         state.textContent = '● CONVERGED';
         state.setAttribute('data-done', '1');
