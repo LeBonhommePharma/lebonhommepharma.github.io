@@ -62,8 +62,25 @@ jobs:
       - name: No colour born outside the token source
         run: node design-system/check-raw-hex.mjs
 
-      # Every ratio annotated in tokens.css must be true, and every foreground
-      # token must clear AA against the ground it is used on, in both themes.
+      # The contrast guard reads elements.css with its own parser, and proves
+      # against fixtures that the parser still catches the old bare-hue shape
+      # and still fails closed on what it cannot read. The scan below runs that
+      # proof too and stops with exit 2 if it breaks; this step exists so a
+      # broken guard is its own red step, not a line inside a contrast failure.
+      # The fixtures use a frozen token model, so this step goes red only when
+      # the guard is broken, never because a token moved: a moved token is the
+      # next step's failure, and that step names it.
+      - name: Self-test the contrast guard
+        if: always()
+        run: node design-system/check-contrast.mjs --self-test
+
+      # Every ratio annotated in tokens.css must be true, every foreground
+      # token must clear AA against the ground it is used on, in both themes,
+      # and every colour the package's elements.css paints as text must clear
+      # the body target in both themes, at any size. The tokens being right
+      # says nothing about whether the stylesheet beside them uses the right
+      # ones: elements.css shipped mint links at 1.56:1 on the light ground
+      # while every token check here was green.
       - name: Contrast ratios are measured, not asserted
         if: always()
         run: node design-system/check-contrast.mjs
