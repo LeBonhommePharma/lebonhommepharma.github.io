@@ -105,6 +105,23 @@ jobs:
         if: always()
         run: node design-system/derive-light.mjs --check
 
+      # The outline tier's --*-edge contours are solved the same way and get
+      # the same two gates. Its self-test also asserts that a near-achromatic
+      # hue keeps a NEUTRAL contour rather than gaining chroma it never had.
+      #
+      # Both gates matter independently: --check catches a contour that drifted
+      # from the marker, and it also fails when the worst fill-to-contour step
+      # drops under 3:1 -- which is how a lowered marker that quietly makes the
+      # bright interior unreadable gets caught, rather than shipping as a
+      # "darker outline".
+      - name: Prove the outline-tier guard catches a desynchronised contour
+        if: always()
+        run: node design-system/derive-edge.mjs --self-test
+
+      - name: The light --*-edge contours are what the solver produces
+        if: always()
+        run: node design-system/derive-edge.mjs --check
+
       # Exergy's pages render in light appearance too. Every accent on them was
       # the bare identity hue, which is 8.86:1 on the ink and 2.06:1 on the
       # light ground — below AA body, below large text, below the 1.4.11

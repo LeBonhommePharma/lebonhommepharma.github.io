@@ -133,3 +133,84 @@ code, .mono, kbd, samp {
 }
 .brand .delta { color: var(--gold); }
 .brand .terra { color: var(--terra); }
+
+/* ───────── OUTLINE TIER ─────────
+   The element layer for tokens.css's --*-edge contours. Use it where the
+   identity hue IS the information and the relit --*-fg would spend it:
+   display stats, figure labels, chart annotations, the wordmark.
+
+   Markup is theme-independent. --edge-w is 0 at :root and the contours are
+   transparent there, so in dark mode these rules compute to a zero-width
+   stroke of nothing and the glyph is exactly the bare key colour it would
+   have been. The light theme supplies the width and the contours, and the
+   same element gains its outline with no class swap and no media query.
+
+       <span class="outlined mint">ΔH</span>
+       <h2 class="outlined violet">−TΔS</h2>
+
+   `paint-order: stroke fill` is what makes this usable: -webkit-text-stroke
+   centres on the glyph outline, so without it the stroke eats half the
+   letterform from the inside and thin weights go muddy. Painting the stroke
+   first and the fill over it leaves the inner half covered, which is why the
+   token comment says the VISIBLE contour is half --edge-w.
+
+   The text-shadow is a fallback, not a second effect: a four-corner offset at
+   the same width approximates a contour where text-stroke is unsupported.
+   @supports keeps them from ever both applying — doubling them reads as a
+   blur, and two mechanisms fighting is how an outline ends up looking cheap.
+
+   HELD TO 12px AND UP, like --firetruck. The contours clear 14.5:1 against
+   the page, but the fill-to-contour step runs as low as 3.81 (violet), which
+   is the non-text / large-text floor and not a body-text ratio. Small
+   outlined text is not what this tier is for; --*-fg is.           */
+.outlined {
+  paint-order: stroke fill;
+  -webkit-text-stroke: var(--edge-w) var(--edge, transparent);
+}
+@supports not (-webkit-text-stroke: 1px black) {
+  .outlined {
+    text-shadow:
+       var(--edge-w)  var(--edge-w) 0 var(--edge, transparent),
+      calc(-1 * var(--edge-w))  var(--edge-w) 0 var(--edge, transparent),
+       var(--edge-w) calc(-1 * var(--edge-w)) 0 var(--edge, transparent),
+      calc(-1 * var(--edge-w)) calc(-1 * var(--edge-w)) 0 var(--edge, transparent);
+  }
+}
+
+/* One pair per key colour: the fill is the bare identity hue, NOT the -fg
+   variant, because carrying full chroma is the whole point of this tier —
+   and the contour is what pays for it. Set as a local --edge so .outlined
+   above stays one rule rather than seven.
+   palette-check-ignore-start
+   The hexes here are var() references, not literals; the ignore markers
+   exist because the guard reads the retired-colour names in this comment. */
+.outlined.mint       { color: var(--mint);       --edge: var(--mint-edge); }
+.outlined.violet     { color: var(--violet);     --edge: var(--violet-edge); }
+.outlined.tangerine  { color: var(--tangerine);  --edge: var(--tangerine-edge); }
+.outlined.firetruck  { color: var(--firetruck);  --edge: var(--firetruck-edge); }
+.outlined.aqua       { color: var(--aqua);       --edge: var(--aqua-edge); }
+.outlined.strawberry { color: var(--strawberry); --edge: var(--strawberry-edge); }
+.outlined.magnesium  { color: var(--magnesium);  --edge: var(--magnesium-edge); }
+/* palette-check-ignore-end */
+
+/* Temperature ramp stops. Three of these alias key colours (cryo→aqua,
+   ambient→magnesium, denature→firetruck) and resolve to identical contours;
+   they are declared anyway so a readout bound to a ramp stop never has to
+   know which stop happens to be an alias. */
+.outlined.t-cryo     { color: var(--t-cryo);     --edge: var(--t-cryo-edge); }
+.outlined.t-cold     { color: var(--t-cold);     --edge: var(--t-cold-edge); }
+.outlined.t-ambient  { color: var(--t-ambient);  --edge: var(--t-ambient-edge); }
+.outlined.t-physio   { color: var(--t-physio);   --edge: var(--t-physio-edge); }
+.outlined.t-denature { color: var(--t-denature); --edge: var(--t-denature-edge); }
+
+/* SVG text and figure strokes. WebGL cannot take var() (see --fig-ink in
+   tokens.css) but inline SVG can, so a chart label gets the same treatment
+   as HTML. stroke-linejoin round keeps the contour from spiking at tight
+   corners in mono numerals, which is where a mitred join shows first. */
+.outlined-svg text,
+text.outlined-svg {
+  paint-order: stroke fill;
+  stroke: var(--edge, transparent);
+  stroke-width: var(--edge-w);
+  stroke-linejoin: round;
+}

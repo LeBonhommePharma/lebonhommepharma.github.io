@@ -255,7 +255,25 @@ if (has('--self-test')) {
   t('a freshly rendered file is in sync with itself', diff(clean, rows).length, 0);
   const victim = rows[0];
   const bumped = victim.hex.slice(0, 5) + (victim.hex[5] === '0' ? '1' : '0') + victim.hex.slice(6);
-  const dirty = clean.replace(victim.hex, bumped);
+  // Target the DECLARATION, not the first occurrence of the hex anywhere.
+  // `clean.replace(victim.hex, bumped)` took a bare string, so String.replace
+  // hit the first match in the whole file — and the moment any comment above
+  // the light block quoted that hex, the mutation landed in prose, the
+  // declaration stayed correct, and this test failed with "got 0, want 1". It
+  // reported a real problem (its own mutation had become a no-op) in a way
+  // that read like a contrast regression. Anchoring it to the declaration line
+  // makes the mutation hit what it is about, and keeps a hex in a comment from
+  // being a landmine. Caught 2026-11-25 by exactly that collision.
+  const victimRe = new RegExp(`^(\\s*--${victim.name}-fg:\\s*)#[0-9A-Fa-f]{6}`, 'm');
+  if (!victimRe.test(clean)) {
+    console.log(`  FAIL   self-test could not find the --${victim.name}-fg declaration to mutate`);
+    process.exit(1);
+  }
+  const dirty = clean.replace(victimRe, `$1${bumped}`);
+  if (dirty === clean) {
+    console.log('  FAIL   self-test mutation was a no-op — it would prove nothing');
+    process.exit(1);
+  }
   t('one channel moved by one step is detected', diff(dirty, rows).length, 1);
   t('  …and the detected token is the one that moved', diff(dirty, rows)[0]?.name, victim.name);
   t('the target marker is required', TARGET_RE.test(clean), true);

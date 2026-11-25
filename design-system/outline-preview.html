@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outline tier · preview</title>
+<!-- Imports the REAL files, not copies. If a token changes, this page changes. -->
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { font-family: var(--font-body, system-ui); background: var(--bg); color: var(--fg);
+         margin: 0; padding: 0; }
+  .pane { padding: 2.5rem 2rem 3rem; background: var(--bg); min-height: 100%; }
+  h1 { font-family: var(--font-mono, ui-monospace); font-size: 1rem; letter-spacing: .08em;
+       text-transform: uppercase; color: var(--fg-muted); margin: 0 0 .25rem; }
+  h2 { font-family: var(--font-mono, ui-monospace); font-size: .75rem; letter-spacing: .12em;
+       text-transform: uppercase; color: var(--fg-muted); margin: 2rem 0 .75rem;
+       border-bottom: 1px solid var(--fg-muted); padding-bottom: .35rem; }
+  .note { color: var(--fg-muted); font-size: .8rem; max-width: 46ch; line-height: 1.5; margin: 0 0 1rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 1.75rem; align-items: baseline; margin-bottom: 1rem; }
+  .stat { font-family: var(--font-mono, ui-monospace); font-size: 2.75rem; font-weight: 700;
+          line-height: 1; font-variant-numeric: tabular-nums; }
+  .mid  { font-family: var(--font-mono, ui-monospace); font-size: 1.1rem; font-weight: 600; }
+  .small{ font-family: var(--font-mono, ui-monospace); font-size: .75rem; font-weight: 600; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+  @media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+  .lab { font-family: var(--font-mono, ui-monospace); font-size: .65rem; color: var(--fg-muted);
+         letter-spacing: .1em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="split">
+
+  <!-- DARK: the outline tier must be a NO-OP here -->
+  <div class="pane">
+    <h1>Dark &mdash; outline tier is a no-op</h1>
+    <p class="note">Same markup as the light pane. <code>--edge-w</code> is 0 and every contour is
+      transparent at <code>:root</code>, so these glyphs are exactly the bare key colours. If you can
+      see an outline on this side, something is wrong.</p>
+
+    <h2>Display &middot; .outlined</h2>
+    <div class="row">
+      <span class="stat outlined mint">&Delta;H</span>
+      <span class="stat outlined violet">&minus;T&Delta;S</span>
+      <span class="stat outlined tangerine">&Delta;G</span>
+      <span class="stat outlined aqua">&Delta;S<sub>vib</sub></span>
+    </div>
+    <div class="row">
+      <span class="mid outlined firetruck">350 K</span>
+      <span class="mid outlined strawberry">receptor</span>
+      <span class="mid outlined magnesium">apo baseline</span>
+    </div>
+
+    <h2>Temperature ramp</h2>
+    <div class="row">
+      <span class="mid outlined t-cryo">77 K</span>
+      <span class="mid outlined t-cold">200 K</span>
+      <span class="mid outlined t-ambient">298 K</span>
+      <span class="mid outlined t-physio">310 K</span>
+      <span class="mid outlined t-denature">350 K+</span>
+    </div>
+
+    <h2>Not for small text</h2>
+    <p class="note">Held to 12px and up. Below that use <code>--*-fg</code>.</p>
+    <div class="row">
+      <span class="small outlined violet">11px outlined &mdash; don't</span>
+      <span class="small" style="color: var(--violet-fg)">11px --violet-fg &mdash; do</span>
+    </div>
+  </div>
+
+  <!-- LIGHT: the tier does its work -->
+  <div class="pane" data-theme="light">
+    <h1>Light &mdash; full chroma, dark contour</h1>
+    <p class="note">Each glyph keeps the <em>identity</em> hue at full chroma. The contour is
+      near-black at that hue's own angle, one shared lightness for all twelve. Every contour clears
+      14.5:1 against this ground; the weakest fill-to-contour step is 3.81 (violet).</p>
+
+    <h2>Display &middot; .outlined</h2>
+    <div class="row">
+      <span class="stat outlined mint">&Delta;H</span>
+      <span class="stat outlined violet">&minus;T&Delta;S</span>
+      <span class="stat outlined tangerine">&Delta;G</span>
+      <span class="stat outlined aqua">&Delta;S<sub>vib</sub></span>
+    </div>
+    <div class="row">
+      <span class="mid outlined firetruck">350 K</span>
+      <span class="mid outlined strawberry">receptor</span>
+      <span class="mid outlined magnesium">apo baseline</span>
+    </div>
+
+    <h2>Temperature ramp</h2>
+    <div class="row">
+      <span class="mid outlined t-cryo">77 K</span>
+      <span class="mid outlined t-cold">200 K</span>
+      <span class="mid outlined t-ambient">298 K</span>
+      <span class="mid outlined t-physio">310 K</span>
+      <span class="mid outlined t-denature">350 K+</span>
+    </div>
+
+    <h2>The comparison that matters</h2>
+    <p class="note">Top row is the outline tier (identity hue kept). Bottom row is the
+      <code>--*-fg</code> tier (hue relit darker to clear 4.55:1). The question this page exists to
+      answer: is the top row worth the contour?</p>
+    <div class="row">
+      <span class="stat outlined mint">&Delta;H</span>
+      <span class="stat outlined violet">&minus;T&Delta;S</span>
+      <span class="stat outlined tangerine">&Delta;G</span>
+    </div>
+    <div class="row">
+      <span class="stat" style="color: var(--mint-fg)">&Delta;H</span>
+      <span class="stat" style="color: var(--violet-fg)">&minus;T&Delta;S</span>
+      <span class="stat" style="color: var(--tangerine-fg)">&Delta;G</span>
+    </div>
+    <p class="lab">top: .outlined &middot; bottom: --*-fg</p>
+
+    <h2>Inline SVG</h2>
+    <p class="note">Same treatment for chart labels via <code>.outlined-svg</code>.</p>
+    <svg width="340" height="56" viewBox="0 0 340 56" class="outlined-svg"
+         style="--edge: var(--mint-edge)">
+      <text x="0" y="40" font-family="ui-monospace" font-size="34" font-weight="700"
+            fill="var(--mint)">&minus;9.4 kcal/mol</text>
+    </svg>
+  </div>
+
+</div>
+</body>
+</html>
