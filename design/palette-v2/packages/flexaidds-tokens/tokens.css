@@ -40,6 +40,13 @@
   --fg:       #E4E3F5;                  /* body text     15.60:1   */
   --fg-muted: #8D8CB0;                  /* secondary      6.12:1   */
 
+  /* Figure ink: the neutral a figure is DRAWN in where no quantity
+     applies (Mol* ligand carbon and the outline pass). Bound to no
+     quantity, so it is not a key colour and is not solved: it follows
+     the text colour into the light theme. WebGL cannot take var(), so
+     a viewer reads it with getComputedStyle, never as a literal. */
+  --fig-ink:  var(--fg);
+
   /* ───────── KEY COLORS ─────────
      Semantic, not decorative. Each carries a quantity. */
   --mint:       #45E0A8;   /* ΔH · enthalpy · brand primary      11.73:1 */
@@ -203,6 +210,75 @@
               var(--t-ambient)  50%,
               var(--t-physio)   76%,
               var(--t-denature) 100%);
+
+  /* The ramp as FOREGROUND. Same rule as the key colours: anything
+     READ in a ramp colour (a temperature readout) takes the -fg,
+     never the bare stop, which stays a fill (--t-ramp, a slider
+     track). In dark mode they ARE the stops. The light theme
+     overrides all five with values derive-light.mjs solves at the
+     same target as the key colours, because the bare stops on the
+     light ground land at
+         cryo 2.55  ·  cold 1.57  ·  ambient 1.26  ·  physio 2.37  ·  denature 3.77 */
+  --t-cryo-fg:     var(--t-cryo);
+  --t-cold-fg:     var(--t-cold);
+  --t-ambient-fg:  var(--t-ambient);
+  --t-physio-fg:   var(--t-physio);
+  --t-denature-fg: var(--t-denature);
+
+  /* ───────── OUTLINE TIER ─────────
+     A second way to put an identity hue on a pale ground, for the
+     case the -fg tier cannot serve: display type and figure labels
+     where the hue ITSELF is the information and darkening it is a
+     loss. Mint relit for the light ground sheds 26% of its chroma, so
+     --mint-fg is a visibly different green from --mint; on a 48px stat
+     that difference is the brand. (No hex literals in this comment on
+     purpose — see the note on derive-light's self-test below.)
+
+     THE MECHANISM
+     Legibility of a glyph is set by the luminance step across its
+     edge, not by its interior. Wrap the glyph in a dark contour and
+     the edge the eye integrates becomes glyph→contour; no edge pixel
+     ever blends the bright hue into the page. The interior is then
+     free to carry the full-chroma identity colour.
+
+     WHAT THIS IS NOT
+     WCAG 2.x measures one (foreground, background) pair and has no
+     provision for stroked text, so this tier makes NO conformance
+     claim about the fill. The ratio it can honestly claim is
+     contour-vs-page, annotated in the light block below and asserted
+     by check-contrast.mjs. --*-fg stays the conformant token for
+     body text, and this tier is held to 12px and up like firetruck.
+
+     WHY THE CONTOUR IS NOT THE SAME HUE RELIT
+     That was tried first and it fails asymmetrically. Violet and
+     firetruck are already low-lightness, so there is no room beneath
+     them for a same-hue contour that is also meaningfully darker:
+     solved at 10:1 against the page the fill-to-contour step is 2.56
+     for violet and 2.66 for firetruck — under the 3:1 floor — while
+     mint reaches 6.50. A tier that works for the bright half of the
+     palette and not the dark half is not a tier. So the contour is
+     near-black carrying the key colour's HUE ANGLE at one shared
+     lightness: every outlined mark gets the same contour weight, and
+     a chart holding both mint and violet reads as one treatment
+     rather than seven.
+
+     Solved, never typed: design-system/derive-edge.mjs. Dark mode
+     gets width 0 and transparent contours, so identical markup is a
+     no-op there — on the ink the bare key colours already run 4.66:1
+     to 14.47:1 and a dark contour would eat the glyph. */
+  --edge-w: 0;
+  --mint-edge:       transparent;
+  --violet-edge:     transparent;
+  --tangerine-edge:  transparent;
+  --firetruck-edge:  transparent;
+  --aqua-edge:       transparent;
+  --strawberry-edge: transparent;
+  --magnesium-edge:  transparent;
+  --t-cryo-edge:     transparent;
+  --t-cold-edge:     transparent;
+  --t-ambient-edge:  transparent;
+  --t-physio-edge:   transparent;
+  --t-denature-edge: transparent;
 
   /* ───────── GLOW ─────────
      Elevation is colored glow and translucency, never a
@@ -374,4 +450,51 @@
      carries no perceptual meaning and the 5.56° shift the solver
      reports is numerical noise, not a visible change of colour. */
   --magnesium-fg:  #706F77;   /* 4.59:1 · chroma 100% */
+
+  /* Temperature ramp, solved by the same solver at the same marker.
+     Three stops alias key colours (cryo aqua, ambient magnesium,
+     denature firetruck), so their values equal those three -fg above.
+     They are declared anyway: derive-light discovers every --x-fg at
+     :root and fails on a light block that leaves one out. */
+  --t-cryo-fg:     #0075BB;   /* 4.56:1 · hue +0.27° · chroma  79% */
+  --t-cold-fg:     #2077A2;   /* 4.60:1 · hue +0.14° · chroma 100% */
+  --t-ambient-fg:  #706F77;   /* 4.59:1 · chroma 100% */
+  --t-physio-fg:   #C54529;   /* 4.56:1 · hue −0.16° · chroma 100% */
+  --t-denature-fg: #E2001C;   /* 4.57:1 · hue +0.00° · chroma  98% */
+
+  /* The contours, and the only block where the outline tier does
+     anything. One lightness for all twelve, each at its own key
+     colour's hue angle, chroma clamped to the sRGB gamut and never
+     above the hue's own. Two numbers are annotated per contour: the
+     ratio against --bg, which is the edge that defines the letterform
+     and the only ratio this tier claims, and the fill-to-contour
+     step, which is what keeps the bright interior reading as an
+     interior rather than smearing into the outline. Both are measured
+     against the live tokens, and the first is asserted by
+     check-contrast.mjs.
+
+     --edge-w is an em, not a px: a contour that does not scale with
+     the glyph is a different design at 12px and at 48px. The stroke
+     is centred on the glyph outline and `paint-order: stroke fill`
+     paints the fill back over its inner half, so the VISIBLE outer
+     contour is half this value.
+
+     Do not edit the values by hand. Regenerate with
+     `node design-system/derive-edge.mjs --write`; the marker below
+     records the lightness and chroma they were solved at and moves in
+     the same commit as them. */
+  /* edge-solve: L=0.25 C=0.05 */
+  --edge-w: 0.08em;
+  --mint-edge:       #03291B;   /* 14.53:1 on --bg · fill step 9.34 · hue 164.5° */
+  --violet-edge:     #231D37;   /* 14.91:1 on --bg · fill step 3.81 · hue 292.7° */
+  --tangerine-edge:  #321B05;   /* 15.00:1 on --bg · fill step 7.28 · hue 61.6° */
+  --firetruck-edge:  #361714;   /* 15.06:1 on --bg · fill step 4.00 · hue 26.5° */
+  --aqua-edge:       #092438;   /* 14.70:1 on --bg · fill step 5.76 · hue 245.4° */
+  --strawberry-edge: #341721;   /* 15.05:1 on --bg · fill step 4.71 · hue 358.4° */
+  --magnesium-edge:  #212127;   /* 14.81:1 on --bg · fill step 11.74 · neutral */
+  --t-cryo-edge:     #092438;   /* 14.70:1 on --bg · fill step 5.76 · hue 245.4° */
+  --t-cold-edge:     #032536;   /* 14.69:1 on --bg · fill step 9.36 · hue 235.4° */
+  --t-ambient-edge:  #212127;   /* 14.81:1 on --bg · fill step 11.74 · neutral */
+  --t-physio-edge:   #361811;   /* 14.99:1 on --bg · fill step 6.32 · hue 34.1° */
+  --t-denature-edge: #361714;   /* 15.06:1 on --bg · fill step 4.00 · hue 26.5° */
 }
